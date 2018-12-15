@@ -1,12 +1,12 @@
 {
-    "name": "whachama-bot",
-    "version": "1.0.0",
-    "description": "My First Discord Bot",
+    "name": "discord-matey-bot",
+    "version": "1.1.0",
+    "description": "MrShoopa's Lil' Bot",
     "main": "some-bot.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
-    "author": "shoopa",
+    "author": "MrShoopa",
     "license": "ISC",
     "dependencies": {
         "discord.js": "^11.4.2",

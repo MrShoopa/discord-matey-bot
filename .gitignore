@@ -1,6 +1,9 @@
 # Authorization
 /auth.json
 
+# Code Runner
+tempCodeRunnerFile.js
+
 # Logs
 logs
 *.log

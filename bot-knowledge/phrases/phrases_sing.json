@@ -4,11 +4,16 @@
     "message_unknown_summon": "Summon what? Say \n*Megadork, what can you summon?*\n for a list of things I can do.",
     "message_not_in_channel": "Heya, before I can make some noise, you gotta be in a voice channel!",
 
+    "command_feedback": {
+        "stop": ["Stopping...", "Ok..."]
+    },
 
     "songs_to_sing": [{
         "file": "./bot-knowledge/audio/FILE_EXAMPLE.MP3",
         "title": "SONG TITLE",
-        "play_phrase": "MESSAGE SENT WHILE PLAYING"
+        "explicit": false,
+        "play_phrase": "MESSAGE SENT WHILE PLAYING",
+        "explicit_text": " [Explicit]"
     }, {
         "file": "./bot-knowledge/audio/meme-stash/how-to-wake-up.mp3",
         "title": "Wake Up Song",

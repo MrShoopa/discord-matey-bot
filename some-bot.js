@@ -12,6 +12,8 @@ const phrases_front = require(`./bot-knowledge/phrases/phrases_front.json`);
 const phrases_sing = require(`./bot-knowledge/phrases/phrases_sing.json`)
 const phrases_rip = require(`./bot-knowledge/phrases/phrases_suicidal.json`)
 
+const triggers = require(`./bot-knowledge/phrases/triggers/triggers.json`)
+
 
 //ENTITIES
 const bot = new Discord.Client();
@@ -35,262 +37,148 @@ bot.on('ready', function (evt) {
 
 //Message bot
 bot.on('message', function (message) {
+    var matched_command = false;
+
     var message_string = (message.content).toString();
     var voiceChannel = message.member.voiceChannel;
 
     console.log(`A user said: ${message_string}`);
 
     //Music Functionality
-    if (message_string.substring(0, 8).toLowerCase() == 'i summon' || message_string.substring(0, 13).toLowerCase() == 'megadork sing' || message_string.substring(0, 14).toLowerCase() == 'megadork, sing' || message_string.substring(0, 13).toLowerCase() == 'megadork sing' || message_string.substring(0, 14).toLowerCase() == 'megadork play') {
-        try {
-            var song_index = 0;
+    triggers.singing_triggers.play.forEach(trigger => {
+        trigger.toLowerCase();
+        if (message_string.substring(0, 15).toLowerCase().includes(trigger)) {
+            matched_command = true;
+            var song_state = "fetching";
 
-            switch (true) {
-                case message_string.toLowerCase().includes(phrases_sing.songs_to_sing[1].title.toLowerCase()):
-                    song_index = 1;
+            try {
+                phrases_sing.songs_to_sing.forEach(song => {
+                    if (message_string.toLowerCase().includes(song.title.toLowerCase())) {
+                        song_state = "playing";
 
-                    voiceChannel.join().then(connection => {
-                        const dispatcher = connection.playFile(phrases_sing.songs_to_sing[song_index].file);
-                        message.reply(phrases_sing.songs_to_sing[song_index].play_phrase);
+                        voiceChannel.join().then(connection => {
+                            console.log(`Voice channel connection status: ${voiceChannel.connection.status}`)
+                            const dispatcher = connection.playFile(song.file);
+                            message.reply(song.play_phrase);
 
-                        dispatcher.on("end", end => {
-                            console.log(`Song played successfully.`);
-                            voiceChannel.leave();
-                        });
-                    })
-                    break;
-                case message_string.toLowerCase().includes(phrases_sing.songs_to_sing[2].title.toLowerCase()):
-                    song_index = 2;
 
-                    voiceChannel.join().then(connection => {
-                        const dispatcher = connection.playFile(phrases_sing.songs_to_sing[song_index].file);
-                        message.reply(phrases_sing.songs_to_sing[song_index].play_phrase);
-
-                        dispatcher.on("end", end => {
-                            console.log(`Song played successfully.`);
-                            voiceChannel.leave();
-                        });
-                    })
-                    break;
-                case message_string.toLowerCase().includes(phrases_sing.songs_to_sing[3].title.toLowerCase()):
-                    song_index = 3;
-
-                    voiceChannel.join().then(connection => {
-                        const dispatcher = connection.playFile(phrases_sing.songs_to_sing[song_index].file);
-                        message.reply(phrases_sing.songs_to_sing[song_index].play_phrase);
-
-                        dispatcher.on("end", end => {
-                            console.log(`Song played successfully.`);
-                            voiceChannel.leave();
-                        });
-                    })
-                    break;
-                case message_string.toLowerCase().includes(phrases_sing.songs_to_sing[4].title.toLowerCase()):
-                    song_index = 4;
-
-                    voiceChannel.join().then(connection => {
-                        const dispatcher = connection.playFile(phrases_sing.songs_to_sing[song_index].file);
-                        message.reply(phrases_sing.songs_to_sing[song_index].play_phrase);
-
-                        dispatcher.on("end", end => {
-                            console.log(`Song played successfully.`);
-                            voiceChannel.leave();
-                        });
-                    })
-                    break;
-                case message_string.toLowerCase().includes(phrases_sing.songs_to_sing[5].title.toLowerCase()):
-                    song_index = 5;
-
-                    voiceChannel.join().then(connection => {
-                        const dispatcher = connection.playFile(phrases_sing.songs_to_sing[song_index].file);
-                        message.reply(phrases_sing.songs_to_sing[song_index].play_phrase);
-
-                        dispatcher.on("end", end => {
-                            console.log(`Song played successfully.`);
-                            voiceChannel.leave();
-                        });
-                    })
-                    break;
-                case message_string.toLowerCase().includes(phrases_sing.songs_to_sing[6].title.toLowerCase()):
-                    song_index = 6;
-
-                    voiceChannel.join().then(connection => {
-                        const dispatcher = connection.playFile(phrases_sing.songs_to_sing[song_index].file);
-                        message.reply(phrases_sing.songs_to_sing[song_index].play_phrase);
-
-                        dispatcher.on("end", end => {
-                            console.log(`Song played successfully.`);
-                            voiceChannel.leave();
-                        });
-                    })
-                    break;
-                case message_string.toLowerCase().includes(phrases_sing.songs_to_sing[7].title.toLowerCase()):
-                    song_index = 7;
-
-                    voiceChannel.join().then(connection => {
-                        const dispatcher = connection.playFile(phrases_sing.songs_to_sing[song_index].file);
-                        message.reply(phrases_sing.songs_to_sing[song_index].play_phrase);
-
-                        dispatcher.on("end", end => {
-                            console.log(`Song played successfully.`);
-                            voiceChannel.leave();
-                        });
-                    })
-                    break;
-                case message_string.toLowerCase().includes(phrases_sing.songs_to_sing[8].title.toLowerCase()):
-                    song_index = 8;
-
-                    voiceChannel.join().then(connection => {
-                        const dispatcher = connection.playFile(phrases_sing.songs_to_sing[song_index].file);
-                        message.reply(phrases_sing.songs_to_sing[song_index].play_phrase);
-
-                        dispatcher.on("end", end => {
-                            console.log(`Song played successfully.`);
-                            voiceChannel.leave();
-                        });
-                    })
-                    break;
-                case message_string.toLowerCase().includes(phrases_sing.songs_to_sing[9].title.toLowerCase()):
-                    song_index = 9;
-
-                    voiceChannel.join().then(connection => {
-                        const dispatcher = connection.playFile(phrases_sing.songs_to_sing[song_index].file);
-                        message.reply(phrases_sing.songs_to_sing[song_index].play_phrase);
-
-                        dispatcher.on("end", end => {
-                            console.log(`Song played successfully.`);
-                            voiceChannel.leave();
-                        });
-                    })
-                    break;
-                case message_string.toLowerCase().includes(phrases_sing.songs_to_sing[10].title.toLowerCase()):
-                    song_index = 10;
-
-                    voiceChannel.join().then(connection => {
-                        const dispatcher = connection.playFile(phrases_sing.songs_to_sing[song_index].file);
-                        message.reply(phrases_sing.songs_to_sing[song_index].play_phrase);
-
-                        dispatcher.on("end", end => {
-                            console.log(`Song played successfully.`);
-                            voiceChannel.leave();
-                        });
-                    })
-                    break;
-                case message_string.toLowerCase().includes(phrases_sing.songs_to_sing[11].title.toLowerCase()):
-                    song_index = 10;
-
-                    voiceChannel.join().then(connection => {
-                        const dispatcher = connection.playFile(phrases_sing.songs_to_sing[song_index].file);
-                        message.reply(phrases_sing.songs_to_sing[song_index].play_phrase);
-
-                        dispatcher.on("end", end => {
-                            console.log(`Song played successfully.`);
-                            voiceChannel.leave();
-                        });
-                    })
-                    break;
-                default:
-                    message.reply(phrases_sing.message_unknown_summon)
+                            dispatcher.on("end", end => {
+                                console.log(`Song played successfully.`);
+                                song_state = "finished";
+                                voiceChannel.leave();
+                            });
+                        })
+                    }
+                });
+            } catch (err) {
+                console.log(err)
+                message.reply(phrases_sing.message_not_in_channel);
             }
-        } catch (err) {
-            console.log(err)
-            message.reply(phrases_sing.message_not_in_channel);
-        };
-    }
-    if (message_string.toLowerCase() == 'stop') {
-        message.member.voiceChannel.leave();
-        message.reply("Okay...");
-    }
+            if (song_state == "fetching") {
+                message.reply(phrases_sing.message_unknown_summon);
+            }
+        }
+    });
+    triggers.singing_triggers.stop.forEach(trigger => {
+        if (message_string.substring(0, 25).toLowerCase().includes(trigger) && voiceChannel.connection.status == 0) {
+            message.member.voiceChannel.leave();
+            message.reply(fetchRandomPhrase(phrases_sing.command_feedback.stop));
+        }
+    });
 
     //PHRASE PLAY
 
     //Suicidal
-    switch (message_string) {
-        case "i wanna die":
-            message.reply(phrases_rip.counter_instant_phrases[0]);
-            break;
-        case "can i die":
-            message.reply(phrases_rip.counter_instant_phrases[Math.floor(Math.random() * (phrases_rip.counter_instant_phrases.length))]);
-            break;
-    }
-    if (message_string.includes("kill myself")) {
-        message.reply(phrases_rip.counter_instant_phrases[1]);
-    }
+    triggers.third_person_phrase_triggers.self_death_wish.die.forEach(trigger => {
+        if (message_string.toLowerCase().includes(trigger)) {
+            if (trigger == "can i die") message.reply(phrases_rip.counter_instant_phrases[0]);
+            else message.reply(fetchRandomPhrase(phrases_rip.counter_instant_phrases));
+        }
+    });
+
+    triggers.third_person_phrase_triggers.self_death_wish.kill_self.forEach(trigger => {
+        if (message_string.toLowerCase().includes(trigger)) {
+            message.reply(phrases_rip.counter_instant_phrases[1]);
+        }
+    });
 
     //Random
-    if (message_string.includes("suck") + message_string.includes("dick")) {
-        message.reply('i ain\'t wanna see that in action');
+    if (message_string.includes(triggers.third_person_phrase_triggers.suck_thing)) {
+        message.reply(fetchRandomPhrase(phrases_rip.not_desired.to_look));
     }
-
-    //"Thank you"
-    if (message_string.toLowerCase() == ("thank you megadork") || message_string.toLowerCase() == ("thanks megadork")) {
-        message.reply(phrases_front.asked_thank_you[Math.floor(Math.random() * (phrases_front.asked_thank_you.length))]);
-    }
-
-
 
 
     //MAIN
-    if (message_string.substring(0, 8).toLowerCase() == 'megadork') {
+    triggers.main_trigger.forEach(trigger => {
+        if (message_string.substring(0, 10).toLowerCase().includes(trigger) && !matched_command) {
 
-        switch (true) {
             //HELP
-            case message_string.toLowerCase().includes('what can you summon') || message_string.toLowerCase().includes('what can you do'):
-                message.reply(phrases_front.help_intro);
+            triggers.help_questions.actions.forEach(trigger => {
+                if (message_string.toLowerCase().includes(trigger)) {
+                    matched_command = true;
 
-                //Sing
-                message.reply(phrases_front.help_sing);
+                    message.reply(phrases_front.help_intro);
 
-                //Motivate
-                message.reply(phrases_front.help_phrase_play);
+                    //Sing
+                    message.reply(phrases_front.help_sing);
 
-                break;
+                    //Motivate
+                    message.reply(phrases_front.help_phrase_play);
+                }
+            });
 
-                //SINGING HELP
-            case message_string.toLowerCase().includes('what can you sing'):
-                var song_list = "";
+            //SINGING HELP
+            triggers.help_questions.singing.forEach(trigger => {
+                if (message_string.toLowerCase().includes(trigger)) {
+                    matched_command = true;
 
-                message.reply(phrases_sing.help_intro);
+                    var song_list = "";
 
-                phrases_sing.songs_to_sing.forEach(song => {
-                    if (song.title != "SONG TITLE") {
-                        song_list += `\n ${song.title}`;
-                        if (song.explicit == true) {
-                            song_list += ` [Explicit]`;
+                    message.reply(phrases_sing.help_intro);
+
+                    phrases_sing.songs_to_sing.forEach(song => {
+                        if (song.title != phrases_sing.songs_to_sing[0].title) {
+                            song_list += `\n ${song.title}`;
+                            if (song.explicit == true) {
+                                song_list += phrases_sing.songs_to_sing[0].explicit_text;
+                            }
                         }
-                    }
-                });
-                message.reply(song_list);
+                    });
+                    message.reply(song_list);
+                }
+            });
 
-                break;
+            //PHRASE-PLAY
+            triggers.how_is_bot.forEach(trigger => {
+                if (message_string.toLowerCase().includes(trigger)) {
+                    matched_command = true;
 
-                //PHRASE-PLAY
-            case message_string.toLowerCase().includes("how are you"):
-                message.reply(phrases_rip.asked_how_are_you[Math.floor(Math.random() * (phrases_rip.asked_how_are_you.length + .99))]);
-                break;
-                //COMMANDS
-            case message_string.toLowerCase().includes("sing"):
-                break;
-            case message_string.toLowerCase().includes("kill the noise") || message_string.toLowerCase().includes("stop"):
-                message.reply("Stopping.");
+                    message.reply(fetchRandomPhrase(phrases_rip.asked_how_are_you));
+                }
+            });
+            triggers.threat.kill_self.forEach(trigger => {
+                if (message_string.toLowerCase().includes(trigger)) {
+                    matched_command = true;
 
-                message.member.voiceChannel.leave();
+                    message.reply(fetchRandomPhrase(phrases_rip.asked_death_threat));
+                }
+            });
 
-                break;
-            case message_string.toLowerCase().includes("thank you") || message_string.toLowerCase().includes("thanks"):
-                message.reply(phrases_front.asked_thank_you[Math.floor(Math.random() * (phrases_front.asked_thank_you.length))]);
+            //COMMANDS
 
-                break;
+            triggers.main_trigger.forEach(trigger => {
+                if (message_string == trigger) {
+                    matched_command = true;
 
-                //UHHH
-            case message_string.toLowerCase().length > 8:
-                message.reply(phrases_front.unknown_command[Math.floor(Math.random() * (phrases_front.unknown_command.length))]);
-                break;
-            default:
-                message.reply(phrases_front.name_only_callout);
+                    message.reply(phrases_front.name_only_callout);
+                }
+            });
+
+            //UHHH
+            if (!matched_command) message.reply(fetchRandomPhrase(phrases_front.unknown_command));
         }
 
-    }
+    });
 })
 
 //Greeting
@@ -302,3 +190,7 @@ bot.on('guildMemberAdd', member => {
     // Send the message, mentioning the member
     channel.send(`Welcome to the server, ${member}! \n\n\n\n...\n\n who the f-`);
 });
+
+function fetchRandomPhrase(key) {
+    return key[Math.floor(Math.random() * (key.length))]
+}

@@ -1,9 +1,8 @@
-var Player = require('player')
+const triggers = require(`./bot-knowledge/phrases/triggers/triggers.json`)
+const phrases_sing = require(`./bot-knowledge/phrases/phrases_sing.json`)
 
-// create player instance
-var player = new Player('./xxx.mp3')
 
-// play now and callback when playend
-player.play(function (err, player) {
-    console.log('playend!');
-})
+phrases_sing.songs_to_sing.forEach(thing => {
+    console.log(thing.title);
+});
+console.log(triggers.singing_triggers.forEach())

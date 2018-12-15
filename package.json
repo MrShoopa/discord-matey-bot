@@ -1,0 +1,19 @@
+{
+    "name": "whachama-bot",
+    "version": "1.0.0",
+    "description": "My First Discord Bot",
+    "main": "some-bot.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "shoopa",
+    "license": "ISC",
+    "dependencies": {
+        "discord.js": "^11.4.2",
+        "eslint": "^5.10.0",
+        "ffmpeg": "0.0.4",
+        "opus": "0.0.0",
+        "opusscript": "0.0.6",
+        "winston": "^3.1.0"
+    }
+}

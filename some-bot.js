@@ -2,7 +2,6 @@
 
 //IDs
 const auth = require('./auth.json');
-const client_id = auth.token;
 
 //DEPENDENCIES
 const Discord = require(`discord.js`);
@@ -26,7 +25,7 @@ logger.add(new logger.transports.Console, {
 logger.level = 'debug';
 
 // Initialize Discord Bot
-bot.login(client_id)
+bot.login(auth.token)
 bot.on('ready', function (evt) {
     logger.info('Connected');
     logger.info('Logged in as: ');

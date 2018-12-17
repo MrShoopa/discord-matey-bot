@@ -4,6 +4,13 @@
     "asked_thank_you": ["You got it!", "Pleasure's mine!", "You got it, fuckface :)"],
 
     "help_intro": "Hmmm so far I can... \n",
-    "help_sing": "Sing: Pull out meme songs I know!  \n    \"*Megadork, what can you sing?*\" ",
-    "help_phrase_play": "Phrase-play: Respond to common suicidal thoughts :)  \n     \"*I wanna kill myself\"*"
+    "help_sing": "Sing: Pull out meme songs I know!  \n    \" *Megadork, what can you sing?* \" ",
+    "help_conversation": {
+        "main": "Phrase-play: Respond to some conversation :)  \n     ",
+        "example": {
+            "suicide": "\" *I wanna kill myself* \"",
+            "how_are_you": "\" *megadork, how are you* \"",
+            "threat": "\" *megadork, kill yourself* \""
+        }
+    }
 }

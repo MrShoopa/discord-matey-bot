@@ -36,12 +36,16 @@ bot.on('ready', function (evt) {
 
 //Messaging to bot
 bot.on('message', function (message) {
+    //So bot doesn't respond to itself
+    if (message.author.id == 449625729509097482) return;
+
     var matched_command = false;
 
     var message_string = (message.content).toString();
     var voiceChannel = message.member.voiceChannel;
 
     console.log(`A user said: ${message_string}`);
+
 
     /*
         Music Functionality
@@ -51,7 +55,8 @@ bot.on('message', function (message) {
 
         //Attempt to play song
         if (message_string.substring(0, 15).toLowerCase().includes(trigger)) {
-            matched_command = true;
+            logBotResponse(trigger);
+
             var song_state = "fetching";
 
             try {
@@ -86,6 +91,8 @@ bot.on('message', function (message) {
     //Stop audio
     triggers.singing_triggers.stop.forEach(trigger => {
         if (message_string.substring(0, 25).toLowerCase().includes(trigger) && voiceChannel.connection.status == 0) {
+            logBotResponse(trigger);
+
             message.member.voiceChannel.leave();
             message.reply(fetchRandomPhrase(phrases_sing.command_feedback.stop));
         }
@@ -94,17 +101,20 @@ bot.on('message', function (message) {
     /*
         Phrase play
     */
-
     //Suicidal
     triggers.third_person_phrase_triggers.self_death_wish.die.forEach(trigger => {
         if (message_string.toLowerCase().includes(trigger)) {
-            if (trigger == "can i die") return message.reply(phrases_convo.counter_instant_phrases[0]);
-            else return message.reply(fetchRandomPhrase(phrases_convo.counter_instant_phrases));
+            logBotResponse(trigger);
+
+            if (trigger == "can i die") return message.reply(phrases_convo.counter_suicide_phrases[0]);
+            else return message.reply(fetchRandomPhrase(phrases_convo.counter_suicide_phrases));
         }
     });
     triggers.third_person_phrase_triggers.self_death_wish.kill_self.forEach(trigger => {
         if (message_string.toLowerCase().includes(trigger)) {
-            return message.reply(phrases_convo.counter_instant_phrases[1]);
+            logBotResponse(trigger);
+
+            return message.reply(phrases_convo.counter_suicide_phrases[1]);
         }
     });
     //Random
@@ -116,9 +126,16 @@ bot.on('message', function (message) {
     //When mentioning name afterwards (anytime main_trigger is mentioned)
     triggers.main_trigger.forEach(trigger => {
         if (message_string.toLowerCase().includes(trigger, 1)) {
+
+            //Death threats
             triggers.threat.kill_self.forEach(trigger => {
                 if (message_string.toLowerCase().includes(trigger)) {
-                    return message.reply(fetchRandomPhrase(phrases_convo.asked_death_threat));
+                    logBotResponse(trigger);
+
+                    //FRIEND SPECIFIC :)
+                    if (message.author.username == "MrShoopa") message.reply("joe you a hoe");
+
+                    message.reply(fetchRandomPhrase(phrases_convo.asked_death_threat));
                 }
             });
         }
@@ -133,7 +150,7 @@ bot.on('message', function (message) {
             //HELP
             triggers.help_questions.actions.forEach(trigger => {
                 if (message_string.toLowerCase().includes(trigger)) {
-                    matched_command = true;
+                    logBotResponse(trigger);
 
                     message.reply(phrases_front.help_intro);
 
@@ -141,14 +158,16 @@ bot.on('message', function (message) {
                     message.reply(phrases_front.help_sing);
 
                     //Motivate
-                    message.reply(phrases_front.help_phrase_play);
+                    message.reply((phrases_front.help_conversation.main +
+                        phrases_front.help_conversation.example.threat));
+
                 }
             });
 
             //SINGING HELP
             triggers.help_questions.singing.forEach(trigger => {
                 if (message_string.toLowerCase().includes(trigger)) {
-                    matched_command = true;
+                    logBotResponse(trigger);
 
                     var song_list = "";
 
@@ -169,14 +188,14 @@ bot.on('message', function (message) {
             //PHRASE-PLAY
             triggers.how_is_bot.forEach(trigger => {
                 if (message_string.toLowerCase().includes(trigger)) {
-                    matched_command = true;
+                    logBotResponse(trigger);
 
                     message.reply(fetchRandomPhrase(phrases_convo.asked_how_are_you));
                 }
             });
             triggers.threat.kill_self.forEach(trigger => {
                 if (message_string.toLowerCase().includes(trigger)) {
-                    matched_command = true;
+                    logBotResponse(trigger);
 
                     message.reply(fetchRandomPhrase(phrases_convo.asked_death_threat));
                 }
@@ -186,7 +205,7 @@ bot.on('message', function (message) {
 
             triggers.main_trigger.forEach(trigger => {
                 if (message_string == trigger) {
-                    matched_command = true;
+                    logBotResponse(trigger);
 
                     message.reply(phrases_front.name_only_callout);
                 }
@@ -197,6 +216,12 @@ bot.on('message', function (message) {
         }
 
     });
+
+    function logBotResponse(trigger = "None") {
+        matched_command = true;
+
+        console.log(`Bot did something! TRIGGER: "${trigger}", TRIGGERED_BY: '${message.author.username}', USER_CONTEXT: "${message_string}"`)
+    }
 })
 
 //Greeting
@@ -212,5 +237,3 @@ bot.on('guildMemberAdd', member => {
 function fetchRandomPhrase(key) {
     return key[Math.floor(Math.random() * (key.length))]
 }
-
-//function logBotResponse(trigger = "None", )

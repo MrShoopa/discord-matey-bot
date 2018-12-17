@@ -54,12 +54,13 @@ bot.on('message', function (message) {
     */
     triggers.singing_triggers.play.forEach(trigger => {
         trigger.toLowerCase()
+        var song_state = 'idle'
 
         //Attempt to play song
         if (message_string.substring(0, 15).toLowerCase().includes(trigger)) {
             logBotResponse(trigger)
 
-            var song_state = 'fetching'
+            song_state = 'fetching'
 
             try {
                 phrases_sing.songs_to_sing.forEach(song => {
@@ -79,6 +80,8 @@ bot.on('message', function (message) {
                                 voiceChannel.leave()
                             })
                         })
+                    } else if (message_string.toLowerCase().includes('youtube.com/') || message_string.toLowerCase.includes('youtu.be/')) {
+                        playYouTubeSong()
                     }
                 })
             } catch (err) { //When user is not in voice channel
@@ -88,6 +91,36 @@ bot.on('message', function (message) {
             if (song_state == 'fetching') { //When song is not found
                 message.reply(phrases_sing.message_unknown_summon)
             }
+        }
+
+        function playYouTubeSong(url) {
+            const ytdl = require('ytdl-core')
+
+            const stream = ytdl(url, {
+                filter: 'audioonly'
+            })
+            const streamOptions = {
+                seek: 0,
+                volume: .75
+            }
+
+
+            voiceChannel.join().then(connection => {
+                song_state = 'playing'
+                console.log(`Voice channel connection status: ${voiceChannel.connection.status}`)
+
+                const dispatcher = connection.playStream(stream, streamOptions)
+
+                dispatcher.on('start', () => {
+                    console.log(`Playing song from ${url}.`)
+                    song_state = 'finished'
+                })
+                dispatcher.on('end', () => {
+                    console.log('Song played successfully.')
+                    song_state = 'finished'
+                    voiceChannel.leave()
+                })
+            })
         }
     })
     //Stop audio
@@ -99,6 +132,7 @@ bot.on('message', function (message) {
             message.reply(fetchRandomPhrase(phrases_sing.command_feedback.stop))
         }
     })
+
 
     /*
         Phrase play

@@ -1,5 +1,5 @@
-const triggers = require(`./bot-knowledge/phrases/triggers/triggers.json`)
-const phrases_sing = require(`./bot-knowledge/phrases/phrases_sing.json`)
+const triggers = require(`./bot_knowledge/phrases/triggers/triggers.json`)
+const phrases_sing = require(`./bot_knowledge/phrases/phrases_sing.json`)
 
 
 phrases_sing.songs_to_sing.forEach(thing => {

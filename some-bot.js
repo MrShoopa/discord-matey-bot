@@ -7,11 +7,11 @@ const auth = require('./auth.json');
 const Discord = require(`discord.js`);
 const logger = require('winston');
 
-const phrases_front = require(`./bot-knowledge/phrases/phrases_front.json`);
-const phrases_sing = require(`./bot-knowledge/phrases/phrases_sing.json`)
-const phrases_rip = require(`./bot-knowledge/phrases/phrases_suicidal.json`)
+const phrases_front = require(`./bot_knowledge/phrases/phrases_front.json`);
+const phrases_sing = require(`./bot_knowledge/phrases/phrases_sing.json`)
+const phrases_convo = require(`./bot_knowledge/phrases/phrases_conversational.json`)
 
-const triggers = require(`./bot-knowledge/phrases/triggers/triggers.json`)
+const triggers = require(`./bot_knowledge/phrases/triggers/triggers.json`)
 
 
 //ENTITIES
@@ -34,7 +34,7 @@ bot.on('ready', function (evt) {
     console.log(`I'm alive!`);
 });
 
-//Message bot
+//Messaging to bot
 bot.on('message', function (message) {
     var matched_command = false;
 
@@ -43,15 +43,20 @@ bot.on('message', function (message) {
 
     console.log(`A user said: ${message_string}`);
 
-    //Music Functionality
+    /*
+        Music Functionality
+    */
     triggers.singing_triggers.play.forEach(trigger => {
         trigger.toLowerCase();
+
+        //Attempt to play song
         if (message_string.substring(0, 15).toLowerCase().includes(trigger)) {
             matched_command = true;
             var song_state = "fetching";
 
             try {
                 phrases_sing.songs_to_sing.forEach(song => {
+                    //When song is found
                     if (message_string.toLowerCase().includes(song.title.toLowerCase())) {
                         song_state = "playing";
 
@@ -69,15 +74,16 @@ bot.on('message', function (message) {
                         })
                     }
                 });
-            } catch (err) {
+            } catch (err) { //When user is not in voice channel
                 console.log(err)
                 message.reply(phrases_sing.message_not_in_channel);
             }
-            if (song_state == "fetching") {
+            if (song_state == "fetching") { //When song is not found
                 message.reply(phrases_sing.message_unknown_summon);
             }
         }
     });
+    //Stop audio
     triggers.singing_triggers.stop.forEach(trigger => {
         if (message_string.substring(0, 25).toLowerCase().includes(trigger) && voiceChannel.connection.status == 0) {
             message.member.voiceChannel.leave();
@@ -86,25 +92,25 @@ bot.on('message', function (message) {
     });
 
     /*
-    Phrase play
+        Phrase play
     */
 
     //Suicidal
     triggers.third_person_phrase_triggers.self_death_wish.die.forEach(trigger => {
         if (message_string.toLowerCase().includes(trigger)) {
-            if (trigger == "can i die") return message.reply(phrases_rip.counter_instant_phrases[0]);
-            else return message.reply(fetchRandomPhrase(phrases_rip.counter_instant_phrases));
+            if (trigger == "can i die") return message.reply(phrases_convo.counter_instant_phrases[0]);
+            else return message.reply(fetchRandomPhrase(phrases_convo.counter_instant_phrases));
         }
     });
     triggers.third_person_phrase_triggers.self_death_wish.kill_self.forEach(trigger => {
         if (message_string.toLowerCase().includes(trigger)) {
-            return message.reply(phrases_rip.counter_instant_phrases[1]);
+            return message.reply(phrases_convo.counter_instant_phrases[1]);
         }
     });
     //Random
     if (message_string.includes(triggers.third_person_phrase_triggers.suck_thing[0]) &&
         message_string.includes(triggers.third_person_phrase_triggers.suck_thing[1])) {
-        return message.reply(fetchRandomPhrase(phrases_rip.not_desired.to_look));
+        return message.reply(fetchRandomPhrase(phrases_convo.not_desired.to_look));
     }
 
     //When mentioning name afterwards (anytime main_trigger is mentioned)
@@ -112,7 +118,7 @@ bot.on('message', function (message) {
         if (message_string.toLowerCase().includes(trigger, 1)) {
             triggers.threat.kill_self.forEach(trigger => {
                 if (message_string.toLowerCase().includes(trigger)) {
-                    return message.reply(fetchRandomPhrase(phrases_rip.asked_death_threat));
+                    return message.reply(fetchRandomPhrase(phrases_convo.asked_death_threat));
                 }
             });
         }
@@ -165,14 +171,14 @@ bot.on('message', function (message) {
                 if (message_string.toLowerCase().includes(trigger)) {
                     matched_command = true;
 
-                    message.reply(fetchRandomPhrase(phrases_rip.asked_how_are_you));
+                    message.reply(fetchRandomPhrase(phrases_convo.asked_how_are_you));
                 }
             });
             triggers.threat.kill_self.forEach(trigger => {
                 if (message_string.toLowerCase().includes(trigger)) {
                     matched_command = true;
 
-                    message.reply(fetchRandomPhrase(phrases_rip.asked_death_threat));
+                    message.reply(fetchRandomPhrase(phrases_convo.asked_death_threat));
                 }
             });
 

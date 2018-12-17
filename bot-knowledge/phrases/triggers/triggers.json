@@ -1,26 +1,18 @@
 {
     "main_trigger": [
         "megadork",
-        "cyberplop"
+        "cyberplop",
+        "megadick",
+        "megafaggot"
     ],
     "help_questions": {
         "actions": ["what can you summon", "what can you do", "help"],
         "singing": ["what can you sing"]
     },
-
-    "singing_triggers": {
-        "play": [
-            "i summon",
-            "megadork sing",
-            "megadork play"
-        ],
-        "stop": [
-            "megadork kill the noise",
-            "stop"
-        ]
-    },
     "third_person_phrase_triggers": {
-        "suck_thing": "suck dick",
+        "suck_thing": [
+            "suck", "dick"
+        ],
         "self_death_wish": {
             "die": ["i wanna die", "can i die"],
             "kill_self": ["kill myself"]
@@ -36,8 +28,23 @@
             "kill yourself",
             "go die",
             "you're worthless",
-            "eat shit"
+            "eat shit",
+            "fuck you",
+            "you suck",
+            "sucks dick"
         ]
     },
-    "how_is_bot": ["how are you"]
+    "how_is_bot": ["how are you"],
+
+    "singing_triggers": {
+        "play": [
+            "i summon",
+            "megadork sing",
+            "megadork play"
+        ],
+        "stop": [
+            "megadork kill the noise",
+            "stop"
+        ]
+    }
 }

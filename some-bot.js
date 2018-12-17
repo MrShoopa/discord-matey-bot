@@ -85,29 +85,42 @@ bot.on('message', function (message) {
         }
     });
 
-    //PHRASE PLAY
+    /*
+    Phrase play
+    */
 
     //Suicidal
     triggers.third_person_phrase_triggers.self_death_wish.die.forEach(trigger => {
         if (message_string.toLowerCase().includes(trigger)) {
-            if (trigger == "can i die") message.reply(phrases_rip.counter_instant_phrases[0]);
-            else message.reply(fetchRandomPhrase(phrases_rip.counter_instant_phrases));
+            if (trigger == "can i die") return message.reply(phrases_rip.counter_instant_phrases[0]);
+            else return message.reply(fetchRandomPhrase(phrases_rip.counter_instant_phrases));
         }
     });
-
     triggers.third_person_phrase_triggers.self_death_wish.kill_self.forEach(trigger => {
         if (message_string.toLowerCase().includes(trigger)) {
-            message.reply(phrases_rip.counter_instant_phrases[1]);
+            return message.reply(phrases_rip.counter_instant_phrases[1]);
+        }
+    });
+    //Random
+    if (message_string.includes(triggers.third_person_phrase_triggers.suck_thing[0]) &&
+        message_string.includes(triggers.third_person_phrase_triggers.suck_thing[1])) {
+        return message.reply(fetchRandomPhrase(phrases_rip.not_desired.to_look));
+    }
+
+    //When mentioning name afterwards (anytime main_trigger is mentioned)
+    triggers.main_trigger.forEach(trigger => {
+        if (message_string.toLowerCase().includes(trigger, 1)) {
+            triggers.threat.kill_self.forEach(trigger => {
+                if (message_string.toLowerCase().includes(trigger)) {
+                    return message.reply(fetchRandomPhrase(phrases_rip.asked_death_threat));
+                }
+            });
         }
     });
 
-    //Random
-    if (message_string.includes(triggers.third_person_phrase_triggers.suck_thing)) {
-        message.reply(fetchRandomPhrase(phrases_rip.not_desired.to_look));
-    }
 
 
-    //MAIN
+    //MAIN (When started with "Megadork", for example)
     triggers.main_trigger.forEach(trigger => {
         if (message_string.substring(0, 10).toLowerCase().includes(trigger) && !matched_command) {
 
@@ -193,3 +206,5 @@ bot.on('guildMemberAdd', member => {
 function fetchRandomPhrase(key) {
     return key[Math.floor(Math.random() * (key.length))]
 }
+
+//function logBotResponse(trigger = "None", )

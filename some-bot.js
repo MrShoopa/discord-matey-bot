@@ -136,6 +136,9 @@ bot.on('message', function (message) {
 
                     //FRIEND SPECIFIC :)
                     if (message.author.username == 'MrShoopa') message.reply('joe you a hoe')
+                    if (message.author.username == 'The King of Bling') message.reply('nick ya dick')
+                    if (message.author.username == 'Vitalion') message.reply('mitch ya snitch')
+                    if (message.author.username == 'Jaygoo') message.reply('ur dog gay')
 
                     message.reply(fetchRandomPhrase(phrases_convo.asked_death_threat))
                 }

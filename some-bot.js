@@ -107,13 +107,27 @@ bot.on('message', function (message) {
                 logBotResponse(trigger)
                 song_state = 'playing'
 
-                const ytdl = require('ytdl-core')
-                const stream = ytdl(url.toString(), {
-                    filter: 'audioonly'
-                })
-                const streamOptions = {
-                    seek: 0,
-                    volume: .75
+                var stream
+                var streamOptions
+
+                if (url.includes('yout')) {
+                    const ytdl = require('ytdl-core')
+                    const stream = ytdl(url.toString(), {
+                        filter: 'audioonly'
+                    })
+                    const streamOptions = {
+                        seek: 0,
+                        volume: .75
+                    }
+                } else if (url.includes('soundcloud')) {
+                    const scAudio = require('soundcloud-audio')
+                    const stream = scAudio(url.toString(), {
+                        filter: 'audioonly'
+                    })
+                    const streamOptions = {
+                        seek: 0,
+                        volume: .75
+                    }
                 }
 
                 voiceChannel.join().then(connection => {

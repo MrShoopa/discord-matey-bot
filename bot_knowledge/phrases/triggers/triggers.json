@@ -5,6 +5,9 @@
         "megadick",
         "megafaggot"
     ],
+    "url_trigger": {
+        "any": "."
+    },
     "help_questions": {
         "actions": ["what can you summon", "what can you do", "help"],
         "singing": ["what can you sing"]

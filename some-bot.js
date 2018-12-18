@@ -54,31 +54,22 @@ bot.on('message', function (message) {
     */
     triggers.singing_triggers.play.forEach(trigger => {
         trigger.toLowerCase()
+        var song_state = 'idle'
 
         //Attempt to play song
         if (message_string.substring(0, 15).toLowerCase().includes(trigger)) {
-            logBotResponse(trigger)
-
-            var song_state = 'fetching'
+            song_state = 'fetching'
 
             try {
                 phrases_sing.songs_to_sing.forEach(song => {
-                    //When song is found
                     if (message_string.toLowerCase().includes(song.title.toLowerCase())) {
-                        song_state = 'playing'
+                        //When song from local files is found
+                        playAudioFromFiles(song)
+                    } else if (message_string.toLowerCase().includes(triggers.url_trigger.any)) {
+                        //When song from URL is found
+                        var url_string = message_string.split(' ')
 
-                        voiceChannel.join().then(connection => {
-                            console.log(`Voice channel connection status: ${voiceChannel.connection.status}`)
-                            const dispatcher = connection.playFile(song.file)
-                            message.reply(song.play_phrase)
-
-
-                            dispatcher.on('end', () => {
-                                console.log('Song played successfully.')
-                                song_state = 'finished'
-                                voiceChannel.leave()
-                            })
-                        })
+                        playAudioFromURL(url_string[url_string.length - 1])
                     }
                 })
             } catch (err) { //When user is not in voice channel
@@ -89,16 +80,90 @@ bot.on('message', function (message) {
                 message.reply(phrases_sing.message_unknown_summon)
             }
         }
+
+        function playAudioFromFiles(file) {
+            if (!matched_command) {
+                logBotResponse(trigger)
+                song_state = 'playing'
+
+                voiceChannel.join().then(connection => {
+                    console.log(`Voice channel connection status:
+                        ${voiceChannel.connection.status}`)
+                    const dispatcher = connection.playFile(file)
+                    message.reply(file.play_phrase)
+
+
+                    dispatcher.on('end', () => {
+                        console.log('Song played successfully.')
+                        song_state = 'finished'
+                        voiceChannel.leave()
+                    })
+                })
+            }
+        }
+
+        function playAudioFromURL(url) {
+            if (!matched_command) {
+                logBotResponse(trigger)
+                song_state = 'playing'
+
+                var stream
+                var streamOptions = {
+                    seek: 0,
+                    volume: .75
+                }
+
+                if (url.includes('yout')) {
+                    const ytdl = require('ytdl-core')
+                    stream = ytdl(url.toString(), {
+                        filter: 'audioonly'
+                    })
+                } else if (url.includes('soundcloud')) {
+                    return message.reply('SoundCloud support coming sometime later. :)')
+
+                    /*
+                    const SC_CLIENT_ID = 'client_id=b45b1aa10f1ac2941910a7f0d10f8e28'
+                    const scAudio = require('soundcloud-audio')
+
+                    stream = new scAudio(SC_CLIENT_ID)
+                    stream = stream.play({
+                        streamUrl: url.toString()
+                    })
+                    */
+                }
+
+                voiceChannel.join().then(connection => {
+                    song_state = 'playing'
+                    console.log(`Voice channel connection status: 
+                        ${voiceChannel.connection.status}`)
+
+                    const dispatcher =
+                        connection.playStream(stream, streamOptions)
+
+                    dispatcher.on('start', () => {
+                        console.log(`Playing song from ${url}.`)
+                        song_state = 'finished'
+                    })
+                    dispatcher.on('end', () => {
+                        console.log('Song played successfully.')
+                        song_state = 'finished'
+                        voiceChannel.leave()
+                    })
+                })
+            }
+        }
     })
     //Stop audio
     triggers.singing_triggers.stop.forEach(trigger => {
-        if (message_string.substring(0, 25).toLowerCase().includes(trigger) && voiceChannel.connection.status == 0) {
+        if (message_string.substring(0, 25).toLowerCase().includes(trigger) &&
+            voiceChannel.connection.status == 0) {
             logBotResponse(trigger)
 
             message.member.voiceChannel.leave()
             message.reply(fetchRandomPhrase(phrases_sing.command_feedback.stop))
         }
     })
+
 
     /*
         Phrase play
@@ -150,7 +215,8 @@ bot.on('message', function (message) {
 
     //MAIN (When started with "Megadork", for example)
     triggers.main_trigger.forEach(trigger => {
-        if (message_string.substring(0, 10).toLowerCase().includes(trigger) && !matched_command) {
+        if (message_string.substring(0, 10).toLowerCase().includes(trigger) &&
+            !matched_command) {
 
             //HELP
             triggers.help_questions.actions.forEach(trigger => {
@@ -225,7 +291,9 @@ bot.on('message', function (message) {
     function logBotResponse(trigger = 'None') {
         matched_command = true
 
-        console.log(`Bot did something! TRIGGER: "${trigger}", TRIGGERED_BY: '${message.author.username}', USER_CONTEXT: "${message_string}"`)
+        console.log(`Bot did something! TRIGGER: "${trigger}",
+          TRIGGERED_BY: '${message.author.username}',
+          USER_CONTEXT: "${message_string}"`)
     }
 })
 

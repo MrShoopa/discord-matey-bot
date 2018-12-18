@@ -108,26 +108,28 @@ bot.on('message', function (message) {
                 song_state = 'playing'
 
                 var stream
-                var streamOptions
+                var streamOptions = {
+                    seek: 0,
+                    volume: .75
+                }
 
                 if (url.includes('yout')) {
                     const ytdl = require('ytdl-core')
-                    const stream = ytdl(url.toString(), {
+                    stream = ytdl(url.toString(), {
                         filter: 'audioonly'
                     })
-                    const streamOptions = {
-                        seek: 0,
-                        volume: .75
-                    }
                 } else if (url.includes('soundcloud')) {
+                    return message.reply('SoundCloud support coming sometime later. :)')
+
+                    /*
+                    const SC_CLIENT_ID = 'client_id=b45b1aa10f1ac2941910a7f0d10f8e28'
                     const scAudio = require('soundcloud-audio')
-                    const stream = scAudio(url.toString(), {
-                        filter: 'audioonly'
+
+                    stream = new scAudio(SC_CLIENT_ID)
+                    stream = stream.play({
+                        streamUrl: url.toString()
                     })
-                    const streamOptions = {
-                        seek: 0,
-                        volume: .75
-                    }
+                    */
                 }
 
                 voiceChannel.join().then(connection => {

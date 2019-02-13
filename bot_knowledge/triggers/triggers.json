@@ -49,5 +49,24 @@
             "megadork kill the noise",
             "stop"
         ]
+    },
+
+    "server_mod_triggers": {
+        "set_restricted_role": [
+            "megadork banish",
+            "megadork cage"
+        ],
+        "unset_restricted_role": [
+            "megadork unbanish",
+            "megadork uncage",
+            "megadork revive"
+        ],
+        "get_roles": [
+            "megadork whats my role",
+            "megadork what are my roles",
+            "megadork what's my role",
+            "megadork what role am I"
+        ]
     }
+
 }

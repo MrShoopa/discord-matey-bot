@@ -2,6 +2,12 @@
 
 /* eslint-disable no-console, no-unused-vars, indent */
 
+//  Server-Specific settings    (INCLUDE YOUR SERVER'S INFO WHERE APPLICABLE)
+var restricted_role_name = 'sKrUb!!! 😅👌🔥👈'
+
+
+//  ----- Constant variables -----
+
 //IDs
 const auth = require('./auth.json')
 
@@ -12,8 +18,11 @@ const logger = require('winston')
 const phrases_front = require('./bot_knowledge/phrases/phrases_front.json')
 const phrases_sing = require('./bot_knowledge/phrases/phrases_sing.json')
 const phrases_convo = require('./bot_knowledge/phrases/phrases_conversational.json')
+const phrases_server_mod = require('./bot_knowledge/phrases/phrases_server_mod.json')
 
-const triggers = require('./bot_knowledge/phrases/triggers/triggers.json')
+const triggers = require('./bot_knowledge/triggers/triggers.json')
+
+//  ----- End -----
 
 
 //ENTITIES
@@ -27,22 +36,35 @@ logger.add(new logger.transports.Console, {
 logger.level = 'debug'
 
 // Initialize Discord Bot
+console.log('Initializing bot...')
 bot.login(auth.token)
 bot.on('ready', function (evt) {
-    logger.info('Connected')
-    logger.info('Logged in as: ')
-    logger.info(bot.username + ' - (' + bot.id + ')')
+    logger.info('Logged in as: ' + (bot.user.username + ' - (' + bot.user.id + ')'))
 
     console.log('I\'m alive!')
+
 })
 
 //Messaging to bot
 bot.on('message', function (message) {
+    const user = message.author.id
+
+    //  Find restricted role ID
+    var restricted_role_id = null
+
+    message.guild.roles.forEach(function (role) {
+        //console.log(role.name)
+
+        if (role.name == restricted_role_name) restricted_role_id = role.id
+
+    })
+
     //So bot doesn't respond to itself
-    if (message.author.id == 449625729509097482) return
+    if (user == 449625729509097482) return
 
     var matched_command = false
 
+    //  Grabbing properties from user input
     var message_string = (message.content).toString()
     var voiceChannel = message.member.voiceChannel
 
@@ -62,10 +84,10 @@ bot.on('message', function (message) {
 
             try {
                 phrases_sing.songs_to_sing.forEach(song => {
-                    if (message_string.toLowerCase().includes(song.title.toLowerCase())) {
+                    if (message_string.toLowerCase().includes(song.title.toLowerCase()) && !matched_command) {
                         //When song from local files is found
                         playAudioFromFiles(song)
-                    } else if (message_string.toLowerCase().includes(triggers.url_trigger.any)) {
+                    } else if (message_string.toLowerCase().includes(triggers.url_trigger.any) && !matched_command) {
                         //When song from URL is found
                         var url_string = message_string.split(' ')
 
@@ -79,6 +101,9 @@ bot.on('message', function (message) {
             if (song_state == 'fetching') { //When song is not found
                 message.reply(phrases_sing.message_unknown_summon)
             }
+
+            // FINISHED
+            matched_command = true
         }
 
         function playAudioFromFiles(file) {
@@ -100,10 +125,15 @@ bot.on('message', function (message) {
                     })
                 })
             }
+
+            // FINISHED
+            matched_command = true
         }
 
         function playAudioFromURL(url) {
+
             if (!matched_command) {
+                console.log('yo')
                 logBotResponse(trigger)
                 song_state = 'playing'
 
@@ -121,6 +151,7 @@ bot.on('message', function (message) {
                 } else if (url.includes('soundcloud')) {
                     return message.reply('SoundCloud support coming sometime later. :)')
 
+                    //TODO: SoundCloud support
                     /*
                     const SC_CLIENT_ID = 'client_id=b45b1aa10f1ac2941910a7f0d10f8e28'
                     const scAudio = require('soundcloud-audio')
@@ -150,8 +181,12 @@ bot.on('message', function (message) {
                         voiceChannel.leave()
                     })
                 })
+
+                // FINISHED
+                matched_command = true
             }
         }
+
     })
     //Stop audio
     triggers.singing_triggers.stop.forEach(trigger => {
@@ -162,6 +197,46 @@ bot.on('message', function (message) {
             message.member.voiceChannel.leave()
             message.reply(fetchRandomPhrase(phrases_sing.command_feedback.stop))
         }
+
+    })
+
+    /*  
+        Server-Management
+    */
+    //  Set Restricted Role
+    triggers.server_mod_triggers.set_restricted_role.forEach(trigger => {
+        if (message_string.toLowerCase().includes(trigger)) {
+            logBotResponse(trigger)
+
+            message.mentions.members.forEach(function (member) {
+                message.reply(`${fetchRandomPhrase(phrases_server_mod.restricted_role_set)}, ${member.displayName}`)
+                member.addRole(restricted_role_id)
+                    .then(console.log(`Adding ${member.displayName} to the role: ${restricted_role_id}`))
+                    .catch(console.error)
+                //.catch(console.log(`Failed to add ${member.displayName} to the role: ${restricted_role_id}`))
+            })
+
+        }
+
+        // FINISHED
+        matched_command = true
+    })
+    // Unset Restricted Role
+    triggers.server_mod_triggers.unset_restricted_role.forEach(trigger => {
+        if (message_string.toLowerCase().includes(trigger)) {
+            logBotResponse(trigger)
+
+            message.mentions.members.forEach(function (member) {
+                message.reply(`${fetchRandomPhrase(phrases_server_mod.restricted_role_unset)}, ${member.displayName}`)
+                member.removeRole(restricted_role_id)
+                    .then(console.log(`Removing ${member.displayName} from the role: ${restricted_role_id}`))
+                    .catch(console.error)
+            })
+
+        }
+
+        // FINISHED
+        matched_command = true
     })
 
 
@@ -232,6 +307,8 @@ bot.on('message', function (message) {
                     message.reply((phrases_front.help_conversation.main +
                         phrases_front.help_conversation.example.threat))
 
+
+                    //TODO: Banish to the realm function
                 }
             })
 

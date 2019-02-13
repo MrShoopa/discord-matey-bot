@@ -84,10 +84,10 @@ bot.on('message', function (message) {
 
             try {
                 phrases_sing.songs_to_sing.forEach(song => {
-                    if (message_string.toLowerCase().includes(song.title.toLowerCase())) {
+                    if (message_string.toLowerCase().includes(song.title.toLowerCase()) && !matched_command) {
                         //When song from local files is found
                         playAudioFromFiles(song)
-                    } else if (message_string.toLowerCase().includes(triggers.url_trigger.any)) {
+                    } else if (message_string.toLowerCase().includes(triggers.url_trigger.any) && !matched_command) {
                         //When song from URL is found
                         var url_string = message_string.split(' ')
 
@@ -101,6 +101,9 @@ bot.on('message', function (message) {
             if (song_state == 'fetching') { //When song is not found
                 message.reply(phrases_sing.message_unknown_summon)
             }
+
+            // FINISHED
+            matched_command = true
         }
 
         function playAudioFromFiles(file) {
@@ -122,10 +125,15 @@ bot.on('message', function (message) {
                     })
                 })
             }
+
+            // FINISHED
+            matched_command = true
         }
 
         function playAudioFromURL(url) {
+
             if (!matched_command) {
+                console.log('yo')
                 logBotResponse(trigger)
                 song_state = 'playing'
 
@@ -173,11 +181,12 @@ bot.on('message', function (message) {
                         voiceChannel.leave()
                     })
                 })
+
+                // FINISHED
+                matched_command = true
             }
         }
 
-        // FINISHED
-        matched_command = true
     })
     //Stop audio
     triggers.singing_triggers.stop.forEach(trigger => {
@@ -189,8 +198,6 @@ bot.on('message', function (message) {
             message.reply(fetchRandomPhrase(phrases_sing.command_feedback.stop))
         }
 
-        // FINISHED
-        matched_command = true
     })
 
     /*  

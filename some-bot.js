@@ -36,11 +36,10 @@ logger.add(new logger.transports.Console, {
 logger.level = 'debug'
 
 // Initialize Discord Bot
+console.log('Initializing bot...')
 bot.login(auth.token)
 bot.on('ready', function (evt) {
-    logger.info('Connected')
-    logger.info('Logged in as: ')
-    logger.info(bot.username + ' - (' + bot.id + ')')
+    logger.info('Logged in as: ' + (bot.user.username + ' - (' + bot.user.id + ')'))
 
     console.log('I\'m alive!')
 

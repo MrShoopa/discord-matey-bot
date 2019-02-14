@@ -95,10 +95,11 @@ bot.on('message', function (message) {
                     }
                 })
             } catch (err) { //When user is not in voice channel
-                console.log(err)
+                //console.log(err)
+                console.log('Warning: User is not in voice channel. Song wasn\'t played.')
                 message.reply(phrases_sing.message_not_in_channel)
             }
-            if (song_state == 'fetching') { //When song is not found
+            if (song_state == 'fetching' && !matched_command) { //When song is not found
                 message.reply(phrases_sing.message_unknown_summon)
             }
 
@@ -106,7 +107,7 @@ bot.on('message', function (message) {
             matched_command = true
         }
 
-        function playAudioFromFiles(file) {
+        function playAudioFromFiles(song) {
             if (!matched_command) {
                 logBotResponse(trigger)
                 song_state = 'playing'
@@ -114,8 +115,8 @@ bot.on('message', function (message) {
                 voiceChannel.join().then(connection => {
                     console.log(`Voice channel connection status:
                         ${voiceChannel.connection.status}`)
-                    const dispatcher = connection.playFile(file)
-                    message.reply(file.play_phrase)
+                    const dispatcher = connection.playFile(song.file)
+                    message.reply(song.play_phrase)
 
 
                     dispatcher.on('end', () => {
@@ -124,10 +125,11 @@ bot.on('message', function (message) {
                         voiceChannel.leave()
                     })
                 })
+
+                // FINISHED
+                matched_command = true
             }
 
-            // FINISHED
-            matched_command = true
         }
 
         function playAudioFromURL(url) {
@@ -190,8 +192,9 @@ bot.on('message', function (message) {
     })
     //Stop audio
     triggers.singing_triggers.stop.forEach(trigger => {
+
         if (message_string.substring(0, 25).toLowerCase().includes(trigger) &&
-            voiceChannel.connection.status == 0) {
+            voiceChannel != null && voiceChannel.connection.status == 0) {
             logBotResponse(trigger)
 
             message.member.voiceChannel.leave()
@@ -368,9 +371,10 @@ bot.on('message', function (message) {
     function logBotResponse(trigger = 'None') {
         matched_command = true
 
-        console.log(`Bot did something! TRIGGER: "${trigger}",
-          TRIGGERED_BY: '${message.author.username}',
-          USER_CONTEXT: "${message_string}"`)
+        console.log(`Bot did something!
+            TRIGGER: "${trigger}",
+            TRIGGERED_BY: '${message.author.username}',
+            USER_CONTEXT: "${message_string}"`)
     }
 })
 

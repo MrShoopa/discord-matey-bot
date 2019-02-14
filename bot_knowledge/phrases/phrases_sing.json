@@ -59,5 +59,9 @@
         "file": "./bot_knowledge/audio/meme-stash/sad-violin.mp3",
         "title": "Sad Violin",
         "play_phrase": "2sad4me"
+    }, {
+        "file": "./bot_knowledge/audio/meme-stash/f-bees.mp3",
+        "title": "screw bees",
+        "play_phrase": "b e e s"
     }]
 }

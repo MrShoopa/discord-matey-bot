@@ -95,10 +95,11 @@ bot.on('message', function (message) {
                     }
                 })
             } catch (err) { //When user is not in voice channel
-                console.log(err)
+                //console.log(err)
+                console.log('Warning: User is not in voice channel. Song wasn\'t played.')
                 message.reply(phrases_sing.message_not_in_channel)
             }
-            if (song_state == 'fetching') { //When song is not found
+            if (song_state == 'fetching' && !matched_command) { //When song is not found
                 message.reply(phrases_sing.message_unknown_summon)
             }
 
@@ -106,7 +107,7 @@ bot.on('message', function (message) {
             matched_command = true
         }
 
-        function playAudioFromFiles(file) {
+        function playAudioFromFiles(song) {
             if (!matched_command) {
                 logBotResponse(trigger)
                 song_state = 'playing'
@@ -114,8 +115,8 @@ bot.on('message', function (message) {
                 voiceChannel.join().then(connection => {
                     console.log(`Voice channel connection status:
                         ${voiceChannel.connection.status}`)
-                    const dispatcher = connection.playFile(file)
-                    message.reply(file.play_phrase)
+                    const dispatcher = connection.playFile(song.file)
+                    message.reply(song.play_phrase)
 
 
                     dispatcher.on('end', () => {
@@ -124,10 +125,11 @@ bot.on('message', function (message) {
                         voiceChannel.leave()
                     })
                 })
+
+                // FINISHED
+                matched_command = true
             }
 
-            // FINISHED
-            matched_command = true
         }
 
         function playAudioFromURL(url) {
@@ -180,18 +182,19 @@ bot.on('message', function (message) {
                         song_state = 'finished'
                         voiceChannel.leave()
                     })
+                    // FINISHED
+                    matched_command = true
                 })
 
-                // FINISHED
-                matched_command = true
             }
         }
 
     })
     //Stop audio
     triggers.singing_triggers.stop.forEach(trigger => {
+
         if (message_string.substring(0, 25).toLowerCase().includes(trigger) &&
-            voiceChannel.connection.status == 0) {
+            voiceChannel != null && voiceChannel.connection.status == 0) {
             logBotResponse(trigger)
 
             message.member.voiceChannel.leave()
@@ -216,10 +219,10 @@ bot.on('message', function (message) {
                 //.catch(console.log(`Failed to add ${member.displayName} to the role: ${restricted_role_id}`))
             })
 
+            // FINISHED
+            matched_command = true
         }
 
-        // FINISHED
-        matched_command = true
     })
     // Unset Restricted Role
     triggers.server_mod_triggers.unset_restricted_role.forEach(trigger => {
@@ -233,10 +236,10 @@ bot.on('message', function (message) {
                     .catch(console.error)
             })
 
+            // FINISHED
+            matched_command = true
         }
 
-        // FINISHED
-        matched_command = true
     })
 
 
@@ -264,6 +267,17 @@ bot.on('message', function (message) {
         message_string.includes(triggers.third_person_phrase_triggers.suck_thing[1])) {
         return message.reply(fetchRandomPhrase(phrases_convo.not_desired.to_look))
     }
+
+    //Thank you
+    triggers.thank_you_triggers.forEach(trigger => {
+        if (message_string.toLowerCase().includes(trigger)) {
+            logBotResponse(trigger)
+
+            return message.reply(fetchRandomPhrase(phrases_front.asked_thank_you))
+        }
+    })
+
+    //TODO: Add Thank you messages
 
     //When mentioning name afterwards (anytime main_trigger is mentioned)
     triggers.main_trigger.forEach(trigger => {
@@ -307,8 +321,9 @@ bot.on('message', function (message) {
                     message.reply((phrases_front.help_conversation.main +
                         phrases_front.help_conversation.example.threat))
 
+                    //Secret functions
+                    message.reply((phrases_front.help_secret.main))
 
-                    //TODO: Banish to the realm function
                 }
             })
 
@@ -368,9 +383,10 @@ bot.on('message', function (message) {
     function logBotResponse(trigger = 'None') {
         matched_command = true
 
-        console.log(`Bot did something! TRIGGER: "${trigger}",
-          TRIGGERED_BY: '${message.author.username}',
-          USER_CONTEXT: "${message_string}"`)
+        console.log(`Bot did something!
+            TRIGGER: "${trigger}",
+            TRIGGERED_BY: '${message.author.username}',
+            USER_CONTEXT: "${message_string}"`)
     }
 })
 

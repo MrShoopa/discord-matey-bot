@@ -59,5 +59,13 @@
         "file": "./bot_knowledge/audio/meme-stash/sad-violin.mp3",
         "title": "Sad Violin",
         "play_phrase": "2sad4me"
+    }, {
+        "file": "./bot_knowledge/audio/meme-stash/f-bees.mp3",
+        "title": "bees",
+        "play_phrase": "b e e s"
+    }, {
+        "file": "./bot_knowledge/audio/meme-stash/jellyfish-jam.mp3",
+        "title": "jellyfish jam",
+        "play_phrase": "bzzzz!"
     }]
 }

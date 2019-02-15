@@ -182,10 +182,10 @@ bot.on('message', function (message) {
                         song_state = 'finished'
                         voiceChannel.leave()
                     })
+                    // FINISHED
+                    matched_command = true
                 })
 
-                // FINISHED
-                matched_command = true
             }
         }
 
@@ -219,10 +219,10 @@ bot.on('message', function (message) {
                 //.catch(console.log(`Failed to add ${member.displayName} to the role: ${restricted_role_id}`))
             })
 
+            // FINISHED
+            matched_command = true
         }
 
-        // FINISHED
-        matched_command = true
     })
     // Unset Restricted Role
     triggers.server_mod_triggers.unset_restricted_role.forEach(trigger => {
@@ -236,10 +236,10 @@ bot.on('message', function (message) {
                     .catch(console.error)
             })
 
+            // FINISHED
+            matched_command = true
         }
 
-        // FINISHED
-        matched_command = true
     })
 
 
@@ -267,6 +267,17 @@ bot.on('message', function (message) {
         message_string.includes(triggers.third_person_phrase_triggers.suck_thing[1])) {
         return message.reply(fetchRandomPhrase(phrases_convo.not_desired.to_look))
     }
+
+    //Thank you
+    triggers.thank_you_triggers.forEach(trigger => {
+        if (message_string.toLowerCase().includes(trigger)) {
+            logBotResponse(trigger)
+
+            return message.reply(fetchRandomPhrase(phrases_front.asked_thank_you))
+        }
+    })
+
+    //TODO: Add Thank you messages
 
     //When mentioning name afterwards (anytime main_trigger is mentioned)
     triggers.main_trigger.forEach(trigger => {
@@ -310,8 +321,9 @@ bot.on('message', function (message) {
                     message.reply((phrases_front.help_conversation.main +
                         phrases_front.help_conversation.example.threat))
 
+                    //Secret functions
+                    message.reply((phrases_front.help_secret.main))
 
-                    //TODO: Banish to the realm function
                 }
             })
 

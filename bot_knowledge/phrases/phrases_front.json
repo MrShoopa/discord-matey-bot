@@ -12,5 +12,8 @@
             "how_are_you": "\" *megadork, how are you* \"",
             "threat": "\" *megadork, kill yourself* \""
         }
+    },
+    "help_secret": {
+        "main": "I also have some top-secret commands my creator has made for me. :)     "
     }
 }

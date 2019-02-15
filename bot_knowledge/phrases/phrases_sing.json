@@ -63,5 +63,9 @@
         "file": "./bot_knowledge/audio/meme-stash/f-bees.mp3",
         "title": "bees",
         "play_phrase": "b e e s"
+    }, {
+        "file": "./bot_knowledge/audio/meme-stash/jellyfish-jam.mp3",
+        "title": "jellyfish jam",
+        "play_phrase": "bzzzz!"
     }]
 }

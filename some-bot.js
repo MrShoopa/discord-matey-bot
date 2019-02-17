@@ -81,8 +81,10 @@ bot.on('message', function (message) {
     console.log(`A user said: ${message_string}`)
 
 
+    //      F U N C T I O N A L I T Y
+
     /*
-        Music Functionality
+       ---- Music Functionality ----
     */
     triggers.singing_triggers.play.forEach(trigger => {
         trigger.toLowerCase()
@@ -214,9 +216,12 @@ bot.on('message', function (message) {
         }
 
     })
+    /*
+        ----    END     ----
+    */
 
     /*  
-        Image-Fetching (Google JS API)
+        ----    Image-Fetching (Google JS API)  ----
     */
     //  Find random image (from Google Images)
     triggers.image_search_triggers.random_image.forEach(trigger => {
@@ -276,10 +281,13 @@ bot.on('message', function (message) {
             matched_command = true
         }
     })
+    /*
+            ----    END     ----
+    */
 
 
     /*  
-        Server-Management
+        ----    Server-Management      ----
     */
     //  Set Restricted Role
     triggers.server_mod_triggers.set_restricted_role.forEach(trigger => {
@@ -316,15 +324,19 @@ bot.on('message', function (message) {
         }
 
     })
+    /*
+        ----    END     ----
+    */
 
 
     /*
-        Phrase play
+        ----    Phrase play     ----
     */
     //Suicidal
     triggers.third_person_phrase_triggers.self_death_wish.die.forEach(trigger => {
         if (message_string.toLowerCase().includes(trigger)) {
             logBotResponse(trigger)
+            matched_command = true
 
             if (trigger == 'can i die') return message.reply(phrases_convo.counter_suicide_phrases[0])
             else return message.reply(fetchRandomPhrase(phrases_convo.counter_suicide_phrases))
@@ -333,25 +345,45 @@ bot.on('message', function (message) {
     triggers.third_person_phrase_triggers.self_death_wish.kill_self.forEach(trigger => {
         if (message_string.toLowerCase().includes(trigger)) {
             logBotResponse(trigger)
+            matched_command = true
 
             return message.reply(phrases_convo.counter_suicide_phrases[1])
         }
     })
-    //Random
+
+    // "S. A. D."
     if (message_string.includes(triggers.third_person_phrase_triggers.suck_thing[0]) &&
         message_string.includes(triggers.third_person_phrase_triggers.suck_thing[1])) {
+        matched_command = true
         return message.reply(fetchRandomPhrase(phrases_convo.not_desired.to_look))
     }
 
-    //Thank you
+    //  Send Nudes (Per request of a friend :P)
+    triggers.send_nude_triggers.forEach(trigger => {
+        if (message_string.toLowerCase().includes(trigger)) {
+            logBotResponse(trigger)
+            matched_command = true
+            console.log(matched_command)
+
+            return message.reply(fetchRandomPhrase(phrases_convo.asked_to_send_nudes))
+        }
+    })
+
+    //  Thank you
     triggers.thank_you_triggers.forEach(trigger => {
         if (message_string.toLowerCase().includes(trigger)) {
             logBotResponse(trigger)
+            matched_command = true
 
             return message.reply(fetchRandomPhrase(phrases_front.asked_thank_you))
         }
     })
+    /*
+        ----    END     ----
+    */
 
+    //TODO: Fix this not working orrrrr
+    // ---- DEFAULT CASE ----
     //When mentioning name afterwards (anytime main_trigger is mentioned)
     triggers.main_trigger.forEach(trigger => {
         if (message_string.toLowerCase().includes(trigger, 1)) {

@@ -12,6 +12,7 @@
         "discord.js": "^11.4.2",
         "eslint": "^5.10.0",
         "ffmpeg": "0.0.4",
+        "google-images": "^2.1.0",
         "opus": "0.0.0",
         "opusscript": "0.0.6",
         "soundcloud-audio": "^1.4.0",

@@ -6,7 +6,7 @@
 var restricted_role_name = 'sKrUb!!! 😅👌🔥👈'
 
 
-//  ----- Constant variables -----
+//  ----- Constants -----
 
 //IDs
 const auth = require('./auth.json')
@@ -15,11 +15,21 @@ const auth = require('./auth.json')
 const Discord = require('discord.js')
 const logger = require('winston')
 
+/*
+LIBRARIES
+*/
+
+//PHRASES
 const phrases_front = require('./bot_knowledge/phrases/phrases_front.json')
 const phrases_sing = require('./bot_knowledge/phrases/phrases_sing.json')
 const phrases_convo = require('./bot_knowledge/phrases/phrases_conversational.json')
 const phrases_server_mod = require('./bot_knowledge/phrases/phrases_server_mod.json')
+const phrases_image_search = require('./bot_knowledge/phrases/phrases_image_search.json')
 
+//DEFAULTS
+const defaults_image = require('./bot_knowledge/defaults/image_search.json')
+
+//TRIGGERS
 const triggers = require('./bot_knowledge/triggers/triggers.json')
 
 //  ----- End -----
@@ -37,7 +47,7 @@ logger.level = 'debug'
 
 // Initialize Discord Bot
 console.log('Initializing bot...')
-bot.login(auth.token)
+bot.login(auth.discord.API_KEY)
 bot.on('ready', function (evt) {
     logger.info('Logged in as: ' + (bot.user.username + ' - (' + bot.user.id + ')'))
 
@@ -113,8 +123,7 @@ bot.on('message', function (message) {
                 song_state = 'playing'
 
                 voiceChannel.join().then(connection => {
-                    console.log(`Voice channel connection status:
-                        ${voiceChannel.connection.status}`)
+                    console.log(`Voice channel connection status: ${voiceChannel.connection.status}`)
                     const dispatcher = connection.playFile(song.file)
                     message.reply(song.play_phrase)
 
@@ -146,29 +155,32 @@ bot.on('message', function (message) {
                 }
 
                 if (url.includes('yout')) {
+                    //  Modules 
                     const ytdl = require('ytdl-core')
+
                     stream = ytdl(url.toString(), {
                         filter: 'audioonly'
                     })
+
                 } else if (url.includes('soundcloud')) {
-                    return message.reply('SoundCloud support coming sometime later. :)')
 
                     //TODO: SoundCloud support
                     /*
                     const SC_CLIENT_ID = 'client_id=b45b1aa10f1ac2941910a7f0d10f8e28'
                     const scAudio = require('soundcloud-audio')
-
+                    
                     stream = new scAudio(SC_CLIENT_ID)
                     stream = stream.play({
                         streamUrl: url.toString()
                     })
                     */
+
+                    return message.reply('SoundCloud support coming sometime later. :)')
                 }
 
                 voiceChannel.join().then(connection => {
                     song_state = 'playing'
-                    console.log(`Voice channel connection status: 
-                        ${voiceChannel.connection.status}`)
+                    console.log(`Voice channel connection status: ${voiceChannel.connection.status}`)
 
                     const dispatcher =
                         connection.playStream(stream, streamOptions)
@@ -202,6 +214,69 @@ bot.on('message', function (message) {
         }
 
     })
+
+    /*  
+        Image-Fetching (Google JS API)
+    */
+    //  Find random image (from Google Images)
+    triggers.image_search_triggers.random_image.forEach(trigger => {
+        if (message_string.toLowerCase().includes(trigger)) {
+            logBotResponse(trigger)
+
+            //  Modules   
+            const google_images = require('google-images')
+            //  Stored in 'auth.json' in root!
+            const googleBuddy =
+                new google_images(auth.google.search.CSE_ID, auth.google.search.API_KEY)
+
+
+            var user_query = ''
+            var user_query_specified = false
+
+            triggers.image_search_triggers.context_prefix.forEach(trigger => {
+                //  If user includes a specific thing to look for.
+                if (message_string.toLowerCase().includes(trigger)) {
+                    //  Sets query to user's query (after prefix trigger)
+                    user_query = message_string.substring(message_string.indexOf(trigger) + trigger.length + 1)
+                    user_query_specified = true
+                }
+            })
+
+            //  Random generated (from defaults list) query if user doesn't specify specific item
+            user_query = (user_query == '') ?
+                defaults_image.random_query[Math.floor(Math.random() * defaults_image.random_query.length)] : user_query
+
+            try {
+                console.log(`Performing image search for ${user_query}.`)
+
+                //  Attempts to search for query
+                googleBuddy.search(user_query).then(results => {
+                    //console.log(results)
+
+                    const result_reply = !results.length ?
+                        'Nothing found' :
+                        new Discord.Attachment(results[Math.floor(Math.random() * results.length)].url)
+
+                    //  Generates reply with random image and response
+                    if (user_query_specified == true) {
+                        message.
+                        reply(`${fetchRandomPhrase(phrases_image_search.image_search_fetch_response.image_search_with_context)}${user_query}.`)
+                    } else {
+                        message.reply(`${fetchRandomPhrase(phrases_image_search.image_search_fetch_response.image_search_random)}`)
+                    }
+                    message.channel.send(result_reply)
+                })
+            } catch (e) {
+                //  The other cases
+                console.error(e)
+                message.channel.send('Couldn\'t find image! Let Joe know to find the error.')
+            }
+
+            // FINISHED
+            matched_command = true
+        }
+    })
+
 
     /*  
         Server-Management
@@ -276,8 +351,6 @@ bot.on('message', function (message) {
             return message.reply(fetchRandomPhrase(phrases_front.asked_thank_you))
         }
     })
-
-    //TODO: Add Thank you messages
 
     //When mentioning name afterwards (anytime main_trigger is mentioned)
     triggers.main_trigger.forEach(trigger => {

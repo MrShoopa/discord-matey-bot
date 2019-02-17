@@ -67,6 +67,24 @@
             "megadork what's my role",
             "megadork what role am I"
         ]
+    },
+
+    "image_search_triggers": {
+        "random_image": [
+            "megadork random image",
+            "megadork random photo",
+            "megadork random picture",
+            "megadork find a random picture",
+            "megadork give me a random image",
+            "megadork give me a random picture",
+            "megadork throw me a random picture"
+        ],
+        "context_prefix": [
+            "of",
+            "about",
+            "showing",
+            "that has"
+        ]
     }
 
 }

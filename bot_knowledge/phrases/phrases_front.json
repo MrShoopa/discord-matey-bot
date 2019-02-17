@@ -4,15 +4,18 @@
     "asked_thank_you": ["You got it!", "Pleasure's mine!", "You got it, fuckface :)"],
 
     "help_intro": "Hmmm so far I can... \n",
-    "help_sing": "Sing: Pull out meme songs I know!  \n    \" *Megadork, what can you sing?* \" ",
+    "help_sing": "Sing: Pull out meme songs I know!  \n    \"*Megadork, what can you sing?* \" ",
+    "help_image_search": "I can find a random picture!   \n    \"*Megadork random picture of [whatever your searching]* \"     ",
     "help_conversation": {
-        "main": "Phrase-play: Respond to some conversation :)  \n     ",
+        "main": "Phrase-play: Respond to some conversation :)  \n    ",
         "example": {
-            "suicide": "\" *I wanna kill myself* \"",
-            "how_are_you": "\" *megadork, how are you* \"",
-            "threat": "\" *megadork, kill yourself* \""
+            "suicide": "\"*I wanna kill myself* \"",
+            "how_are_you": "\"*megadork, how are you* \"",
+            "threat": "\"*megadork, kill yourself* \"",
+            "send_nudes": "\"*megadork send nudes* \""
         }
     },
+
     "help_secret": {
         "main": "I also have some top-secret commands my creator has made for me. :)     "
     }

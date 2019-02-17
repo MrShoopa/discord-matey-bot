@@ -22,7 +22,9 @@
         }
     },
     "send_nude_triggers": [
-        "megadork send nudes"
+        "megadork send nudes",
+        "megadork send noodz",
+        "megadork send hot nudes"
     ],
     "thank_you_triggers": [
         "thank you megadork",

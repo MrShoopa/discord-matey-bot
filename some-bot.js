@@ -422,9 +422,13 @@ bot.on('message', function (message) {
                     //Sing
                     message.reply(phrases_front.help_sing)
 
+                    //Image-Search
+                    message.reply(phrases_front.help_image_search)
+
                     //Motivate
                     message.reply((phrases_front.help_conversation.main +
-                        phrases_front.help_conversation.example.threat))
+                            phrases_front.help_conversation.example.threat) + '\n    ' +
+                        phrases_front.help_conversation.example.send_nudes)
 
                     //Secret functions
                     message.reply((phrases_front.help_secret.main))
@@ -440,6 +444,7 @@ bot.on('message', function (message) {
                     var song_list = ''
 
                     message.reply(phrases_sing.help_intro)
+                    message.reply(phrases_sing.help_youtube)
 
                     phrases_sing.songs_to_sing.forEach(song => {
                         if (song.title != phrases_sing.songs_to_sing[0].title) {

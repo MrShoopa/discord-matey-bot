@@ -43,13 +43,10 @@ const bot = new DISCORD.Client()
 // Initialize Discord Bot
 console.log('Initializing bot...')
 bot.login(AUTH.discord.API_KEY)
-bot.on('ready', function (evt) {
-    LOGGER.info(
-        'Logged in as: ' +
-        (bot.user.username + ' - (' + bot.user.id + ')'))
+bot.on('ready', function (event) {
+    // TODO: configure TS declaration //.LOGGER.info('Logged in as: ' + (bot.user.username + ' - (' + bot.user.id + ')'))
 
     console.log('I\'m alive!')
-
 })
 
 //Messaging to bot
@@ -73,7 +70,7 @@ bot.on('message', function (message) {
 
     //  Grabbing properties from user input
     var message_string = (message.content).toString()
-    var voiceChannel = message.member.voiceChannel
+    var voiceChannel: DISCORD.VoiceChannel = message.member.voice.channel
 
     console.log(`A user said: ${message_string}`)
 
@@ -127,7 +124,7 @@ bot.on('message', function (message) {
                 voiceChannel.join().then(connection => {
                     console.log(
                         `Voice channel connection status: ${voiceChannel.connection.status}`)
-                    const dispatcher = connection.playFile(song.file)
+                    const dispatcher = connection.play(song.file)
                     message.reply(song.play_phrase)
 
 
@@ -188,7 +185,7 @@ bot.on('message', function (message) {
                         `Voice channel connection status: ${voiceChannel.connection.status}`)
 
                     const dispatcher =
-                        connection.playStream(stream, streamOptions)
+                        connection.play(stream, streamOptions)
 
                     dispatcher.on('start', () => {
                         console.log(`Playing song from ${url}.`)
@@ -214,7 +211,7 @@ bot.on('message', function (message) {
             voiceChannel != null && voiceChannel.connection.status == 0) {
             logBotResponse(trigger)
 
-            message.member.voiceChannel.leave()
+            message.member.voice.channel.leave()
             message.reply(fetchRandomPhrase(PHRASES_SING.command_feedback.stop))
         }
 
@@ -264,7 +261,7 @@ bot.on('message', function (message) {
 
                     const result_reply = !results.length ?
                         'Nothing found' :
-                        new DISCORD.Attachment(results[Math.floor(Math.random() * results.length)].url)
+                        new DISCORD.MessageAttachment(results[Math.floor(Math.random() * results.length)].url)
 
                     //  Generates reply with random image and response
                     if (user_query_specified == true) {
@@ -324,7 +321,7 @@ bot.on('message', function (message) {
         if (message_string.toLowerCase().includes(trigger)) {
             logBotResponse(trigger)
 
-            message.mentions.members.forEach(function (member) {
+            message.mentions.members.forEach((member) => {
                 message.reply(
                     `${fetchRandomPhrase(PHRASES_SERVER_MOD.restricted_role_unset)},
                      ${member.displayName}`)

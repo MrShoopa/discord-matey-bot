@@ -4,6 +4,9 @@ auth.json
 # Code Runner
 tempCodeRunnerFile.js
 
+# node in general
+node_modules
+
 # Logs
 logs
 *.log

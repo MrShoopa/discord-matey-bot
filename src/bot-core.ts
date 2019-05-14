@@ -9,28 +9,27 @@ var restricted_role_name = 'sKrUb!!! 😅👌🔥👈'
 //  ----- Constants -----
 
 //IDs
-const AUTH = require('./auth.json')
+import AUTH from './auth.json';
 
 //DEPENDENCIES
-const DISCORD = require('discord.js')
-const LOGGER = require('winston')
-
+import * as DISCORD from 'discord.js'
+import LOGGER from './tools/winston'
 /*
 LIBRARIES
 */
 
 //PHRASES
-const PHRASES_FRONT = require('./bot_knowledge/phrases/phrases_front.json')
-const PHRASES_SING = require('./bot_knowledge/phrases/phrases_sing.json')
-const PHRASES_CONVO = require('./bot_knowledge/phrases/phrases_conversational.json')
-const PHRASES_SERVER_MOD = require('./bot_knowledge/phrases/phrases_server_mod.json')
-const PHRASES_IMAGE_SEARCH = require('./bot_knowledge/phrases/phrases_image_search.json')
+import PHRASES_FRONT from './bot_knowledge/phrases/phrases_front.json';
+import PHRASES_SING from './bot_knowledge/phrases/phrases_sing.json';
+import PHRASES_CONVO from './bot_knowledge/phrases/phrases_conversational.json';
+import PHRASES_SERVER_MOD from './bot_knowledge/phrases/phrases_server_mod.json';
+import PHRASES_IMAGE_SEARCH from './bot_knowledge/phrases/phrases_image_search.json';
 
 //DEFAULTS
-const DEFAULTS_IMAGE = require('./bot_knowledge/defaults/image_search.json')
+import DEFAULTS_IMAGE from './bot_knowledge/defaults/image_search.json';
 
 //TRIGGERS
-const TRIGGERS = require('./bot_knowledge/triggers/triggers.json')
+import TRIGGERS from './bot_knowledge/triggers/triggers.json';
 
 //  ----- End -----
 
@@ -39,11 +38,7 @@ const TRIGGERS = require('./bot_knowledge/triggers/triggers.json')
 const bot = new DISCORD.Client()
 
 // Configure logger settings
-LOGGER.remove(LOGGER.transports.Console)
-LOGGER.add(new LOGGER.transports.Console, {
-    colorize: true
-})
-LOGGER.level = 'debug'
+
 
 // Initialize Discord Bot
 console.log('Initializing bot...')
@@ -59,10 +54,10 @@ bot.on('ready', function (evt) {
 
 //Messaging to bot
 bot.on('message', function (message) {
-    const user = message.author.id
+    const user: String = message.author.id
 
     //  Find restricted role ID
-    var restricted_role_id = null
+    var restricted_role_id: string = null
 
     message.guild.roles.forEach(function (role) {
         //console.log(role.name)
@@ -72,7 +67,7 @@ bot.on('message', function (message) {
     })
 
     //So bot doesn't respond to itself
-    if (user == 449625729509097482) return
+    if (user == '449625729509097482') return
 
     var matched_command = false
 
@@ -310,9 +305,10 @@ bot.on('message', function (message) {
                     `${fetchRandomPhrase(PHRASES_SERVER_MOD.restricted_role_set)},
                      ${member.displayName}`)
                 member.addRole(restricted_role_id)
-                    .then(
+                    .then(() => {
                         console.log(
-                            `Adding ${member.displayName} to the role: ${restricted_role_id}`))
+                            `Adding ${member.displayName} to the role: ${restricted_role_id}`)
+                    })
                     .catch(
                         console.error)
                 //.catch(console.log(`Failed to add ${member.displayName} to the role: ${restricted_role_id}`))
@@ -333,9 +329,10 @@ bot.on('message', function (message) {
                     `${fetchRandomPhrase(PHRASES_SERVER_MOD.restricted_role_unset)},
                      ${member.displayName}`)
                 member.removeRole(restricted_role_id)
-                    .then(
+                    .then(() => {
                         console.log(
-                            `Removing ${member.displayName} from the role: ${restricted_role_id}`))
+                            `Removing ${member.displayName} from the role: ${restricted_role_id}`)
+                    })
                     .catch(console.error)
             })
 
@@ -546,10 +543,15 @@ bot.on('guildMemberAdd', member => {
     // Do nothing if the channel wasn't found on this server
     if (!CHANNEL) return
     // Send the message, mentioning the member
+    if (!((CHANNEL): CHANNEL is DISCORD.TextChannel =>
+        CHANNEL.type === 'text')
+        (CHANNEL))
+        return
+
     CHANNEL.send(
         `Welcome to the server, ${member}! \n\n\n\n...\n\n who the f-`)
 })
 
-function fetchRandomPhrase(key) {
+function fetchRandomPhrase(key: string[]) {
     return key[Math.floor(Math.random() * (key.length))]
 }

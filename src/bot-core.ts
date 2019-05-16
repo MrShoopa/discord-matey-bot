@@ -5,13 +5,13 @@
     @date   May 16th, 2019
 */
 
-//  Server-Specific settings    (INCLUDE YOUR SERVER'S INFO WHERE APPLICABLE)
+//*  Server-Specific settings    (INCLUDE YOUR SERVER'S INFO WHERE APPLICABLE)
 var restricted_role_name = 'sKrUb!!! 😅👌🔥👈'
 
 
 /* --- Assets --- */
 
-//!  IDs (Provide your own)
+//*  IDs (Provide your own)
 import AUTH from './auth.json';
 
 //  DEPENDENCIES
@@ -159,8 +159,9 @@ bot.on('message', function (message) {
 
                 } else if (url.includes('soundcloud')) {
 
-                    //TODO: SoundCloud support
+                    //  TODO: SoundCloud support
                     /*
+                    .
                     const SC_CLIENT_ID = 'client_id=b45b1aa10f1ac2941910a7f0d10f8e28'
                     const scAudio = require('soundcloud-audio')
                     
@@ -198,7 +199,7 @@ bot.on('message', function (message) {
         }
 
     })
-    //Stop audio
+    //  Stop audio
     TRIGGERS.singing_triggers.stop.forEach(trigger => {
 
         if (message_string.substring(0, 25).toLowerCase().includes(trigger) &&
@@ -275,7 +276,7 @@ bot.on('message', function (message) {
                     'Couldn\'t find image! Let Joe know to find the error.')
             }
 
-            // FINISHED
+            //  FINISHED
             matched_command = true
         }
     })
@@ -311,7 +312,7 @@ bot.on('message', function (message) {
         }
 
     })
-    // Unset Restricted Role
+    //  Unset Restricted Role
     TRIGGERS.server_mod_triggers.unset_restricted_role.forEach(trigger => {
         if (message_string.toLowerCase().includes(trigger)) {
             logBotResponse(trigger)
@@ -338,10 +339,8 @@ bot.on('message', function (message) {
     */
 
 
-    /*
-        ----    Phrase play     ----
-    */
-    //Suicidal
+    /*  ----    Phrase play     ----*/
+    //  Suicidal
     TRIGGERS.third_person_phrase_triggers.self_death_wish.die.forEach(trigger => {
         if (message_string.toLowerCase().includes(trigger)) {
             logBotResponse(trigger)
@@ -365,7 +364,7 @@ bot.on('message', function (message) {
         }
     })
 
-    // "S. A. D."
+    //  "S. A. D."
     if (message_string.includes(TRIGGERS.third_person_phrase_triggers.suck_thing[0]) &&
         message_string.includes(TRIGGERS.third_person_phrase_triggers.suck_thing[1])) {
         matched_command = true
@@ -400,18 +399,18 @@ bot.on('message', function (message) {
         ----    END     ----
     */
 
-    //TODO: Fix this not working orrrrr
+    //  TODO: Fix this not working orrrrr
     // ---- DEFAULT CASE ----
-    //When mentioning name afterwards (anytime main_trigger is mentioned)
+    //  When mentioning name afterwards (anytime main_trigger is mentioned)
     TRIGGERS.main_trigger.forEach(trigger => {
         if (message_string.toLowerCase().includes(trigger, 1)) {
 
-            //Death threats
+            //  Death threats
             TRIGGERS.threat.kill_self.forEach(trigger => {
                 if (message_string.toLowerCase().includes(trigger)) {
                     logBotResponse(trigger)
 
-                    //FRIEND SPECIFIC :)
+                    //  FRIEND SPECIFIC :)
                     if (message.author.username == 'MrShoopa')
                         message.reply('joe you a hoe')
                     if (message.author.username == 'The King of Bling')
@@ -430,37 +429,37 @@ bot.on('message', function (message) {
 
 
 
-    //MAIN (When started with "Megadork", for example)
+    //  MAIN (When started with "Megadork", for example)
     TRIGGERS.main_trigger.forEach(trigger => {
         if (message_string.substring(0, 10).toLowerCase().includes(trigger) &&
             !matched_command) {
 
-            //HELP
+            //  HELP
             TRIGGERS.help_questions.actions.forEach(trigger => {
                 if (message_string.toLowerCase().includes(trigger)) {
                     logBotResponse(trigger)
 
                     message.reply(PHRASES_FRONT.help_intro)
 
-                    //Sing
+                    //  Sing
                     message.reply(PHRASES_FRONT.help_sing)
 
-                    //Image-Search
+                    //  Image-Search
                     message.reply(PHRASES_FRONT.help_image_search)
 
-                    //Motivate
+                    //  Motivate
                     message.reply(
                         (PHRASES_FRONT.help_conversation.main +
                             PHRASES_FRONT.help_conversation.example.threat) + '\n    ' +
                         PHRASES_FRONT.help_conversation.example.send_nudes)
 
-                    //Secret functions
+                    //  Secret functions
                     message.reply((PHRASES_FRONT.help_secret.main))
 
                 }
             })
 
-            //SINGING HELP
+            //  SINGING HELP
             TRIGGERS.help_questions.singing.forEach(trigger => {
                 if (message_string.toLowerCase().includes(trigger)) {
                     logBotResponse(trigger)
@@ -483,7 +482,7 @@ bot.on('message', function (message) {
                 }
             })
 
-            //PHRASE-PLAY
+            //  PHRASE-PLAY
             TRIGGERS.how_is_bot.forEach(trigger => {
                 if (message_string.toLowerCase().includes(trigger)) {
                     logBotResponse(trigger)
@@ -501,7 +500,7 @@ bot.on('message', function (message) {
                 }
             })
 
-            //COMMANDS
+            //  COMMANDS
 
             TRIGGERS.main_trigger.forEach(trigger => {
                 if (message_string == trigger) {
@@ -511,7 +510,7 @@ bot.on('message', function (message) {
                 }
             })
 
-            //UHHH
+            //  UHHH
             if (!matched_command)
                 message.reply(fetchRandomPhrase(PHRASES_FRONT.unknown_command))
         }
@@ -528,14 +527,14 @@ bot.on('message', function (message) {
     }
 })
 
-//Greeting
+//  Greeting
 bot.on('guildMemberAdd', member => {
-    // Send the message to a designated channel on a server:
+    //  Send the message to a designated channel on a server:
     const CHANNEL: DISCORD.GuildChannel =
         member.guild.channels.find(ch => ch.name === 'member-log')
-    // Do nothing if the channel wasn't found on this server
+    //  Do nothing if the channel wasn't found on this server
     if (!CHANNEL) return
-    // Send the message, mentioning the member
+    //  Send the message, mentioning the member
     if (!((CHANNEL): CHANNEL is DISCORD.TextChannel =>
         CHANNEL.type === 'text')
         (CHANNEL))

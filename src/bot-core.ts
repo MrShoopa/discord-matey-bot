@@ -301,7 +301,7 @@ bot.on('message', function (message) {
                 message.reply(
                     `${fetchRandomPhrase(PHRASES_SERVER_MOD.restricted_role_set)},
                      ${member.displayName}`)
-                member.addRole(restricted_role_id)
+                member.roles.add(restricted_role_id)
                     .then(() => {
                         console.log(
                             `Adding ${member.displayName} to the role: ${restricted_role_id}`)
@@ -325,7 +325,7 @@ bot.on('message', function (message) {
                 message.reply(
                     `${fetchRandomPhrase(PHRASES_SERVER_MOD.restricted_role_unset)},
                      ${member.displayName}`)
-                member.removeRole(restricted_role_id)
+                member.roles.remove(restricted_role_id)
                     .then(() => {
                         console.log(
                             `Removing ${member.displayName} from the role: ${restricted_role_id}`)

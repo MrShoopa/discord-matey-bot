@@ -1,55 +1,48 @@
-//Crappa-Bot, created by Joe Villegas (joevillegasisawesome@gmail.com)
-
-/* eslint-disable no-console, no-unused-vars, indent */
+/*  
+    Oddly Specific Discord Bot
+    
+    @author Joe Villegas (joevillegasisawesome@gmail.com)
+    @date   May 16th, 2019
+*/
 
 //  Server-Specific settings    (INCLUDE YOUR SERVER'S INFO WHERE APPLICABLE)
 var restricted_role_name = 'sKrUb!!! 😅👌🔥👈'
 
 
-//  ----- Constants -----
+/* --- Assets --- */
 
-//IDs
+//!  IDs (Provide your own)
 import AUTH from './auth.json';
 
-//DEPENDENCIES
+//  DEPENDENCIES
 import * as DISCORD from 'discord.js'
-import LOGGER from './tools/winston'
-/*
-LIBRARIES
-*/
 
-//PHRASES
+//  PHRASES
 import PHRASES_FRONT from './bot_knowledge/phrases/phrases_front.json';
 import PHRASES_SING from './bot_knowledge/phrases/phrases_sing.json';
 import PHRASES_CONVO from './bot_knowledge/phrases/phrases_conversational.json';
 import PHRASES_SERVER_MOD from './bot_knowledge/phrases/phrases_server_mod.json';
 import PHRASES_IMAGE_SEARCH from './bot_knowledge/phrases/phrases_image_search.json';
 
-//DEFAULTS
+//  DEFAULTS
 import DEFAULTS_IMAGE from './bot_knowledge/defaults/image_search.json';
 
-//TRIGGERS
+//  TRIGGERS
 import TRIGGERS from './bot_knowledge/triggers/triggers.json';
 
-//  ----- End -----
+/* ----- */
 
-
-//ENTITIES
+//  ENTITIES
 const bot = new DISCORD.Client()
 
-// Configure logger settings
-
-
-// Initialize Discord Bot
+//  Initialize Discord Bot
 console.log('Initializing bot...')
 bot.login(AUTH.discord.API_KEY)
-bot.on('ready', function (event) {
-    // TODO: configure TS declaration //.LOGGER.info('Logged in as: ' + (bot.user.username + ' - (' + bot.user.id + ')'))
-
+bot.on('ready', () => {
     console.log('I\'m alive!')
 })
 
-//Messaging to bot
+//  Messaging to bot
 bot.on('message', function (message) {
     const user: String = message.author.id
 
@@ -63,7 +56,7 @@ bot.on('message', function (message) {
 
     })
 
-    //So bot doesn't respond to itself
+    //  So bot doesn't respond to itself
     if (user == '449625729509097482') return
 
     var matched_command = false
@@ -82,37 +75,38 @@ bot.on('message', function (message) {
     */
     TRIGGERS.singing_triggers.play.forEach(trigger => {
         trigger.toLowerCase()
-        var song_state = 'idle'
+        var song_state: string | boolean = 'idle'
 
-        //Attempt to play song
+        //  Attempt to play song
         if (message_string.substring(0, 15).toLowerCase().includes(trigger)) {
             song_state = 'fetching'
 
             try {
                 PHRASES_SING.songs_to_sing.forEach(song => {
                     if (message_string.toLowerCase().includes(song.title.toLowerCase()) && !matched_command) {
-                        //When song from local files is found
+                        //  When song from local files is found
                         playAudioFromFiles(song)
                     } else if (message_string.toLowerCase().includes(TRIGGERS.url_trigger.any) && !matched_command) {
-                        //When song from URL is found
-                        var url_string = message_string.split(' ')
+                        //  When song from URL is found
+                        var url_string: string[] = message_string.split(' ')
 
                         playAudioFromURL(url_string[url_string.length - 1])
                     }
                 })
-            } catch (err) { //When user is not in voice channel
+            } catch (err) { //  When user is not in voice channel
                 //console.log(err)
+
                 console.log(
                     'Warning: User is not in voice channel. Song wasn\'t played.')
                 message.reply(
                     PHRASES_SING.message_not_in_channel)
             }
-            if (song_state == 'fetching' && !matched_command) { //When song is not found
+            if (song_state == 'fetching' && !matched_command) { //  When song is not found
                 message.reply(
                     PHRASES_SING.message_unknown_summon)
             }
 
-            // FINISHED
+            // Finished
             matched_command = true
         }
 
@@ -124,7 +118,7 @@ bot.on('message', function (message) {
                 voiceChannel.join().then(connection => {
                     console.log(
                         `Voice channel connection status: ${voiceChannel.connection.status}`)
-                    const dispatcher = connection.play(song.file)
+                    const dispatcher: DISCORD.StreamDispatcher = connection.play(song.file)
                     message.reply(song.play_phrase)
 
 
@@ -142,20 +136,20 @@ bot.on('message', function (message) {
 
         }
 
-        function playAudioFromURL(url) {
+        function playAudioFromURL(url: string) {
 
             if (!matched_command) {
                 console.log('yo')
                 logBotResponse(trigger)
                 song_state = 'playing'
 
-                var stream
-                var streamOptions = {
+                var stream: string | DISCORD.VoiceBroadcast | import("stream").Readable
+                var streamOptions: object = {
                     seek: 0,
                     volume: .75
                 }
 
-                if (url.includes('yout')) {
+                if (url.includes('youtu')) {
                     //  Modules 
                     const ytdl = require('ytdl-core')
 
@@ -184,7 +178,7 @@ bot.on('message', function (message) {
                     console.log(
                         `Voice channel connection status: ${voiceChannel.connection.status}`)
 
-                    const dispatcher =
+                    const dispatcher: DISCORD.StreamDispatcher =
                         connection.play(stream, streamOptions)
 
                     dispatcher.on('start', () => {
@@ -235,8 +229,8 @@ bot.on('message', function (message) {
                 new google_images(AUTH.google.search.CSE_ID, AUTH.google.search.API_KEY)
 
 
-            var user_query = ''
-            var user_query_specified = false
+            var user_query: string = ''
+            var user_query_specified: boolean = false
 
             TRIGGERS.image_search_triggers.context_prefix.forEach(trigger => {
                 //  If user includes a specific thing to look for.
@@ -259,9 +253,10 @@ bot.on('message', function (message) {
                 googleBuddy.search(user_query).then(results => {
                     //console.log(results)
 
-                    const result_reply = !results.length ?
-                        'Nothing found' :
-                        new DISCORD.MessageAttachment(results[Math.floor(Math.random() * results.length)].url)
+                    const result_reply: DISCORD.MessageAttachment | string
+                        = !results.length ?
+                            'Nothing found' :
+                            new DISCORD.MessageAttachment(results[Math.floor(Math.random() * results.length)].url)
 
                     //  Generates reply with random image and response
                     if (user_query_specified == true) {
@@ -536,7 +531,8 @@ bot.on('message', function (message) {
 //Greeting
 bot.on('guildMemberAdd', member => {
     // Send the message to a designated channel on a server:
-    const CHANNEL = member.guild.channels.find(ch => ch.name === 'member-log')
+    const CHANNEL: DISCORD.GuildChannel =
+        member.guild.channels.find(ch => ch.name === 'member-log')
     // Do nothing if the channel wasn't found on this server
     if (!CHANNEL) return
     // Send the message, mentioning the member

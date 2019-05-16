@@ -2,4 +2,4 @@
 title Shoopa's Discord Ghetto-AI Bot!
 echo Welcome! Launching bot service.
 echo(
-node some-bot.js
+ts-node ./src/bot-core.ts

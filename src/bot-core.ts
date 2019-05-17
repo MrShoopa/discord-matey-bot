@@ -117,7 +117,7 @@ bot.on('message', function (message) {
 
                 voiceChannel.join().then(connection => {
                     console.log(
-                        `Voice channel connection status: ${voiceChannel.connection.status}`)
+                        `Voice channel connection status: ${connection.status}`)
                     const dispatcher: DISCORD.StreamDispatcher = connection.play(song.file)
                     message.reply(song.play_phrase)
 
@@ -139,11 +139,11 @@ bot.on('message', function (message) {
         function playAudioFromURL(url: string) {
 
             if (!matched_command) {
-                console.log('yo')
+                console.log('URL Command matched')
                 logBotResponse(trigger)
                 song_state = 'playing'
 
-                var stream: string | DISCORD.VoiceBroadcast | import("stream").Readable
+                var stream
                 var streamOptions: object = {
                     seek: 0,
                     volume: .75
@@ -161,23 +161,22 @@ bot.on('message', function (message) {
 
                     //  TODO: SoundCloud support
                     /*
-                    .
-                    const SC_CLIENT_ID = 'client_id=b45b1aa10f1ac2941910a7f0d10f8e28'
+                    const SC_CLIENT_ID = 'b45b1aa10f1ac2941910a7f0d10f8e28'
                     const scAudio = require('soundcloud-audio')
-                    
+
                     stream = new scAudio(SC_CLIENT_ID)
-                    stream = stream.play({
-                        streamUrl: url.toString()
-                    })
-                    */
+
+                    stream.resolve(url.toString())
+
 
                     return message.reply('SoundCloud support coming sometime later. :)')
+                */
                 }
 
                 voiceChannel.join().then(connection => {
                     song_state = 'playing'
                     console.log(
-                        `Voice channel connection status: ${voiceChannel.connection.status}`)
+                        `Voice channel connection status: ${connection.status}`)
 
                     const dispatcher: DISCORD.StreamDispatcher =
                         connection.play(stream, streamOptions)
@@ -201,9 +200,10 @@ bot.on('message', function (message) {
     })
     //  Stop audio
     TRIGGERS.singing_triggers.stop.forEach(trigger => {
+        //console.log(voiceChannel)
 
         if (message_string.substring(0, 25).toLowerCase().includes(trigger) &&
-            voiceChannel != null && voiceChannel.connection.status == 0) {
+            voiceChannel != null && voiceChannel.bitrate) {
             logBotResponse(trigger)
 
             message.member.voice.channel.leave()
@@ -304,7 +304,7 @@ bot.on('message', function (message) {
                     })
                     .catch(
                         console.error)
-                //.catch(console.log(`Failed to add ${member.displayName} to the role: ${restricted_role_id}`))
+                //.catch(console.error(`Failed to add ${member.displayName} to the role: ${restricted_role_id}`))
             })
 
             // FINISHED

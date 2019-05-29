@@ -119,7 +119,8 @@ bot.on('message', function (message) {
                     console.log(
                         `Voice channel connection status: ${connection.status}`)
                     const dispatcher: DISCORD.StreamDispatcher = connection.play(song.file)
-                    message.reply(song.play_phrase)
+                    console.log(dispatcher)
+                    message.reply(dispatcher)
 
 
                     dispatcher.on('end', () => {

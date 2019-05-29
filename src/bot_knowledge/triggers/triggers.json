@@ -31,6 +31,11 @@
         "thanks megadork",
         "god bless megadork"
     ],
+    "are_you_triggers": {
+        "communist": "megadork are you a communist",
+        "real": "megadork are you real",
+        "robot:": "megadork are you a robot"
+    },
     "threat": {
         "kill_self": [
             "kill yourself",

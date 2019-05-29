@@ -1,7 +1,11 @@
 {
     "unknown_command": ["I didn't get that :/", "What did you say?", "Uhh whacha sayin'"],
     "name_only_callout": "Yes, my manes?",
-    "asked_thank_you": ["You got it!", "Pleasure's mine!", "You got it, fuckface :)"],
+
+    "asked": {
+        "thank_you": ["You got it!", "Pleasure's mine!", "You got it, fuckface :)"],
+        "communist": ["could be owned by not just joe", "WE ALL OWN EACH OTHER"]
+    },
 
     "help_intro": "Hmmm so far I can... \n",
     "help_sing": "Sing: Pull out meme songs I know!  \n    \"*Megadork, what can you sing?* \" ",

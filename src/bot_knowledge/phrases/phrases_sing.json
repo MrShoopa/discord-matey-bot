@@ -63,6 +63,7 @@
     }, {
         "file": "src/bot_knowledge/audio/meme-stash/f-bees.mp3",
         "title": "bees",
+        "explicit": true,
         "play_phrase": "b e e s"
     }, {
         "file": "src/bot_knowledge/audio/meme-stash/jellyfish-jam.mp3",
@@ -75,6 +76,7 @@
     }, {
         "file": "src/bot_knowledge/audio/meme-stash/ussr.mp3",
         "title": "USSR Anthem",
+        "explicit": true,
         "play_phrase": "we own you now"
     }]
 }

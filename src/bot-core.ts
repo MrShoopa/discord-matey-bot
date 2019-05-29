@@ -42,6 +42,9 @@ bot.on('ready', () => {
     console.log('I\'m alive!')
 })
 
+//  States
+var song_state: string | boolean = 'idle'
+
 //  Messaging to bot
 bot.on('message', function (message) {
     const user: String = message.author.id
@@ -75,7 +78,6 @@ bot.on('message', function (message) {
     */
     TRIGGERS.singing_triggers.play.forEach(trigger => {
         trigger.toLowerCase()
-        var song_state: string | boolean = 'idle'
 
         //  Attempt to play song
         if (message_string.substring(0, 15).toLowerCase().includes(trigger)) {
@@ -110,93 +112,6 @@ bot.on('message', function (message) {
             matched_command = true
         }
 
-        function playAudioFromFiles(song) {
-            if (!matched_command) {
-                logBotResponse(trigger)
-                song_state = 'playing'
-
-                voiceChannel.join().then(connection => {
-                    console.log(
-                        `Voice channel connection status: ${connection.status}`)
-                    const dispatcher: DISCORD.StreamDispatcher = connection.play(song.file)
-                    console.log(dispatcher)
-                    message.reply(dispatcher)
-
-
-                    dispatcher.on('end', () => {
-                        console.log(
-                            'Song played successfully.')
-                        song_state = 'finished'
-                        voiceChannel.leave()
-                    })
-                })
-
-                // FINISHED
-                matched_command = true
-            }
-
-        }
-
-        function playAudioFromURL(url: string) {
-
-            if (!matched_command) {
-                console.log('URL Command matched')
-                logBotResponse(trigger)
-                song_state = 'playing'
-
-                var stream
-                var streamOptions: object = {
-                    seek: 0,
-                    volume: .75
-                }
-
-                if (url.includes('youtu')) {
-                    //  Modules 
-                    const ytdl = require('ytdl-core')
-
-                    stream = ytdl(url.toString(), {
-                        filter: 'audioonly'
-                    })
-
-                } else if (url.includes('soundcloud')) {
-
-                    //  TODO: SoundCloud support
-                    /*
-                    const SC_CLIENT_ID = 'b45b1aa10f1ac2941910a7f0d10f8e28'
-                    const scAudio = require('soundcloud-audio')
-
-                    stream = new scAudio(SC_CLIENT_ID)
-
-                    stream.resolve(url.toString())
-
-
-                    return message.reply('SoundCloud support coming sometime later. :)')
-                */
-                }
-
-                voiceChannel.join().then(connection => {
-                    song_state = 'playing'
-                    console.log(
-                        `Voice channel connection status: ${connection.status}`)
-
-                    const dispatcher: DISCORD.StreamDispatcher =
-                        connection.play(stream, streamOptions)
-
-                    dispatcher.on('start', () => {
-                        console.log(`Playing song from ${url}.`)
-                        song_state = 'finished'
-                    })
-                    dispatcher.on('end', () => {
-                        console.log('Song played successfully.')
-                        song_state = 'finished'
-                        voiceChannel.leave()
-                    })
-                    // FINISHED
-                    matched_command = true
-                })
-
-            }
-        }
 
     })
     //  Stop audio
@@ -386,6 +301,7 @@ bot.on('message', function (message) {
         }
     })
 
+
     //  Thank you
     TRIGGERS.thank_you_triggers.forEach(trigger => {
         if (message_string.toLowerCase().includes(trigger)) {
@@ -393,9 +309,25 @@ bot.on('message', function (message) {
             matched_command = true
 
             return message.reply(
-                fetchRandomPhrase(PHRASES_FRONT.asked_thank_you))
+                fetchRandomPhrase(PHRASES_FRONT.asked.thank_you))
         }
     })
+
+    //  "Are you a X?"
+    if (message_string.toLowerCase().includes(TRIGGERS.are_you_triggers.communist)) {
+        logBotResponse(TRIGGERS.are_you_triggers.communist)
+        matched_command = true
+
+        let matchesSong = (song) => {
+            return song.name === 'USSR Anthem';
+        }
+
+        playAudioFromFiles(PHRASES_SING.songs_to_sing.find(matchesSong))
+
+        return message.reply(
+            fetchRandomPhrase(PHRASES_FRONT.asked.communist))
+    }
+
     /*
         ----    END     ----
     */
@@ -517,6 +449,94 @@ bot.on('message', function (message) {
         }
 
     })
+
+    function playAudioFromFiles(song, trigger?: string) {
+
+        if (!matched_command) {
+            if (trigger)
+                logBotResponse(trigger)
+            song_state = 'playing'
+
+            voiceChannel.join().then(connection => {
+                console.log(
+                    `Voice channel connection status: ${connection.status}`)
+                const dispatcher: DISCORD.StreamDispatcher = connection.play(song.file)
+                console.log(song.play_phrase)
+                message.reply(dispatcher)
+
+
+                dispatcher.on('end', () => {
+                    console.log(
+                        'Song played successfully.')
+                    song_state = 'finished'
+                    voiceChannel.leave()
+                })
+            })
+
+            // FINISHED
+            matched_command = true
+        }
+    }
+    function playAudioFromURL(url: string, trigger?: string) {
+
+        if (!matched_command) {
+            console.log('URL Command matched')
+            logBotResponse(trigger)
+            song_state = 'playing'
+
+            var stream
+            var streamOptions: object = {
+                seek: 0,
+                volume: .75
+            }
+
+            if (url.includes('youtu')) {
+                //  Modules 
+                const ytdl = require('ytdl-core')
+
+                stream = ytdl(url.toString(), {
+                    filter: 'audioonly'
+                })
+
+            } else if (url.includes('soundcloud')) {
+
+                //  TODO: SoundCloud support
+                /*
+                const SC_CLIENT_ID = 'b45b1aa10f1ac2941910a7f0d10f8e28'
+                const scAudio = require('soundcloud-audio')
+
+                stream = new scAudio(SC_CLIENT_ID)
+
+                stream.resolve(url.toString())
+
+
+                return message.reply('SoundCloud support coming sometime later. :)')
+            */
+            }
+
+            voiceChannel.join().then(connection => {
+                song_state = 'playing'
+                console.log(
+                    `Voice channel connection status: ${connection.status}`)
+
+                const dispatcher: DISCORD.StreamDispatcher =
+                    connection.play(stream, streamOptions)
+
+                dispatcher.on('start', () => {
+                    console.log(`Playing song from ${url}.`)
+                    song_state = 'finished'
+                })
+                dispatcher.on('end', () => {
+                    console.log('Song played successfully.')
+                    song_state = 'finished'
+                    voiceChannel.leave()
+                })
+                // FINISHED
+                matched_command = true
+            })
+
+        }
+    }
 
     function logBotResponse(trigger = 'None') {
         matched_command = true

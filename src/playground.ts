@@ -1,3 +1,22 @@
+var test = 'megadork hi'
+var testInput = 'megadork! hi'
+
+console.log(test.includes(testInput))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 //Import tests
 //ES6

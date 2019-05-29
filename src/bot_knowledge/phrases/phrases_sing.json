@@ -72,5 +72,9 @@
         "file": "src/bot_knowledge/audio/meme-stash/despacito.mp3",
         "title": "despacito",
         "play_phrase": "can you PlEasE gO t0 ALexA 4 THAT?!!?!?!??"
+    }, {
+        "file": "src/bot_knowledge/audio/meme-stash/ussr.mp3",
+        "title": "USSR Anthem",
+        "play_phrase": "we own you now"
     }]
 }

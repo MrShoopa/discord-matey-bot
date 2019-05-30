@@ -16,6 +16,8 @@ import AUTH from './auth.json';
 
 //  DEPENDENCIES
 import * as DISCORD from 'discord.js'
+import * as FileSystem from 'fs'
+import * as Path from 'path'
 
 //  PHRASES
 import PHRASES_FRONT from './bot_knowledge/phrases/phrases_front.json';
@@ -23,6 +25,7 @@ import PHRASES_SING from './bot_knowledge/phrases/phrases_sing.json';
 import PHRASES_CONVO from './bot_knowledge/phrases/phrases_conversational.json';
 import PHRASES_SERVER_MOD from './bot_knowledge/phrases/phrases_server_mod.json';
 import PHRASES_IMAGE_SEARCH from './bot_knowledge/phrases/phrases_image_search.json';
+
 
 //  DEFAULTS
 import DEFAULTS_IMAGE from './bot_knowledge/defaults/image_search.json';
@@ -32,8 +35,12 @@ import TRIGGERS from './bot_knowledge/triggers/triggers.json';
 
 /* ----- */
 
+//  DIRECTORIES
+const localAudioLocation = __dirname + '/bot_knowledge/audio'
+
 //  ENTITIES
 const bot = new DISCORD.Client()
+
 
 //  Initialize Discord Bot
 console.log('Initializing bot...')
@@ -65,10 +72,11 @@ bot.on('message', function (message) {
     var matched_command = false
 
     //  Grabbing properties from user input
-    var message_string = (message.content).toString()
-    var voiceChannel: DISCORD.VoiceChannel = message.member.voice.channel
+    const message_string = (message.content).toString()
+    const voiceChannel: DISCORD.VoiceChannel = message.member.voice.channel
 
-    console.log(`A user said: ${message_string}`)
+    //  Begin logging block
+    console.log(`\nA user said: ${message_string}`)
 
 
     //      F U N C T I O N A L I T Y
@@ -87,21 +95,37 @@ bot.on('message', function (message) {
                 PHRASES_SING.songs_to_sing.forEach(song => {
                     if (message_string.toLowerCase().includes(song.title.toLowerCase()) && !matched_command) {
                         //  When song from local files is found
-                        playAudioFromFiles(song)
+                        playAudioFromFiles(song, trigger)
+                        return
                     } else if (message_string.toLowerCase().includes(TRIGGERS.url_trigger.any) && !matched_command) {
                         //  When song from URL is found
                         var url_string: string[] = message_string.split(' ')
 
-                        playAudioFromURL(url_string[url_string.length - 1])
+                        playAudioFromURL(url_string[url_string.length - 1], trigger)
+                        return
+
                     }
                 })
-            } catch (err) { //  When user is not in voice channel
-                //console.log(err)
 
-                console.log(
-                    'Warning: User is not in voice channel. Song wasn\'t played.')
-                message.reply(
-                    PHRASES_SING.message_not_in_channel)
+                // Start searching local audio folder for 'non-tagged' songs
+                let songsMatched = searchRecursive('./', `${message_string.substring(trigger.length + 1)}.mp3`);
+                if (songsMatched.length > 0) {
+                    console.log(`Local matching songs found:`)
+                    console.log(songsMatched)
+
+                    playAudioFromFiles(songsMatched[0])
+                    return
+                }
+
+            } catch (err) {
+
+                if (!voiceChannel) {
+                    console.log('Warning: User is not in voice channel. Song wasn\'t played.')
+                    message.reply(
+                        PHRASES_SING.message_not_in_channel)
+                } else {
+                    console.error(err)
+                }
             }
             if (song_state == 'fetching' && !matched_command) { //  When song is not found
                 message.reply(
@@ -294,7 +318,6 @@ bot.on('message', function (message) {
         if (message_string.toLowerCase().includes(trigger)) {
             logBotResponse(trigger)
             matched_command = true
-            console.log(matched_command)
 
             return message.reply(
                 fetchRandomPhrase(PHRASES_CONVO.asked_to_send_nudes))
@@ -318,11 +341,10 @@ bot.on('message', function (message) {
         logBotResponse(TRIGGERS.are_you_triggers.communist)
         matched_command = true
 
-        let matchesSong = (song) => {
-            return song.name === 'USSR Anthem';
-        }
-
-        playAudioFromFiles(PHRASES_SING.songs_to_sing.find(matchesSong))
+        PHRASES_SING.songs_to_sing.forEach(song => {
+            if (song.title === 'USSR Anthem')
+                playAudioFromFiles(song)
+        })
 
         return message.reply(
             fetchRandomPhrase(PHRASES_FRONT.asked.communist))
@@ -458,19 +480,30 @@ bot.on('message', function (message) {
             song_state = 'playing'
 
             voiceChannel.join().then(connection => {
-                console.log(
+                console.group("Local song playing:")
+                console.info(
                     `Voice channel connection status: ${connection.status}`)
-                const dispatcher: DISCORD.StreamDispatcher = connection.play(song.file)
-                console.log(song.play_phrase)
-                message.reply(dispatcher)
+
+                let dispatcher: DISCORD.StreamDispatcher
+                if (typeof song === "string") {
+                    dispatcher = connection.play(song)
+                    console.log(`Playing non-tagged song from first match.`)
+                    message.reply(`Playing ${song.split('\\').pop()} 👌`)
+                } else {
+                    dispatcher = connection.play(song.file)
+                    console.log(`Responding with '${song.play_phrase}'`)
+                    message.reply(dispatcher)
+                }
 
 
                 dispatcher.on('end', () => {
-                    console.log(
+                    console.info(
                         'Song played successfully.')
                     song_state = 'finished'
                     voiceChannel.leave()
                 })
+
+                console.groupEnd()
             })
 
             // FINISHED
@@ -481,7 +514,8 @@ bot.on('message', function (message) {
 
         if (!matched_command) {
             console.log('URL Command matched')
-            logBotResponse(trigger)
+            if (trigger)
+                logBotResponse(trigger)
             song_state = 'playing'
 
             var stream
@@ -502,16 +536,23 @@ bot.on('message', function (message) {
 
                 //  TODO: SoundCloud support
                 /*
-                const SC_CLIENT_ID = 'b45b1aa10f1ac2941910a7f0d10f8e28'
-                const scAudio = require('soundcloud-audio')
-
-                stream = new scAudio(SC_CLIENT_ID)
-
-                stream.resolve(url.toString())
-
+                                const SC_CLIENT_ID = 'b45b1aa10f1ac2941910a7f0d10f8e28'
+                                const SC = require('soundcloud')
+                
+                                SC.initialize({
+                                    client_id: SC_CLIENT_ID
+                                })
+                
+                                stream = SC.stream('/tracks/293').then(function (player) {
+                                    console.log('test)')
+                                    player.play();
+                                });
+                
+                                stream.resolve(url.toString())
+                */
 
                 return message.reply('SoundCloud support coming sometime later. :)')
-            */
+
             }
 
             voiceChannel.join().then(connection => {
@@ -565,6 +606,33 @@ bot.on('guildMemberAdd', member => {
         `Welcome to the server, ${member}! \n\n\n\n...\n\n who the f-`)
 })
 
-function fetchRandomPhrase(key: string[]) {
+//  Helper function for blind-picking phrases of lists
+var fetchRandomPhrase = (key: string[]) => {
     return key[Math.floor(Math.random() * (key.length))]
 }
+
+var searchRecursive = (dir, pattern) => {
+    // This is where we store pattern matches of all files inside the directory
+    var results = [];
+
+    // Read contents of directory
+    FileSystem.readdirSync(dir).forEach(function (dirInner) {
+        // Obtain absolute path
+        dirInner = Path.resolve(dir, dirInner);
+
+        // Get stats to determine if path is a directory or a file
+        var stat = FileSystem.statSync(dirInner);
+
+        // If path is a directory, scan it and combine results
+        if (stat.isDirectory()) {
+            results = results.concat(searchRecursive(dirInner, pattern));
+        }
+
+        // If path is a file and ends with pattern then push it onto results
+        if (stat.isFile() && dirInner.endsWith(pattern)) {
+            results.push(dirInner);
+        }
+    });
+
+    return results;
+};

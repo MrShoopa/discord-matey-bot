@@ -10,73 +10,102 @@
     },
 
     "songs_to_sing": [{
-        "file": "src/bot_knowledge/audio/FILE_EXAMPLE.MP3",
-        "title": "SONG TITLE",
-        "explicit": false,
-        "play_phrase": "MESSAGE SENT WHILE PLAYING",
-        "explicit_text": " [Explicit]"
-    }, {
-        "file": "src/bot_knowledge/audio/meme-stash/how-to-wake-up.mp3",
-        "title": "Wake Up Song",
-        "play_phrase": "sending killer vibes"
-    }, {
-        "file": "src/bot_knowledge/audio/meme-stash/john-cena-bassboosted.mp3",
-        "title": "JOHN CENA",
-        "play_phrase": "watch out"
-    }, {
-        "file": "src/bot_knowledge/audio/meme-stash/7th-element.mp3",
-        "title": "7th Element",
-        "play_phrase": "chadrum"
-    }, {
-        "file": "src/bot_knowledge/audio/meme-stash/lelelele.mp3",
-        "title": "lel lel",
-        "play_phrase": "lel"
-    }, {
-        "file": "src/bot_knowledge/audio/meme-stash/whatcha-say.mp3",
-        "title": "whatcha say",
-        "play_phrase": "Mmmm!"
-    }, {
-        "file": "src/bot_knowledge/audio/meme-stash/wii-u-chat-calling.mp3",
-        "title": "Wii U Chat Song",
-        "play_phrase": "Calling death"
-    }, {
-        "file": "src/bot_knowledge/audio/meme-stash/don't-you-try-it.mp3",
-        "title": "DON'T YOU TRY IT",
-        "play_phrase": "DON'T YOU TRYYYY EHHH"
-    }, {
-        "file": "src/bot_knowledge/audio/meme-stash/imma-hump-a-caucasian.mp3",
-        "title": "imma hump a caucasian",
-        "explicit": true,
-        "play_phrase": "Ya"
-    }, {
-        "file": "src/bot_knowledge/audio/meme-stash/greenhillzone.mp3",
-        "title": "Green Hill Zone bassboosted",
-        "play_phrase": "GOTTA GO FAST"
-    }, {
-        "file": "src/bot_knowledge/audio/meme-stash/nfl-theme.mp3",
-        "title": "NFL Theme Song",
-        "play_phrase": "HIKE"
-    }, {
-        "file": "src/bot_knowledge/audio/meme-stash/sad-violin.mp3",
-        "title": "Sad Violin",
-        "play_phrase": "2sad4me"
-    }, {
-        "file": "src/bot_knowledge/audio/meme-stash/f-bees.mp3",
-        "title": "bees",
-        "explicit": true,
-        "play_phrase": "b e e s"
-    }, {
-        "file": "src/bot_knowledge/audio/meme-stash/jellyfish-jam.mp3",
-        "title": "jellyfish jam",
-        "play_phrase": "bzzzz!"
-    }, {
-        "file": "src/bot_knowledge/audio/meme-stash/despacito.mp3",
-        "title": "despacito",
-        "play_phrase": "can you PlEasE gO t0 ALexA 4 THAT?!!?!?!??"
-    }, {
-        "file": "src/bot_knowledge/audio/meme-stash/ussr.mp3",
-        "title": "USSR Anthem",
-        "explicit": true,
-        "play_phrase": "we own you now"
-    }]
+            "category": "Example Category",
+            "file": "src/bot_knowledge/audio/FILE_EXAMPLE.MP3",
+            "title": "SONG TITLE",
+            "explicit": false,
+            "play_phrase": "MESSAGE SENT WHILE PLAYING",
+            "explicit_text": " [Explicit]"
+        },
+
+
+
+        {
+            "category": "Joe's Picks",
+            "file": "src/bot_knowledge/audio/meme-stash/how-to-wake-up.mp3",
+            "title": "Wake Up Song",
+            "play_phrase": "sending killer vibes"
+        }, {
+            "category": "Joe's Picks",
+            "file": "src/bot_knowledge/audio/meme-stash/john-cena-bassboosted.mp3",
+            "title": "JOHN CENA",
+            "play_phrase": "watch out"
+        }, {
+            "category": "Joe's Picks",
+            "file": "src/bot_knowledge/audio/meme-stash/7th-element.mp3",
+            "title": "7th Element",
+            "play_phrase": "chadrum"
+        }, {
+            "category": "Joe's Picks",
+            "file": "src/bot_knowledge/audio/meme-stash/lelelele.mp3",
+            "title": "lel lel",
+            "play_phrase": "lel"
+        }, {
+            "category": "Joe's Picks",
+            "file": "src/bot_knowledge/audio/meme-stash/whatcha-say.mp3",
+            "title": "whatcha say",
+            "play_phrase": "Mmmm!"
+        }, {
+            "category": "Joe's Picks",
+            "file": "src/bot_knowledge/audio/meme-stash/wii-u-chat-calling.mp3",
+            "title": "Wii U Chat Song",
+            "play_phrase": "Calling death"
+        }, {
+            "category": "Joe's Picks",
+            "file": "src/bot_knowledge/audio/meme-stash/don't-you-try-it.mp3",
+            "title": "DON'T YOU TRY IT",
+            "play_phrase": "DON'T YOU TRYYYY EHHH"
+        }, {
+            "category": "Joe's Picks",
+            "file": "src/bot_knowledge/audio/meme-stash/imma-hump-a-caucasian.mp3",
+            "title": "imma hump a caucasian",
+            "explicit": true,
+            "play_phrase": "Ya"
+        }, {
+            "category": "Joe's Picks",
+            "file": "src/bot_knowledge/audio/meme-stash/greenhillzone.mp3",
+            "title": "Green Hill Zone bassboosted",
+            "play_phrase": "GOTTA GO FAST"
+        }, {
+            "category": "Joe's Picks",
+            "file": "src/bot_knowledge/audio/meme-stash/nfl-theme.mp3",
+            "title": "NFL Theme Song",
+            "play_phrase": "HIKE"
+        }, {
+            "category": "Joe's Picks",
+            "file": "src/bot_knowledge/audio/meme-stash/sad-violin.mp3",
+            "title": "Sad Violin",
+            "play_phrase": "2sad4me"
+        }, {
+            "category": "Joe's Picks",
+            "file": "src/bot_knowledge/audio/meme-stash/f-bees.mp3",
+            "title": "bees",
+            "explicit": true,
+            "play_phrase": "b e e s"
+        }, {
+            "category": "Joe's Picks",
+            "file": "src/bot_knowledge/audio/meme-stash/jellyfish-jam.mp3",
+            "title": "jellyfish jam",
+            "play_phrase": "bzzzz!"
+        }, {
+            "category": "Joe's Picks",
+            "file": "src/bot_knowledge/audio/meme-stash/despacito.mp3",
+            "title": "despacito",
+            "play_phrase": "can you PlEasE gO t0 ALexA 4 THAT?!!?!?!??"
+        }, {
+            "category": "Joe's Picks",
+            "file": "src/bot_knowledge/audio/meme-stash/ussr.mp3",
+            "title": "USSR Anthem",
+            "explicit": true,
+            "play_phrase": "we own you now"
+        },
+
+        {
+            "category": "Nick's Soundclown",
+            "file": "src/bot_knowledge/audio/meme-stash/nicks-soundclown/2 to the 1 to the 1 to the meme.mp3",
+            "title": "2 to the 1",
+            "explicit": true,
+            "play_phrase": "I LIKE BIG MEMES"
+        }
+    ]
 }

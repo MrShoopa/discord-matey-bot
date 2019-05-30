@@ -339,12 +339,12 @@ bot.on('message', function (message) {
     //  "Are you a X?"
     if (message_string.toLowerCase().includes(TRIGGERS.are_you_triggers.communist)) {
         logBotResponse(TRIGGERS.are_you_triggers.communist)
-        matched_command = true
 
         PHRASES_SING.songs_to_sing.forEach(song => {
             if (song.title === 'USSR Anthem')
                 playAudioFromFiles(song)
         })
+        matched_command = true
 
         return message.reply(
             fetchRandomPhrase(PHRASES_FRONT.asked.communist))
@@ -492,7 +492,7 @@ bot.on('message', function (message) {
                 } else {
                     dispatcher = connection.play(song.file)
                     console.log(`Responding with '${song.play_phrase}'`)
-                    message.reply(dispatcher)
+                    message.reply(song.play_phrase)
                 }
 
 
@@ -580,7 +580,7 @@ bot.on('message', function (message) {
     }
 
     function logBotResponse(trigger = 'None') {
-        matched_command = true
+        //TODO: Make sure this doesn't break matched_command = true
 
         console.log(`Bot did something!
             TRIGGER: "${trigger}",

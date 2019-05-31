@@ -15,7 +15,7 @@ const RESTRICTED_ROLE_NAME = 'sKrUb!!! 😅👌🔥👈'
 import AUTH from './auth.json';
 
 //  DEPENDENCIES
-import * as DISCORD from 'discord.js'
+import * as Discord from 'discord.js'
 import * as FileSystem from 'fs'
 import * as Path from 'path'
 
@@ -35,34 +35,34 @@ import TRIGGERS from './bot_knowledge/triggers/triggers.json';
 /*  -----  */
 
 //  DIRECTORIES
-const localAudioLocation = __dirname + '/bot_knowledge/audio'
+const LOCAL_AUDIO_LOCATION = __dirname + '/bot_knowledge/audio'
 
 //  ENTITIES
-const Bot = new DISCORD.Client()
+const BOT = new Discord.Client()
 
 
 //  Initialize Discord Bot
 console.log('Initializing bot...')
-Bot.login(AUTH.discord.API_KEY)
-Bot.on('ready', () => {
+BOT.login(AUTH.discord.API_KEY)
+BOT.on('ready', () => {
     console.log('I\'m alive!')
 })
 
 //  States
-var song_state: string | boolean = 'idle'
+var songState: string | boolean = 'idle'
 
 //  Messaging to bot
-Bot.on('message', (message) => {
-    const user: String = message.author.id  // Fetch user's ID
+BOT.on('message', (message) => {
+    let user: String = message.author.id  // Fetch user's ID
 
     //  So bot doesn't respond to itself
-    if (user === Bot.user.id) return
+    if (user === BOT.user.id) return
 
-    var matched_command = false
+    var matchedCommand = false
 
     //  Grabbing properties from user input
-    const message_string = (message.content).toString()
-    const voiceChannel: DISCORD.VoiceChannel = message.member.voice.channel
+    let message_string = (message.content).toString()
+    const voiceChannel: Discord.VoiceChannel = message.member.voice.channel
 
     //  Begin logging block
     console.log(`\nA user said: ${message_string}`)
@@ -78,15 +78,19 @@ Bot.on('message', (message) => {
 
         //  Attempt to play song
         if (message_string.substring(0, 15).toLowerCase().includes(trigger)) {
-            song_state = 'fetching'
+            songState = 'fetching'
 
             try {
                 PHRASES_SING.songs_to_sing.forEach(song => {
-                    if (message_string.toLowerCase().includes(song.title.toLowerCase()) && !matched_command) {
+                    if (message_string.toLowerCase().
+                        includes(song.title.toLowerCase())
+                        && !matchedCommand) {
                         //  When song from local files is found
                         playAudioFromFiles(song, trigger)
                         return
-                    } else if (message_string.toLowerCase().includes(TRIGGERS.url_trigger.any) && !matched_command) {
+                    } else if (message_string.toLowerCase().
+                        includes(TRIGGERS.url_trigger.any) &&
+                        !matchedCommand) {
                         //  When song from URL is found
                         var url_string: string[] = message_string.split(' ')
 
@@ -98,7 +102,8 @@ Bot.on('message', (message) => {
 
                 // Start searching local audio folder for 'non-tagged' songs
                 let songsMatched =
-                    searchRecursive('./', `${message_string.substring(trigger.length + 1)}.mp3`);
+                    searchRecursive('./',
+                        `${message_string.substring(trigger.length + 1)}.mp3`);
                 if (songsMatched.length > 0) {
                     console.log(`Local matching songs found:`)
                     console.log(songsMatched)
@@ -117,13 +122,13 @@ Bot.on('message', (message) => {
                     console.error(err)
                 }
             }
-            if (song_state == 'fetching' && !matched_command) { //  When song is not found
+            if (songState == 'fetching' && !matchedCommand) { //  When song is not found
                 message.reply(
                     PHRASES_SING.message_unknown_summon)
             }
 
             // Finished
-            matched_command = true
+            matchedCommand = true
         }
 
 
@@ -149,9 +154,10 @@ Bot.on('message', (message) => {
             logBotResponse(trigger)
 
             //  Modules   
-            const google_images = require('google-images')
-            const googleBuddy =
-                new google_images(AUTH.google.search.CSE_ID, AUTH.google.search.API_KEY)
+            const GOOGLE_IMAGES = require('google-images')
+            const GOOGLE_IMAGER =
+                new google_images(
+                    AUTH.google.search.CSE_ID, AUTH.google.search.API_KEY)
 
 
             var user_query: string = ''
@@ -162,7 +168,8 @@ Bot.on('message', (message) => {
                 if (message_string.toLowerCase().includes(trigger)) {
                     //  Sets query to user's query (after prefix trigger)
                     user_query =
-                        message_string.substring(message_string.indexOf(trigger) + trigger.length + 1)
+                        message_string.substring(
+                            message_string.indexOf(trigger) + trigger.length + 1)
                     user_query_specified = true
                 }
             })
@@ -178,13 +185,13 @@ Bot.on('message', (message) => {
                     console.log(`Performing generic image search.`)
 
                 //  Attempts to search for query
-                googleBuddy.search(user_query).then(results => {
+                GOOGLE_IMAGER.search(user_query).then(results => {
                     //.console.log(results)
 
-                    const result_reply: DISCORD.MessageAttachment | string
+                    let result_reply: Discord.MessageAttachment | string
                         = !results.length ?
                             'Nothing found' :
-                            new DISCORD.MessageAttachment(results[Math.floor(Math.random() * results.length)].url)
+                            new Discord.MessageAttachment(results[Math.floor(Math.random() * results.length)].url)
 
                     //  Generates reply with random image and response
                     if (user_query_specified == true) {
@@ -204,7 +211,7 @@ Bot.on('message', (message) => {
             }
 
             //  FINISHED
-            matched_command = true
+            matchedCommand = true
         }
     })
     /*  -----  */
@@ -232,7 +239,7 @@ Bot.on('message', (message) => {
             })
 
             // FINISHED
-            matched_command = true
+            matchedCommand = true
         }
 
     })
@@ -254,7 +261,7 @@ Bot.on('message', (message) => {
             })
 
             // FINISHED
-            matched_command = true
+            matchedCommand = true
         }
 
     })
@@ -267,7 +274,7 @@ Bot.on('message', (message) => {
     TRIGGERS.third_person_phrase_triggers.self_death_wish.die.forEach(trigger => {
         if (message_string.toLowerCase().includes(trigger)) {
             logBotResponse(trigger)
-            matched_command = true
+            matchedCommand = true
 
             if (trigger == 'can i die')
                 return message.reply(
@@ -280,7 +287,7 @@ Bot.on('message', (message) => {
     TRIGGERS.third_person_phrase_triggers.self_death_wish.kill_self.forEach(trigger => {
         if (message_string.toLowerCase().includes(trigger)) {
             logBotResponse(trigger)
-            matched_command = true
+            matchedCommand = true
 
             return message.reply(
                 PHRASES_CONVO.counter_suicide_phrases[1])
@@ -290,7 +297,7 @@ Bot.on('message', (message) => {
     //  "S. A. D."
     if (message_string.includes(TRIGGERS.third_person_phrase_triggers.suck_thing[0]) &&
         message_string.includes(TRIGGERS.third_person_phrase_triggers.suck_thing[1])) {
-        matched_command = true
+        matchedCommand = true
 
         return message.reply(
             fetchRandomPhrase(PHRASES_CONVO.not_desired.to_look))
@@ -300,7 +307,7 @@ Bot.on('message', (message) => {
     TRIGGERS.send_nude_triggers.forEach(trigger => {
         if (message_string.toLowerCase().includes(trigger)) {
             logBotResponse(trigger)
-            matched_command = true
+            matchedCommand = true
 
             return message.reply(
                 fetchRandomPhrase(PHRASES_CONVO.asked_to_send_nudes))
@@ -312,7 +319,7 @@ Bot.on('message', (message) => {
     TRIGGERS.thank_you_triggers.forEach(trigger => {
         if (message_string.toLowerCase().includes(trigger)) {
             logBotResponse(trigger)
-            matched_command = true
+            matchedCommand = true
 
             return message.reply(
                 fetchRandomPhrase(PHRASES_FRONT.asked.thank_you))
@@ -327,7 +334,7 @@ Bot.on('message', (message) => {
             if (song.title === 'USSR Anthem')
                 playAudioFromFiles(song)
         })
-        matched_command = true
+        matchedCommand = true
 
         return message.reply(
             fetchRandomPhrase(PHRASES_FRONT.asked.communist))
@@ -369,7 +376,7 @@ Bot.on('message', (message) => {
     //  MAIN (When started with "Megadork", for example)
     TRIGGERS.main_trigger.forEach(trigger => {
         if (message_string.substring(0, 10).toLowerCase().includes(trigger) &&
-            !matched_command) {
+            !matchedCommand) {
 
             //  HELP
             TRIGGERS.help_questions.actions.forEach(trigger => {
@@ -387,7 +394,8 @@ Bot.on('message', (message) => {
                     //  Motivate
                     message.reply(
                         (PHRASES_FRONT.help_conversation.main +
-                            PHRASES_FRONT.help_conversation.example.threat) + '\n    ' +
+                            PHRASES_FRONT.help_conversation.example.threat) +
+                        '\n    ' +
                         PHRASES_FRONT.help_conversation.example.send_nudes)
 
                     //  Secret functions
@@ -401,21 +409,21 @@ Bot.on('message', (message) => {
                 if (message_string.toLowerCase().includes(trigger)) {
                     logBotResponse(trigger)
 
-                    var song_list = ''
+                    var songList = ''
 
                     message.reply(PHRASES_SING.help_intro)
                     message.reply(PHRASES_SING.help_youtube)
 
                     PHRASES_SING.songs_to_sing.forEach(song => {
                         if (song.title != PHRASES_SING.songs_to_sing[0].title) {
-                            song_list += `\n ${song.title}`
+                            songList += `\n ${song.title}`
                             if (song.explicit == true) {
-                                song_list +=
+                                songList +=
                                     PHRASES_SING.songs_to_sing[0].explicit_text
                             }
                         }
                     })
-                    message.reply(song_list)
+                    message.reply(songList)
                 }
             })
 
@@ -448,7 +456,7 @@ Bot.on('message', (message) => {
             })
 
             //  UHHH
-            if (!matched_command)
+            if (!matchedCommand)
                 message.reply(fetchRandomPhrase(PHRASES_FRONT.unknown_command))
         }
 
@@ -460,17 +468,17 @@ Bot.on('message', (message) => {
 
     function playAudioFromFiles(song, trigger?: string) {
 
-        if (!matched_command) {
+        if (!matchedCommand) {
             if (trigger)
                 logBotResponse(trigger)
-            song_state = 'playing'
+            songState = 'playing'
 
             voiceChannel.join().then(connection => {
                 console.group("Local song playing:")
                 console.info(
                     `Voice channel connection status: ${connection.status}`)
 
-                let dispatcher: DISCORD.StreamDispatcher
+                let dispatcher: Discord.StreamDispatcher
                 if (typeof song === "string") {
                     dispatcher = connection.play(song)
                     console.log(`Playing non-tagged song from first match.`)
@@ -485,7 +493,7 @@ Bot.on('message', (message) => {
                 dispatcher.on('end', () => {
                     console.info(
                         'Song played successfully.')
-                    song_state = 'finished'
+                    songState = 'finished'
                     voiceChannel.leave()
                 })
 
@@ -493,16 +501,16 @@ Bot.on('message', (message) => {
             })
 
             // FINISHED
-            matched_command = true
+            matchedCommand = true
         }
     }
     function playAudioFromURL(url: string, trigger?: string) {
 
-        if (!matched_command) {
+        if (!matchedCommand) {
             console.log('URL Command matched')
             if (trigger)
                 logBotResponse(trigger)
-            song_state = 'playing'
+            songState = 'playing'
 
             var stream
             var streamOptions: object = {
@@ -512,9 +520,9 @@ Bot.on('message', (message) => {
 
             if (url.includes('youtu')) {
                 //  Modules 
-                const ytdl = require('ytdl-core')
+                const YTDL = require('ytdl-core')
 
-                stream = ytdl(url.toString(), {
+                stream = YTDL(url.toString(), {
                     filter: 'audioonly'
                 })
 
@@ -542,24 +550,24 @@ Bot.on('message', (message) => {
             }
 
             voiceChannel.join().then(connection => {
-                song_state = 'playing'
+                songState = 'playing'
                 console.log(
                     `Voice channel connection status: ${connection.status}`)
 
-                const dispatcher: DISCORD.StreamDispatcher =
+                const dispatcher: Discord.StreamDispatcher =
                     connection.play(stream, streamOptions)
 
                 dispatcher.on('start', () => {
                     console.log(`Playing song from ${url}.`)
-                    song_state = 'finished'
+                    songState = 'finished'
                 })
                 dispatcher.on('end', () => {
                     console.log('Song played successfully.')
-                    song_state = 'finished'
+                    songState = 'finished'
                     voiceChannel.leave()
                 })
                 // FINISHED
-                matched_command = true
+                matchedCommand = true
             })
 
         }
@@ -577,7 +585,7 @@ Bot.on('message', (message) => {
     }
 
     function logBotResponse(trigger = 'None') {
-        //TODO: Make sure this doesn't break matched_command = true
+        //TODO: Make sure this doesn't break matchedCommand = true
 
         console.log(`Bot did something!
             TRIGGER: "${trigger}",
@@ -589,14 +597,14 @@ Bot.on('message', (message) => {
 })
 
 //TODO:  Greeting
-Bot.on('guildMemberAdd', member => {
+BOT.on('guildMemberAdd', member => {
     //  Send the message to a designated channel on a server:
-    const CHANNEL: DISCORD.GuildChannel =
+    const CHANNEL: Discord.GuildChannel =
         member.guild.channels.find(ch => ch.name === 'member-log')
     //  Do nothing if the channel wasn't found on this server
     if (!CHANNEL) return
     //  Send the message, mentioning the member
-    if (!((CHANNEL): CHANNEL is DISCORD.TextChannel =>
+    if (!((CHANNEL): CHANNEL is Discord.TextChannel =>
         CHANNEL.type === 'text')
         (CHANNEL))
         return

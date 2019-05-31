@@ -102,8 +102,10 @@
         "dank_meme": [
             "megadork throw me a meme",
             "megadork send me a meme",
-            "megadork meme me"
-        ]
+            "megadork meme me",
+            "megadork show me memes",
+            "megadork send dank memes"
+        ],
         "context_prefix": [
             "of",
             "about",

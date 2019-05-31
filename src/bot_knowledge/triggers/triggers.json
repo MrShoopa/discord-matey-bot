@@ -96,14 +96,21 @@
             "megadork give me a random picture",
             "megadork send me a picture",
             "megadork send me a photo",
+            "megadork send me a random image",
             "megadork send me a random picture",
+            "megadork show me a picture",
+            "megadork show me a photo",
+            "megadork show me a random image",
+            "megadork show me a random picture",
             "megadork throw me a random picture"
         ],
         "dank_meme": [
             "megadork throw me a meme",
             "megadork send me a meme",
-            "megadork meme me"
-        ]
+            "megadork meme me",
+            "megadork show me memes",
+            "megadork send dank memes"
+        ],
         "context_prefix": [
             "of",
             "about",

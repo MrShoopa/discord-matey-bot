@@ -61,11 +61,11 @@ BOT.on('message', (message) => {
     var matchedCommand = false
 
     //  Grabbing properties from user input
-    let message_string = (message.content).toString()
+    let messageString = (message.content).toString()
     const voiceChannel: Discord.VoiceChannel = message.member.voice.channel
 
     //  Begin logging block
-    console.log(`\nA user said: ${message_string}`)
+    console.log(`\nA user said: ${messageString}`)
 
 
     /*      F U N C T I O N A L I T Y       */
@@ -77,22 +77,22 @@ BOT.on('message', (message) => {
         trigger.toLowerCase()
 
         //  Attempt to play song
-        if (message_string.substring(0, 15).toLowerCase().includes(trigger)) {
+        if (messageString.substring(0, 15).toLowerCase().includes(trigger)) {
             songState = 'fetching'
 
             try {
                 PHRASES_SING.songs_to_sing.forEach(song => {
-                    if (message_string.toLowerCase().
+                    if (messageString.toLowerCase().
                         includes(song.title.toLowerCase())
                         && !matchedCommand) {
                         //  When song from local files is found
                         playAudioFromFiles(song, trigger)
                         return
-                    } else if (message_string.toLowerCase().
+                    } else if (messageString.toLowerCase().
                         includes(TRIGGERS.url_trigger.any) &&
                         !matchedCommand) {
                         //  When song from URL is found
-                        var url_string: string[] = message_string.split(' ')
+                        var url_string: string[] = messageString.split(' ')
 
                         playAudioFromURL(url_string[url_string.length - 1], trigger)
                         return
@@ -103,7 +103,7 @@ BOT.on('message', (message) => {
                 // Start searching local audio folder for 'non-tagged' songs
                 let songsMatched =
                     searchRecursive('./',
-                        `${message_string.substring(trigger.length + 1)}.mp3`);
+                        `${messageString.substring(trigger.length + 1)}.mp3`);
                 if (songsMatched.length > 0) {
                     console.log(`Local matching songs found:`)
                     console.log(songsMatched)
@@ -135,7 +135,7 @@ BOT.on('message', (message) => {
     })
     //  Stop audio
     TRIGGERS.singing_triggers.stop.forEach(trigger => {
-        if (message_string.substring(0, 25).toLowerCase().includes(trigger) &&
+        if (messageString.substring(0, 25).toLowerCase().includes(trigger) &&
             voiceChannel != null && voiceChannel.bitrate) {
             logBotResponse(trigger)
 
@@ -150,65 +150,22 @@ BOT.on('message', (message) => {
 
     //  Find random image (from Google Images)
     TRIGGERS.image_search_triggers.random_image.forEach(trigger => {
-        if (message_string.toLowerCase().includes(trigger)) {
+        if (messageString.toLowerCase().includes(trigger)) {
             logBotResponse(trigger)
 
-            //  Modules   
-            const GOOGLE_IMAGES = require('google-images')
-            const GOOGLE_IMAGER =
-                new google_images(
-                    AUTH.google.search.CSE_ID, AUTH.google.search.API_KEY)
-
-
-            var user_query: string = ''
-            var user_query_specified: boolean = false
+            var userQuery: string = ''
 
             TRIGGERS.image_search_triggers.context_prefix.forEach(trigger => {
                 //  If user includes a specific thing to look for.
-                if (message_string.toLowerCase().includes(trigger)) {
+                if (messageString.toLowerCase().includes(trigger)) {
                     //  Sets query to user's query (after prefix trigger)
-                    user_query =
-                        message_string.substring(
-                            message_string.indexOf(trigger) + trigger.length + 1)
-                    user_query_specified = true
+                    userQuery =
+                        messageString.substring(
+                            messageString.indexOf(trigger) + trigger.length + 1)
                 }
             })
 
-            //  Random generated (from defaults list) query if user doesn't specify specific item
-            user_query = (user_query == '') ?
-                DEFAULTS_IMAGE.random_query[Math.floor(Math.random() * DEFAULTS_IMAGE.random_query.length)] : user_query
-
-            try {
-                if (user_query.length > 0)
-                    console.log(`Performing image search for ${user_query}.`)
-                else
-                    console.log(`Performing generic image search.`)
-
-                //  Attempts to search for query
-                GOOGLE_IMAGER.search(user_query).then(results => {
-                    //.console.log(results)
-
-                    let result_reply: Discord.MessageAttachment | string
-                        = !results.length ?
-                            'Nothing found' :
-                            new Discord.MessageAttachment(results[Math.floor(Math.random() * results.length)].url)
-
-                    //  Generates reply with random image and response
-                    if (user_query_specified == true) {
-                        message.reply(
-                            `${fetchRandomPhrase(PHRASES_IMAGE_SEARCH.image_search_fetch_response.image_search_with_context)}${user_query}.`)
-                    } else {
-                        message.reply(
-                            `${fetchRandomPhrase(PHRASES_IMAGE_SEARCH.image_search_fetch_response.image_search_random)}`)
-                    }
-                    message.channel.send(result_reply)
-                })
-            } catch (e) {
-                //  The other cases
-                console.error(e)
-                message.channel.send(
-                    'Couldn\'t find image! Let Joe know to find the error.')
-            }
+            fetchImageFromGoogle(userQuery)
 
             //  FINISHED
             matchedCommand = true
@@ -221,7 +178,7 @@ BOT.on('message', (message) => {
 
     //  Set Restricted Role
     TRIGGERS.server_mod_triggers.set_restricted_role.forEach(trigger => {
-        if (message_string.toLowerCase().includes(trigger)) {
+        if (messageString.toLowerCase().includes(trigger)) {
             logBotResponse(trigger)
 
             message.mentions.members.forEach(member => {
@@ -245,7 +202,7 @@ BOT.on('message', (message) => {
     })
     //  Unset Restricted Role
     TRIGGERS.server_mod_triggers.unset_restricted_role.forEach(trigger => {
-        if (message_string.toLowerCase().includes(trigger)) {
+        if (messageString.toLowerCase().includes(trigger)) {
             logBotResponse(trigger)
 
             message.mentions.members.forEach(member => {
@@ -272,7 +229,7 @@ BOT.on('message', (message) => {
 
     //  Suicidal
     TRIGGERS.third_person_phrase_triggers.self_death_wish.die.forEach(trigger => {
-        if (message_string.toLowerCase().includes(trigger)) {
+        if (messageString.toLowerCase().includes(trigger)) {
             logBotResponse(trigger)
             matchedCommand = true
 
@@ -285,7 +242,7 @@ BOT.on('message', (message) => {
         }
     })
     TRIGGERS.third_person_phrase_triggers.self_death_wish.kill_self.forEach(trigger => {
-        if (message_string.toLowerCase().includes(trigger)) {
+        if (messageString.toLowerCase().includes(trigger)) {
             logBotResponse(trigger)
             matchedCommand = true
 
@@ -295,8 +252,8 @@ BOT.on('message', (message) => {
     })
 
     //  "S. A. D."
-    if (message_string.includes(TRIGGERS.third_person_phrase_triggers.suck_thing[0]) &&
-        message_string.includes(TRIGGERS.third_person_phrase_triggers.suck_thing[1])) {
+    if (messageString.includes(TRIGGERS.third_person_phrase_triggers.suck_thing[0]) &&
+        messageString.includes(TRIGGERS.third_person_phrase_triggers.suck_thing[1])) {
         matchedCommand = true
 
         return message.reply(
@@ -305,7 +262,7 @@ BOT.on('message', (message) => {
 
     //  Send Nudes (Per request of a friend :P)
     TRIGGERS.send_nude_triggers.forEach(trigger => {
-        if (message_string.toLowerCase().includes(trigger)) {
+        if (messageString.toLowerCase().includes(trigger)) {
             logBotResponse(trigger)
             matchedCommand = true
 
@@ -317,7 +274,7 @@ BOT.on('message', (message) => {
 
     //  Thank you
     TRIGGERS.thank_you_triggers.forEach(trigger => {
-        if (message_string.toLowerCase().includes(trigger)) {
+        if (messageString.toLowerCase().includes(trigger)) {
             logBotResponse(trigger)
             matchedCommand = true
 
@@ -327,7 +284,7 @@ BOT.on('message', (message) => {
     })
 
     //  "Are you a X?"
-    if (message_string.toLowerCase().includes(TRIGGERS.are_you_triggers.communist)) {
+    if (messageString.toLowerCase().includes(TRIGGERS.are_you_triggers.communist)) {
         logBotResponse(TRIGGERS.are_you_triggers.communist)
 
         PHRASES_SING.songs_to_sing.forEach(song => {
@@ -347,11 +304,11 @@ BOT.on('message', (message) => {
 
     //  When mentioning name afterwards (anytime main_trigger is mentioned)
     TRIGGERS.main_trigger.forEach(trigger => {
-        if (message_string.toLowerCase().includes(trigger, 1)) {
+        if (messageString.toLowerCase().includes(trigger, 1)) {
 
             //  Death threats
             TRIGGERS.threat.kill_self.forEach(trigger => {
-                if (message_string.toLowerCase().includes(trigger)) {
+                if (messageString.toLowerCase().includes(trigger)) {
                     logBotResponse(trigger)
 
                     //  FRIEND SPECIFIC :)
@@ -375,12 +332,12 @@ BOT.on('message', (message) => {
 
     //  MAIN (When started with "Megadork", for example)
     TRIGGERS.main_trigger.forEach(trigger => {
-        if (message_string.substring(0, 10).toLowerCase().includes(trigger) &&
+        if (messageString.substring(0, 10).toLowerCase().includes(trigger) &&
             !matchedCommand) {
 
             //  HELP
             TRIGGERS.help_questions.actions.forEach(trigger => {
-                if (message_string.toLowerCase().includes(trigger)) {
+                if (messageString.toLowerCase().includes(trigger)) {
                     logBotResponse(trigger)
 
                     message.reply(PHRASES_FRONT.help_intro)
@@ -406,7 +363,7 @@ BOT.on('message', (message) => {
 
             //  SINGING HELP
             TRIGGERS.help_questions.singing.forEach(trigger => {
-                if (message_string.toLowerCase().includes(trigger)) {
+                if (messageString.toLowerCase().includes(trigger)) {
                     logBotResponse(trigger)
 
                     var songList = ''
@@ -429,7 +386,7 @@ BOT.on('message', (message) => {
 
             //  PHRASE-PLAY
             TRIGGERS.how_is_bot.forEach(trigger => {
-                if (message_string.toLowerCase().includes(trigger)) {
+                if (messageString.toLowerCase().includes(trigger)) {
                     logBotResponse(trigger)
 
                     message.reply(
@@ -437,7 +394,7 @@ BOT.on('message', (message) => {
                 }
             })
             TRIGGERS.threat.kill_self.forEach(trigger => {
-                if (message_string.toLowerCase().includes(trigger)) {
+                if (messageString.toLowerCase().includes(trigger)) {
                     logBotResponse(trigger)
 
                     message.reply(
@@ -448,7 +405,7 @@ BOT.on('message', (message) => {
             //  COMMANDS
 
             TRIGGERS.main_trigger.forEach(trigger => {
-                if (message_string == trigger) {
+                if (messageString == trigger) {
                     logBotResponse(trigger)
 
                     message.reply(PHRASES_FRONT.name_only_callout)
@@ -584,13 +541,58 @@ BOT.on('message', (message) => {
         return null
     }
 
+    function fetchImageFromGoogle(userQuery = '') {
+        //  Modules   
+        const GoogleImages = require('google-images')
+        const GOOGLE_IMAGER =
+            new GoogleImages(
+                AUTH.google.search.CSE_ID, AUTH.google.search.API_KEY)
+
+
+        //  Random generated (from defaults list) query if user doesn't specify specific item
+        userQuery = (userQuery == '') ?
+            DEFAULTS_IMAGE.random_query[Math.floor(Math.random() * DEFAULTS_IMAGE.random_query.length)] : userQuery
+
+        try {
+            if (userQuery.length > 0)
+                console.log(`Performing image search for ${userQuery}.`)
+            else
+                console.log(`Performing generic image search.`)
+
+            //  Attempts to search for query
+            GOOGLE_IMAGER.search(userQuery).then(results => {
+                //.console.log(results)
+
+                let resultReply: Discord.MessageAttachment | string
+                    = !results.length ?
+                        'Nothing found' :
+                        new Discord.MessageAttachment(results[Math.floor(Math.random() * results.length)].url)
+
+                //  Generates reply with random image and response
+                if (userQuery !== '') {
+                    message.reply(
+                        `${fetchRandomPhrase(PHRASES_IMAGE_SEARCH.image_search_fetch_response.image_search_with_context)}${userQuery}.`)
+                } else {
+                    message.reply(
+                        `${fetchRandomPhrase(PHRASES_IMAGE_SEARCH.image_search_fetch_response.image_search_random)}`)
+                }
+                message.channel.send(resultReply)
+            })
+        } catch (e) {
+            //  The other cases
+            console.error(e)
+            message.channel.send(
+                'Couldn\'t find image! Let Joe know to find the error.')
+        }
+    }
+
     function logBotResponse(trigger = 'None') {
         //TODO: Make sure this doesn't break matchedCommand = true
 
         console.log(`Bot did something!
             TRIGGER: "${trigger}",
             TRIGGERED_BY: '${message.author.username}',
-            USER_CONTEXT: "${message_string}"`)
+            USER_CONTEXT: "${messageString}"`)
     }
 
     /*  -----  */

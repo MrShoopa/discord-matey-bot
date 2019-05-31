@@ -6,7 +6,7 @@
 */
 
 //*  Server-Specific settings    (INCLUDE YOUR SERVER'S INFO WHERE APPLICABLE)
-var restricted_role_name = 'sKrUb!!! 😅👌🔥👈'
+const RESTRICTED_ROLE_NAME = 'sKrUb!!! 😅👌🔥👈'
 
 
 /* --- Assets --- */
@@ -26,26 +26,25 @@ import PHRASES_CONVO from './bot_knowledge/phrases/phrases_conversational.json';
 import PHRASES_SERVER_MOD from './bot_knowledge/phrases/phrases_server_mod.json';
 import PHRASES_IMAGE_SEARCH from './bot_knowledge/phrases/phrases_image_search.json';
 
-
 //  DEFAULTS
 import DEFAULTS_IMAGE from './bot_knowledge/defaults/image_search.json';
 
 //  TRIGGERS
 import TRIGGERS from './bot_knowledge/triggers/triggers.json';
 
-/* ----- */
+/*  -----  */
 
 //  DIRECTORIES
 const localAudioLocation = __dirname + '/bot_knowledge/audio'
 
 //  ENTITIES
-const bot = new DISCORD.Client()
+const Bot = new DISCORD.Client()
 
 
 //  Initialize Discord Bot
 console.log('Initializing bot...')
-bot.login(AUTH.discord.API_KEY)
-bot.on('ready', () => {
+Bot.login(AUTH.discord.API_KEY)
+Bot.on('ready', () => {
     console.log('I\'m alive!')
 })
 
@@ -53,21 +52,11 @@ bot.on('ready', () => {
 var song_state: string | boolean = 'idle'
 
 //  Messaging to bot
-bot.on('message', function (message) {
-    const user: String = message.author.id
-
-    //  Find restricted role ID
-    var restricted_role_id: string = null
-
-    message.guild.roles.forEach(function (role) {
-        //console.log(role.name)
-
-        if (role.name == restricted_role_name) restricted_role_id = role.id
-
-    })
+Bot.on('message', (message) => {
+    const user: String = message.author.id  // Fetch user's ID
 
     //  So bot doesn't respond to itself
-    if (user == '449625729509097482') return
+    if (user === Bot.user.id) return
 
     var matched_command = false
 
@@ -79,11 +68,11 @@ bot.on('message', function (message) {
     console.log(`\nA user said: ${message_string}`)
 
 
-    //      F U N C T I O N A L I T Y
+    /*      F U N C T I O N A L I T Y       */
 
-    /*
-       ---- Music Functionality ----
-    */
+    /*  ---- Music Functionality ----  */
+
+    //  Play song
     TRIGGERS.singing_triggers.play.forEach(trigger => {
         trigger.toLowerCase()
 
@@ -108,7 +97,8 @@ bot.on('message', function (message) {
                 })
 
                 // Start searching local audio folder for 'non-tagged' songs
-                let songsMatched = searchRecursive('./', `${message_string.substring(trigger.length + 1)}.mp3`);
+                let songsMatched =
+                    searchRecursive('./', `${message_string.substring(trigger.length + 1)}.mp3`);
                 if (songsMatched.length > 0) {
                     console.log(`Local matching songs found:`)
                     console.log(songsMatched)
@@ -140,8 +130,6 @@ bot.on('message', function (message) {
     })
     //  Stop audio
     TRIGGERS.singing_triggers.stop.forEach(trigger => {
-        //console.log(voiceChannel)
-
         if (message_string.substring(0, 25).toLowerCase().includes(trigger) &&
             voiceChannel != null && voiceChannel.bitrate) {
             logBotResponse(trigger)
@@ -151,13 +139,10 @@ bot.on('message', function (message) {
         }
 
     })
-    /*
-        ----    END     ----
-    */
+    /*  ----  */
 
-    /*  
-        ----    Image-Fetching (Google JS API)  ----
-    */
+    /*  ----    Image-Fetching (Google JS API)  ----    */
+
     //  Find random image (from Google Images)
     TRIGGERS.image_search_triggers.random_image.forEach(trigger => {
         if (message_string.toLowerCase().includes(trigger)) {
@@ -165,7 +150,6 @@ bot.on('message', function (message) {
 
             //  Modules   
             const google_images = require('google-images')
-            //  Stored in 'auth.json' in root!
             const googleBuddy =
                 new google_images(AUTH.google.search.CSE_ID, AUTH.google.search.API_KEY)
 
@@ -188,11 +172,14 @@ bot.on('message', function (message) {
                 DEFAULTS_IMAGE.random_query[Math.floor(Math.random() * DEFAULTS_IMAGE.random_query.length)] : user_query
 
             try {
-                console.log(`Performing image search for ${user_query}.`)
+                if (user_query.length > 0)
+                    console.log(`Performing image search for ${user_query}.`)
+                else
+                    console.log(`Performing generic image search.`)
 
                 //  Attempts to search for query
                 googleBuddy.search(user_query).then(results => {
-                    //console.log(results)
+                    //.console.log(results)
 
                     const result_reply: DISCORD.MessageAttachment | string
                         = !results.length ?
@@ -220,27 +207,24 @@ bot.on('message', function (message) {
             matched_command = true
         }
     })
-    /*
-            ----    END     ----
-    */
+    /*  -----  */
 
 
-    /*  
-        ----    Server-Management      ----
-    */
+    /*  ----    Server-Management   ---- */
+
     //  Set Restricted Role
     TRIGGERS.server_mod_triggers.set_restricted_role.forEach(trigger => {
         if (message_string.toLowerCase().includes(trigger)) {
             logBotResponse(trigger)
 
-            message.mentions.members.forEach(function (member) {
+            message.mentions.members.forEach(member => {
                 message.reply(
                     `${fetchRandomPhrase(PHRASES_SERVER_MOD.restricted_role_set)},
                      ${member.displayName}`)
-                member.roles.add(restricted_role_id)
+                member.roles.add(fetchRestrictedRoleID())
                     .then(() => {
                         console.log(
-                            `Adding ${member.displayName} to the role: ${restricted_role_id}`)
+                            `Adding ${member.displayName} to the role: ${RESTRICTED_ROLE_NAME}`)
                     })
                     .catch(
                         console.error)
@@ -257,14 +241,14 @@ bot.on('message', function (message) {
         if (message_string.toLowerCase().includes(trigger)) {
             logBotResponse(trigger)
 
-            message.mentions.members.forEach((member) => {
+            message.mentions.members.forEach(member => {
                 message.reply(
                     `${fetchRandomPhrase(PHRASES_SERVER_MOD.restricted_role_unset)},
                      ${member.displayName}`)
-                member.roles.remove(restricted_role_id)
+                member.roles.remove(fetchRestrictedRoleID())
                     .then(() => {
                         console.log(
-                            `Removing ${member.displayName} from the role: ${restricted_role_id}`)
+                            `Removing ${member.displayName} from the role: ${RESTRICTED_ROLE_NAME}`)
                     })
                     .catch(console.error)
             })
@@ -274,12 +258,11 @@ bot.on('message', function (message) {
         }
 
     })
-    /*
-        ----    END     ----
-    */
+    /*  -----  */
 
 
-    /*  ----    Phrase play     ----*/
+    /*  ----    Phrase play     ---- */
+
     //  Suicidal
     TRIGGERS.third_person_phrase_triggers.self_death_wish.die.forEach(trigger => {
         if (message_string.toLowerCase().includes(trigger)) {
@@ -350,12 +333,11 @@ bot.on('message', function (message) {
             fetchRandomPhrase(PHRASES_FRONT.asked.communist))
     }
 
-    /*
-        ----    END     ----
-    */
+    /*  -----  */
 
     //  TODO: Fix this not working orrrrr
-    // ---- DEFAULT CASE ----
+    /* ---- DEFAULT CASE ---- */
+
     //  When mentioning name afterwards (anytime main_trigger is mentioned)
     TRIGGERS.main_trigger.forEach(trigger => {
         if (message_string.toLowerCase().includes(trigger, 1)) {
@@ -472,6 +454,10 @@ bot.on('message', function (message) {
 
     })
 
+    /*  -----  */
+
+    /*  ---- Helper Functions ---- */
+
     function playAudioFromFiles(song, trigger?: string) {
 
         if (!matched_command) {
@@ -579,6 +565,17 @@ bot.on('message', function (message) {
         }
     }
 
+    function fetchRestrictedRoleID(roleName = RESTRICTED_ROLE_NAME) {
+        message.guild.roles.forEach(role => {
+            //.console.log(role.name)
+
+            if (role.name == roleName)
+                return role.id
+
+        })
+        return null
+    }
+
     function logBotResponse(trigger = 'None') {
         //TODO: Make sure this doesn't break matched_command = true
 
@@ -587,10 +584,12 @@ bot.on('message', function (message) {
             TRIGGERED_BY: '${message.author.username}',
             USER_CONTEXT: "${message_string}"`)
     }
+
+    /*  -----  */
 })
 
-//  Greeting
-bot.on('guildMemberAdd', member => {
+//TODO:  Greeting
+Bot.on('guildMemberAdd', member => {
     //  Send the message to a designated channel on a server:
     const CHANNEL: DISCORD.GuildChannel =
         member.guild.channels.find(ch => ch.name === 'member-log')
@@ -606,17 +605,21 @@ bot.on('guildMemberAdd', member => {
         `Welcome to the server, ${member}! \n\n\n\n...\n\n who the f-`)
 })
 
+
+
+/*  ----    Helper Functions    ----   */
+
 //  Helper function for blind-picking phrases of lists
-var fetchRandomPhrase = (key: string[]) => {
+function fetchRandomPhrase(key: string[]) {
     return key[Math.floor(Math.random() * (key.length))]
 }
 
-var searchRecursive = (dir, pattern) => {
+function searchRecursive(dir, pattern) {
     // This is where we store pattern matches of all files inside the directory
     var results = [];
 
     // Read contents of directory
-    FileSystem.readdirSync(dir).forEach(function (dirInner) {
+    FileSystem.readdirSync(dir).forEach(dirInner => {
         // Obtain absolute path
         dirInner = Path.resolve(dir, dirInner);
 
@@ -636,3 +639,5 @@ var searchRecursive = (dir, pattern) => {
 
     return results;
 };
+
+/*  -----  */

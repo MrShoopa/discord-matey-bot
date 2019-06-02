@@ -25,6 +25,7 @@ import PHRASES_SING from './bot_knowledge/phrases/phrases_sing.json';
 import PHRASES_CONVO from './bot_knowledge/phrases/phrases_conversational.json';
 import PHRASES_SERVER_MOD from './bot_knowledge/phrases/phrases_server_mod.json';
 import PHRASES_IMAGE_SEARCH from './bot_knowledge/phrases/phrases_image_search.json';
+import PHRASES_SWEAR_JAR from './bot_knowledge/phrases/phrases_swear_jar.json';
 
 //  DEFAULTS
 import DEFAULTS_IMAGE from './bot_knowledge/defaults/image_search.json';
@@ -36,6 +37,8 @@ import TRIGGERS from './bot_knowledge/triggers/triggers.json';
 
 //  DIRECTORIES
 const LOCAL_AUDIO_LOCATION = __dirname + '/bot_knowledge/audio'
+const SAVE_DATA = __dirname + '/bot_knowledge/save_data'
+const SAVE_DATA_FILE = `${SAVE_DATA}/games/swear_jar/data.json`
 
 //  ENTITIES
 const BOT = new Discord.Client()
@@ -70,6 +73,60 @@ BOT.on('message', (message) => {
 
     /*      F U N C T I O N A L I T Y       */
 
+
+    /*  ---- Swear Jar Functionality ----  */
+    TRIGGERS.swear_jar_triggers.bad_words.forEach(trigger => {
+        //TODO: Add swear jar functionality
+
+        trigger.toLowerCase()
+
+        if (messageString.toLowerCase().includes(trigger)) {
+
+            logBotResponse(trigger)
+            message.reply(fetchRandomPhrase(PHRASES_SWEAR_JAR.bad_word_detected))
+
+            //  Get current swear count
+
+            // TODO? Create interface
+            var data: { "_id": string; "swearScore": number; }[]
+
+            try {
+                data = JSON.parse(
+                    FileSystem.readFileSync(SAVE_DATA_FILE).toString())
+                //.console.log(data)
+
+            } catch (err) {
+                console.error(err)
+                console.log('Have you deleted the save file?')
+            }
+
+
+            //  Find user,
+            let userData: { _id: string; swearScore?: number; }
+            userData = data.find(matchedUser => {
+                return matchedUser._id === message.author.id
+            })
+
+            if (userData === undefined)
+                // ,then start new count.
+                data.push({
+                    "_id": message.author.id,
+                    "swearScore": 1
+                })
+            else
+                //then update count.
+                userData.swearScore++
+
+            FileSystem.writeFile(SAVE_DATA_FILE, JSON.stringify(data), err => {
+                if (err) throw err;
+                console.log('Swear jar data updated.');
+            });
+
+            message.reply(fetchRandomPhrase(PHRASES_SWEAR_JAR.new_user))
+            return message.reply(fetchRandomPhrase(PHRASES_SWEAR_JAR.swear_point_increment.one_point))
+        }
+    })
+
     /*  ---- Music Functionality ----  */
 
     //  Play song
@@ -81,19 +138,22 @@ BOT.on('message', (message) => {
             songState = 'fetching'
 
             try {
+
+                //  Iterates over list of listed songs before taking action.
                 PHRASES_SING.songs_to_sing.forEach(song => {
                     if (messageString.toLowerCase().
                         includes(song.title.toLowerCase())
                         && !matchedCommand) {
                         //  When song from local files is found
+
                         playAudioFromFiles(song, trigger)
                         return
                     } else if (messageString.toLowerCase().
                         includes(TRIGGERS.url_trigger.any) &&
                         !matchedCommand) {
                         //  When song from URL is found
-                        var url_string: string[] = messageString.split(' ')
 
+                        var url_string: string[] = messageString.split(' ')
                         playAudioFromURL(url_string[url_string.length - 1], trigger)
                         return
 
@@ -101,14 +161,14 @@ BOT.on('message', (message) => {
                 })
 
                 // Start searching local audio folder for 'non-tagged' songs
-                let songsMatched =
+                let matchedSongs =
                     searchRecursive('./',
                         `${messageString.substring(trigger.length + 1)}.mp3`);
-                if (songsMatched.length > 0) {
+                if (matchedSongs.length > 0) {
                     console.log(`Local matching songs found:`)
-                    console.log(songsMatched)
+                    console.log(matchedSongs)
 
-                    playAudioFromFiles(songsMatched[0])
+                    playAudioFromFiles(matchedSongs[0])
                     return
                 }
 
@@ -121,6 +181,7 @@ BOT.on('message', (message) => {
                 } else {
                     console.error(err)
                 }
+
             }
             if (songState == 'fetching' && !matchedCommand) { //  When song is not found
                 message.reply(
@@ -299,7 +360,6 @@ BOT.on('message', (message) => {
 
     /*  -----  */
 
-    //  TODO: Fix this not working orrrrr
     /* ---- DEFAULT CASE ---- */
 
     //  When mentioning name afterwards (anytime main_trigger is mentioned)
@@ -598,7 +658,7 @@ BOT.on('message', (message) => {
     /*  -----  */
 })
 
-//TODO:  Greeting
+//TODO?:  Greeting
 BOT.on('guildMemberAdd', member => {
     //  Send the message to a designated channel on a server:
     const CHANNEL: Discord.GuildChannel =

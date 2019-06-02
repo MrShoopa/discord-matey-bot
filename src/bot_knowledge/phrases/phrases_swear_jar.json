@@ -1,0 +1,19 @@
+{
+    "bad_word_detected": [
+        "THIS IS A CHRISTIAN SERVER",
+        "imma pulling a star off of ya",
+        "did your mother teach you to use that word",
+        "bad word detected!!!!!11@"
+    ],
+    "swear_point_increment": {
+        "one_point": [
+            "one dollar in the jar",
+            "one point to the swear jar",
+            "one OOF"
+        ]
+    },
+
+    "new_user": [
+        "i'm starting a jar for you, good luck"
+    ]
+}

@@ -118,7 +118,9 @@ BOT.on('message', (message) => {
                 console.log('Swear jar data updated.');
             });
 
-            return message.reply(fetchRandomPhrase(PHRASES_SWEAR_JAR.swear_point_increment.one_point))
+            return message.reply(
+                `${fetchRandomPhrase(PHRASES_SWEAR_JAR.swear_point_increment.one_point)}!
+                    You have now sworn ${userData.swearScore} times.`)
         }
     })
 
@@ -706,3 +708,6 @@ function searchRecursive(dir, pattern) {
     return results;
 };
 
+
+
+//TODO: Add end of month results for Swear Jar

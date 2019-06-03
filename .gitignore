@@ -1,6 +1,9 @@
 # Authorization
 auth.json
 
+# Save Data
+user_data.json
+
 # Code Runner
 tempCodeRunnerFile.js
 

@@ -33,12 +33,14 @@ import DEFAULTS_IMAGE from './bot_knowledge/defaults/image_search.json';
 //  TRIGGERS
 import TRIGGERS from './bot_knowledge/triggers/triggers.json';
 
+import BotData from './BotData';
+
 /*  -----  */
 
 //  DIRECTORIES
 const LOCAL_AUDIO_LOCATION = __dirname + '/bot_knowledge/audio'
 const SAVE_DATA = __dirname + '/bot_knowledge/save_data'
-const SAVE_DATA_FILE = `${SAVE_DATA}/games/swear_jar/data.json`
+export const SAVE_DATA_FILE = `${SAVE_DATA}/user_data.json`
 
 //  ENTITIES
 const BOT = new Discord.Client()
@@ -87,25 +89,14 @@ BOT.on('message', (message) => {
 
             //  Get current swear count
 
-            // TODO? Create interface
-            var data: { "_id": string; "swearScore": number; }[]
-
-            try {
-                data = JSON.parse(
-                    FileSystem.readFileSync(SAVE_DATA_FILE).toString())
-                //.console.log(data)
-
-            } catch (err) {
-                console.error(err)
-                console.log('Have you deleted the save file?')
-            }
-
-
+            // TODO? Create class function for ADDING to user data
+            var data = BotData.getUserData()
             //  Find user,
-            let userData: { _id: string; swearScore?: number; }
-            userData = data.find(matchedUser => {
-                return matchedUser._id === message.author.id
-            })
+            let userData = data.find((matchedUser: {
+                _id: string | number;
+            }) => {
+                return matchedUser._id === message.author.id;
+            });
 
             if (userData === undefined)
                 // ,then start new count.
@@ -113,16 +104,20 @@ BOT.on('message', (message) => {
                     "_id": message.author.id,
                     "swearScore": 1
                 })
-            else
+            else {
                 //then update count.
-                userData.swearScore++
+                if (!userData.swearScore) {
+
+                    userData.swearScore = 1
+                    message.reply(fetchRandomPhrase(PHRASES_SWEAR_JAR.new_user))
+                } else userData.swearScore++
+            }
 
             FileSystem.writeFile(SAVE_DATA_FILE, JSON.stringify(data), err => {
                 if (err) throw err;
                 console.log('Swear jar data updated.');
             });
 
-            message.reply(fetchRandomPhrase(PHRASES_SWEAR_JAR.new_user))
             return message.reply(fetchRandomPhrase(PHRASES_SWEAR_JAR.swear_point_increment.one_point))
         }
     })
@@ -646,6 +641,7 @@ BOT.on('message', (message) => {
         }
     }
 
+
     function logBotResponse(trigger = 'None') {
         //TODO: Make sure this doesn't break matchedCommand = true
 
@@ -710,4 +706,3 @@ function searchRecursive(dir, pattern) {
     return results;
 };
 
-/*  -----  */

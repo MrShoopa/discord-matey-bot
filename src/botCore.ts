@@ -33,14 +33,14 @@ import DEFAULTS_IMAGE from './bot_knowledge/defaults/image_search.json';
 //  TRIGGERS
 import TRIGGERS from './bot_knowledge/triggers/triggers.json';
 
-import BotData from './BotData';
+import BotData from './botData';
 
 /*  -----  */
 
 //  DIRECTORIES
 const LOCAL_AUDIO_LOCATION = __dirname + '/bot_knowledge/audio'
 const SAVE_DATA = __dirname + '/bot_knowledge/save_data'
-export const SAVE_DATA_FILE = `${SAVE_DATA}/user_data.json`
+const SAVE_DATA_FILE = `${SAVE_DATA}/user_data.json`
 
 //  ENTITIES
 const BOT = new Discord.Client()
@@ -78,48 +78,33 @@ BOT.on('message', (message) => {
 
     /*  ---- Swear Jar Functionality ----  */
     TRIGGERS.swear_jar_triggers.bad_words.forEach(trigger => {
-        //TODO: Add swear jar functionality
 
         trigger.toLowerCase()
 
-        if (messageString.toLowerCase().includes(trigger)) {
+        if (messageString.toLowerCase().includes(trigger) && !matchedCommand) {
+            //TODO: Fix multi-swear word sensitivity (async?). Delete matched_command to work with this
+            matchedCommand == true
 
             logBotResponse(trigger)
-            message.reply(fetchRandomPhrase(PHRASES_SWEAR_JAR.bad_word_detected))
+
+            // TODO? Shrink code further
+            let userData = BotData.getSingleUserData(message.author.id)
+
+            if (!userData)
+                BotData.createUserData(message.author.id)
 
             //  Get current swear count
+            if (!userData.swearScore) {
+                userData.swearScore = 1
+                message.reply(fetchRandomPhrase(PHRASES_SWEAR_JAR.new_user))
+            } else userData.swearScore++
 
-            // TODO? Create class function for ADDING to user data
-            var data = BotData.getUserData()
-            //  Find user,
-            let userData = data.find((matchedUser: {
-                _id: string | number;
-            }) => {
-                return matchedUser._id === message.author.id;
-            });
+            BotData.updateUserData(message.author.id, userData)
 
-            if (userData === undefined)
-                // ,then start new count.
-                data.push({
-                    "_id": message.author.id,
-                    "swearScore": 1
-                })
-            else {
-                //then update count.
-                if (!userData.swearScore) {
-
-                    userData.swearScore = 1
-                    message.reply(fetchRandomPhrase(PHRASES_SWEAR_JAR.new_user))
-                } else userData.swearScore++
-            }
-
-            FileSystem.writeFile(SAVE_DATA_FILE, JSON.stringify(data), err => {
-                if (err) throw err;
-                console.log('Swear jar data updated.');
-            });
-
-            return message.reply(
-                `${fetchRandomPhrase(PHRASES_SWEAR_JAR.swear_point_increment.one_point)}!
+            return message.reply(`
+                ${fetchRandomPhrase(PHRASES_SWEAR_JAR.bad_word_detected)}
+                \n
+                ${fetchRandomPhrase(PHRASES_SWEAR_JAR.swear_point_increment.one_point)}!
                     You have now sworn ${userData.swearScore} times.`)
         }
     })

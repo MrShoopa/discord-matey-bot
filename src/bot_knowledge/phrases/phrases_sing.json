@@ -106,6 +106,19 @@
             "title": "2 to the 1",
             "explicit": true,
             "play_phrase": "I LIKE BIG MEMES"
-        }
+        },
+
+        {
+            "category": "Video Game Soundtracks",
+            "file": "src/bot_knowledge/audio/music/vg-soundtrack/mii-channel.mp3",
+            "title": "Mii Channel",
+            "play_phrase": "It's a MII"
+        },
+        {
+            "category": "Video Game Soundtracks",
+            "file": "src/bot_knowledge/audio/music/vg-soundtrack/wii-shop-channel.mp3",
+            "title": "Wii Shop Channel",
+            "play_phrase": "Shop till we drop!"
+        },
     ]
 }

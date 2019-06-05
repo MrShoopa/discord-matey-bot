@@ -56,8 +56,10 @@
             "megadork play"
         ],
         "stop": [
-            "megadork kill the noise",
-            "stop"
+            "stop",
+            "megadork stop",
+            "megadork stop music",
+            "megadork kill the noise"
         ]
     },
 

@@ -157,7 +157,7 @@ BOT.on('message', (message) => {
             } catch (err) {
 
                 if (!voiceChannel) {
-                    console.log('Warning: User is not in voice channel. Song wasn\'t played.')
+                    console.warn('User is not in voice channel. Song wasn\'t played.')
                     message.reply(
                         PHRASES_SING.message_not_in_channel)
                 } else {
@@ -180,13 +180,25 @@ BOT.on('message', (message) => {
     })
     //  Stop audio
     TRIGGERS.singing_triggers.stop.forEach(trigger => {
-        if (messageString.substring(0, 25).toLowerCase().includes(trigger) &&
-            voiceChannel != null && voiceChannel.bitrate) {
-            logBotResponse(trigger)
+        if (!matchedCommand)
+            if (messageString.substring(0, 25).toLowerCase().includes(trigger)) {
+                logBotResponse(trigger)
 
-            message.member.voice.channel.leave()
-            message.reply(fetchRandomPhrase(PHRASES_SING.command_feedback.stop))
-        }
+                if (voiceChannel != null && BOT.voice.connections.size !== 0) {
+                    message.member.voice.channel.leave()
+
+                    message.reply(fetchRandomPhrase(PHRASES_SING.command_feedback.stop.active))
+                    console.log('Track terminated by message.')
+                } else {
+                    if (messageString.substring(0, 6).toLowerCase().includes("stop"))
+                        return  // No message is sent when just saying 'stop' on no playback
+
+                    message.reply(fetchRandomPhrase(PHRASES_SING.command_feedback.stop.null))
+                    console.log('No sound was playing, nothing terminated.')
+                }
+
+                matchedCommand = true
+            }
 
     })
     /*  ----  */
@@ -475,17 +487,18 @@ BOT.on('message', (message) => {
             songState = 'playing'
 
             voiceChannel.join().then(connection => {
-                console.group("Local song playing:")
+                console.group(`Local song playing...`)
                 console.info(
                     `Voice channel connection status: ${connection.status}`)
 
                 let dispatcher: Discord.StreamDispatcher
                 if (typeof song === "string") {
                     dispatcher = connection.play(song)
-                    console.log(`Playing non-tagged song from first match.`)
+                    console.log(`Playing non-tagged song from first match: ${song}`)
                     message.reply(`Playing ${song.split('\\').pop()} 👌`)
                 } else {
                     dispatcher = connection.play(song.file)
+                    console.log(`Playing tagged song: ${song.title}`)
                     console.log(`Responding with '${song.play_phrase}'`)
                     message.reply(song.play_phrase)
                 }
@@ -637,7 +650,7 @@ BOT.on('message', (message) => {
     function logBotResponse(trigger = 'None') {
         //TODO: Make sure this doesn't break matchedCommand = true
 
-        console.log(`Bot did something!
+        console.log(`--- BOT GO! ---
             TRIGGER: "${trigger}",
             TRIGGERED_BY: '${message.author.username}',
             USER_CONTEXT: "${messageString}"`)

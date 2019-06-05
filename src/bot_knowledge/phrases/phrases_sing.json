@@ -6,7 +6,10 @@
     "message_not_in_channel": "Heya, before I can make some noise, you gotta be in a voice channel!",
 
     "command_feedback": {
-        "stop": ["Stopping...", "Ok..."]
+        "stop": {
+            "active": ["Stopping...", "Ok..."],
+            "null": ["Currently not making noise.", "Nothing is playing 😜"]
+        }
     },
 
     "songs_to_sing": [{

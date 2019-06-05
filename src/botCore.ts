@@ -168,6 +168,8 @@ BOT.on('message', (message) => {
             if (songState == 'fetching' && !matchedCommand) { //  When song is not found
                 message.reply(
                     PHRASES_SING.message_unknown_summon)
+
+                console.error('No such song found.')
             }
 
             // Finished
@@ -503,9 +505,12 @@ BOT.on('message', (message) => {
             matchedCommand = true
         }
     }
-    function playAudioFromURL(url: string, trigger?: string) {
+    async function playAudioFromURL(url: string, trigger?: string) {
 
+        //TODO: More efficient handling (deal with matchedCommand)
         if (!matchedCommand) {
+            matchedCommand = true
+
             console.log('URL Command matched')
             if (trigger)
                 logBotResponse(trigger)
@@ -548,7 +553,7 @@ BOT.on('message', (message) => {
 
             }
 
-            voiceChannel.join().then(connection => {
+            await voiceChannel.join().then(connection => {
                 songState = 'playing'
                 console.log(
                     `Voice channel connection status: ${connection.status}`)

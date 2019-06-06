@@ -47,7 +47,14 @@ export default class BotData {
 
         try {
             FileSystem.writeFile(SAVE_DATA_FILE, JSON.stringify(dataSkeleton), err => {
-                if (err) console.log(err);
+                if (err) {
+                    //  If folder is missing
+                    if (err.code === 'ENOENT')
+                        FileSystem.mkdir(SAVE_DATA_FILE, { recursive: true }, (err) => {
+                            if (err) throw err;
+                        });
+                    throw err
+                }
             });
             console.log(`New User Data save file created.`);
         } catch (error) {
@@ -75,6 +82,7 @@ export default class BotData {
                 if (err) throw err;
             });
             console.log(`Data created for User ${id}.`);
+            console.log(data)
         } else {
             //  ,if found, do nothing.
             console.log(`Data already exists for User ${id}.`)
@@ -83,6 +91,8 @@ export default class BotData {
     }
 
     static updateUserData(id: number | string, newData: object) {
+        console.group(`Updating data for User ${id}:`)
+
         //  Pointer to local user data
         var data = BotData.getUserDataFile()
 
@@ -97,6 +107,10 @@ export default class BotData {
             console.log(`Data for User ${id} is missing. Creating new data subset.`)
             this.createUserData(id)
         }
+        console.log(`Old Data:`)
+        console.log(userData)
+        console.log(`New Data:`)
+        console.log(newData)
 
         Object.keys(newData).forEach(key => userData[key] = newData[key])
 
@@ -105,7 +119,7 @@ export default class BotData {
                 if (err) throw err;
 
             });
-        console.group(`User data updated for User ${id}:`)
-        console.log(userData)
+        console.log(`\n Update completed.`)
+        console.groupEnd()
     }
 }

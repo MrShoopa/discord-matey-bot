@@ -12,11 +12,15 @@ export default class BotData {
             var data = JSON.parse(FileSystem.readFileSync(SAVE_DATA_FILE).toString());
             if (log) console.log(data)
 
+            if (!data)
+                return [{}] // New save data
+
             return data
         }
         catch (err) {
             console.error(err);
             console.log('Have you deleted the save file?');
+
         }
     }
 
@@ -30,7 +34,7 @@ export default class BotData {
         });
 
         if (userData === undefined)
-            return null
+            return undefined
         else
             return userData
     }

@@ -78,10 +78,11 @@ BOT.on('message', (message) => {
 
     /*  ---- Swear Jar Functionality ----  */
     TRIGGERS.swear_jar_triggers.bad_words.forEach(trigger => {
+        //return //TODO: FIX
 
         trigger.toLowerCase()
 
-        if (messageString.toLowerCase().includes(trigger) && !matchedCommand) {
+        if (messageString.toLowerCase().split(" ").includes(trigger) && !matchedCommand) {
             //TODO: Fix multi-swear word sensitivity (async?). Delete matched_command to work with this
             matchedCommand == true
 
@@ -90,8 +91,12 @@ BOT.on('message', (message) => {
             // TODO? Shrink code further
             let userData = BotData.getSingleUserData(message.author.id)
 
-            if (!userData)
+            if (userData === undefined) {
+                console.log(userData)
                 BotData.createUserData(message.author.id)
+                userData = BotData.getSingleUserData(message.author.id)
+            }
+
 
             //  Get current swear count
             if (!userData.swearScore) {

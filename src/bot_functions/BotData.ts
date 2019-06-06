@@ -1,4 +1,4 @@
-const SAVE_DATA = __dirname + '/bot_knowledge/save_data'
+const SAVE_DATA = __dirname + '/../save_data'
 const SAVE_DATA_FILE = `${SAVE_DATA}/user_data.json`
 import * as FileSystem from 'fs';
 
@@ -9,29 +9,30 @@ export default class BotData {
     //  User Data
     static getUserData(log?: boolean) {
         try {
-            var data = JSON.parse(FileSystem.readFileSync(SAVE_DATA_FILE).toString());
-            if (log) console.log(data)
-
-            if (!data)
-                return [{}] // New save data
-
-            return data
-        }
-        catch (err) {
-            console.error(err);
+            var data = JSON.parse(FileSystem.readFileSync(SAVE_DATA_FILE).toString())
+        } catch (err) {
+            //.console.error(err);
             console.log('Have you deleted the save file?');
-
         }
+        if (log) console.log(data)
+
+        return data
     }
 
-    //TODO: Put in own file!
-    // Retreive data of a single user by ID
+    //  Retreive data of a single user by ID
     static getSingleUserData(id: string | number) {
-        let userData = BotData.getUserData().find((matchedUser: {
-            _id: string | number;
-        }) => {
-            return matchedUser._id === id;
-        });
+        let userData
+        try {
+
+            userData = BotData.getUserData().find((matchedUser: {
+                _id: string | number;
+            }) => {
+                return matchedUser._id === id;
+            });
+            console.log(`User data for ${id} found!`)
+        } catch (error) {
+            console.log(`User data for ${id} not found.`)
+        }
 
         if (userData === undefined)
             return undefined
@@ -39,6 +40,19 @@ export default class BotData {
             return userData
     }
 
+    static createNewDataFile() {
+        let dataSkeleton = [{}]
+
+        try {
+            FileSystem.writeFile(SAVE_DATA_FILE, JSON.stringify(dataSkeleton), err => {
+                if (err) console.log(err);
+            });
+            console.log(`New User Data save file created.`);
+        } catch (error) {
+            console.error('Error creating new save file.')
+            console.error(error)
+        }
+    }
     static createUserData(id: string | number) {
         var data = BotData.getUserData()
         //  Find user,
@@ -56,8 +70,8 @@ export default class BotData {
 
             FileSystem.writeFile(SAVE_DATA_FILE, JSON.stringify(data), err => {
                 if (err) throw err;
-                console.log(`Data created for User ${id}.`);
             });
+            console.log(`Data created for User ${id}.`);
         } else {
             //  ,if found, do nothing.
             console.log(`Data already exists for User ${id}.`)
@@ -87,7 +101,7 @@ export default class BotData {
             err => {
                 if (err) throw err;
 
-                console.log(`User data updated for User ${id}.`);
             });
+        console.log(`User data updated for User ${id}.`);
     }
 }

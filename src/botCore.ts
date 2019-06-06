@@ -33,18 +33,19 @@ import DEFAULTS_IMAGE from './bot_knowledge/defaults/image_search.json';
 //  TRIGGERS
 import TRIGGERS from './bot_knowledge/triggers/triggers.json';
 
-import BotData from './botData';
+import BotData from './bot_functions/BotData';
+
 
 /*  -----  */
 
 //  DIRECTORIES
 const LOCAL_AUDIO_LOCATION = __dirname + '/bot_knowledge/audio'
-const SAVE_DATA = __dirname + '/bot_knowledge/save_data'
-const SAVE_DATA_FILE = `${SAVE_DATA}/user_data.json`
 
 //  ENTITIES
 const BOT = new Discord.Client()
 
+//  Check data
+if (!BotData.getUserData()) BotData.createNewDataFile()
 
 //  Initialize Discord Bot
 console.log('Initializing bot...')
@@ -92,11 +93,9 @@ BOT.on('message', (message) => {
             let userData = BotData.getSingleUserData(message.author.id)
 
             if (userData === undefined) {
-                console.log(userData)
                 BotData.createUserData(message.author.id)
                 userData = BotData.getSingleUserData(message.author.id)
             }
-
 
             //  Get current swear count
             if (!userData.swearScore) {

@@ -45,7 +45,7 @@ const LOCAL_AUDIO_LOCATION = __dirname + '/bot_knowledge/audio'
 const BOT = new Discord.Client()
 
 //  Check data
-if (!BotData.getUserDataFile())  BotData.createNewDataFile()
+if (!BotData.getUserDataFile()) BotData.createNewDataFile()
 
 //  Initialize Discord Bot
 console.log('Initializing bot...')
@@ -79,13 +79,11 @@ BOT.on('message', (message) => {
 
     /*  ---- Swear Jar Functionality ----  */
     TRIGGERS.swear_jar_triggers.bad_words.forEach(trigger => {
-        //return //TODO: FIX
-
         trigger.toLowerCase()
 
         if (messageString.toLowerCase().split(" ").includes(trigger) && !matchedCommand) {
-            //TODO: Fix multi-swear word sensitivity (async?). Delete matched_command to work with this
-            matchedCommand == true
+            //TODO: Fix multi-swear word sensitivity (async?). Delete matchedCommand to work with this
+            matchedCommand = true
 
             logBotResponse(trigger)
 
@@ -96,12 +94,19 @@ BOT.on('message', (message) => {
                 BotData.createUserData(message.author.id)
                 userData = BotData.getUserData(message.author.id)
             }
+            console.log(userData)
+            return
 
             //  Get current swear count
-            if (!userData.swearScore) {
-                userData.swearScore = 1
-                message.reply(fetchRandomPhrase(PHRASES_SWEAR_JAR.new_user))
-            } else userData.swearScore++
+            try {
+                if (!userData.swearScore) {
+                    userData.swearScore = 1
+                    message.reply(fetchRandomPhrase(PHRASES_SWEAR_JAR.new_user))
+                } else userData.swearScore++
+            } catch (error) {
+                console.log('User data malfunction!')
+                console.error(error)
+            }
 
             BotData.updateUserData(message.author.id, userData)
 

@@ -5,12 +5,12 @@ import * as FileSystem from 'fs';
 /*  -----  */
 export default class BotData {
     //TODO? Moar function
+    //TODO: Types?
 
     //  User Data
     static getUserDataFile(log?: boolean) {
         try {
             var data = JSON.parse(FileSystem.readFileSync(SAVE_DATA_FILE).toString())
-            console.log(typeof data)
         } catch (err) {
             //.console.error(err);
             console.log('Have you deleted the save file?');
@@ -30,15 +30,16 @@ export default class BotData {
             }) => {
                 return matchedUser._id === id;
             });
-            console.log(`User data for ${id} accessed!`)
         } catch (error) {
-            console.log(`User data for ${id} not found.`)
         }
 
-        if (userData === undefined)
+        if (userData === undefined) {
+            console.log(`User data for ${id} not found.`)
             return undefined
-        else
+        } else {
+            console.log(`User data for ${id} accessed!`)
             return userData
+        }
     }
 
     static createNewDataFile() {

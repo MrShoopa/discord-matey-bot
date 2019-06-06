@@ -7,9 +7,10 @@ export default class BotData {
     //TODO? Moar function
 
     //  User Data
-    static getUserData(log?: boolean) {
+    static getUserDataFile(log?: boolean) {
         try {
             var data = JSON.parse(FileSystem.readFileSync(SAVE_DATA_FILE).toString())
+            console.log(typeof data)
         } catch (err) {
             //.console.error(err);
             console.log('Have you deleted the save file?');
@@ -20,16 +21,16 @@ export default class BotData {
     }
 
     //  Retreive data of a single user by ID
-    static getSingleUserData(id: string | number) {
+    static getUserData(id: string | number) {
         let userData
         try {
 
-            userData = BotData.getUserData().find((matchedUser: {
+            userData = BotData.getUserDataFile().find((matchedUser: {
                 _id: string | number;
             }) => {
                 return matchedUser._id === id;
             });
-            console.log(`User data for ${id} found!`)
+            console.log(`User data for ${id} accessed!`)
         } catch (error) {
             console.log(`User data for ${id} not found.`)
         }
@@ -53,8 +54,9 @@ export default class BotData {
             console.error(error)
         }
     }
+
     static createUserData(id: string | number) {
-        var data = BotData.getUserData()
+        var data = BotData.getUserDataFile()
         //  Find user,
         let userData = data.find((matchedUser: {
             _id: string | number;
@@ -81,7 +83,7 @@ export default class BotData {
 
     static updateUserData(id: number | string, newData: object) {
         //  Pointer to local user data
-        var data = BotData.getUserData()
+        var data = BotData.getUserDataFile()
 
         //  Pointer to single user's data through above variable
         let userData = data.find((matchedUser: {
@@ -102,6 +104,7 @@ export default class BotData {
                 if (err) throw err;
 
             });
-        console.log(`User data updated for User ${id}.`);
+        console.group(`User data updated for User ${id}:`)
+        console.log(userData)
     }
 }

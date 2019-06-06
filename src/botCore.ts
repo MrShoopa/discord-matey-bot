@@ -45,7 +45,7 @@ const LOCAL_AUDIO_LOCATION = __dirname + '/bot_knowledge/audio'
 const BOT = new Discord.Client()
 
 //  Check data
-if (!BotData.getUserData()) BotData.createNewDataFile()
+if (!BotData.getUserDataFile())  BotData.createNewDataFile()
 
 //  Initialize Discord Bot
 console.log('Initializing bot...')
@@ -90,11 +90,11 @@ BOT.on('message', (message) => {
             logBotResponse(trigger)
 
             // TODO? Shrink code further
-            let userData = BotData.getSingleUserData(message.author.id)
+            let userData = BotData.getUserData(message.author.id)
 
             if (userData === undefined) {
                 BotData.createUserData(message.author.id)
-                userData = BotData.getSingleUserData(message.author.id)
+                userData = BotData.getUserData(message.author.id)
             }
 
             //  Get current swear count

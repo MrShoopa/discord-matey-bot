@@ -197,7 +197,7 @@ BOT.on('message', (message) => {
                     message.member.voice.channel.leave()
 
                     message.reply(fetchRandomPhrase(PHRASES_SING.command_feedback.stop.active))
-                    console.log('Track terminated by message.')
+                    console.log('Bot exited voice channel by user message.')
                 } else {
                     if (messageString.substring(0, 6).toLowerCase().includes("stop"))
                         return  // No message is sent when just saying 'stop' on no playback
@@ -501,14 +501,20 @@ BOT.on('message', (message) => {
                     `Voice channel connection status: ${connection.status}`)
 
                 let dispatcher: Discord.StreamDispatcher
+
+
                 if (typeof song === "string") {
                     dispatcher = connection.play(song)
+
                     console.log(`Playing non-tagged song from first match: ${song}`)
+
                     message.reply(`Playing ${song.split('\\').pop()} 👌`)
                 } else {
                     dispatcher = connection.play(song.file)
+
                     console.log(`Playing tagged song: ${song.title}`)
                     console.log(`Responding with '${song.play_phrase}'`)
+
                     message.reply(song.play_phrase)
                 }
 
@@ -518,6 +524,9 @@ BOT.on('message', (message) => {
                         'Song played successfully.')
                     songState = 'finished'
                     voiceChannel.leave()
+                })
+                dispatcher.on('close', () => {
+                    console.log(`Song interrupted by user.`)
                 })
 
                 console.groupEnd()
@@ -546,11 +555,12 @@ BOT.on('message', (message) => {
 
             if (url.includes('youtu')) {
                 //  Modules 
-                const YTDL = require('ytdl-core')
+                const YTDL = require('ytdl-core-discord')
 
-                stream = YTDL(url.toString(), {
+                stream = await YTDL(url.toString(), {
                     filter: 'audioonly'
                 })
+                streamOptions['type'] = 'opus'
 
             } else if (url.includes('soundcloud')) {
 
@@ -575,23 +585,29 @@ BOT.on('message', (message) => {
 
             }
 
-            await voiceChannel.join().then(connection => {
+            voiceChannel.join().then(connection => {
                 songState = 'playing'
                 console.log(
                     `Voice channel connection status: ${connection.status}`)
 
-                const dispatcher: Discord.StreamDispatcher =
-                    connection.play(stream, streamOptions)
+
+                var dispatcher: Discord.StreamDispatcher = connection.play(stream, streamOptions)
 
                 dispatcher.on('start', () => {
                     console.log(`Playing song from ${url}.`)
-                    songState = 'finished'
                 })
+
+                dispatcher.on('close', () => {
+                    console.log(`Song interrupted by user.`)
+                })
+
                 dispatcher.on('end', () => {
                     console.log('Song played successfully.')
                     songState = 'finished'
                     voiceChannel.leave()
                 })
+
+                console.log('asd')
                 // FINISHED
                 matchedCommand = true
             })

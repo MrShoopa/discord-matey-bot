@@ -19,6 +19,7 @@
         "soundcloud": "^3.3.2",
         "soundcloud-audio": "^1.4.0",
         "winston": "^3.2.1",
-        "ytdl-core": "^0.28.3"
+        "ytdl-core": "^0.28.3",
+        "ytdl-core-discord": "^1.0.3"
     }
 }

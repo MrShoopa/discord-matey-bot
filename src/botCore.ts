@@ -94,8 +94,6 @@ BOT.on('message', (message) => {
                 BotData.createUserData(message.author.id)
                 userData = BotData.getUserData(message.author.id)
             }
-            console.log(userData)
-            return
 
             //  Get current swear count
             try {
@@ -111,10 +109,9 @@ BOT.on('message', (message) => {
             BotData.updateUserData(message.author.id, userData)
 
             return message.reply(`
-                ${fetchRandomPhrase(PHRASES_SWEAR_JAR.bad_word_detected)}
-                \n
-                ${fetchRandomPhrase(PHRASES_SWEAR_JAR.swear_point_increment.one_point)}!
-                    You have now sworn ${userData.swearScore} times.`)
+            🚨✝${fetchRandomPhrase(PHRASES_SWEAR_JAR.bad_word_detected)}✝🚨
+            ${fetchRandomPhrase(PHRASES_SWEAR_JAR.swear_point_increment.one_point)}!\n
+            **You have now sworn ${userData.swearScore} times.**`)
         }
     })
 

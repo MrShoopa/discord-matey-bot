@@ -81,9 +81,8 @@ BOT.on('message', (message) => {
     TRIGGERS.swear_jar_triggers.bad_words.forEach(trigger => {
         trigger.toLowerCase()
 
-        if (messageString.toLowerCase().split(" ").includes(trigger) && !matchedCommand) {
-            //TODO: Fix multi-swear word sensitivity (async?). Delete matchedCommand to work with this
-            matchedCommand = true
+        if (messageString.toLowerCase().split(" ").includes(trigger)) {
+
 
             logBotResponse(trigger)
 

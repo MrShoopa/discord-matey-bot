@@ -43,6 +43,7 @@ const LOCAL_AUDIO_LOCATION = __dirname + '/bot_knowledge/audio'
 
 //  ENTITIES
 const BOT = new Discord.Client()
+let SnappedTime = new Date()
 
 //  Check data
 if (!BotData.getUserDataFile()) BotData.createNewDataFile()
@@ -52,6 +53,7 @@ console.log('Initializing bot...')
 BOT.login(AUTH.discord.API_KEY)
 BOT.on('ready', () => {
     console.log('I\'m alive!')
+    console.log(`The time is now ${Date.now()}.`)
 })
 
 //  States
@@ -704,6 +706,11 @@ BOT.on('guildMemberAdd', member => {
         `Welcome to the server, ${member}! \n\n\n\n...\n\n who the f-`)
 })
 
+
+/*  ----    State Checking      ----   */
+
+if (SnappedTime.getDate() === new Date(2008, SnappedTime.getMonth() + 1, 0).getDate())
+    console.log('Swear stats of the month!')
 
 
 /*  ----    Helper Functions    ----   */

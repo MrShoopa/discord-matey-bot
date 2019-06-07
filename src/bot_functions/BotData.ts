@@ -2,6 +2,10 @@ const SAVE_DATA = __dirname + '/../save_data'
 const SAVE_DATA_FILE = `${SAVE_DATA}/user_data.json`
 import * as FileSystem from 'fs';
 
+export interface User {
+    id: number
+}
+
 /*  -----  */
 export default class BotData {
     //TODO? Moar function
@@ -12,7 +16,7 @@ export default class BotData {
         try {
             var data = JSON.parse(FileSystem.readFileSync(SAVE_DATA_FILE).toString())
         } catch (err) {
-            //.console.error(err);
+            if (log) console.error(err);
             console.log('Have you deleted the save file?');
         }
         if (log) console.log(data)
@@ -21,7 +25,7 @@ export default class BotData {
     }
 
     //  Retreive data of a single user by ID
-    static getUserData(id: string | number) {
+    static getUserData(id: string | number, log?: boolean) {
         let userData
         try {
 
@@ -37,13 +41,16 @@ export default class BotData {
             console.log(`User data for ${id} not found.`)
             return undefined
         } else {
-            console.log(`User data for ${id} accessed!`)
+            console.group(`User data for ${id} accessed!`)
+            if (log) console.log(userData)
             return userData
         }
     }
 
-    static createNewDataFile() {
+    static createNewDataFile(force?: boolean) {
         let dataSkeleton = [{}]
+
+        if (BotData.getUserDataFile() && !force) return console.log('Data already exists.')
 
         try {
             FileSystem.writeFile(SAVE_DATA_FILE, JSON.stringify(dataSkeleton), err => {
@@ -63,7 +70,7 @@ export default class BotData {
         }
     }
 
-    static createUserData(id: string | number) {
+    static createUserData(id: string | number, force?: boolean) {
         var data = BotData.getUserDataFile()
         //  Find user,
         let userData = data.find((matchedUser: {
@@ -72,7 +79,7 @@ export default class BotData {
             return matchedUser._id === id;
         })
 
-        if (userData === undefined) {
+        if (userData === undefined || force) {
             // ,if not found, create new data.
             data.push({
                 "_id": id

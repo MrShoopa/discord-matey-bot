@@ -160,6 +160,7 @@ BOT.on('message', (message) => {
                 }
 
             } catch (err) {
+                console.log(voiceChannel)
 
                 if (!voiceChannel) {
                     console.warn('User is not in voice channel. Song wasn\'t played.')
@@ -543,7 +544,7 @@ BOT.on('message', (message) => {
                 logBotResponse(trigger)
             songState = 'playing'
 
-            var stream
+            var stream: Discord.VoiceBroadcast
             var streamOptions: object = {
                 seek: 0,
                 volume: .75
@@ -580,34 +581,40 @@ BOT.on('message', (message) => {
                 return message.reply('SoundCloud support coming sometime later. :)')
 
             }
+            try {
+                voiceChannel.join().then(connection => {
+                    songState = 'playing'
+                    console.log(
+                        `Voice channel connection status: ${connection.status}`)
 
-            voiceChannel.join().then(connection => {
-                songState = 'playing'
-                console.log(
-                    `Voice channel connection status: ${connection.status}`)
 
+                    var dispatcher: Discord.StreamDispatcher = connection.play(stream, streamOptions)
 
-                var dispatcher: Discord.StreamDispatcher = connection.play(stream, streamOptions)
+                    dispatcher.on('start', () => {
+                        console.group(`Now playing song from ${url}.`)
+                    })
 
-                dispatcher.on('start', () => {
-                    console.log(`Playing song from ${url}.`)
+                    dispatcher.on('close', () => {
+                        console.log(`Song interrupted by user.`)
+                    })
+
+                    dispatcher.on('end', () => {
+                        console.log('Song played successfully.')
+                        console.groupEnd()
+
+                        songState = 'finished'
+                        voiceChannel.leave()
+                    })
+
+                    // FINISHED
+                    matchedCommand = true
                 })
+            } catch (error) {
+                if (!voiceChannel) console.log(`User is not in a server's voice channel.`)
+                throw error
+            }
 
-                dispatcher.on('close', () => {
-                    console.log(`Song interrupted by user.`)
-                })
-
-                dispatcher.on('end', () => {
-                    console.log('Song played successfully.')
-                    songState = 'finished'
-                    voiceChannel.leave()
-                })
-
-                console.log('asd')
-                // FINISHED
-                matchedCommand = true
-            })
-
+            //TODO: Optimize error handling
         }
     }
 
@@ -706,7 +713,7 @@ function fetchRandomPhrase(key: string[]) {
     return key[Math.floor(Math.random() * (key.length))]
 }
 
-function searchRecursive(dir, pattern) {
+function searchRecursive(dir, pattern: string) {
     // This is where we store pattern matches of all files inside the directory
     var results = [];
 

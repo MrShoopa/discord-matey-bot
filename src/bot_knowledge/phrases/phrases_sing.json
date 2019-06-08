@@ -101,6 +101,12 @@
             "title": "USSR Anthem",
             "explicit": true,
             "play_phrase": "we own you now"
+        }, {
+            "category": "Joe's Picks",
+            "file": "src/bot_knowledge/audio/meme-stash/SWIGGITY SWAG.mp3",
+            "title": "Swiggity Swag",
+            "explicit": true,
+            "play_phrase": "Fried chicken? 🍊"
         },
 
         {

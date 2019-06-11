@@ -32,7 +32,7 @@
             "category": "Joe's Picks",
             "file": "src/bot_knowledge/audio/meme-stash/john-cena-bassboosted.mp3",
             "title": "JOHN CENA",
-            "play_phrase": "watch out"
+            "play_phrase": "WATCH OUT WATCH OUT WATCH OUT"
         }, {
             "category": "Joe's Picks",
             "file": "src/bot_knowledge/audio/meme-stash/7th-element.mp3",
@@ -67,7 +67,7 @@
         }, {
             "category": "Joe's Picks",
             "file": "src/bot_knowledge/audio/meme-stash/greenhillzone.mp3",
-            "title": "Green Hill Zone bassboosted",
+            "title": "Green Hill Zone BASSBOOSTED",
             "play_phrase": "GOTTA GO FAST"
         }, {
             "category": "Joe's Picks",
@@ -101,6 +101,12 @@
             "title": "USSR Anthem",
             "explicit": true,
             "play_phrase": "we own you now"
+        }, {
+            "category": "Joe's Picks",
+            "file": "src/bot_knowledge/audio/meme-stash/playboi-carti-kid-cudi-bassboosted.mp3",
+            "title": "Kid Cudi BASSBOOSTED",
+            "explicit": true,
+            "play_phrase": "she wanna meet CARTI"
         },
 
         {

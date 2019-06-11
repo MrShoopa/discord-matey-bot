@@ -107,6 +107,12 @@
             "title": "Kid Cudi BASSBOOSTED",
             "explicit": true,
             "play_phrase": "she wanna meet CARTI"
+        }, {
+            "category": "Joe's Picks",
+            "file": "src/bot_knowledge/audio/meme-stash/SWIGGITY SWAG.mp3",
+            "title": "Swiggity Swag",
+            "explicit": true,
+            "play_phrase": "Fried chicken? 🍊"
         },
 
         {

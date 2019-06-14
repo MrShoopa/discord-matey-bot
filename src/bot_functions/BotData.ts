@@ -1,9 +1,13 @@
-const SAVE_DATA = __dirname + '/../save_data'
-const SAVE_DATA_FILE = `${SAVE_DATA}/user_data.json`
+/*  Modules  */
 import * as FileSystem from 'fs';
 
-export interface User {
-    id: number
+/*  Locations  */
+const SAVE_DATA = __dirname + '/../save_data'
+const SAVE_DATA_FILE = `${SAVE_DATA}/user_data.json`
+
+export interface Member {
+    _id?: number,
+    [x: string]: any
 }
 
 /*  -----  */
@@ -14,7 +18,7 @@ export default class BotData {
     //  User Data
     static getUserDataFile(log?: boolean) {
         try {
-            var data = JSON.parse(FileSystem.readFileSync(SAVE_DATA_FILE).toString())
+            var data: any = JSON.parse(FileSystem.readFileSync(SAVE_DATA_FILE).toString())
         } catch (err) {
             if (log) console.error(err);
             console.log('Have you deleted the save file?');
@@ -26,7 +30,7 @@ export default class BotData {
 
     //  Retreive data of a single user by ID
     static getUserData(id: string | number, log?: boolean) {
-        let userData
+        let userData: Member
         try {
 
             userData = BotData.getUserDataFile().find((matchedUser: {

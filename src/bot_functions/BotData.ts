@@ -45,7 +45,7 @@ export default class BotData {
             console.log(`User data for ${id} not found.`)
             return undefined
         } else {
-            console.group(`User data for ${id} accessed!`)
+            console.log(`User data for ${id} accessed!`)
             if (log) console.log(userData)
             return userData
         }
@@ -130,7 +130,7 @@ export default class BotData {
                 if (err) throw err;
 
             });
-        console.log(`\n Update completed.`)
+        console.log(`\nUpdate completed.`)
         console.groupEnd()
     }
 }

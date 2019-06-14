@@ -680,10 +680,12 @@ BOT.on('message', (message) => {
     function logBotResponse(trigger = 'None') {
         //TODO: Make sure this doesn't break matchedCommand = true
 
-        console.log(`--- BOT GO! ---
-            TRIGGER: "${trigger}",
-            TRIGGERED_BY: '${message.author.username}',
-            USER_CONTEXT: "${messageString}"`)
+        console.group(`--- BOT GO! ---`)
+        console.log(`TRIGGER: "${trigger}"`)
+        console.log(`CALLER: '${message.author.username}'`)
+        console.log(`CONTEXT: "${messageString}"`)
+        console.groupEnd()
+
     }
 
     /*  -----  */

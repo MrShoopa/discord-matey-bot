@@ -13,7 +13,7 @@ export interface Member {
 /*  -----  */
 export default class BotData {
     //TODO? Moar function
-    //TODO: Types?
+    //TODO? Types? (MemberDatabase)
 
     //  User Data
     static getUserDataFile(log?: boolean) {
@@ -52,7 +52,7 @@ export default class BotData {
     }
 
     static createNewDataFile(force?: boolean) {
-        let dataSkeleton = [{}]
+        let dataSkeleton = [{ _id: "42069" }]
 
         if (BotData.getUserDataFile() && !force) return console.log('Data already exists.')
 
@@ -64,7 +64,8 @@ export default class BotData {
                         FileSystem.mkdir(SAVE_DATA_FILE, { recursive: true }, (err) => {
                             if (err) throw err;
                         });
-                    throw err
+                    else
+                        throw err
                 }
             });
             console.log(`New User Data save file created.`);
@@ -77,7 +78,7 @@ export default class BotData {
     static createUserData(id: string | number, force?: boolean) {
         var data = BotData.getUserDataFile()
         //  Find user,
-        let userData = data.find((matchedUser: {
+        let userData: Member = data.find((matchedUser: {
             _id: string | number;
         }) => {
             return matchedUser._id === id;
@@ -89,9 +90,7 @@ export default class BotData {
                 "_id": id
             })
 
-            FileSystem.writeFile(SAVE_DATA_FILE, JSON.stringify(data), err => {
-                if (err) throw err;
-            });
+            BotData.writeDataFile(data)
             console.log(`Data created for User ${id}.`);
             console.log(data)
         } else {
@@ -108,7 +107,7 @@ export default class BotData {
         var data = BotData.getUserDataFile()
 
         //  Pointer to single user's data through above variable
-        let userData = data.find((matchedUser: {
+        let userData: Member = data.find((matchedUser: {
             _id: string | number;
         }) => {
             return matchedUser._id === id;
@@ -125,12 +124,22 @@ export default class BotData {
 
         Object.keys(newData).forEach(key => userData[key] = newData[key])
 
-        FileSystem.writeFile(SAVE_DATA_FILE, JSON.stringify(data),
-            err => {
-                if (err) throw err;
+        BotData.writeDataFile(data)
 
-            });
         console.log(`\nUpdate completed.`)
         console.groupEnd()
+    }
+
+    private static writeDataFile(data: any) {
+
+        if (typeof data === 'object')
+            try {
+                FileSystem.writeFileSync(SAVE_DATA_FILE, JSON.stringify(data))
+            } catch (err) {
+                if (err.code === 'ENOENT') {
+                    console.error(`Data has been deleted. Please restart the Bot.`)
+                    process.exit(404)
+                } else throw err
+            }
     }
 }

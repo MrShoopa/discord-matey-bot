@@ -1,3 +1,16 @@
+/**
+ * Handles the local literal save data of the server
+ * consisting of interactions made from users from a server
+ * (in which a Matey Bot instance is involved with)
+ * based off modules that save data with games, analytics, etc.
+ * 
+ * Example of a module that utilizes this is the Swear Jar
+ * @see /bot-modules/novelty
+ *
+ * @author: Joe V.
+ * @date June 2019
+ */
+
 /*  Modules  */
 import * as FileSystem from 'fs';
 
@@ -28,13 +41,19 @@ export default class BotData {
         return data
     }
 
-    //  Retreive data of a single user by ID
-    static getUserData(id: string | number, log?: boolean) {
+    /**
+     * Retreive data of a single user by ID
+     * 
+     * @param  {number|string} id User's Discord ID
+     * @param  {boolean} log? If true, logs extra info to console.
+     */
+    static getUserData(id: number | string, log?: boolean) {
+        if (typeof id === 'string') Number(id)
+
         let userData: Member
         try {
-
             userData = BotData.getUserDataFile().find((matchedUser: {
-                _id: string | number;
+                _id: number;
             }) => {
                 return matchedUser._id === id;
             });
@@ -51,8 +70,13 @@ export default class BotData {
         }
     }
 
+    /**
+     * Creates a new datastore file for the server's instance.
+     * 
+     * @param  {boolean} force? Erases the existing datastore if it already exists.
+     */
     static createNewDataFile(force?: boolean) {
-        let dataSkeleton = [{ _id: "42069" }]
+        let dataSkeleton = [{ _id: 42069, sampleData: "Mega!" }]
 
         if (BotData.getUserDataFile() && !force) return console.log('Data already exists.')
 
@@ -74,12 +98,20 @@ export default class BotData {
             console.error(error)
         }
     }
+    /**
+     * Creates a new Member object based off a user's ID and saves it to the datastore file.
+     * 
+     * @param  {number|string} id User's Discord ID
+     * @param  {boolean} log? If true, logs extra info to console.
+     */
+    static createUserData(id: number | string, force?: boolean) {
+        if (typeof id === 'string') Number(id)
 
-    static createUserData(id: string | number, force?: boolean) {
         var data = BotData.getUserDataFile()
+
         //  Find user,
         let userData: Member = data.find((matchedUser: {
-            _id: string | number;
+            _id: number;
         }) => {
             return matchedUser._id === id;
         })
@@ -100,7 +132,14 @@ export default class BotData {
 
     }
 
+    /**
+     * Updates an existing user's data with given new data.
+     * 
+     * @param  {number|string} id User's Discord ID
+     * @param  {object} newData New data to overwrite existing data with.
+     */
     static updateUserData(id: number | string, newData: object) {
+        if (typeof id === 'string') Number(id)
         console.group(`Updating data for User ${id}:`)
 
         //  Pointer to local user data
@@ -108,7 +147,7 @@ export default class BotData {
 
         //  Pointer to single user's data through above variable
         let userData: Member = data.find((matchedUser: {
-            _id: string | number;
+            _id: number;
         }) => {
             return matchedUser._id === id;
         })
@@ -129,7 +168,11 @@ export default class BotData {
         console.log(`\nUpdate completed.`)
         console.groupEnd()
     }
-
+    /**
+     * Overwrites the current datastore file with any given data.
+     * 
+     * @param  {any} data
+     */
     private static writeDataFile(data: any) {
 
         if (typeof data === 'object')

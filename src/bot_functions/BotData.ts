@@ -92,7 +92,7 @@ export default class BotData {
                         throw err
                 }
             });
-            console.log(`New User Data save file created.`);
+            console.log(`New User Data save file created.\n`);
         } catch (error) {
             console.error('Error creating new save file.')
             console.error(error)
@@ -124,7 +124,7 @@ export default class BotData {
 
             BotData.writeDataFile(data)
             console.log(`Data created for User ${id}.`);
-            console.log(data)
+            if (force) console.log(data)
         } else {
             //  ,if found, do nothing.
             console.log(`Data already exists for User ${id}.`)

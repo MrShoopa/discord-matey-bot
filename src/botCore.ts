@@ -43,18 +43,19 @@ const LOCAL_AUDIO_LOCATION = __dirname + '/bot_knowledge/audio'
 
 //  ENTITIES
 const BOT = new Discord.Client()
-let SnappedTime = new Date()
+let initTime = new Date()
 
 //  Check data
 if (!BotData.getUserDataFile()) BotData.createNewDataFile()
 
 //  Initialize Discord Bot
-console.log('Initializing bot...')
+console.group('Initializing...')
 BOT.login(AUTH.discord.API_KEY)
 BOT.on('ready', () => {
-    console.log('I\'m alive!')
-    console.log(`The time is now ${Date.now()}.`)
+    console.log(`Initialized at ${new Date().toLocaleString()}.`)
+    console.log('I\'m alive and ready to go!\n')
 })
+console.groupEnd()
 
 //  States
 var songState: string | boolean = 'idle'
@@ -83,10 +84,12 @@ BOT.on('message', (message) => {
     TRIGGERS.swear_jar_triggers.bad_words.forEach(trigger => {
         trigger.toLowerCase()
 
+        //TODO: Truncate message when swearing multiple times
+
         if (messageString.toLowerCase().split(" ").includes(trigger)) {
 
 
-            logBotResponse(trigger)
+            logBotResponse(trigger, 'Swear Jar')
 
             // TODO? Shrink code further
             let userData = BotData.getUserData(message.author.id)
@@ -112,7 +115,7 @@ BOT.on('message', (message) => {
             return message.reply(`
             🚨✝${fetchRandomPhrase(PHRASES_SWEAR_JAR.bad_word_detected)}✝🚨
             ${fetchRandomPhrase(PHRASES_SWEAR_JAR.swear_point_increment.one_point)}!\n
-            **You have now sworn ${userData.swearScore} times.**`)
+            **Times you have sworn: ${userData.swearScore}!**`)
         }
     })
 
@@ -190,7 +193,7 @@ BOT.on('message', (message) => {
     TRIGGERS.singing_triggers.stop.forEach(trigger => {
         if (!matchedCommand)
             if (messageString.substring(0, 25).toLowerCase().includes(trigger)) {
-                logBotResponse(trigger)
+                logBotResponse(trigger, 'Singing Stop')
 
                 if (voiceChannel != null && BOT.voice.connections.size !== 0) {
                     message.member.voice.channel.leave()
@@ -216,7 +219,7 @@ BOT.on('message', (message) => {
     //  Find random image (from Google Images)
     TRIGGERS.image_search_triggers.random_image.forEach(trigger => {
         if (messageString.toLowerCase().includes(trigger)) {
-            logBotResponse(trigger)
+            logBotResponse(trigger, 'Image Search')
 
             var userQuery: string = ''
 
@@ -244,7 +247,7 @@ BOT.on('message', (message) => {
     //  Set Restricted Role
     TRIGGERS.server_mod_triggers.set_restricted_role.forEach(trigger => {
         if (messageString.toLowerCase().includes(trigger)) {
-            logBotResponse(trigger)
+            logBotResponse(trigger, 'Set restricted role')
 
             message.mentions.members.forEach(member => {
                 message.reply(
@@ -268,7 +271,7 @@ BOT.on('message', (message) => {
     //  Unset Restricted Role
     TRIGGERS.server_mod_triggers.unset_restricted_role.forEach(trigger => {
         if (messageString.toLowerCase().includes(trigger)) {
-            logBotResponse(trigger)
+            logBotResponse(trigger, 'Unset restricted role')
 
             message.mentions.members.forEach(member => {
                 message.reply(
@@ -295,7 +298,7 @@ BOT.on('message', (message) => {
     //  Suicidal
     TRIGGERS.third_person_phrase_triggers.self_death_wish.die.forEach(trigger => {
         if (messageString.toLowerCase().includes(trigger)) {
-            logBotResponse(trigger)
+            logBotResponse(trigger, 'self death wish')
             matchedCommand = true
 
             if (trigger == 'can i die')
@@ -308,7 +311,7 @@ BOT.on('message', (message) => {
     })
     TRIGGERS.third_person_phrase_triggers.self_death_wish.kill_self.forEach(trigger => {
         if (messageString.toLowerCase().includes(trigger)) {
-            logBotResponse(trigger)
+            logBotResponse(trigger, 'self death wish')
             matchedCommand = true
 
             return message.reply(
@@ -328,7 +331,7 @@ BOT.on('message', (message) => {
     //  Send Nudes (Per request of a friend :P)
     TRIGGERS.send_nude_triggers.forEach(trigger => {
         if (messageString.toLowerCase().includes(trigger)) {
-            logBotResponse(trigger)
+            logBotResponse(trigger, 'Send nude')
             matchedCommand = true
 
             return message.reply(
@@ -340,7 +343,7 @@ BOT.on('message', (message) => {
     //  Thank you
     TRIGGERS.thank_you_triggers.forEach(trigger => {
         if (messageString.toLowerCase().includes(trigger)) {
-            logBotResponse(trigger)
+            logBotResponse(trigger, 'Thank you!')
             matchedCommand = true
 
             return message.reply(
@@ -350,7 +353,7 @@ BOT.on('message', (message) => {
 
     //  "Are you a X?"
     if (messageString.toLowerCase().includes(TRIGGERS.are_you_triggers.communist)) {
-        logBotResponse(TRIGGERS.are_you_triggers.communist)
+        logBotResponse(TRIGGERS.are_you_triggers.communist, 'Communist response')
 
         PHRASES_SING.songs_to_sing.forEach(song => {
             if (song.title === 'USSR Anthem')
@@ -373,7 +376,7 @@ BOT.on('message', (message) => {
             //  Death threats
             TRIGGERS.threat.kill_self.forEach(trigger => {
                 if (messageString.toLowerCase().includes(trigger)) {
-                    logBotResponse(trigger)
+                    logBotResponse(trigger, 'Self-diminishment')
 
                     //  FRIEND SPECIFIC :)
                     if (message.author.username == 'MrShoopa')
@@ -402,7 +405,7 @@ BOT.on('message', (message) => {
             //  HELP
             TRIGGERS.help_questions.actions.forEach(trigger => {
                 if (messageString.toLowerCase().includes(trigger)) {
-                    logBotResponse(trigger)
+                    logBotResponse(trigger, 'Help with Actions')
 
                     message.reply(PHRASES_FRONT.help_intro)
 
@@ -428,7 +431,7 @@ BOT.on('message', (message) => {
             //  SINGING HELP
             TRIGGERS.help_questions.singing.forEach(trigger => {
                 if (messageString.toLowerCase().includes(trigger)) {
-                    logBotResponse(trigger)
+                    logBotResponse(trigger, 'Help with Singing')
 
                     var songList = ''
 
@@ -451,7 +454,7 @@ BOT.on('message', (message) => {
             //  PHRASE-PLAY
             TRIGGERS.how_is_bot.forEach(trigger => {
                 if (messageString.toLowerCase().includes(trigger)) {
-                    logBotResponse(trigger)
+                    logBotResponse(trigger, 'How is bot')
 
                     message.reply(
                         fetchRandomPhrase(PHRASES_CONVO.asked_how_are_you))
@@ -459,7 +462,7 @@ BOT.on('message', (message) => {
             })
             TRIGGERS.threat.kill_self.forEach(trigger => {
                 if (messageString.toLowerCase().includes(trigger)) {
-                    logBotResponse(trigger)
+                    logBotResponse(trigger, 'Retaliating')
 
                     message.reply(
                         fetchRandomPhrase(PHRASES_CONVO.asked_death_threat))
@@ -470,7 +473,7 @@ BOT.on('message', (message) => {
 
             TRIGGERS.main_trigger.forEach(trigger => {
                 if (messageString == trigger) {
-                    logBotResponse(trigger)
+                    logBotResponse(trigger, 'Generic response')
 
                     message.reply(PHRASES_FRONT.name_only_callout)
                 }
@@ -491,7 +494,7 @@ BOT.on('message', (message) => {
 
         if (!matchedCommand) {
             if (trigger)
-                logBotResponse(trigger)
+                logBotResponse(trigger, 'Audio playback from files')
             songState = 'playing'
 
             voiceChannel.join().then(connection => {
@@ -543,7 +546,7 @@ BOT.on('message', (message) => {
 
             console.log('URL Command matched')
             if (trigger)
-                logBotResponse(trigger)
+                logBotResponse(trigger, 'Audio playback from URL')
             songState = 'playing'
 
             var stream: Discord.VoiceBroadcast
@@ -677,13 +680,14 @@ BOT.on('message', (message) => {
     }
 
 
-    function logBotResponse(trigger = 'None') {
+    function logBotResponse(trigger: string = 'None', intent?: string) {
         //TODO: Make sure this doesn't break matchedCommand = true
 
         console.group(`--- BOT GO! ---`)
         console.log(`TRIGGER: "${trigger}"`)
         console.log(`CALLER: '${message.author.username}'`)
         console.log(`CONTEXT: "${messageString}"`)
+        if (intent) console.log(`ACTION: ${intent}`)
         console.groupEnd()
 
     }
@@ -711,7 +715,7 @@ BOT.on('guildMemberAdd', member => {
 
 /*  ----    State Checking      ----   */
 
-if (SnappedTime.getDate() === new Date(2008, SnappedTime.getMonth() + 1, 0).getDate())
+if (initTime.getDate() === new Date(2008, initTime.getMonth() + 1, 0).getDate())
     console.log('Swear stats of the month!')
 
 

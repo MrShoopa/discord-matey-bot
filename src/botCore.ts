@@ -35,6 +35,9 @@ import TRIGGERS from './bot_knowledge/triggers/triggers.json';
 
 import BotData from './bot_functions/BotData';
 
+//  TYPINGS
+import { StreamInfo } from './typescript/index'
+
 
 /*  -----  */
 
@@ -544,6 +547,7 @@ BOT.on('message', (message) => {
         if (!matchedCommand) {
             matchedCommand = true
 
+
             console.log('URL Command matched')
             if (trigger)
                 logBotResponse(trigger, 'Audio playback from URL')
@@ -554,16 +558,20 @@ BOT.on('message', (message) => {
                 seek: 0,
                 volume: .75
             }
+            var streamInfo: StreamInfo = { source: 'None' }
+
 
             if (url.includes('youtu')) {
-                //  Modules 
+                streamInfo.source = 'YouTube'
                 const YTDL = require('ytdl-core-discord')
+
 
                 stream = await YTDL(url.toString(), {
                     filter: 'audioonly'
                 })
                 streamOptions['type'] = 'opus'
 
+                streamInfo = { source: url, platform: 'YouTube' }
             } else if (url.includes('soundcloud')) {
 
                 //  TODO: SoundCloud support
@@ -581,6 +589,8 @@ BOT.on('message', (message) => {
                                 });
                 
                                 stream.resolve(url.toString())
+
+                                streamInfo = { source: url, name: SC.info, platform: 'SoundCloud' }
                 */
 
                 return message.reply('SoundCloud support coming sometime later. :)')
@@ -592,11 +602,17 @@ BOT.on('message', (message) => {
                     console.log(
                         `Voice channel connection status: ${connection.status}`)
 
-
                     var dispatcher: Discord.StreamDispatcher = connection.play(stream, streamOptions)
 
                     dispatcher.on('start', () => {
                         console.group(`Now playing song from ${url}.`)
+
+                        if (streamInfo.name && streamInfo.platform)
+                            message.reply(`\nPlaying ${streamInfo.name} from ${streamInfo.platform}. 👌`)
+                        else if (streamInfo.platform)
+                            message.reply(`\nI'm playing your song from ${streamInfo.platform}. 👌`)
+                        else
+                            message.reply(`\nPlaying song from your above URL.`)
                     })
 
                     dispatcher.on('close', () => {
@@ -753,5 +769,3 @@ function searchRecursive(dir, pattern: string) {
 };
 
 
-
-//TODO: Add end of month results for Swear Jar

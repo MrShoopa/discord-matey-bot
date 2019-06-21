@@ -4,12 +4,10 @@
     "description": "MrShoopa's Lil' Discord Bot",
     "author": "MrShoopa",
     "license": "ISC",
-
     "main": "botCore.ts",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
-
     "dependencies": {
         "@types/node": "^12.0.8",
         "discord.js": "github:discordjs/discord.js",

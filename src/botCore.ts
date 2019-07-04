@@ -659,6 +659,43 @@ BOT.on('message', (message) => {
         }
     }
 
+    function fetchJSONFromURL(url: string, log?: boolean): any {
+        console.group(`Fetching JSON from ${url}...`)
+
+        let obj: any
+
+        // Asyncrhonous fetching
+        return new Promise((resolve, reject) => {
+            import('request').then(Request => {
+
+                Request.get(url, { json: true },
+                    (error, response, body) => {
+                        if (error) {
+                            console.error('Fetching JSON error: ')
+                            if (log) console.error(error)
+                            console.error(`Fetching JSON Failed - Code ${response.statusCode}`)
+
+                            if (response.statusCode === 404)
+                                console.log(`Couldn't find JSON with URL.`)
+                            if (response.statusCode === 401)
+                                console.log(`Not authorized.`)
+
+                            console.groupEnd()
+
+                            reject(null)
+                        } else {
+                            if (response.statusCode === 200)
+                                if (log) console.log(body)
+
+                            console.log('Successfully fetched!')
+                            console.groupEnd()
+                            resolve(body)
+                        }
+                    })
+            })
+        })
+    }
+
     function fetchRestrictedRoleID(roleName = RESTRICTED_ROLE_NAME) {
         message.guild.roles.forEach(role => {
             //.console.log(role.name)

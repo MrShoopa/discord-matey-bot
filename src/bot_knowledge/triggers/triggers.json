@@ -577,6 +577,20 @@
             "xrated",
             "xxx"
         ]
+    },
+
+    "reddit_fetch": {
+        "copypasta": {
+            "default": [
+                "megadork fetch copypasta",
+                "megadork fetch fresh copypasta",
+                "megadork fetch top new copypasta"
+            ],
+            "top_of_week": [
+                "megadork fetch this week's copypasta",
+                "megadork get this week's copypasta"
+            ]
+        }
     }
 
 }

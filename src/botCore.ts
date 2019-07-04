@@ -91,7 +91,6 @@ BOT.on('message', (message) => {
 
         if (messageString.toLowerCase().split(" ").includes(trigger)) {
 
-
             logBotResponse(trigger, 'Swear Jar')
 
             // TODO? Shrink code further
@@ -196,7 +195,7 @@ BOT.on('message', (message) => {
     TRIGGERS.singing_triggers.stop.forEach(trigger => {
         if (!matchedCommand)
             if (messageString.substring(0, 25).toLowerCase().includes(trigger)) {
-                logBotResponse(trigger, 'Singing Stop')
+                logBotResponse(trigger, 'Singing Stop', true)
 
                 if (voiceChannel != null && BOT.voice.connections.size !== 0) {
                     message.member.voice.channel.leave()
@@ -210,8 +209,6 @@ BOT.on('message', (message) => {
                     message.reply(fetchRandomPhrase(PHRASES_SING.command_feedback.stop.null))
                     console.log('No sound was playing, nothing terminated.')
                 }
-
-                matchedCommand = true
             }
 
     })
@@ -222,7 +219,7 @@ BOT.on('message', (message) => {
     //  Find random image (from Google Images)
     TRIGGERS.image_search_triggers.random_image.forEach(trigger => {
         if (messageString.toLowerCase().includes(trigger)) {
-            logBotResponse(trigger, 'Image Search')
+            logBotResponse(trigger, 'Image Search', true)
 
             var userQuery: string = ''
 
@@ -237,9 +234,6 @@ BOT.on('message', (message) => {
             })
 
             fetchImageFromGoogle(userQuery)
-
-            //  FINISHED
-            matchedCommand = true
         }
     })
     /*  -----  */
@@ -249,8 +243,7 @@ BOT.on('message', (message) => {
     //  Get copypasta post (from reddit)
     TRIGGERS.reddit_fetch.copypasta.default.forEach(async trigger => {
         if (messageString.toLowerCase().includes(trigger)) {
-            matchedCommand = true
-            logBotResponse(trigger, 'reddit copypasta fetch')
+            logBotResponse(trigger, 'reddit copypasta fetch', true)
 
             let topPastaUrl = 'https://www.reddit.com/r/copypasta/top.json?limit=1'
 
@@ -270,7 +263,7 @@ BOT.on('message', (message) => {
     //  Set Restricted Role
     TRIGGERS.server_mod_triggers.set_restricted_role.forEach(trigger => {
         if (messageString.toLowerCase().includes(trigger)) {
-            logBotResponse(trigger, 'Set restricted role')
+            logBotResponse(trigger, 'Set restricted role', true)
 
             message.mentions.members.forEach(member => {
                 message.reply(
@@ -285,16 +278,12 @@ BOT.on('message', (message) => {
                         console.error)
                 //.catch(console.error(`Failed to add ${member.displayName} to the role: ${restricted_role_id}`))
             })
-
-            // FINISHED
-            matchedCommand = true
         }
-
     })
     //  Unset Restricted Role
     TRIGGERS.server_mod_triggers.unset_restricted_role.forEach(trigger => {
         if (messageString.toLowerCase().includes(trigger)) {
-            logBotResponse(trigger, 'Unset restricted role')
+            logBotResponse(trigger, 'Unset restricted role', true)
 
             message.mentions.members.forEach(member => {
                 message.reply(
@@ -307,11 +296,7 @@ BOT.on('message', (message) => {
                     })
                     .catch(console.error)
             })
-
-            // FINISHED
-            matchedCommand = true
         }
-
     })
     /*  -----  */
 
@@ -321,8 +306,7 @@ BOT.on('message', (message) => {
     //  Suicidal
     TRIGGERS.third_person_phrase_triggers.self_death_wish.die.forEach(trigger => {
         if (messageString.toLowerCase().includes(trigger)) {
-            logBotResponse(trigger, 'self death wish')
-            matchedCommand = true
+            logBotResponse(trigger, 'self death wish', true)
 
             if (trigger == 'can i die')
                 return message.reply(
@@ -334,8 +318,7 @@ BOT.on('message', (message) => {
     })
     TRIGGERS.third_person_phrase_triggers.self_death_wish.kill_self.forEach(trigger => {
         if (messageString.toLowerCase().includes(trigger)) {
-            logBotResponse(trigger, 'self death wish')
-            matchedCommand = true
+            logBotResponse(trigger, 'self death wish', true)
 
             return message.reply(
                 PHRASES_CONVO.counter_suicide_phrases[1])
@@ -354,8 +337,7 @@ BOT.on('message', (message) => {
     //  Send Nudes (Per request of a friend :P)
     TRIGGERS.send_nude_triggers.forEach(trigger => {
         if (messageString.toLowerCase().includes(trigger)) {
-            logBotResponse(trigger, 'Send nude')
-            matchedCommand = true
+            logBotResponse(trigger, 'Send nude', true)
 
             return message.reply(
                 fetchRandomPhrase(PHRASES_CONVO.asked_to_send_nudes))
@@ -366,8 +348,7 @@ BOT.on('message', (message) => {
     //  Thank you
     TRIGGERS.thank_you_triggers.forEach(trigger => {
         if (messageString.toLowerCase().includes(trigger)) {
-            logBotResponse(trigger, 'Thank you!')
-            matchedCommand = true
+            logBotResponse(trigger, 'Thank you!', true)
 
             return message.reply(
                 fetchRandomPhrase(PHRASES_FRONT.asked.thank_you))
@@ -376,13 +357,12 @@ BOT.on('message', (message) => {
 
     //  "Are you a X?"
     if (messageString.toLowerCase().includes(TRIGGERS.are_you_triggers.communist)) {
-        logBotResponse(TRIGGERS.are_you_triggers.communist, 'Communist response')
+        logBotResponse(TRIGGERS.are_you_triggers.communist, 'Communist response', true)
 
         PHRASES_SING.songs_to_sing.forEach(song => {
             if (song.title === 'USSR Anthem')
                 playAudioFromFiles(song)
         })
-        matchedCommand = true
 
         return message.reply(
             fetchRandomPhrase(PHRASES_FRONT.asked.communist))
@@ -517,7 +497,7 @@ BOT.on('message', (message) => {
 
         if (!matchedCommand) {
             if (trigger)
-                logBotResponse(trigger, 'Audio playback from files')
+                logBotResponse(trigger, 'Audio playback from files', true)
             songState = 'playing'
 
             voiceChannel.join().then(connection => {
@@ -558,19 +538,14 @@ BOT.on('message', (message) => {
             })
 
             // FINISHED
-            matchedCommand = true
         }
     }
     async function playAudioFromURL(url: string, trigger?: string) {
-
-        //TODO: More efficient handling (deal with matchedCommand)
         if (!matchedCommand) {
-            matchedCommand = true
-
 
             console.log('URL Command matched')
             if (trigger)
-                logBotResponse(trigger, 'Audio playback from URL')
+                logBotResponse(trigger, 'Audio playback from URL', true)
             songState = 'playing'
 
             var stream: Discord.VoiceBroadcast
@@ -609,7 +584,7 @@ BOT.on('message', (message) => {
                                 });
                 
                                 stream.resolve(url.toString())
-
+    
                                 streamInfo = { source: url, name: SC.info, platform: 'SoundCloud' }
                 */
 
@@ -637,6 +612,7 @@ BOT.on('message', (message) => {
 
                     dispatcher.on('close', () => {
                         console.log(`Song interrupted by user.`)
+                        console.groupEnd()
                     })
 
                     dispatcher.on('end', () => {
@@ -753,8 +729,8 @@ BOT.on('message', (message) => {
     }
 
 
-    function logBotResponse(trigger: string = 'None', intent?: string) {
-        //TODO: Make sure this doesn't break matchedCommand = true
+    function logBotResponse(trigger: string = 'None', intent?: string, preventNextAction?: boolean) {
+        if (preventNextAction) matchedCommand = true
 
         console.group(`--- BOT GO! ---`)
         console.log(`TRIGGER: "${trigger}"`)

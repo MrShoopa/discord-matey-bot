@@ -244,6 +244,26 @@ BOT.on('message', (message) => {
     })
     /*  -----  */
 
+    /*      ---- External Data Retreival ----   */
+
+    //  Get copypasta post (from reddit)
+    TRIGGERS.reddit_fetch.copypasta.default.forEach(async trigger => {
+        if (messageString.toLowerCase().includes(trigger)) {
+            matchedCommand = true
+            logBotResponse(trigger, 'reddit copypasta fetch')
+
+            let topPastaUrl = 'https://www.reddit.com/r/copypasta/top.json?limit=1'
+
+            let pastaObject = await fetchJSONFromURL(topPastaUrl)
+
+
+            //  Replies back 'currently best' copypasta by title if it's not in the subtext of the post.
+            if (pastaObject.data.children[0].data.selftext == '')
+                message.channel.send(pastaObject.data.children[0].data.title)
+            else
+                message.channel.send(pastaObject.data.children[0].data.selftext)
+        }
+    })
 
     /*  ----    Server-Management   ---- */
 

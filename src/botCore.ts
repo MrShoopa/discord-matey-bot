@@ -36,8 +36,8 @@ import TRIGGERS from './bot_knowledge/triggers/triggers.json';
 import BotData from './bot_functions/BotData';
 
 //  TYPINGS
-import { StreamInfo } from './typescript/index'
 import { triggerAsyncId } from 'async_hooks';
+import { StreamInfo } from './ts/interfaces/index';
 
 
 /*  -----  */
@@ -582,7 +582,7 @@ BOT.on('message', (message) => {
 
             if (url.includes('youtu')) {
                 streamInfo.source = 'YouTube'
-                const YTDL = require('ytdl-core-discord')
+                const YTDL = require('src/ts/ytdl-core-discord')
 
 
                 stream = await YTDL(url.toString(), {
@@ -709,7 +709,7 @@ BOT.on('message', (message) => {
 
     function fetchImageFromGoogle(userQuery = '') {
         //  Modules   
-        const GoogleImages = require('google-images')
+        const GoogleImages = require('src/ts/google-images')
         const GOOGLE_IMAGER =
             new GoogleImages(
                 AUTH.google.search.CSE_ID, AUTH.google.search.API_KEY)

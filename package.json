@@ -18,6 +18,7 @@
         "google-images": "^2.1.0",
         "opus": "0.0.0",
         "opusscript": "0.0.6",
+        "request": "^2.88.0",
         "soundcloud": "^3.3.2",
         "soundcloud-audio": "^1.4.0",
         "winston": "^3.2.1",

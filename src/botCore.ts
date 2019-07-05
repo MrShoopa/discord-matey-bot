@@ -37,6 +37,7 @@ import BotData from './bot_functions/BotData';
 
 //  TYPINGS
 import { StreamInfo } from './typescript/index'
+import { triggerAsyncId } from 'async_hooks';
 
 
 /*  -----  */
@@ -62,13 +63,11 @@ console.groupEnd()
 
 //  States
 var songState: string | boolean = 'idle'
+var lastMessage: string
 
 //  Messaging to bot
 BOT.on('message', (message) => {
     let user: String = message.author.id  // Fetch user's ID
-
-    //  So bot doesn't respond to itself
-    if (user === BOT.user.id) return
 
     var matchedCommand = false
 
@@ -79,9 +78,34 @@ BOT.on('message', (message) => {
     //  Begin logging block
     console.log(`\nA user said: ${messageString}`)
 
+    //  So bot doesn't respond to itself!
+    if (user === BOT.user.id)
+        if (!messageString.startsWith('redoin, '))
+            return
+        else
+            messageString = messageString.substring(7)
 
     /*      F U N C T I O N A L I T Y       */
 
+    /*  ---- Contexual Functionality ----  */
+
+    //  Redo last command
+    TRIGGERS.redo_trigger.forEach(trigger => {
+        trigger.toLowerCase()
+
+        if (messageString.toLowerCase().includes(trigger)) {
+            logBotResponse(trigger, 'Redo command', true, true)
+
+            if (lastMessage.startsWith('redoin, '))
+                lastMessage = lastMessage.substring(7)
+
+            if (lastMessage == null)
+                return message.channel.send(`I haven't done anything yet though!`)
+
+            return message.channel.send('redoin, ' + lastMessage)
+        }
+
+    })
 
     /*  ---- Swear Jar Functionality ----  */
     TRIGGERS.swear_jar_triggers.bad_words.forEach(trigger => {
@@ -729,8 +753,10 @@ BOT.on('message', (message) => {
     }
 
 
-    function logBotResponse(trigger: string = 'None', intent?: string, preventNextAction?: boolean) {
+    function logBotResponse(trigger: string = 'None', intent?: string,
+        preventNextAction?: boolean, forgetLastMessage?: boolean) {
         if (preventNextAction) matchedCommand = true
+        if (!forgetLastMessage) lastMessage = message.toString()
 
         console.group(`--- BOT GO! ---`)
         console.log(`TRIGGER: "${trigger}"`)

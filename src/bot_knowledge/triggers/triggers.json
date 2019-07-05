@@ -5,6 +5,14 @@
         "megadick",
         "megafaggot"
     ],
+    "redo_trigger": [
+        "megadork redo",
+        "megadork redo that",
+        "megadork rewind that",
+        "megadork do that again",
+        "megarewind",
+        "megaredo"
+    ],
     "url_trigger": {
         "any": "."
     },

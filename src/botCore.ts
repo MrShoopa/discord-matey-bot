@@ -18,6 +18,7 @@ import AUTH from './auth.json';
 import * as Discord from 'discord.js'
 import * as FileSystem from 'fs'
 import * as Path from 'path'
+import MateyLogger from './tools/WinstonSpinoff'
 
 //  PHRASES
 import PHRASES_FRONT from './bot_knowledge/phrases/phrases_front.json';
@@ -36,7 +37,6 @@ import TRIGGERS from './bot_knowledge/triggers/triggers.json';
 import BotData from './bot_functions/BotData';
 
 //  TYPINGS
-import { triggerAsyncId } from 'async_hooks';
 import { StreamInfo } from './ts/interfaces/index';
 
 

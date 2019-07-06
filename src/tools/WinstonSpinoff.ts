@@ -14,7 +14,7 @@ interface CustomLevels extends winston.Logger {
     foobar: winston.LeveledLogMethod;
 }
 
-const matey_logger: CustomLevels = <CustomLevels>winston.createLogger({
+const MateyLogger: CustomLevels = <CustomLevels>winston.createLogger({
     levels: myCustomLevels,
     transports: [
         new winston.transports.Console({
@@ -23,6 +23,6 @@ const matey_logger: CustomLevels = <CustomLevels>winston.createLogger({
     ]
 });
 
-matey_logger.foobar('some foobar level-ed message');
+MateyLogger.foobar('some foobar level-ed message');
 
-export default matey_logger;
+export default MateyLogger;

@@ -1,2 +1,2 @@
-// TODO: Move interfaces to own directory
-export * from './Stream'
+export * from './StreamEntity'
+export * from './DataEntity'

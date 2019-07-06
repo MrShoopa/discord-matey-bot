@@ -17,7 +17,9 @@
         "sourceMap": true,
         "esModuleInterop": true,
         "moduleResolution": "node",
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
+
+        "experimentalDecorators": true
     },
     "include": [
         "./src/**/*"

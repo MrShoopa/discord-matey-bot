@@ -97,7 +97,7 @@ BOT.on('message', (message) => {
             logBotResponse(trigger, 'Redo command', true, true)
 
             if (lastMessage.startsWith('redoin, '))
-                lastMessage = lastMessage.substring(7)
+                lastMessage = lastMessage.substring(8)
 
             if (lastMessage == null)
                 return message.channel.send(`I haven't done anything yet though!`)
@@ -219,7 +219,7 @@ BOT.on('message', (message) => {
     TRIGGERS.singing_triggers.stop.forEach(trigger => {
         if (!matchedCommand)
             if (messageString.substring(0, 25).toLowerCase().includes(trigger)) {
-                logBotResponse(trigger, 'Singing Stop', true)
+                logBotResponse(trigger, 'Singing Stop', true, true)
 
                 if (voiceChannel != null && BOT.voice.connections.size !== 0) {
                     message.member.voice.channel.leave()
@@ -661,6 +661,7 @@ BOT.on('message', (message) => {
 
     function fetchJSONFromURL(url: string, log?: boolean): any {
         console.group(`Fetching JSON from ${url}...`)
+        message.channel.send(`Fetching from ${url}...`)
 
         let obj: any
 

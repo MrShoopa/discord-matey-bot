@@ -192,6 +192,7 @@ BOT.on('message', (message) => {
 
             } catch (err) {
                 console.log(voiceChannel)
+                botError(4001)
 
                 if (!voiceChannel) {
                     console.warn('User is not in voice channel. Song wasn\'t played.')
@@ -582,7 +583,7 @@ BOT.on('message', (message) => {
 
             if (url.includes('youtu')) {
                 streamInfo.source = 'YouTube'
-                const YTDL = require('src/ts/ytdl-core-discord')
+                const YTDL = require('ytdl-core-discord')
 
 
                 stream = await YTDL(url.toString(), {
@@ -710,7 +711,7 @@ BOT.on('message', (message) => {
 
     function fetchImageFromGoogle(userQuery = '') {
         //  Modules   
-        const GoogleImages = require('src/ts/google-images')
+        const GoogleImages = require('google-images')
         const GOOGLE_IMAGER =
             new GoogleImages(
                 AUTH.google.search.CSE_ID, AUTH.google.search.API_KEY)
@@ -766,6 +767,20 @@ BOT.on('message', (message) => {
         if (intent) console.log(`ACTION: ${intent}`)
         console.groupEnd()
 
+    }
+
+    function botError(code?: number, messageString?: string) {
+        let errorMessage: string
+
+        if (!messageString && !code) {
+
+            errorMessage = `Hmmm. Something wrong happened.`
+        } else if (code) {
+            if (code == 4001)
+                errorMessage = `Error ${code} - Couldn't play song.`
+        } else message.channel.send(`Error ${code} - ${messageString}`)
+
+        message.channel.send(errorMessage)
     }
 
     /*  -----  */

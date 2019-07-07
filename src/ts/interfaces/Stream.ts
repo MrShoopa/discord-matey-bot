@@ -1,4 +1,4 @@
-export interface StreamInfo {
+declare interface StreamInfo {
     source: string;
     name?: any;
     platform?: string;

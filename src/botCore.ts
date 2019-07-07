@@ -34,10 +34,8 @@ import DEFAULTS_IMAGE from './bot_knowledge/defaults/image_search.json';
 //  TRIGGERS
 import TRIGGERS from './bot_knowledge/triggers/triggers.json';
 
+//  SAVE DATA
 import BotData from './bot_functions/BotData';
-
-//  TYPINGS
-import { StreamInfo } from './ts/interfaces/index';
 
 
 /*  -----  */

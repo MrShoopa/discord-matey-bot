@@ -14,8 +14,6 @@
 /*  Modules  */
 import * as FileSystem from 'fs';
 
-import { Member } from '../ts/interfaces/index';
-
 /*  Locations  */
 const SAVE_DATA = __dirname + '/../save_data'
 const SAVE_DATA_FILE = `${SAVE_DATA}/user_data.json`

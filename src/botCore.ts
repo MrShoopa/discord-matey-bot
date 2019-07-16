@@ -76,12 +76,14 @@ BOT.on('message', (message) => {
     //  Begin logging block
     console.log(`\nA user said: ${messageString}`)
 
-    //  So bot doesn't respond to itself!
+    //  So bot doesn't respond to itself or other bots
     if (user === BOT.user.id)
         if (!messageString.startsWith('redoin, '))
             return
         else
             messageString = messageString.substring(7)
+    else if (message.author.bot)
+        return
 
     /*      F U N C T I O N A L I T Y       */
 

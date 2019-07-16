@@ -287,8 +287,20 @@ BOT.on('message', (message) => {
             //  Replies back 'currently best' copypasta by title if it's not in the subtext of the post.
             if (pastaObject.data.children[0].data.selftext == '')
                 message.channel.send(pastaObject.data.children[0].data.title)
-            else
-                message.channel.send(pastaObject.data.children[0].data.selftext)
+            else {
+                let pasta = pastaObject.data.children[0].data.selftext
+
+                if (pasta.length >= 2000) {
+                    console.log("Copypasta exceeds 2000 characters. 🔥🍝 Splitting...")
+
+                    pasta = pasta.match(/(?!&amp;#x200B;)[\s\S]{1,2000}/g)
+
+                    console.log(pasta)
+                    pasta.forEach((chunk: any) => {
+                        message.channel.send(chunk)
+                    });
+                } else message.channel.send(pastaObject.data.children[0].data.selftext)
+            }
         }
     })
 

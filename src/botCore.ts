@@ -705,7 +705,7 @@ BOT.on('message', (message) => {
 
                             console.groupEnd()
 
-                            reject(null)
+                            reject(response.statusMessage)
                         } else {
                             if (response.statusCode === 200)
                                 if (log) console.log(body)

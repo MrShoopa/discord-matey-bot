@@ -56,8 +56,17 @@ BOT.login(AUTH.discord.API_KEY)
 BOT.on('ready', () => {
     console.log(`Initialized at ${new Date().toLocaleString()}.`)
     console.log('I\'m alive and ready to go!\n')
+
+    BOT.user.setActivity(`with your servers`, { type: 'PLAYING' });
 })
 console.groupEnd()
+
+//  Bot joining server for first time
+BOT.on("guildCreate", guild => {
+    console.log(`New guild joined: ${guild.name} (id: ${guild.id}). There are ${guild.memberCount} members here.`);
+
+    guild.systemChannel.send('Hello world?')
+});
 
 //  States
 var songState: string | boolean = 'idle'

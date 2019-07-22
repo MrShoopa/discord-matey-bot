@@ -13,6 +13,7 @@
 
 /*  Modules  */
 import * as FileSystem from 'fs';
+import { Member } from 'interfaces/Data';
 
 /*  Locations  */
 const SAVE_DATA = __dirname + '/../save_data'

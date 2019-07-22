@@ -36,6 +36,7 @@ import TRIGGERS from './bot_knowledge/triggers/triggers.json';
 
 //  SAVE DATA
 import BotData from './bot_functions/BotData';
+import { StreamInfo } from 'index.js';
 
 
 /*  -----  */

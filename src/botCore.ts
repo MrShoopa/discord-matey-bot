@@ -38,7 +38,6 @@ import TRIGGERS from './bot_knowledge/triggers/triggers.json';
 import BotData from './bot_functions/BotData';
 import { StreamInfo } from 'index.js';
 
-
 /*  -----  */
 
 //  DIRECTORIES
@@ -165,6 +164,9 @@ BOT.on('message', (message) => {
         if (messageString.substring(0, 15).toLowerCase().includes(trigger)) {
             songState = 'fetching'
 
+            let loop: boolean
+            //TODO if (messageString.substring(0, 20).toLowerCase().includes('loop')) loop = true
+
             try {
 
                 //  Iterates over list of listed songs before taking action.
@@ -174,7 +176,7 @@ BOT.on('message', (message) => {
                         && !matchedCommand) {
                         //  When song from local files is found
 
-                        playAudioFromFiles(song, trigger)
+                        playAudioFromFiles(song, loop, trigger)
                         return
                     } else if (messageString.toLowerCase().
                         includes(TRIGGERS.url_trigger.any) &&
@@ -182,7 +184,7 @@ BOT.on('message', (message) => {
                         //  When song from URL is found
 
                         var url_string: string[] = messageString.split(' ')
-                        playAudioFromURL(url_string[url_string.length - 1], trigger)
+                        playAudioFromURL(url_string[url_string.length - 1], loop, trigger)
                         return
 
                     }
@@ -196,7 +198,7 @@ BOT.on('message', (message) => {
                     console.log(`Local matching songs found:`)
                     console.log(matchedSongs)
 
-                    playAudioFromFiles(matchedSongs[0])
+                    playAudioFromFiles(matchedSongs[0], loop)
                     return
                 }
 
@@ -282,7 +284,10 @@ BOT.on('message', (message) => {
 
             let topPastaUrl = 'https://www.reddit.com/r/copypasta/top.json?limit=1'
 
-            let pastaObject = await fetchJSONFromURL(topPastaUrl)
+            let pastaObject = await fetchJSONFromURL(topPastaUrl, true)
+                .catch(err => {
+                    message.channel.send(`Could not fetch. Error: ${err}`)
+                })
 
 
             //  Replies back 'currently best' copypasta by title if it's not in the subtext of the post.
@@ -540,7 +545,7 @@ BOT.on('message', (message) => {
 
     /*  ---- Helper Functions ---- */
 
-    function playAudioFromFiles(song, trigger?: string) {
+    function playAudioFromFiles(song, loop?: boolean, trigger?: string) {
 
         if (!matchedCommand) {
             if (trigger)
@@ -554,13 +559,13 @@ BOT.on('message', (message) => {
 
                 let dispatcher: Discord.StreamDispatcher
 
-
                 if (typeof song === "string") {
                     dispatcher = connection.play(song)
 
                     console.log(`Playing non-tagged song from first match: ${song}`)
 
                     message.reply(`Playing ${song.split('\\').pop()} 👌`)
+                    if (loop) message.reply('...looped!')
                 } else {
                     dispatcher = connection.play(song.file)
 
@@ -568,14 +573,19 @@ BOT.on('message', (message) => {
                     console.log(`Responding with '${song.play_phrase}'`)
 
                     message.reply(song.play_phrase)
+                    if (loop) message.reply('Looping this song!')
                 }
 
 
+
                 dispatcher.on('end', () => {
-                    console.info(
-                        'Song played successfully.')
-                    songState = 'finished'
-                    voiceChannel.leave()
+                    if (loop) connection.play(song)
+                    else {
+                        console.info(
+                            'Song played successfully.')
+                        songState = 'finished'
+                        voiceChannel.leave()
+                    }
                 })
                 dispatcher.on('close', () => {
                     console.log(`Song interrupted by user.`)
@@ -587,7 +597,7 @@ BOT.on('message', (message) => {
             // FINISHED
         }
     }
-    async function playAudioFromURL(url: string, trigger?: string) {
+    async function playAudioFromURL(url: string, loop?: boolean, trigger?: string) {
         if (!matchedCommand) {
 
             console.log('URL Command matched')
@@ -646,6 +656,7 @@ BOT.on('message', (message) => {
 
                     var dispatcher: Discord.StreamDispatcher = connection.play(stream, streamOptions)
 
+
                     dispatcher.on('start', () => {
                         console.group(`Now playing song from ${url}.`)
 
@@ -663,11 +674,14 @@ BOT.on('message', (message) => {
                     })
 
                     dispatcher.on('end', () => {
-                        console.log('Song played successfully.')
-                        console.groupEnd()
+                        if (loop) connection.play(stream, streamOptions)
+                        else {
+                            console.log('Song played successfully.')
+                            console.groupEnd()
 
-                        songState = 'finished'
-                        voiceChannel.leave()
+                            songState = 'finished'
+                            voiceChannel.leave()
+                        }
                     })
 
                     // FINISHED
@@ -864,5 +878,3 @@ function searchRecursive(dir, pattern: string) {
 
     return results;
 };
-
-

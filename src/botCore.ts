@@ -313,6 +313,19 @@ BOT.on('message', (message) => {
         }
     })
 
+    //  Get latest Tweet with specific query
+    TRIGGERS.twitter_fetch.tweet.query.forEach(async trigger => {
+        if (messageString.toLowerCase().includes(trigger)) {
+            logBotResponse(trigger, 'twitter latest post fetch', true)
+
+            let query = messageString.split(trigger).pop()
+
+            let tweet = await fetchTweetWithQuery(query)
+
+            message.channel.send(`Tweet from @${tweet.user.name}\nabout '${query}':\n\n${tweet.text}`)
+        }
+    })
+
     /*  ----    Server-Management   ---- */
 
     //  Set Restricted Role
@@ -791,6 +804,55 @@ BOT.on('message', (message) => {
             message.channel.send(
                 'Couldn\'t find image! Let Joe know to find the error.')
         }
+    }
+
+    //TODO: Fetch user's top post
+    function fetchTweetFromUser(userQuery = '') {
+        //  Modules
+        import('twitter').then(Twitter => {
+            let TwitterEntity =
+                new Twitter.default({
+                    consumer_key: AUTH.twitter.consumer_key,
+                    consumer_secret: AUTH.twitter.consumer_secret,
+                    access_token_key: AUTH.twitter.access_token_key,
+                    access_token_secret: AUTH.twitter.access_token_secret
+                })
+
+            TwitterEntity.get('search/tweets', { q: 'beans' }, function (error, tweets, response) {
+                console.log(tweets);
+            });
+        })
+    }
+
+    function fetchTweetWithQuery(userQuery: string, top?: boolean, log?: boolean): any {
+        //  Modules
+        return new Promise((resolve, reject) => {
+            import('twitter').then(Twitter => {
+                let TwitterEntity =
+                    new Twitter.default({
+                        consumer_key: AUTH.twitter.consumer_key,
+                        consumer_secret: AUTH.twitter.consumer_secret,
+                        access_token_key: AUTH.twitter.access_token_key,
+                        access_token_secret: AUTH.twitter.access_token_secret
+                    })
+
+                TwitterEntity.get('search/tweets', { q: userQuery }, function (error, tweets, response) {
+                    //?
+                    if (error) reject(error)
+
+                    let index = Math.floor((Math.random() * tweets.statuses.length))
+                    //  Condition for specific placement
+                    if (top) index = 0
+
+                    let tweet = tweets.statuses[index]
+
+                    console.log(`Fetched twitter tweet from ${tweet.user.name}.`)
+                    if (log) console.log(tweets);
+
+                    resolve(tweet)
+                });
+            })
+        })
     }
 
 

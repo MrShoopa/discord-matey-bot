@@ -600,6 +600,20 @@
                 "megadork get this week's copypasta"
             ]
         }
+    },
+    "twitter_fetch": {
+        "tweet": {
+            "default": [
+                "megadork fetch tweet",
+                "megadork fetch fresh tweet",
+                "megadork fetch top new tweet"
+            ],
+            "query": [
+                "megadork fetch tweet about",
+                "megadork fetch fresh tweet about",
+                "megadork fetch a tweet about"
+            ]
+        }
     }
 
 }

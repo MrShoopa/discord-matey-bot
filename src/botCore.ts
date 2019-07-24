@@ -284,11 +284,13 @@ BOT.on('message', (message) => {
 
             let pastaObject = await fetchJSONFromURL(topPastaUrl)
 
-
+            //  References reddit post
+            message.channel.send(`From post: ${pastaObject.data.children[0].data.url}`)
             //  Replies back 'currently best' copypasta by title if it's not in the subtext of the post.
             if (pastaObject.data.children[0].data.selftext == '')
                 message.channel.send(pastaObject.data.children[0].data.title)
             else {
+
                 let pasta = pastaObject.data.children[0].data.selftext
 
                 if (pasta.length >= 2000) {
@@ -301,6 +303,7 @@ BOT.on('message', (message) => {
                         message.channel.send(chunk)
                     });
                 } else message.channel.send(pastaObject.data.children[0].data.selftext)
+
             }
         }
     })
@@ -682,9 +685,9 @@ BOT.on('message', (message) => {
         }
     }
 
-    function fetchJSONFromURL(url: string, log?: boolean): any {
+    function fetchJSONFromURL(url: string, includeURL?: boolean, log?: boolean): any {
         console.group(`Fetching JSON from ${url}...`)
-        message.channel.send(`Fetching from ${url}...`)
+        if (includeURL) message.channel.send(`Fetching from ${url}...`)
 
         let obj: any
 
@@ -864,5 +867,3 @@ function searchRecursive(dir, pattern: string) {
 
     return results;
 };
-
-

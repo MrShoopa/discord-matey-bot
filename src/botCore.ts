@@ -73,7 +73,7 @@ var songState: string | boolean = 'idle'
 var lastMessage: string
 
 //  Messaging to bot
-BOT.on('message', (message) => {
+BOT.on('message', async (message) => {
     let user: String = message.author.id  // Fetch user's ID
 
     var matchedCommand = false

@@ -361,6 +361,7 @@ BOT.on('message', (message) => {
                     .then(() => {
                         console.log(
                             `Removing ${member.displayName} from the role: ${RESTRICTED_ROLE_NAME}`)
+                    }, error => console.error(`Couldn't remove member from restricted role - ${error}`))       
                     })
                     .catch(console.error)
             })
@@ -664,46 +665,45 @@ BOT.on('message', (message) => {
                 return message.reply('SoundCloud support coming sometime later. :)')
 
             }
-            try {
-                voiceChannel.join().then(connection => {
-                    songState = 'playing'
-                    console.log(
-                        `Voice channel connection status: ${connection.status}`)
 
-                    var dispatcher: Discord.StreamDispatcher = connection.play(stream, streamOptions)
+            voiceChannel.join().then(connection => {
+                songState = 'playing'
+                console.log(
+                    `Voice channel connection status: ${connection.status}`)
+
+                var dispatcher: Discord.StreamDispatcher = connection.play(stream, streamOptions)
 
 
-                    dispatcher.on('start', () => {
-                        console.group(`Now playing song from ${url}.`)
+                dispatcher.on('start', () => {
+                    console.group(`Now playing song from ${url}.`)
 
-                        if (streamInfo.name && streamInfo.platform)
-                            message.reply(`\nPlaying ${streamInfo.name} from ${streamInfo.platform}. 👌`)
-                        else if (streamInfo.platform)
-                            message.reply(`\nI'm playing your song from ${streamInfo.platform}. 👌`)
-                        else
-                            message.reply(`\nPlaying song from your above URL.`)
-                    })
-
-                    dispatcher.on('close', () => {
-                        console.log(`Song interrupted by user.`)
-                        console.groupEnd()
-                    })
-
-                    dispatcher.on('end', () => {
-                        if (loop) connection.play(stream, streamOptions)
-                        else {
-                            console.log('Song played successfully.')
-                            console.groupEnd()
-
-                            songState = 'finished'
-                            voiceChannel.leave()
-                        }
-                    })
-
-                    // FINISHED
-                    matchedCommand = true
+                    if (streamInfo.name && streamInfo.platform)
+                        message.reply(`\nPlaying ${streamInfo.name} from ${streamInfo.platform}. 👌`)
+                    else if (streamInfo.platform)
+                        message.reply(`\nI'm playing your song from ${streamInfo.platform}. 👌`)
+                    else
+                        message.reply(`\nPlaying song from your above URL.`)
                 })
-            } catch (error) {
+
+                dispatcher.on('close', () => {
+                    console.log(`Song interrupted by user.`)
+                    console.groupEnd()
+                })
+
+                dispatcher.on('end', () => {
+                    if (loop) connection.play(stream, streamOptions)
+                    else {
+                        console.log('Song played successfully.')
+                        console.groupEnd()
+
+                        songState = 'finished'
+                        voiceChannel.leave()
+                    }
+                })
+
+                // FINISHED
+                matchedCommand = true
+            }), error => {
                 if (!voiceChannel) console.log(`User is not in a server's voice channel.`)
                 throw error
             }

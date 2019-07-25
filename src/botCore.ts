@@ -361,9 +361,7 @@ BOT.on('message', async (message) => {
                     .then(() => {
                         console.log(
                             `Removing ${member.displayName} from the role: ${RESTRICTED_ROLE_NAME}`)
-                    }, error => console.error(`Couldn't remove member from restricted role - ${error}`))       
-                    })
-                    .catch(console.error)
+                    }, error => console.error(`Couldn't remove member from restricted role - ${error}`))
             })
         }
     })
@@ -707,8 +705,6 @@ BOT.on('message', async (message) => {
                 if (!voiceChannel) console.log(`User is not in a server's voice channel.`)
                 throw error
             }
-
-            //TODO: Optimize error handling
         }
     }
 
@@ -761,6 +757,26 @@ BOT.on('message', async (message) => {
         return null
     }
 
+    function fetchImageFromURL(URL: string): any {
+        return new Promise((resolve, reject) => {
+
+            import('snekfetch').then(Request => {
+                Request.default.get('await')
+                    .then(result => {
+                        console.log(`Image fetched from ${URL}.`)
+
+                        resolve(result.body)
+                    }, error => {
+                        console.error(`Could not fetch image - ${error}`)
+
+                        reject(error)
+                    })
+            })
+
+        })
+    }
+
+    //TODO: Modularize like JSON and Tweet
     function fetchImageFromGoogle(userQuery = '') {
         //  Modules   
         const GoogleImages = require('google-images')

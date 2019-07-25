@@ -33,5 +33,8 @@
     ],
     "not_desired": {
         "to_look": ["i ain't wanna see that", "that sounds disgusting", "keep my eyes away", "censor that stuff from me"]
+    },
+    "beans": {
+        "spam_intro": ["🌱🌱🌱🌱🌱🌱"]
     }
 }

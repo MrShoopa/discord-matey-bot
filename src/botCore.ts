@@ -400,6 +400,34 @@ BOT.on('message', async (message) => {
         return message.reply(
             fetchRandomPhrase(PHRASES_CONVO.not_desired.to_look))
     }
+    //  the master's favorite food
+    if (messageString = 'beans') {
+        logBotResponse("beans", "beans")
+
+        message.channel.send(`Did you say... BEANZ?!?!?!?`)
+
+        let funnyImageUrl = 'https://www.reddit.com/r/beans/top.json?limit=1'
+
+        message.channel.send(
+            fetchRandomPhrase(PHRASES_CONVO.beans.spam_intro))
+
+
+        await fetchImageFromGoogle('beans')
+
+        let response: any = await fetchTweetWithQuery('beans')
+        message.channel.send(response.text)
+
+        let beansInThing: Discord.MessageAttachment =
+            new Discord.MessageAttachment(fetchImageFromURL(funnyImageUrl))
+        message.channel.send(beansInThing)
+
+        await playAudioFromURL('https://www.youtube.com/watch?v=wEEuzUGEWws&ab_channel=TheBritishPickles')
+
+        message.channel.send(
+            fetchRandomPhrase(PHRASES_CONVO.beans.spam_intro))
+
+        message.channel.send('...👌😤💨')
+    }
 
     //  Send Nudes (Per request of a friend :P)
     TRIGGERS.send_nude_triggers.forEach(trigger => {

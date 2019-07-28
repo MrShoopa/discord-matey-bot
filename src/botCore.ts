@@ -401,7 +401,7 @@ BOT.on('message', async (message) => {
             fetchRandomPhrase(PHRASES_CONVO.not_desired.to_look))
     }
     //  the master's favorite food
-    if (messageString = 'beans') {
+    if (messageString == 'beans') {
         logBotResponse("beans", "beans")
 
         message.channel.send(`Did you say... BEANZ?!?!?!?`)
@@ -426,7 +426,7 @@ BOT.on('message', async (message) => {
         message.channel.send(
             fetchRandomPhrase(PHRASES_CONVO.beans.spam_intro))
 
-        message.channel.send('...👌😤💨')
+        return message.channel.send('...👌😤💨')
     }
 
     //  Send Nudes (Per request of a friend :P)

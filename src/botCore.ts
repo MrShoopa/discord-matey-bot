@@ -7,6 +7,7 @@
 
 //*  Server-Specific settings    (INCLUDE YOUR SERVER'S INFO WHERE APPLICABLE)
 const RESTRICTED_ROLE_NAME = 'sKrUb!!! 😅👌🔥👈'
+const MEMBER_ANNOUNCEMENT_CHANNEL = 'announcements'
 
 
 /* --- Assets --- */
@@ -503,7 +504,7 @@ BOT.on('message', async (message) => {
             //  HELP
             TRIGGERS.help_questions.actions.forEach(trigger => {
                 if (messageString.toLowerCase().includes(trigger)) {
-                    logBotResponse(trigger, 'Help with Actions')
+                    logBotResponse(trigger, 'Help with Actions', true)
 
                     message.reply(PHRASES_FRONT.help_intro)
 
@@ -523,6 +524,7 @@ BOT.on('message', async (message) => {
                     //  Secret functions
                     message.reply((PHRASES_FRONT.help_secret.main))
 
+                    return
                 }
             })
 
@@ -571,7 +573,7 @@ BOT.on('message', async (message) => {
 
             TRIGGERS.main_trigger.forEach(trigger => {
                 if (messageString == trigger) {
-                    logBotResponse(trigger, 'Generic response')
+                    logBotResponse(trigger, 'Generic response', true)
 
                     message.reply(PHRASES_FRONT.name_only_callout)
                 }
@@ -933,9 +935,9 @@ BOT.on('message', async (message) => {
 
 //TODO?:  Greeting
 BOT.on('guildMemberAdd', member => {
-    //  Send the message to a designated channel on a server:
+    //  Send the message to a designated channel when user joins server
     const CHANNEL: Discord.GuildChannel =
-        member.guild.channels.find(ch => ch.name === 'member-log')
+        member.guild.channels.find(ch => ch.name === MEMBER_ANNOUNCEMENT_CHANNEL)
     //  Do nothing if the channel wasn't found on this server
     if (!CHANNEL) return
     //  Send the message, mentioning the member

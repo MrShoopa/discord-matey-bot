@@ -403,7 +403,7 @@ BOT.on('message', async (message) => {
     }
     //  the master's favorite food
     if (messageString == 'beans') {
-        logBotResponse("beans", "beans")
+        logBotResponse("beans", "beans", true)
 
         message.channel.send(`Did you say... BEANZ?!?!?!?`)
 
@@ -531,7 +531,7 @@ BOT.on('message', async (message) => {
             //  SINGING HELP
             TRIGGERS.help_questions.singing.forEach(trigger => {
                 if (messageString.toLowerCase().includes(trigger)) {
-                    logBotResponse(trigger, 'Help with Singing')
+                    logBotResponse(trigger, 'Help with Singing', true)
 
                     var songList = ''
 
@@ -554,7 +554,7 @@ BOT.on('message', async (message) => {
             //  PHRASE-PLAY
             TRIGGERS.how_is_bot.forEach(trigger => {
                 if (messageString.toLowerCase().includes(trigger)) {
-                    logBotResponse(trigger, 'How is bot')
+                    logBotResponse(trigger, 'How is bot', true)
 
                     message.reply(
                         fetchRandomPhrase(PHRASES_CONVO.asked_how_are_you))
@@ -562,7 +562,7 @@ BOT.on('message', async (message) => {
             })
             TRIGGERS.threat.kill_self.forEach(trigger => {
                 if (messageString.toLowerCase().includes(trigger)) {
-                    logBotResponse(trigger, 'Retaliating')
+                    logBotResponse(trigger, 'Retaliating', true)
 
                     message.reply(
                         fetchRandomPhrase(PHRASES_CONVO.asked_death_threat))

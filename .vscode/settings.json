@@ -6,4 +6,11 @@
         "titleBar.inactiveBackground": "#1b1b1b",
         "activityBar.background": "#262e32"
     },
+
+    //  Discord
+    "discord.largeImage": "Editing a {LANG} file",
+    "discord.detailsEditing": "Working on Discord fun bot!",
+    "discord.lowerDetailsEditing": "Line {currentline} of {filename}",
+    "discord.detailsIdle": "Chillin'",
+    "discord.lowerDetailsIdle": "{null}",
 }

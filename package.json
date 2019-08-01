@@ -18,6 +18,7 @@
         "eslint": "^5.16.0",
         "ffmpeg": "0.0.4",
         "google-images": "^2.1.0",
+        "horoscope": "^2.0.1",
         "lodash": "^4.17.15",
         "opus": "0.0.0",
         "opusscript": "0.0.6",

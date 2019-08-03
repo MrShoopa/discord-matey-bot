@@ -155,6 +155,70 @@ BOT.on('message', async (message) => {
         }
     })
 
+    /*  ---- Birthday Functionality ----  */
+
+    //  Add birthday reminder!
+    TRIGGERS.remember.birthday.self.forEach(trigger => {
+        trigger.toLowerCase()
+
+        //  Check for birthday save
+        if (messageString.substring(0).toLowerCase().includes(trigger)) {
+            //  Trim trigger for easier parsing of date
+            logBotResponse(trigger, "Birthday reminder", true)
+            let context: string = messageString.replace(trigger, "").trim()
+
+
+            let birthday: { month: String, date: number } = { month: "", date: 0 }
+
+            CALENDAR.months.forEach(month => {
+                if (context.includes(month)) {
+                    //TODO: Edge case for 30/28 day months
+
+                    let dateNumber: number = parseInt(context.match(/\d+/).toString())
+                    if ((1 <= dateNumber) && (31 >= dateNumber)) {
+                        // Construct birthday object
+                        birthday.month = month
+                        birthday.date = dateNumber
+                    } else {
+                        return message.reply('Invalid date. Include a date from 1-31.')
+                    }
+                }
+
+            });
+
+            if (!birthday.month)
+                return message.reply(`Invalid date. Type the month and date like this: 'September 10'`)
+
+            // TODO? Shrink code further + Take off error handling?
+            let userData = BotData.getUserData(message.author.id)
+
+            if (userData === undefined) {
+                BotData.createUserData(message.author.id)
+                userData = BotData.getUserData(message.author.id)
+            }
+
+            try {
+                if (!userData.birthday) {
+                    message.reply(`your birthday has been recorded as ${birthday.month} ${birthday.date}!`)
+                } else {
+                    message.reply(`your birthday has been updated to ${birthday.month} ${birthday.date}!`)
+                }
+
+                userData.birthday = birthday
+
+            } catch (error) {
+                console.log('User data malfunction!')
+                console.error(error)
+            }
+
+            BotData.updateUserData(message.author.id, userData)
+
+            return
+        }
+    })
+
+    //TODO: Add birthday announcement!!!
+
     /*  ---- Music Functionality ----  */
 
     //  Play song

@@ -153,9 +153,9 @@ export default class BotData {
             this.createUserData(id)
         }
         console.log(`Old Data:`)
-        console.log(userData)
+        console.log(JSON.stringify(userData))
         console.log(`New Data:`)
-        console.log(newData)
+        console.log(JSON.stringify(newData))
 
         Object.keys(newData).forEach(key => userData[key] = newData[key])
 

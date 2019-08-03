@@ -57,6 +57,17 @@
     },
     "how_is_bot": ["how are you"],
 
+    "remember": {
+        "birthday": {
+            "self": [
+                "megadork remember my birthday",
+                "megadork my birthday's on",
+                "megadork my birthday is on",
+                "megadork celebrate my birthday on"
+            ]
+        }
+    },
+
     "singing_triggers": {
         "play": [
             "i summon",
@@ -614,6 +625,25 @@
                 "megadork fetch a tweet about"
             ]
         }
+    },
+
+    "horoscope_fetch": {
+        "default": [
+            "megadork fetch horoscope",
+            "megadork fetch horoscope reading",
+            "megadork fetch new horoscope",
+            "megadork get horoscope",
+            "megadork get horoscope reading",
+            "megadork get new horoscope",
+            "megadork get new horoscope reading",
+            "megadork get a horoscope",
+            "megadork get a horoscope reading"
+        ],
+        "context_prefix": [
+            "for",
+            "of",
+            "about"
+        ]
     }
 
 }

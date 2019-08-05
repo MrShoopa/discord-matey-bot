@@ -35,6 +35,9 @@ import DEFAULTS_IMAGE from './bot_knowledge/defaults/image_search.json';
 //  TRIGGERS
 import TRIGGERS from './bot_knowledge/triggers/triggers.json';
 
+//  NATURAL VALUES
+import CALENDAR from './bot_knowledge/calendar/values.json'
+
 //  SAVE DATA
 import BotData from './bot_functions/BotData';
 import { StreamInfo } from 'index.js';
@@ -256,10 +259,10 @@ BOT.on('message', async (message) => {
                 })
 
                 // Start searching local audio folder for 'non-tagged' songs
-                let matchedSongs =
-                    searchRecursive('./',
-                        `${messageString.substring(trigger.length + 1)}.mp3`);
-                if (matchedSongs.length > 0) {
+                let context = messageString.substring(trigger.length + 1)
+
+                let matchedSongs = searchRecursive('./', `${context}.mp3`);
+                if (matchedSongs.length > 0 && context.length > 0) {
                     console.log(`Local matching songs found:`)
                     console.log(matchedSongs)
 

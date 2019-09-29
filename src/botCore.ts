@@ -56,7 +56,7 @@ if (!BotData.getUserDataFile()) BotData.createNewDataFile()
 
 //  Initialize Discord Bot
 console.group('Initializing...')
-BOT.login(AUTH.discord.API_KEY)
+BOT.login(AUTH.discord.API_KEY).catch(err => (console.log(`Discord connection error: ${err}`)))
 BOT.on('ready', () => {
     console.log(`Initialized at ${new Date().toLocaleString()}.`)
     console.log('I\'m alive and ready to go!\n')

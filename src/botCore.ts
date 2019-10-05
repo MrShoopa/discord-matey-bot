@@ -998,6 +998,33 @@ BOT.on('message', async (message) => {
     }
 
     /*  -----  */
+
+    BOT.on('error', error => {
+        message.channel.send(`Ah! Something crashed my lil' engine!
+         Log submitted to Joe. Restarting...`)
+
+        FileSystem.exists('./crash_logs', exists => {
+            if (!exists) FileSystem.mkdir('./crash_logs', folderError => {
+                console.error(`Error creating crash log folder: ${folderError}`)
+            })
+
+            FileSystem.appendFile(`crash_log_${Date.now()}.txt`,
+                (`
+            Error encountered during bot runtime!
+
+            ${Date.now}
+            
+            ${error}
+            `)
+                , logError => {
+                    console.error(`Error writing crash log: ${logError}`)
+                });
+        }
+        )
+
+        //  Re-login
+        BOT.login(AUTH.discord.API_KEY)
+    })
 })
 
 //TODO?:  Greeting

@@ -1031,12 +1031,17 @@ function fetchRandomPhrase(key: string[]) {
     return key[Math.floor(Math.random() * (key.length))]
 }
 
-function searchRecursive(dir, pattern: string) {
+function searchRecursive(dir: string, pattern: string,
+    caseSensitive: boolean = false) {
+    if (!caseSensitive) pattern.toLowerCase()
+
     // This is where we store pattern matches of all files inside the directory
     var results = [];
 
     // Read contents of directory
     FileSystem.readdirSync(dir).forEach(dirInner => {
+        if (!caseSensitive) dirInner.toLowerCase()
+
         // Obtain absolute path
         dirInner = Path.resolve(dir, dirInner);
 

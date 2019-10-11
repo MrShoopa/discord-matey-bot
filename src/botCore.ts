@@ -75,10 +75,11 @@ BOT.on("guildCreate", guild => {
 //  States
 var songState: string | boolean = 'idle'
 var lastMessage: string
+var lastCustomer: Discord.User
 
 //  Messaging to bot
 BOT.on('message', async (message) => {
-    let user: String = message.author.id  // Fetch user's ID
+    let author: Discord.User = message.author // Fetch user's ID
 
     var matchedCommand = false
 
@@ -90,13 +91,17 @@ BOT.on('message', async (message) => {
     console.log(`\nA user said: ${messageString}`)
 
     //  So bot doesn't respond to itself or other bots
-    if (user === BOT.user.id)
+    if (author.id === BOT.user.id)
         if (!messageString.startsWith('redoin, '))
             return
-        else
+        else {
             messageString = messageString.substring(7)
+            author = lastCustomer
+        }
     else if (message.author.bot)
         return
+
+    lastCustomer = author   // Remembers user for redo functions
 
     /*      F U N C T I O N A L I T Y       */
 
@@ -109,12 +114,10 @@ BOT.on('message', async (message) => {
         if (messageString.toLowerCase().includes(trigger)) {
             logBotResponse(trigger, 'Redo command', true, true)
 
-            if (lastMessage.startsWith('redoin, '))
-                lastMessage = lastMessage.substring(8)
-
             if (lastMessage == null)
                 return message.channel.send(`I haven't done anything yet though!`)
-
+            else if (lastMessage.startsWith('redoin, '))
+                lastMessage = lastMessage.substring(8)
             return message.channel.send('redoin, ' + lastMessage)
         }
 

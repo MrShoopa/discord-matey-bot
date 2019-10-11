@@ -114,6 +114,13 @@
             "explicit": true,
             "play_phrase": "Fried chicken? 🍊"
         },
+        {
+            "category": "Joe's Picks",
+            "file": "src/bot_knowledge/audio/meme-stash/avengers-infinity-war-theme-bass-boosted.mp3",
+            "title": "Avengers Bass Boosted",
+            "explicit": false,
+            "play_phrase": "ASSEMBLE!"
+        },
 
         {
             "category": "Nick's Soundclown",

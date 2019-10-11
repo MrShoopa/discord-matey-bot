@@ -407,7 +407,7 @@ BOT.on('message', async (message) => {
             message.mentions.members.forEach(member => {
                 message.reply(
                     `${fetchRandomPhrase(PHRASES_SERVER_MOD.restricted_role_set)},
-                     ${member.displayName}`)
+                    ${member.displayName}`)
                 member.roles.add(fetchRestrictedRoleID())
                     .then(() => {
                         console.log(
@@ -427,7 +427,7 @@ BOT.on('message', async (message) => {
             message.mentions.members.forEach(member => {
                 message.reply(
                     `${fetchRandomPhrase(PHRASES_SERVER_MOD.restricted_role_unset)},
-                     ${member.displayName}`)
+                    ${member.displayName}`)
                 member.roles.remove(fetchRestrictedRoleID())
                     .then(() => {
                         console.log(

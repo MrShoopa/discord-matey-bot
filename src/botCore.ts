@@ -397,6 +397,22 @@ BOT.on('message', async (message) => {
         }
     })
 
+    //  Get anime recommendation
+    TRIGGERS.anime_fetch.default.forEach(async trigger => {
+        if (messageString.toLowerCase().includes(trigger)) {
+            logBotResponse(trigger, 'jikanTS anime fetch', true)
+
+            let query =
+                messageString.split(trigger).pop().length != 0 ?
+                    messageString.split(trigger).pop() :
+                    undefined
+
+            let anime = await fetchAnimeOfName(query)
+
+            message.channel.send(generateAnimeInfoMessage(anime))
+        }
+    })
+
     /*  ----    Server-Management   ---- */
 
     //  Set Restricted Role
@@ -971,6 +987,40 @@ BOT.on('message', async (message) => {
         })
     }
 
+    function fetchAnimeOfName(name: string = 'Boku', multipleResults = false) {
+
+        return new Promise((resolve, reject) => {
+            import('jikants').then(JikanTS => {
+                JikanTS.default.Search.search(name, "anime")
+                    .catch(reason => {
+                        console.log(reason)
+                        reject(reason)
+                    })
+                    .then(anime => {
+                        console.log(`Anime fetched for ${name}`)
+                        if (anime)
+                            multipleResults ?
+                                resolve(anime.results) : resolve(anime.results[1])
+                    })
+            })
+        })
+
+    }
+
+    function generateAnimeInfoMessage(anime) {
+        let message = new Discord.MessageEmbed()
+            .setColor('#0099ff')
+            .setTitle(`Sup weeb! Check out **${anime.title}**:\n`)
+            .setAuthor('Megaweeb Finds')
+            .setImage(anime.image_url)
+            .setURL(anime.url)
+            .addField('MAL Score', `${anime.score}`, true)
+            .addField('Rated', `${anime.rated}`, true)
+            .addField('Synopsis', `${anime.synopsis}`)
+        if (anime.airing) message.setFooter('This show is currently airing!')
+
+        return message
+    }
 
     function logBotResponse(trigger: string = 'None', intent?: string,
         preventNextAction?: boolean, forgetLastMessage?: boolean) {

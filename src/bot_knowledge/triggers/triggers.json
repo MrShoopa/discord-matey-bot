@@ -644,6 +644,18 @@
             "of",
             "about"
         ]
-    }
+    },
 
+    "anime_fetch": {
+        "default": [
+            "megadork fetch anime",
+            "megadork get anime",
+            "megadork get an anime"
+        ],
+        "new": [
+            "megadork fetch new anime",
+            "megadork get new anime",
+            "megadork get a new anime"
+        ]
+    }
 }

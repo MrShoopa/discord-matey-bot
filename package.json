@@ -1,34 +1,35 @@
 {
     "name": "discord-matey-bot",
-    "version": "1.2.2",
+    "version": "0.4.2",
     "description": "MrShoopa's Lil' Discord Bot",
     "author": "MrShoopa",
     "license": "ISC",
     "main": "botCore.ts",
     "scripts": {
+        "start": "ts-node src/botCore.ts",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "dependencies": {
         "@types/google-images": "^2.1.0",
-        "@types/node": "^12.7.8",
+        "@types/node": "^12.11.1",
         "@types/request": "^2.48.3",
         "@types/snekfetch": "^4.0.2",
         "@types/twitter": "^1.7.0",
         "discord.js": "github:discordjs/discord.js",
-        "eslint": "^5.16.0",
+        "eslint": "^6.5.1",
         "ffmpeg": "0.0.4",
         "google-images": "^2.1.0",
         "horoscope": "^2.0.1",
+        "jikants": "^1.2.13",
         "lodash": "^4.17.15",
         "opus": "0.0.0",
-        "opusscript": "0.0.6",
+        "opusscript": "0.0.7",
         "request": "^2.88.0",
         "snekfetch": "^4.0.4",
         "soundcloud": "^3.3.2",
         "soundcloud-audio": "^1.4.0",
         "twitter": "^1.7.1",
         "winston": "^3.2.1",
-        "ytdl-core": "^0.29.7",
         "ytdl-core-discord": "^1.0.3"
     }
 }

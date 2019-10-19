@@ -9,8 +9,10 @@
 
     //  Discord
     "discord.largeImage": "Editing a {LANG} file",
-    "discord.detailsEditing": "Working on Discord fun bot!",
+    "discord.detailsEditing": "Working on Megadork",
     "discord.lowerDetailsEditing": "Line {currentline} of {filename}",
     "discord.detailsIdle": "Chillin'",
     "discord.lowerDetailsIdle": "{null}",
+    "discord.detailsDebugging": "Running Megadork",
+    "discord.lowerDetailsDebugging": "Debugging {totallines} lines of code"
 }

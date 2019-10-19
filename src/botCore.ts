@@ -90,7 +90,7 @@ BOT.on('message', async (message) => {
     //  Begin logging block
     console.log(`\nA user said: ${messageString}`)
 
-    //  So bot doesn't respond to itself or other bots
+    //  Preventing bot to respond to itself or other bots
     if (author.id === BOT.user.id)
         if (!messageString.startsWith('redoin, '))
             return
@@ -101,7 +101,8 @@ BOT.on('message', async (message) => {
     else if (message.author.bot)
         return
 
-    lastCustomer = author   // Remembers user for redo functions
+    //  Remembers user for redo functions
+    lastCustomer = author
 
     /*      F U N C T I O N A L I T Y       */
 
@@ -227,11 +228,11 @@ BOT.on('message', async (message) => {
 
     /*  ---- Music Functionality ----  */
 
-    //  Play song
+    //  Song playback
     TRIGGERS.singing_triggers.play.forEach(trigger => {
         trigger.toLowerCase()
 
-        //  Attempt to play song
+        //  Attempt to play song based on given info
         if (messageString.substring(0, 15).toLowerCase().includes(trigger)) {
             songState = 'fetching'
 
@@ -240,7 +241,13 @@ BOT.on('message', async (message) => {
 
             try {
 
-                //  Iterates over list of listed songs before taking action.
+                /*  Iterates over list of listed songs before taking action.
+                    
+                    Music search priorities:
+                    1. Local Files w/ special names,
+                    2. URLs,
+                    3. Local Files w/ exact file
+                */
                 PHRASES_SING.songs_to_sing.forEach(song => {
                     if (messageString.toLowerCase().
                         includes(song.title.toLowerCase())
@@ -269,6 +276,7 @@ BOT.on('message', async (message) => {
                     console.log(`Local matching songs found:`)
                     console.log(matchedSongs)
 
+                    //TODO: Give choice from multiple matches
                     playAudioFromFiles(matchedSongs[0], loop)
                     return
                 }
@@ -348,7 +356,7 @@ BOT.on('message', async (message) => {
 
     /*      ---- External Data Retreival ----   */
 
-    //  Get copypasta post (from reddit)
+    //  Get copypasta post [from Reddit]
     TRIGGERS.reddit_fetch.copypasta.default.forEach(async trigger => {
         if (messageString.toLowerCase().includes(trigger)) {
             logBotResponse(trigger, 'reddit copypasta fetch', true)
@@ -362,8 +370,9 @@ BOT.on('message', async (message) => {
 
             //  References reddit post
             message.channel.send(`From post: ${pastaObject.data.children[0].data.url}`)
-            //  Replies back 'currently best' copypasta by title if it's not in the subtext of the post.
+            //  Replies back 'currently best' copypasta
             if (pastaObject.data.children[0].data.selftext == '')
+                //  Replies by title if it's not in the subtext of the post.
                 message.channel.send(pastaObject.data.children[0].data.title)
             else {
 
@@ -384,7 +393,7 @@ BOT.on('message', async (message) => {
         }
     })
 
-    //  Get latest Tweet with specific query
+    //  Get latest Tweet with specific query [from Twitter]
     TRIGGERS.twitter_fetch.tweet.query.forEach(async trigger => {
         if (messageString.toLowerCase().includes(trigger)) {
             logBotResponse(trigger, 'twitter latest post fetch', true)
@@ -397,7 +406,7 @@ BOT.on('message', async (message) => {
         }
     })
 
-    //  Get anime recommendation
+    //  Get anime recommendation [from My Anime List (JikanTS)]
     TRIGGERS.anime_fetch.default.forEach(async trigger => {
         if (messageString.toLowerCase().includes(trigger)) {
             logBotResponse(trigger, 'jikanTS anime fetch', true)
@@ -412,6 +421,8 @@ BOT.on('message', async (message) => {
             message.channel.send(generateAnimeInfoMessage(anime))
         }
     })
+    /*  -----  */
+
 
     /*  ----    Server-Management   ---- */
 
@@ -487,6 +498,7 @@ BOT.on('message', async (message) => {
         return message.reply(
             fetchRandomPhrase(PHRASES_CONVO.not_desired.to_look))
     }
+
     //  the master's favorite food
     if (messageString == 'beans') {
         logBotResponse("beans", "beans", true)
@@ -554,7 +566,7 @@ BOT.on('message', async (message) => {
 
     /* ---- DEFAULT CASE ---- */
 
-    //  When mentioning name afterwards (anytime main_trigger is mentioned)
+    //  When mentioning main hotword anywhere in message!
     TRIGGERS.main_trigger.forEach(trigger => {
         if (messageString.toLowerCase().includes(trigger, 1)) {
 
@@ -582,12 +594,12 @@ BOT.on('message', async (message) => {
 
 
 
-    //  MAIN (When started with "Megadork", for example)
+    //  When mentioning main hotword at the start of the message
     TRIGGERS.main_trigger.forEach(trigger => {
         if (messageString.substring(0, 10).toLowerCase().includes(trigger) &&
             !matchedCommand) {
 
-            //  HELP
+            //  HELP //TODO: Add instructions for anime, twitter, inspirational quotes, etc. Convert to Rich Message.
             TRIGGERS.help_questions.actions.forEach(trigger => {
                 if (messageString.toLowerCase().includes(trigger)) {
                     logBotResponse(trigger, 'Help with Actions', true)
@@ -665,7 +677,7 @@ BOT.on('message', async (message) => {
                 }
             })
 
-            //  UHHH
+            //  UHHH (aka nothing found)
             if (!matchedCommand)
                 message.reply(fetchRandomPhrase(PHRASES_FRONT.unknown_command))
         }
@@ -674,7 +686,7 @@ BOT.on('message', async (message) => {
 
     /*  -----  */
 
-    /*  ---- Helper Functions ---- */
+    /*  ---- Bot Helper Background Functions ---- */
 
     function playAudioFromFiles(song, loop?: boolean, trigger?: string) {
 

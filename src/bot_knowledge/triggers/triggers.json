@@ -657,5 +657,29 @@
             "megadork get new anime",
             "megadork get a new anime"
         ]
+    },
+
+    "quote_fetch": {
+        "default": [
+            "megadork random quote",
+            "megadork fetch quote",
+            "megadork fetch a quote",
+            "megadork fetch quote",
+            "megadork fetch a quote",
+            "megadork get quote",
+            "megadork get a quote",
+            "megadork give quote",
+            "megadork give a quote",
+            "megadork give me a quote"
+        ],
+        "inspirational": [
+            "megadork fetch inspirational quote",
+            "megadork fetch an inspirational quote",
+            "megadork get inspirational quote",
+            "megadork get an inspirational quote",
+            "megadork give inspirational quote",
+            "megadork give an inspirational quote",
+            "megadork give me an inspirational quote"
+        ]
     }
 }

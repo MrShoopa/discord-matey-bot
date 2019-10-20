@@ -421,6 +421,34 @@ BOT.on('message', async (message) => {
             message.channel.send(generateAnimeInfoMessage(anime))
         }
     })
+
+    //  Get quote [from several APIs]
+    if (messageString.toLowerCase().includes('quote')) {
+
+        //  Inspirational quote [from inspirational-quotes]
+        TRIGGERS.quote_fetch.inspirational.forEach(async trigger => {
+            if (messageString.toLowerCase().includes(trigger)) {
+                logBotResponse(trigger, 'quote fetch - inspirational', true)
+                let quoteObject: { text: any; author: any; }
+
+                await import('inspirational-quotes').then(quoteMaster => {
+                    console.log(quoteMaster)
+                    quoteObject = quoteMaster.default.getQuote()
+                })
+
+                console.log(quoteObject)
+
+                let quoteMessage: Discord.MessageEmbed =
+                    new Discord.MessageEmbed()
+                        .setTitle(quoteObject.text)
+                        .setAuthor(quoteObject.author)
+                        .setFooter('Megadorky Quotter 💬🌟')
+
+                message.channel.send(quoteMessage)
+            }
+        })
+    }
+
     /*  -----  */
 
 

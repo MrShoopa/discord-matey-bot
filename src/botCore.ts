@@ -425,6 +425,32 @@ BOT.on('message', async (message) => {
     //  Get quote [from several APIs]
     if (messageString.toLowerCase().includes('quote')) {
 
+        //  TODO: Query search (actor, year)
+        //  Movie quote [from MovieQuoter]
+        TRIGGERS.quote_fetch.movie.default.forEach(async trigger => {
+            if (messageString.toLowerCase().includes(trigger)) {
+                logBotResponse(trigger, 'quote fetch - movie', true)
+                let quoteObject: any
+
+                await import('./bot_modules/API/MovieQuotes/index').then(quoteMaster => {
+                    quoteObject = quoteMaster.getQuote()[0]
+                })
+
+                console.log(quoteObject)
+
+                let quoteMessage: Discord.MessageEmbed =
+                    new Discord.MessageEmbed()
+                        .setTitle(`From *${quoteObject.movie.title}* 
+                        (${quoteObject.year})`)
+                        .setDescription(quoteObject.content)
+                        .setImage(quoteObject.image_thumb_url)
+                        .setAuthor(`${quoteObject.character} - *${quoteObject.actor}*`)
+                        .setFooter('Megadorky Quotter 💬🌟')
+
+                message.channel.send(quoteMessage)
+            }
+        })
+
         //  Inspirational quote [from inspirational-quotes]
         TRIGGERS.quote_fetch.inspirational.forEach(async trigger => {
             if (messageString.toLowerCase().includes(trigger)) {

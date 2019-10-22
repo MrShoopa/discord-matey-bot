@@ -680,6 +680,20 @@
             "megadork give inspirational quote",
             "megadork give an inspirational quote",
             "megadork give me an inspirational quote"
-        ]
+        ],
+        "movie": {
+            "default": [
+                "megadork random movie quote",
+                "megadork fetch movie quote",
+                "megadork fetch a movie quote",
+                "megadork fetch movie quote",
+                "megadork fetch a movie quote",
+                "megadork get movie quote",
+                "megadork get a movie quote",
+                "megadork give movie quote",
+                "megadork give a movie quote",
+                "megadork give me a movie quote"
+            ]
+        }
     }
 }

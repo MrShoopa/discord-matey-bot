@@ -449,7 +449,7 @@ BOT.on('message', async (message) => {
                         .setAuthor(`${quoteObject.title} - ${quoteObject.date}`)
                         .setDescription(quoteObject.quote)
                         .setTitle(`${quoteObject.author}\n`)
-                        .setFooter('Megadorky Quotter 💬🌟 - with help from **theysaidso.com** © 2017-19')
+                        .setFooter('Megadorky Quotter 💬🌟 - helped by theysaidso.com © 2017-19')
 
                 message.channel.send(quoteMessage)
             }

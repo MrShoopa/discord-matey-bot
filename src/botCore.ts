@@ -425,8 +425,37 @@ BOT.on('message', async (message) => {
     //  Get quote [from several APIs]
     if (messageString.toLowerCase().includes('quote')) {
 
-        //  TODO: Query search (actor, year)
-        //  Movie quote [from MovieQuoter]
+        //  Quote of Day [from quotes.rest]
+        TRIGGERS.quote_fetch.OTD.forEach(async trigger => {
+            if (messageString.toLowerCase().includes(trigger)) {
+                logBotResponse(trigger, 'quote fetch - of the day', true)
+                let quoteObject: any
+
+                await import('./bot_modules/API/TheySaidSo/index').then(async quoteMaster => {
+                    try {
+                        quoteObject = await quoteMaster.getQuoteOfTheDay()
+                    } catch (error) {
+                        if (error.code === 429)
+                            message.channel.send(`Fetched too much right now! ${error.timeMessage}`)
+                    }
+                })
+
+                console.log("Quote Object Returned from TheySaidSo.com: ",
+                    quoteObject)
+
+
+                let quoteMessage: Discord.MessageEmbed =
+                    new Discord.MessageEmbed()
+                        .setAuthor(`${quoteObject.title} - ${quoteObject.date}`)
+                        .setDescription(quoteObject.quote)
+                        .setTitle(`${quoteObject.author}\n`)
+                        .setFooter('Megadorky Quotter 💬🌟 - with help from **theysaidso.com** © 2017-19')
+
+                message.channel.send(quoteMessage)
+            }
+        })
+
+        //! API Depricated?  Movie quote [from MovieQuoter]
         TRIGGERS.quote_fetch.movie.default.forEach(async trigger => {
             if (messageString.toLowerCase().includes(trigger)) {
                 logBotResponse(trigger, 'quote fetch - movie', true)
@@ -436,7 +465,8 @@ BOT.on('message', async (message) => {
                     quoteObject = quoteMaster.getQuote()[0]
                 })
 
-                console.log(quoteObject)
+                console.log("Quote Object Returned from MovieQuoter: ",
+                    quoteObject)
 
                 let quoteMessage: Discord.MessageEmbed =
                     new Discord.MessageEmbed()
@@ -458,11 +488,11 @@ BOT.on('message', async (message) => {
                 let quoteObject: { text: any; author: any; }
 
                 await import('inspirational-quotes').then(quoteMaster => {
-                    console.log(quoteMaster)
                     quoteObject = quoteMaster.default.getQuote()
                 })
 
-                console.log(quoteObject)
+                console.log("Quote Object Returned from inspirational-quotes: ",
+                    quoteObject)
 
                 let quoteMessage: Discord.MessageEmbed =
                     new Discord.MessageEmbed()

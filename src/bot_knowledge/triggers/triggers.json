@@ -672,17 +672,29 @@
             "megadork give a quote",
             "megadork give me a quote"
         ],
-        "OTD": [
-            "megadork random quote of the day",
-            "megadork fetch quote of the day",
-            "megadork fetch a quote of the day",
-            "megadork fetch me quote of the day",
-            "megadork get quote of the day",
-            "megadork get a quote of the day",
-            "megadork give quote of the day",
-            "megadork give a quote of the day",
-            "megadork give me quote of the day"
-        ],
+        "OTD": {
+
+            "default": [
+                "megadork random quote of the day",
+                "megadork fetch quote of the day",
+                "megadork fetch a quote of the day",
+                "megadork fetch me quote of the day",
+                "megadork get quote of the day",
+                "megadork get a quote of the day",
+                "megadork give quote of the day",
+                "megadork give a quote of the day",
+                "megadork give me quote of the day"
+            ],
+            "sub_triggers": [
+                "management",
+                "art",
+                "students",
+                "sports",
+                "life",
+                "funny",
+                "love"
+            ]
+        },
         "inspirational": [
             "megadork fetch inspirational quote",
             "megadork fetch an inspirational quote",

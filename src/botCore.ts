@@ -426,14 +426,26 @@ BOT.on('message', async (message) => {
     if (messageString.toLowerCase().includes('quote')) {
 
         //  Quote of Day [from quotes.rest]
-        TRIGGERS.quote_fetch.OTD.forEach(async trigger => {
+        TRIGGERS.quote_fetch.OTD.default.forEach(async trigger => {
             if (messageString.toLowerCase().includes(trigger)) {
-                logBotResponse(trigger, 'quote fetch - of the day', true)
+                let reqCategory
+                
+                //TODO: Naturalize language (Ex. {Megadork fetch 'FUNNY' quote of the day} doesn't work)
+                TRIGGERS.quote_fetch.OTD.sub_triggers.forEach(subTrig => {
+                    if (messageString.toLowerCase().includes(subTrig))
+                        reqCategory = subTrig
+                })
+
+                logBotResponse(trigger, `quote fetch - ${reqCategory} of the day`, true)
+
                 let quoteObject: any
 
                 await import('./bot_modules/API/TheySaidSo/index').then(async quoteMaster => {
                     try {
-                        quoteObject = await quoteMaster.getQuoteOfTheDay()
+                        if (reqCategory)
+                            quoteObject = await quoteMaster.getQuoteOfTheDay(reqCategory)
+                        else
+                            quoteObject = await quoteMaster.getQuoteOfTheDay()
                     } catch (error) {
                         if (error.code === 429)
                             message.channel.send(`Fetched too much right now! ${error.timeMessage}`)

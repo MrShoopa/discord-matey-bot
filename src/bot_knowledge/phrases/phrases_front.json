@@ -10,6 +10,8 @@
     "help_intro": "Hmmm so far I can... \n",
     "help_sing": "Sing: Pull out meme songs I know!  \n    \"*Megadork, what can you sing?* \" ",
     "help_image_search": "I can find a random picture!   \n    \"*Megadork random picture of [whatever your searching]* \"     ",
+    "help_quote": "I can fetch a quote!  \n    \"*Megadork fetch quote of the day* \"     ",
+    "help_copypasta": "Want a copypasta?  \n    \"*Megadork fetch copypasta* \"     ",
     "help_conversation": {
         "main": "Phrase-play: Respond to some conversation :)  \n    ",
         "example": {

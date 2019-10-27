@@ -429,7 +429,7 @@ BOT.on('message', async (message) => {
         TRIGGERS.quote_fetch.OTD.default.forEach(async trigger => {
             if (messageString.toLowerCase().includes(trigger)) {
                 let reqCategory
-                
+
                 //TODO: Naturalize language (Ex. {Megadork fetch 'FUNNY' quote of the day} doesn't work)
                 TRIGGERS.quote_fetch.OTD.sub_triggers.forEach(subTrig => {
                     if (messageString.toLowerCase().includes(subTrig))
@@ -696,28 +696,23 @@ BOT.on('message', async (message) => {
             !matchedCommand) {
 
             //  HELP //TODO: Add instructions for anime, twitter, inspirational quotes, etc. Convert to Rich Message.
+            //  TODO: Rich Message
             TRIGGERS.help_questions.actions.forEach(trigger => {
                 if (messageString.toLowerCase().includes(trigger)) {
                     logBotResponse(trigger, 'Help with Actions', true)
 
-                    message.reply(PHRASES_FRONT.help_intro)
-
-                    //  Sing
-                    message.reply(PHRASES_FRONT.help_sing)
-
-                    //  Image-Search
-                    message.reply(PHRASES_FRONT.help_image_search)
-
-                    //  Motivate
-                    message.reply(
-                        (PHRASES_FRONT.help_conversation.main +
-                            PHRASES_FRONT.help_conversation.example.threat) +
-                        '\n    ' +
-                        PHRASES_FRONT.help_conversation.example.send_nudes)
-
-                    //  Secret functions
-                    message.reply((PHRASES_FRONT.help_secret.main))
-
+                    for (const x in PHRASES_FRONT) {
+                        if (x.includes("help_secret"))
+                            message.reply(PHRASES_FRONT.help_secret.main)
+                        else if (x.includes("help_conversation"))
+                            message.reply(
+                                (PHRASES_FRONT.help_conversation.main +
+                                    PHRASES_FRONT.help_conversation.example.threat) +
+                                '\n    ' +
+                                PHRASES_FRONT.help_conversation.example.send_nudes)
+                        else if (x.includes("help_"))
+                            message.reply(PHRASES_FRONT[x])
+                    }
                     return
                 }
             })

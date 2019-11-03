@@ -862,9 +862,9 @@ BOT.on('message', async (message) => {
                 streamInfo.source = 'YouTube'
                 const YTDL = require('ytdl-core-discord')
 
-
                 stream = await YTDL(url.toString(), {
-                    filter: 'audioonly'
+                    filter: 'audioonly',
+                    highWaterMark: 1 << 25
                 })
                 streamOptions['type'] = 'opus'
 

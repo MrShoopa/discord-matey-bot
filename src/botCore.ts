@@ -80,6 +80,7 @@ var lastCustomer: Discord.User
 //  Messaging to bot
 BOT.on('message', async (message) => {
     let author: Discord.User = message.author // Fetch user's ID
+    let _channel = message.channel
 
     var matchedCommand = false
 
@@ -116,10 +117,10 @@ BOT.on('message', async (message) => {
             logBotResponse(trigger, 'Redo command', true, true)
 
             if (lastMessage == null)
-                return message.channel.send(`I haven't done anything yet though!`)
+                return _channel.send(`I haven't done anything yet though!`)
             else if (lastMessage.startsWith('redoin, '))
                 lastMessage = lastMessage.substring(8)
-            return message.channel.send('redoin, ' + lastMessage)
+            return _channel.send('redoin, ' + lastMessage)
         }
 
     })
@@ -363,17 +364,24 @@ BOT.on('message', async (message) => {
 
             let topPastaUrl = 'https://www.reddit.com/r/copypasta/top.json?limit=1'
 
-            let pastaObject = await fetchJSONFromURL(topPastaUrl, true)
+            let pastaObject = await fetchJSONFromURL(topPastaUrl)
                 .catch(err => {
-                    message.channel.send(`Could not fetch. Error: ${err}`)
+                    _channel.send(`Could not fetch. Error: ${err}`)
                 })
 
+            let delivery = new Discord.MessageEmbed()
+
             //  References reddit post
-            message.channel.send(`From post: ${pastaObject.data.children[0].data.url}`)
+            delivery.setTitle(`From r/${pastaObject.data.children[0].data.subreddit}`)
+            delivery.setAuthor(`Courtesy of u/${pastaObject.data.children[0].data.author}`)
+            delivery.setURL(pastaObject.data.children[0].data.url)
+            delivery.setColor('#FF5700')
+            delivery.setFooter('Copypasta Fetcher - reddit',
+                'https://icons-for-free.com/iconfiles/png/512/reddit+round+icon+icon-1320190507793599697.png')
             //  Replies back 'currently best' copypasta
             if (pastaObject.data.children[0].data.selftext == '')
                 //  Replies by title if it's not in the subtext of the post.
-                message.channel.send(pastaObject.data.children[0].data.title)
+                delivery.setDescription(pastaObject.data.children[0].data.title)
             else {
 
                 let pasta = pastaObject.data.children[0].data.selftext
@@ -381,15 +389,18 @@ BOT.on('message', async (message) => {
                 if (pasta.length >= 2000) {
                     console.log("Copypasta exceeds 2000 characters. 🔥🍝 Splitting...")
 
+                    delivery.setDescription(pasta)
+
                     pasta = pasta.match(/(?!&amp;#x200B;)[\s\S]{1,2000}/g)
 
-                    console.log(pasta)
                     pasta.forEach((chunk: any) => {
-                        message.channel.send(chunk)
+                        _channel.send(chunk)
                     });
-                } else message.channel.send(pastaObject.data.children[0].data.selftext)
+                } else delivery.setDescription(pastaObject.data.children[0].data.selftext)
 
             }
+
+            _channel.send(delivery)
         }
     })
 
@@ -402,7 +413,7 @@ BOT.on('message', async (message) => {
 
             let tweet = await fetchTweetWithQuery(query)
 
-            message.channel.send(`Tweet from @${tweet.user.name}\nabout '${query}':\n\n${tweet.text}`)
+            _channel.send(`Tweet from @${tweet.user.name}\nabout '${query}':\n\n${tweet.text}`)
         }
     })
 
@@ -418,7 +429,7 @@ BOT.on('message', async (message) => {
 
             let anime = await fetchAnimeOfName(query)
 
-            message.channel.send(generateAnimeInfoMessage(anime))
+            _channel.send(generateAnimeInfoMessage(anime))
         }
     })
 
@@ -448,7 +459,7 @@ BOT.on('message', async (message) => {
                             quoteObject = await quoteMaster.getQuoteOfTheDay()
                     } catch (error) {
                         if (error.code === 429)
-                            message.channel.send(`Fetched too much right now! ${error.timeMessage}`)
+                            _channel.send(`Fetched too much right now! ${error.timeMessage}`)
                     }
                 })
 
@@ -463,7 +474,7 @@ BOT.on('message', async (message) => {
                         .setTitle(`${quoteObject.author}\n`)
                         .setFooter('Megadorky Quotter 💬🌟 - helped by theysaidso.com © 2017-19')
 
-                message.channel.send(quoteMessage)
+                _channel.send(quoteMessage)
             }
         })
 
@@ -489,7 +500,7 @@ BOT.on('message', async (message) => {
                         .setAuthor(`${quoteObject.character} - *${quoteObject.actor}*`)
                         .setFooter('Megadorky Quotter 💬🌟')
 
-                message.channel.send(quoteMessage)
+                _channel.send(quoteMessage)
             }
         })
 
@@ -512,7 +523,7 @@ BOT.on('message', async (message) => {
                         .setAuthor(quoteObject.author)
                         .setFooter('Megadorky Quotter 💬🌟')
 
-                message.channel.send(quoteMessage)
+                _channel.send(quoteMessage)
             }
         })
     }
@@ -599,29 +610,29 @@ BOT.on('message', async (message) => {
     if (messageString == 'beans') {
         logBotResponse("beans", "beans", true)
 
-        message.channel.send(`Did you say... BEANZ?!?!?!?`)
+        _channel.send(`Did you say... BEANZ?!?!?!?`)
 
         let funnyImageUrl = 'https://www.reddit.com/r/beans/top.json?limit=1'
 
-        message.channel.send(
+        _channel.send(
             fetchRandomPhrase(PHRASES_CONVO.beans.spam_intro))
 
 
         await fetchImageFromGoogle('beans')
 
         let response: any = await fetchTweetWithQuery('beans')
-        message.channel.send(response.text)
+        _channel.send(response.text)
 
         let beansInThing: Discord.MessageAttachment =
             new Discord.MessageAttachment(fetchImageFromURL(funnyImageUrl))
-        message.channel.send(beansInThing)
+        _channel.send(beansInThing)
 
         await playAudioFromURL('https://www.youtube.com/watch?v=wEEuzUGEWws&ab_channel=TheBritishPickles')
 
-        message.channel.send(
+        _channel.send(
             fetchRandomPhrase(PHRASES_CONVO.beans.spam_intro))
 
-        return message.channel.send('...👌😤💨')
+        return _channel.send('...👌😤💨')
     }
 
     //  Send Nudes (Per request of a friend :P)
@@ -929,7 +940,7 @@ BOT.on('message', async (message) => {
 
     function fetchJSONFromURL(url: string, includeURL?: boolean, log?: boolean): any {
         console.group(`Fetching JSON from ${url}...`)
-        if (includeURL) message.channel.send(`Fetching from ${url}...`)
+        if (includeURL) _channel.send(`Fetching from ${url}...`)
 
         let obj: any
 
@@ -1031,12 +1042,12 @@ BOT.on('message', async (message) => {
                     message.reply(
                         `${fetchRandomPhrase(PHRASES_IMAGE_SEARCH.image_search_fetch_response.image_search_random)}`)
                 }
-                message.channel.send(resultReply)
+                _channel.send(resultReply)
             })
         } catch (e) {
             //  The other cases
             console.error(e)
-            message.channel.send(
+            _channel.send(
                 'Couldn\'t find image! Let Joe know to find the error.')
         }
     }
@@ -1148,15 +1159,15 @@ BOT.on('message', async (message) => {
         } else if (code) {
             if (code == 4001)
                 errorMessage = `Error ${code} - Couldn't play song.`
-        } else message.channel.send(`Error ${code} - ${messageString}`)
+        } else _channel.send(`Error ${code} - ${messageString}`)
 
-        message.channel.send(errorMessage)
+        _channel.send(errorMessage)
     }
 
     /*  -----  */
 
     BOT.on('error', error => {
-        message.channel.send(`Ah! Something crashed my lil' engine!
+        _channel.send(`Ah! Something crashed my lil' engine!
          Log submitted to Joe. Restarting...`)
 
         FileSystem.exists('./crash_logs', exists => {

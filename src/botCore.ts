@@ -867,13 +867,12 @@ BOT.on('message', async (message) => {
 
             if (url.includes('youtu')) {
                 streamInfo.source = 'YouTube'
-                const YTDL = require('ytdl-core-discord')
+                const YTDL = require('ytdl-core')
 
                 stream = await YTDL(url.toString(), {
                     filter: 'audioonly',
-                    highWaterMark: 1 << 25
+                    highWaterMark: 1 << 25,
                 })
-                streamOptions['type'] = 'opus'
 
                 streamInfo = { source: url, platform: 'YouTube' }
             } else if (url.includes('soundcloud')) {
@@ -906,40 +905,54 @@ BOT.on('message', async (message) => {
                 console.log(
                     `Voice channel connection status: ${connection.status}`)
 
-                var dispatcher: Discord.StreamDispatcher = connection.play(stream, streamOptions)
+                try {
+                    var dispatcher: Discord.StreamDispatcher
+                        = connection.play(stream, streamOptions)
 
 
-                dispatcher.on('start', () => {
-                    console.group(`Now playing song from ${url}.`)
+                    dispatcher.on('start', () => {
+                        console.group(`Now playing song from ${url}.`)
 
-                    if (streamInfo.name && streamInfo.platform)
-                        message.reply(`\nPlaying ${streamInfo.name} from ${streamInfo.platform}. 👌`)
-                    else if (streamInfo.platform)
-                        message.reply(`\nI'm playing your song from ${streamInfo.platform}. 👌`)
-                    else
-                        message.reply(`\nPlaying song from your above URL.`)
-                })
+                        if (streamInfo.name && streamInfo.platform)
+                            message.reply(`\nPlaying ${streamInfo.name} from ${streamInfo.platform}. 👌`)
+                        else if (streamInfo.platform)
+                            message.reply(`\nI'm playing your song from ${streamInfo.platform}. 👌`)
+                        else
+                            message.reply(`\nPlaying song from your above URL.`)
+                    })
 
-                dispatcher.on('close', () => {
-                    console.log(`Song interrupted by user.`)
-                    console.groupEnd()
-                })
-
-                dispatcher.on('end', () => {
-                    if (loop) connection.play(stream, streamOptions)
-                    else {
-                        console.log('Song played successfully.')
+                    dispatcher.on('close', () => {
+                        console.log(`Song interrupted by user.`)
                         console.groupEnd()
+                    })
 
-                        songState = 'finished'
-                        voiceChannel.leave()
-                    }
-                })
+                    dispatcher.on('end', () => {
+                        if (loop)
+                            connection.play(stream, streamOptions)
+                        else {
+                            console.log('Song played successfully.')
+                            console.groupEnd()
+
+                            songState = 'finished'
+                            voiceChannel.leave()
+                        }
+                    })
+
+                } catch (error) {
+                    console.log(`Error playing song!.`)
+                    console.log(error)
+                    console.groupEnd()
+
+                    lastCustomer.lastMessage.channel
+                        .send(`Ah! I couldn't play that song. Sent a bug report to Joe.`)
+
+                }
 
                 // FINISHED
                 matchedCommand = true
             }), error => {
-                if (!voiceChannel) console.log(`User is not in a server's voice channel.`)
+                if (!voiceChannel)
+                    console.log(`User is not in a server's voice channel.`)
                 throw error
             }
         }

@@ -1241,6 +1241,16 @@ BOT.on('guildMemberAdd', member => {
         `Welcome to the server, ${member}! \n\n\n\n...\n\n who the f-`)
 })
 
+BOT.on('error', error => {
+    lastCustomer.lastMessage.channel.send(`Ah! Something crashed my lil' engine!
+    Log submitted to Joe. Restarting...`)
+
+    saveBugReport(error)
+
+    //  Re-login
+    BOT.login(AUTH.discord.API_KEY)
+})
+
 
 /*  ----    State Checking      ----   */
 
@@ -1250,11 +1260,47 @@ if (initTime.getDate() === new Date(2008, initTime.getMonth() + 1, 0).getDate())
 
 /*  ----    Helper Functions    ----   */
 
-//  Helper function for blind-picking phrases of lists
+/**
+ * Takes in error in program and saves a generated bug log with timestamp in a single
+ * bug report.
+ * @param error Error thrown by code
+ */
+function saveBugReport(error: Error) {
+    lastCustomer.lastMessage.channel.send(`Log submitted to Joe.`)
+
+    FileSystem.exists('./crash_logs', exists => {
+        if (!exists)
+            FileSystem.mkdir('./crash_logs', folderError => {
+                console.error(`Error creating crash log folder: ${folderError}`)
+            })
+
+        FileSystem.appendFile(`crash_log_${Date.now()}.txt`,
+            (`
+        Error encountered during bot runtime! -> ${Date.now}
+        ---------
+        ${error}
+        `)
+            , logError => {
+                console.error(`Error writing crash log: ${logError}`)
+            });
+    }
+    )
+}
+
+/**
+ * Helper function for blind-picking phrases of lists
+ * @param key Array of strings filled with quotes
+ */
 function fetchRandomPhrase(key: string[]) {
     return key[Math.floor(Math.random() * (key.length))]
 }
 
+/**
+ * Recursive search a directory within FileSystem
+ * @param dir directory of choice
+ * @param name of file/folder to find
+ * @param caseSensitive Whether to check for cAsE SenSITive matches
+ */
 function searchRecursive(dir: string, pattern: string,
     caseSensitive: boolean = false) {
     if (!caseSensitive) pattern = pattern.toLowerCase()

@@ -56,7 +56,7 @@ if (!BotData.getUserDataFile()) BotData.createNewDataFile()
 
 //  Initialize Discord Bot
 console.group('Initializing...')
-BOT.login(AUTH.discord.API_KEY).catch(err => (console.log(`Discord connection error: ${err}`)))
+BOT.login(AUTH.discord.API_KEY).catch(error => (console.log(`Discord connection error: ${error}`)))
 BOT.on('ready', () => {
     console.log(`Initialized at ${new Date().toLocaleString()}.`)
     console.log('I\'m alive and ready to go!\n')
@@ -152,6 +152,7 @@ BOT.on('message', async (message) => {
             } catch (error) {
                 console.log('User data malfunction!')
                 console.error(error)
+                saveBugReport(error)
             }
 
             BotData.updateUserData(message.author.id, userData)
@@ -217,6 +218,7 @@ BOT.on('message', async (message) => {
             } catch (error) {
                 console.log('User data malfunction!')
                 console.error(error)
+                saveBugReport(error)
             }
 
             BotData.updateUserData(message.author.id, userData)
@@ -282,7 +284,7 @@ BOT.on('message', async (message) => {
                     return
                 }
 
-            } catch (err) {
+            } catch (error) {
                 console.log(voiceChannel)
                 botError(4001)
 
@@ -291,7 +293,8 @@ BOT.on('message', async (message) => {
                     message.reply(
                         PHRASES_SING.message_not_in_channel)
                 } else {
-                    console.error(err)
+                    console.error(error)
+                    saveBugReport(error)
                 }
 
             }
@@ -365,8 +368,8 @@ BOT.on('message', async (message) => {
             let topPastaUrl = 'https://www.reddit.com/r/copypasta/top.json?limit=1'
 
             let pastaObject = await fetchJSONFromURL(topPastaUrl)
-                .catch(err => {
-                    _channel.send(`Could not fetch. Error: ${err}`)
+                .catch(error => {
+                    _channel.send(`Could not fetch. Error: ${error}`)
                 })
 
             let delivery = new Discord.MessageEmbed()
@@ -451,7 +454,7 @@ BOT.on('message', async (message) => {
 
                 let quoteObject: any
 
-                await import('./bot_modules/API/TheySaidSo/index').then(async quoteMaster => {
+                await import('./bot_modules/Wrappers/TheySaidSo/index').then(async quoteMaster => {
                     try {
                         if (reqCategory)
                             quoteObject = await quoteMaster.getQuoteOfTheDay(reqCategory)
@@ -484,7 +487,7 @@ BOT.on('message', async (message) => {
                 logBotResponse(trigger, 'quote fetch - movie', true)
                 let quoteObject: any
 
-                await import('./bot_modules/API/MovieQuotes/index').then(quoteMaster => {
+                await import('./bot_modules/Wrappers/MovieQuotes/index').then(quoteMaster => {
                     quoteObject = quoteMaster.getQuote()[0]
                 })
 
@@ -547,9 +550,10 @@ BOT.on('message', async (message) => {
                         console.log(
                             `Adding ${member.displayName} to the role: ${RESTRICTED_ROLE_NAME}`)
                     })
-                    .catch(
-                        console.error)
-                //.catch(console.error(`Failed to add ${member.displayName} to the role: ${restricted_role_id}`))
+                    .catch((error) => {
+                        console.error(`Failed to add ${member.displayName} to the role: ${RESTRICTED_ROLE_NAME}`)
+                        saveBugReport(error)
+                    })
             })
         }
     })
@@ -810,7 +814,8 @@ BOT.on('message', async (message) => {
                     console.log(`Playing non-tagged song from first match: ${song}`)
 
                     message.reply(`Playing ${song.split('\\').pop()} 👌`)
-                    if (loop) message.reply('...looped!')
+                    if (loop)
+                        message.reply('...looped!')
                 } else {
                     dispatcher = connection.play(song.file)
 
@@ -818,13 +823,15 @@ BOT.on('message', async (message) => {
                     console.log(`Responding with '${song.play_phrase}'`)
 
                     message.reply(song.play_phrase)
-                    if (loop) message.reply('Looping this song!')
+                    if (loop)
+                        message.reply('Looping this song!')
                 }
 
 
 
                 dispatcher.on('end', () => {
-                    if (loop) connection.play(song)
+                    if (loop)
+                        connection.play(song)
                     else {
                         console.info(
                             'Song played successfully.')
@@ -1044,11 +1051,14 @@ BOT.on('message', async (message) => {
                 }
                 _channel.send(resultReply)
             })
-        } catch (e) {
+        } catch (error) {
             //  The other cases
-            console.error(e)
+            console.error(error)
+            saveBugReport(error)
+
             _channel.send(
                 'Couldn\'t find image! Let Joe know to find the error.')
+
         }
     }
 
@@ -1084,16 +1094,19 @@ BOT.on('message', async (message) => {
 
                 TwitterEntity.get('search/tweets', { q: userQuery }, function (error, tweets, response) {
                     //?
-                    if (error) reject(error)
+                    if (error)
+                        reject(error)
 
                     let index = Math.floor((Math.random() * tweets.statuses.length))
                     //  Condition for specific placement
-                    if (top) index = 0
+                    if (top)
+                        index = 0
 
                     let tweet = tweets.statuses[index]
 
                     console.log(`Fetched twitter tweet from ${tweet.user.name}.`)
-                    if (log) console.log(tweets);
+                    if (log)
+                        console.log(tweets);
 
                     resolve(tweet)
                 });
@@ -1131,21 +1144,25 @@ BOT.on('message', async (message) => {
             .addField('MAL Score', `${anime.score}`, true)
             .addField('Rated', `${anime.rated}`, true)
             .addField('Synopsis', `${anime.synopsis}`)
-        if (anime.airing) message.setFooter('This show is currently airing!')
+        if (anime.airing)
+            message.setFooter('This show is currently airing!')
 
         return message
     }
 
     function logBotResponse(trigger: string = 'None', intent?: string,
         preventNextAction?: boolean, forgetLastMessage?: boolean) {
-        if (preventNextAction) matchedCommand = true
-        if (!forgetLastMessage) lastMessage = message.toString()
+        if (preventNextAction)
+            matchedCommand = true
+        if (!forgetLastMessage)
+            lastMessage = message.toString()
 
         console.group(`--- BOT GO! ---`)
         console.log(`TRIGGER: "${trigger}"`)
         console.log(`CALLER: '${message.author.username}'`)
         console.log(`CONTEXT: "${messageString}"`)
-        if (intent) console.log(`ACTION: ${intent}`)
+        if (intent)
+            console.log(`ACTION: ${intent}`)
         console.groupEnd()
 
     }

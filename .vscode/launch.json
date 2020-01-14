@@ -2,13 +2,23 @@
     //  Debug Bot through VS Code
     "version": "0.2.0",
     "configurations": [{
-        "type": "node",
-        "request": "launch",
-        "name": "Discord Bot Debug",
-        "program": "${workspaceFolder}\\src\\botCore.ts",
-        "preLaunchTask": "tsc: build - tsconfig.json",
-        "outFiles": [
-            "${workspaceFolder}/built/**/*.js"
-        ]
-    }]
+            "type": "node",
+            "request": "launch",
+            "name": "Build and Run (Discord Matey Bot)",
+            "program": "${workspaceFolder}\\src\\botCore.ts",
+            "preLaunchTask": "tsc: build - tsconfig.json",
+            "outFiles": [
+                "${workspaceFolder}/built/**/*.js"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Run Last Build (Discord Matey Bot)",
+            "program": "${workspaceFolder}\\src\\botCore.ts",
+            "outFiles": [
+                "${workspaceFolder}/built/**/*.js"
+            ]
+        },
+    ]
 }

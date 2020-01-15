@@ -488,9 +488,9 @@ bot.on('message', async (message) => {
 				await import('./bot_modules/_external_wrappers/TheySaidSo/index').then(async quoteMaster => {
 					try {
 						if (reqCategory)
-							quoteObject = await quoteMaster.getQuoteOfTheDay(reqCategory)
+							quoteObject = await quoteMaster.default.getQuoteOfTheDay(reqCategory)
 						else
-							quoteObject = await quoteMaster.getQuoteOfTheDay()
+							quoteObject = await quoteMaster.default.getQuoteOfTheDay()
 					} catch (error) {
 						if (error.code === 429)
 							_channel.send(`Fetched too much right now! ${error.timeMessage}`)
@@ -519,7 +519,7 @@ bot.on('message', async (message) => {
 				let quoteObject: any
 
 				await import('./bot_modules/_external_wrappers/MovieQuotes/index').then(quoteMaster => {
-					quoteObject = quoteMaster.getQuote()[0]
+					quoteObject = quoteMaster.default.getQuote()[0]
 				})
 
 				console.log("Quote Object Returned from MovieQuoter: ",

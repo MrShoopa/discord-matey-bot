@@ -1,18 +1,23 @@
 {
-    "workbench.colorCustomizations": {
-        "statusBar.background": "#007aaa",
-        "titleBar.border": "#37009c",
-        "titleBar.activeBackground": "#262e32",
-        "titleBar.inactiveBackground": "#1b1b1b",
-        "activityBar.background": "#262e32"
-    },
+	//  Formatting
+	"editor.tabSize": 4,
+	"editor.insertSpaces": true,
+	"editor.detectIndentation": true,
 
-    //  Discord
-    "discord.largeImage": "Editing a {LANG} file",
-    "discord.detailsEditing": "Working on Megadork",
-    "discord.lowerDetailsEditing": "Line {currentline} of {filename}",
-    "discord.detailsIdle": "Chillin'",
-    "discord.lowerDetailsIdle": "{null}",
-    "discord.detailsDebugging": "Running Megadork",
-    "discord.lowerDetailsDebugging": "Debugging {totallines} lines of code"
+	"workbench.colorCustomizations": {
+		"statusBar.background": "#007aaa",
+		"titleBar.border": "#37009c",
+		"titleBar.activeBackground": "#262e32",
+		"titleBar.inactiveBackground": "#1b1b1b",
+		"activityBar.background": "#262e32"
+	},
+
+	//  Discord
+	"discord.largeImage": "Editing a {LANG} file",
+	"discord.detailsEditing": "Working on Megadork",
+	"discord.lowerDetailsEditing": "Line {currentline} of {filename}",
+	"discord.detailsIdle": "Chillin'",
+	"discord.lowerDetailsIdle": "{null}",
+	"discord.detailsDebugging": "Running Megadork",
+	"discord.lowerDetailsDebugging": "Debugging {totallines} lines of code"
 }

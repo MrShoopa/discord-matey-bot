@@ -49,7 +49,6 @@ import { Bot } from './Bot';
 const LOCAL_AUDIO_LOCATION = __dirname + '/bot_knowledge/audio'
 
 //  ENTITIES
-const BOT = new Discord.Client()
 let initTime = new Date()
 
 var bot = new Bot()
@@ -65,6 +64,9 @@ bot.on('ready', () => {
 })
 console.groupEnd()
 
+//	Checkers
+checkBirthdays()
+
 //  Bot joining server for first time
 bot.on("guildCreate", guild => {
     console.log(`New guild joined: ${guild.name} (id: ${guild.id}). There are ${guild.memberCount} members here.`);
@@ -72,10 +74,6 @@ bot.on("guildCreate", guild => {
     guild.systemChannel.send('Hello world?')
 });
 
-//  States
-var songState: string | boolean = 'idle'
-var lastMessage: string
-var lastCustomer: Discord.User
 
 //  Messaging to bot
 bot.on('message', async (message) => {
@@ -168,6 +166,7 @@ bot.on('message', async (message) => {
 
     //  Add birthday reminder!
     TRIGGERS.remember.birthday.self.forEach(trigger => {
+        //TODO: BotModuleBirthday.ValidateTriggerOfDefaultAction(trigger)
         trigger.toLowerCase()
 
         //  Check for birthday save
@@ -177,17 +176,23 @@ bot.on('message', async (message) => {
             let context: string = messageString.replace(trigger, "").trim()
 
 
-            let birthday: { month: String, date: number } = { month: "", date: 0 }
+            let birthday: Date
 
             CALENDAR.months.forEach(month => {
-                if (context.includes(month)) {
-                    //TODO: Edge case for 30/28 day months
+                if (context.toLowerCase().includes(month)) {
 
-                    let dateNumber: number = parseInt(context.match(/\d+/).toString())
+                    let dateNumber: number = parseInt(context.match(/([0-9])\w+/g)[0].toString())
+                    let monthNumber: number = CALENDAR.months.findIndex((item, i) => {
+                        return item === month
+                    })
+                    let yearNumber: number = parseInt(context.match(/([0-9])\w+/g)[1]?.toString())
+
                     if ((1 <= dateNumber) && (31 >= dateNumber)) {
                         // Construct birthday object
-                        birthday.month = month
-                        birthday.date = dateNumber
+                        if (!yearNumber) yearNumber = 2120
+
+                        birthday = new Date(yearNumber, monthNumber, dateNumber)
+
                     } else {
                         return message.reply('Invalid date. Include a date from 1-31.')
                     }
@@ -195,8 +200,8 @@ bot.on('message', async (message) => {
 
             });
 
-            if (!birthday.month)
-                return message.reply(`Invalid date. Type the month and date like this: 'September 10'`)
+            if (!birthday)
+                return message.reply(`Invalid date. Type the month and date like this: 'September 10 (year optional)'`)
 
             // TODO? Shrink code further + Take off error handling?
             let userData = BotData.getUserData(message.author.id)
@@ -208,9 +213,11 @@ bot.on('message', async (message) => {
 
             try {
                 if (!userData.birthday) {
-                    message.reply(`your birthday has been recorded as ${birthday.month} ${birthday.date}!`)
+					message.reply(`your birthday has been recorded as 
+						${CALENDAR.months_prettier[birthday.getMonth()]} ${birthday.getDate().toLocaleString()}!`)
                 } else {
-                    message.reply(`your birthday has been updated to ${birthday.month} ${birthday.date}!`)
+					message.reply(`your birthday has been updated to 
+						${CALENDAR.months_prettier[birthday.getMonth()]} ${birthday.getDate().toLocaleString()}!`)
                 }
 
                 userData.birthday = birthday
@@ -225,9 +232,33 @@ bot.on('message', async (message) => {
 
             return
         }
-    })
+	})
 
-    //TODO: Add birthday announcement!!!
+	if (TRIGGERS.remember.birthday.inquire
+		.includes(messageString.substring(0).toLowerCase())) {
+		let userData = BotData.getUserData(message.author.id)
+
+            if (userData?.birthday === undefined) {
+                message.reply(`Looks like I don't know it? Maybe tell me to remember? 🍰`)
+			} else {
+				let birthday = new Date(userData.birthday)
+				message.reply(`your birthday is on ${CALENDAR.months_prettier[birthday.getMonth()]} ${birthday.getDate()}! `)
+				
+				let difToleranceMs = 2160000000
+				let birthdayFromNowMs = (birthday.getMilliseconds() - Date.now())
+
+				if (birthday.getMonth() === new Date().getMonth() 
+					&& birthday.getDate() === new Date().getDate())
+					message.channel.send(`Hey, your birthday's today! I hope you have a great one! 🎂🎉`)
+				else if (Math.abs(birthdayFromNowMs) < difToleranceMs && birthdayFromNowMs > 0)
+					message.channel.send(`Looks like your birthday's coming up soon! I'm excited!`)
+				else if (Math.abs(birthdayFromNowMs) < difToleranceMs && birthdayFromNowMs < 0)
+					message.channel.send(`Looks like your birthday came by recently!`)
+
+			}
+		
+            return
+			}
 
     /*  ---- Music Functionality ----  */
 
@@ -1195,33 +1226,6 @@ bot.on('message', async (message) => {
 	}
 
     /*  -----  */
-
-    BOT.on('error', error => {
-        _channel.send(`Ah! Something crashed my lil' engine!
-         Log submitted to Joe. Restarting...`)
-
-        FileSystem.exists('./crash_logs', exists => {
-            if (!exists) FileSystem.mkdir('./crash_logs', folderError => {
-                console.error(`Error creating crash log folder: ${folderError}`)
-            })
-
-            FileSystem.appendFile(`crash_log_${Date.now()}.txt`,
-                (`
-            Error encountered during bot runtime!
-
-            ${Date.now}
-            
-            ${error}
-            `)
-                , logError => {
-                    console.error(`Error writing crash log: ${logError}`)
-                });
-        }
-        )
-
-        //  Re-login
-        BOT.login(AUTH.discord.API_KEY)
-    })
 })
 
 //TODO?:  Greeting
@@ -1253,9 +1257,40 @@ bot.on('error', error => {
 
 
 /*  ----    State Checking      ----   */
+//	TODO: Consider using a 'per-day' check system
 
-if (initTime.getDate() === new Date(2008, initTime.getMonth() + 1, 0).getDate())
-    console.log('Swear stats of the month!')
+if (initTime.getDate() === 1)
+	console.log('Swear stats of the month!')
+	
+		
+//	TODO: improve and make this flashy af
+function checkBirthdays() {
+
+	BotData.getUserDataFile().forEach(user => {
+		let birthday = new Date(user?.birthday)
+		if (birthday.getDate() === new Date().getDate()
+			&& birthday.getMonth() === new Date().getDate()) 
+			bot.guilds.forEach(guild => {
+				if (guild.members.has(user._id)) {
+					let specialUser = guild.members.get(user._id)
+
+					let specialSong
+						= "Happy Birthday to You\n" +
+					"You live in a zoo\n" +
+					"You look like a monkey\n" +
+					"And you smell like one too.\n"
+
+					guild.systemChannel.send(new Discord.MessageEmbed()
+					.setColor('#FFC0CB')
+					.setTitle(`DOOT DOOT! IT'S SOMEONE'S BIRTHDAY!!!! `)
+					.setDescription(`GIVE IT THE F UP FOR ${specialUser.nickname}!!!!1111!! \n aite hit the mic \n\n\n`)
+					.setImage(specialUser.user.avatar)
+					.setThumbnail('./bot_knowledge/images/birthday-stock-image.jpg')
+					)
+				}
+			});			
+	});
+}
 
 
 /*  ----    Helper Functions    ----   */

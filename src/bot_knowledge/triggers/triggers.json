@@ -64,6 +64,16 @@
                 "megadork my birthday's on",
                 "megadork my birthday is on",
                 "megadork celebrate my birthday on"
+            ],
+            "inquire": [
+                "megadork whats my birthday",
+                "megadork what's my birthday",
+                "megadork whens my birthday",
+                "megadork when's my birthday",
+                "megadork my birthday",
+                "megadork tell me my birthday",
+                "megadork when was i born",
+                "megadork when do i turn"
             ]
         }
     },

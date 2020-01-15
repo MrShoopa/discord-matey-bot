@@ -42,8 +42,9 @@ import CALENDAR from './bot_knowledge/calendar/values.json'
 import BotData from './bot_functions/BotData';
 import { StreamInfo } from 'index.js';
 
-/*  -----  */
+import { Bot } from './Bot';
 
+/*  -----  */
 //  DIRECTORIES
 const LOCAL_AUDIO_LOCATION = __dirname + '/bot_knowledge/audio'
 
@@ -51,22 +52,21 @@ const LOCAL_AUDIO_LOCATION = __dirname + '/bot_knowledge/audio'
 const BOT = new Discord.Client()
 let initTime = new Date()
 
-//  Check data
-if (!BotData.getUserDataFile()) BotData.createNewDataFile()
+var bot = new Bot()
 
 //  Initialize Discord Bot
 console.group('Initializing...')
-BOT.login(AUTH.discord.API_KEY).catch(error => (console.log(`Discord connection error: ${error}`)))
-BOT.on('ready', () => {
+bot.login(AUTH.discord.API_KEY).catch(error => (console.log(`Discord connection error: ${error}`)))
+bot.on('ready', () => {
     console.log(`Initialized at ${new Date().toLocaleString()}.`)
     console.log('I\'m alive and ready to go!\n')
 
-    BOT.user.setActivity(`with your servers`, { type: 'PLAYING' });
+    bot.user.setActivity(`with your servers`, { type: 'PLAYING' });
 })
 console.groupEnd()
 
 //  Bot joining server for first time
-BOT.on("guildCreate", guild => {
+bot.on("guildCreate", guild => {
     console.log(`New guild joined: ${guild.name} (id: ${guild.id}). There are ${guild.memberCount} members here.`);
 
     guild.systemChannel.send('Hello world?')
@@ -78,32 +78,32 @@ var lastMessage: string
 var lastCustomer: Discord.User
 
 //  Messaging to bot
-BOT.on('message', async (message) => {
+bot.on('message', async (message) => {
     let author: Discord.User = message.author // Fetch user's ID
     let _channel = message.channel
 
     var matchedCommand = false
 
     //  Grabbing properties from user input
-    let messageString = (message.content).toString()
+    var messageString = (message.content).toString()
     const voiceChannel: Discord.VoiceChannel = message.member.voice.channel
 
     //  Begin logging block
     console.log(`\nA user said: ${messageString}`)
 
     //  Preventing bot to respond to itself or other bots
-    if (author.id === BOT.user.id)
+    if (author.id === bot.user.id)
         if (!messageString.startsWith('redoin, '))
             return
         else {
             messageString = messageString.substring(7)
-            author = lastCustomer
+            author = bot.lastCustomer
         }
     else if (message.author.bot)
         return
 
     //  Remembers user for redo functions
-    lastCustomer = author
+    bot.lastCustomer = author
 
     /*      F U N C T I O N A L I T Y       */
 
@@ -116,11 +116,11 @@ BOT.on('message', async (message) => {
         if (messageString.toLowerCase().includes(trigger)) {
             logBotResponse(trigger, 'Redo command', true, true)
 
-            if (lastMessage == null)
+            if (bot.lastMessage == null)
                 return _channel.send(`I haven't done anything yet though!`)
-            else if (lastMessage.startsWith('redoin, '))
-                lastMessage = lastMessage.substring(8)
-            return _channel.send('redoin, ' + lastMessage)
+            else if (bot.lastMessage.startsWith('redoin, '))
+                bot.lastMessage = bot.lastMessage.substring(8)
+            return _channel.send('redoin, ' + bot.lastMessage)
         }
 
     })
@@ -237,7 +237,7 @@ BOT.on('message', async (message) => {
 
         //  Attempt to play song based on given info
         if (messageString.substring(0, 15).toLowerCase().includes(trigger)) {
-            songState = 'fetching'
+            bot.songState = 'fetching'
 
             let loop: boolean
             //TODO if (messageString.substring(0, 20).toLowerCase().includes('loop')) loop = true
@@ -298,7 +298,7 @@ BOT.on('message', async (message) => {
                 }
 
             }
-            if (songState == 'fetching' && !matchedCommand) { //  When song is not found
+            if (bot.songState == 'fetching' && !matchedCommand) { //  When song is not found
                 message.reply(
                     PHRASES_SING.message_unknown_summon)
 
@@ -317,7 +317,7 @@ BOT.on('message', async (message) => {
             if (messageString.substring(0, 25).toLowerCase().includes(trigger)) {
                 logBotResponse(trigger, 'Singing Stop', true, true)
 
-                if (voiceChannel != null && BOT.voice.connections.size !== 0) {
+                if (voiceChannel != null && bot.voice.connections.size !== 0) {
                     message.member.voice.channel.leave()
 
                     message.reply(fetchRandomPhrase(PHRASES_SING.command_feedback.stop.active))
@@ -454,7 +454,7 @@ BOT.on('message', async (message) => {
 
                 let quoteObject: any
 
-                await import('./bot_modules/Wrappers/TheySaidSo/index').then(async quoteMaster => {
+                await import('./bot_modules/_external_wrappers/TheySaidSo/index').then(async quoteMaster => {
                     try {
                         if (reqCategory)
                             quoteObject = await quoteMaster.getQuoteOfTheDay(reqCategory)
@@ -487,7 +487,7 @@ BOT.on('message', async (message) => {
                 logBotResponse(trigger, 'quote fetch - movie', true)
                 let quoteObject: any
 
-                await import('./bot_modules/Wrappers/MovieQuotes/index').then(quoteMaster => {
+                await import('./bot_modules/_external_wrappers/MovieQuotes/index').then(quoteMaster => {
                     quoteObject = quoteMaster.getQuote()[0]
                 })
 
@@ -799,7 +799,7 @@ BOT.on('message', async (message) => {
         if (!matchedCommand) {
             if (trigger)
                 logBotResponse(trigger, 'Audio playback from files', true)
-            songState = 'playing'
+            bot.songState = 'playing'
 
             voiceChannel.join().then(connection => {
                 console.group(`Local song playing...`)
@@ -835,7 +835,7 @@ BOT.on('message', async (message) => {
                     else {
                         console.info(
                             'Song played successfully.')
-                        songState = 'finished'
+                        bot.songState = 'finished'
                         voiceChannel.leave()
                     }
                 })
@@ -855,7 +855,7 @@ BOT.on('message', async (message) => {
             console.log('URL Command matched')
             if (trigger)
                 logBotResponse(trigger, 'Audio playback from URL', true)
-            songState = 'playing'
+            bot.songState = 'playing'
 
             var stream: Discord.VoiceBroadcast
             var streamOptions: object = {
@@ -901,7 +901,7 @@ BOT.on('message', async (message) => {
             }
 
             voiceChannel.join().then(connection => {
-                songState = 'playing'
+                bot.songState = 'playing'
                 console.log(
                     `Voice channel connection status: ${connection.status}`)
 
@@ -933,7 +933,7 @@ BOT.on('message', async (message) => {
                             console.log('Song played successfully.')
                             console.groupEnd()
 
-                            songState = 'finished'
+                            bot.songState = 'finished'
                             voiceChannel.leave()
                         }
                     })
@@ -943,7 +943,7 @@ BOT.on('message', async (message) => {
                     console.log(error)
                     console.groupEnd()
 
-                    lastCustomer.lastMessage.channel
+                    bot.lastCustomer.lastMessage.channel
                         .send(`Ah! I couldn't play that song. Sent a bug report to Joe.`)
 
                 }
@@ -1168,7 +1168,7 @@ BOT.on('message', async (message) => {
         if (preventNextAction)
             matchedCommand = true
         if (!forgetLastMessage)
-            lastMessage = message.toString()
+            bot.lastMessage = message.toString()
 
         console.group(`--- BOT GO! ---`)
         console.log(`TRIGGER: "${trigger}"`)
@@ -1192,7 +1192,7 @@ BOT.on('message', async (message) => {
         } else _channel.send(`Error ${code} - ${messageString}`)
 
         _channel.send(errorMessage)
-    }
+	}
 
     /*  -----  */
 
@@ -1225,7 +1225,7 @@ BOT.on('message', async (message) => {
 })
 
 //TODO?:  Greeting
-BOT.on('guildMemberAdd', member => {
+bot.on('guildMemberAdd', member => {
     //  Send the message to a designated channel when user joins server
     const CHANNEL: Discord.GuildChannel =
         member.guild.channels.find(ch => ch.name === MEMBER_ANNOUNCEMENT_CHANNEL)
@@ -1241,14 +1241,14 @@ BOT.on('guildMemberAdd', member => {
         `Welcome to the server, ${member}! \n\n\n\n...\n\n who the f-`)
 })
 
-BOT.on('error', error => {
-    lastCustomer.lastMessage.channel.send(`Ah! Something crashed my lil' engine!
+bot.on('error', error => {
+    bot.lastCustomer.lastMessage.channel.send(`Ah! Something crashed my lil' engine!
     Log submitted to Joe. Restarting...`)
 
     saveBugReport(error)
 
     //  Re-login
-    BOT.login(AUTH.discord.API_KEY)
+    bot.login(AUTH.discord.API_KEY)
 })
 
 
@@ -1266,7 +1266,7 @@ if (initTime.getDate() === new Date(2008, initTime.getMonth() + 1, 0).getDate())
  * @param error Error thrown by code
  */
 function saveBugReport(error: Error) {
-    lastCustomer.lastMessage.channel.send(`Log submitted to Joe.`)
+    bot.lastCustomer.lastMessage.channel.send(`Log submitted to Joe.`)
 
     FileSystem.exists('./crash_logs', exists => {
         if (!exists)

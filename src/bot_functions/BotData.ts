@@ -24,13 +24,19 @@ export default class BotData {
     //TODO? Moar function
     //TODO? Types? (MemberDatabase)
 
+
     //  User Data
     static getUserDataFile(log?: boolean) {
         try {
             var data: any = JSON.parse(FileSystem.readFileSync(SAVE_DATA_FILE).toString())
         } catch (err) {
             if (log) console.error(err);
-            console.log('Have you deleted the save file?');
+
+            if (err.code === 'ENOENT') {
+                console.error('Save file is missing. Have you deleted the save file?')
+                return null
+            }
+
         }
         if (log) console.log(data)
 

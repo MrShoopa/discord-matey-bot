@@ -5,7 +5,7 @@
 			"type": "node",
 			"request": "launch",
 			"name": "Build and Run (Discord Matey Bot)",
-			"program": "${workspaceFolder}\\src\\botCore.ts",
+			"program": "${workspaceFolder}\\src\\igniter.ts",
 			"preLaunchTask": "tsc: build - tsconfig.json",
 			"outFiles": [
 				"${workspaceFolder}/built/**/*.js"
@@ -15,7 +15,7 @@
 			"type": "node",
 			"request": "launch",
 			"name": "Run Last Build (Discord Matey Bot)",
-			"program": "${workspaceFolder}\\src\\botCore.ts",
+			"program": "${workspaceFolder}\\src\\igniter.ts",
 			"outFiles": [
 				"${workspaceFolder}/built/**/*.js"
 			]

@@ -12,8 +12,8 @@
  */
 
 /*  Modules  */
-import * as FileSystem from 'fs';
-import { Member } from 'interfaces/Data';
+import * as FileSystem from 'fs'
+import { Data } from '../ts/interfaces/index'
 
 /*  Locations  */
 const SAVE_DATA = __dirname + '/../save_data'
@@ -52,7 +52,7 @@ export default class BotData {
 	static getUserData(id: number | string, log?: boolean) {
 		if (typeof id === 'string') Number(id)
 
-		let userData: Member
+		let userData: Data.MemberSave
 		try {
 			userData = BotData.getUserDataFile().find((matchedUser: {
 				_id: number;
@@ -71,6 +71,32 @@ export default class BotData {
 			return userData
 		}
 	}
+
+	/**
+	 * Retreive all users' data of a certain single value
+	 * 
+	 * @param  {string} the single requested value to be retrieved per user
+	 * @param  {boolean} log? If true, logs extra info to console.
+	*/
+	getAllUserDataOfValue(value: string, log?: boolean): Array<any> {
+		let userDataArray: Array<string> = []
+
+		let dataObj = BotData.getUserDataFile()
+
+		dataObj.forEach(user => {
+			if (user[value]) {
+				let userObj = {
+					//TODO'id', value
+				}
+
+				userDataArray.push()
+			}
+
+		});
+
+		return userDataArray
+	}
+
 
 	/**
 	 * Creates a new datastore file for the server's instance.
@@ -101,7 +127,7 @@ export default class BotData {
 		}
 	}
 	/**
-	 * Creates a new Member object based off a user's ID and saves it to the datastore file.
+	 * Creates a new Datype.MemberSave object based off a user's ID and saves it to the datastore file.
 	 * 
 	 * @param  {number|string} id User's Discord ID
 	 * @param  {boolean} log? If true, logs extra info to console.
@@ -112,7 +138,7 @@ export default class BotData {
 		var data = BotData.getUserDataFile()
 
 		//  Find user,
-		let userData: Member = data.find((matchedUser: {
+		let userData: Data.MemberSave = data.find((matchedUser: {
 			_id: number;
 		}) => {
 			return matchedUser._id === id;
@@ -148,7 +174,7 @@ export default class BotData {
 		var data = BotData.getUserDataFile()
 
 		//  Pointer to single user's data through above variable
-		let userData: Member = data.find((matchedUser: {
+		let userData: Data.MemberSave = data.find((matchedUser: {
 			_id: number;
 		}) => {
 			return matchedUser._id === id;

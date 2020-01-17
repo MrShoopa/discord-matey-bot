@@ -9,8 +9,8 @@ export default class BotModuleBirthday {
 
 	static assignBirthdaySelf = (trigger?: string) => {
 		let bot: Bot = globalThis.bot
-			//  Trim trigger for easier parsing of date
-			(trigger, "Birthday reminder", true)
+		//  Trim trigger for easier parsing of date
+		bot.preliminary(trigger, "Birthday reminder", true)
 		let context: string = bot._context.toString().replace(trigger, "").trim()
 
 		let birthday: Date
@@ -52,10 +52,10 @@ export default class BotModuleBirthday {
 			userData.birthday = birthday
 
 			if (!userData.birthday) {
-				bot._context.reply(`your birthday has been recorded as` +
+				bot._context.reply(`your birthday has been recorded as ` +
 					`${CALENDAR.months_prettier[birthday.getMonth()]} ${birthday.getDate().toLocaleString()}!`)
 			} else {
-				bot._context.reply(`your birthday has been updated to` +
+				bot._context.reply(`your birthday has been updated to ` +
 					`${CALENDAR.months_prettier[birthday.getMonth()]} ${birthday.getDate().toLocaleString()}!`)
 			}
 

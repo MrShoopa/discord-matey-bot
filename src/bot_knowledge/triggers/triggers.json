@@ -61,15 +61,23 @@
         "birthday": {
             "self": [
                 "megadork remember my birthday",
+                "megadork remember my birthday's",
+                "megadork remember my birthday's on",
+                "megadork remember that my birthday is",
                 "megadork my birthday's on",
                 "megadork my birthday is on",
-                "megadork celebrate my birthday on"
+                "megadork celebrate my birthday on",
+                "megadork set my birthday to",
+                "megadork change my birthday to"
             ],
             "inquire": [
                 "megadork whats my birthday",
+                "megadork whats my birthday?",
                 "megadork what's my birthday",
+                "megadork what's my birthday?",
                 "megadork whens my birthday",
                 "megadork when's my birthday",
+                "megadork when's my birthday?",
                 "megadork my birthday",
                 "megadork tell me my birthday",
                 "megadork when was i born",

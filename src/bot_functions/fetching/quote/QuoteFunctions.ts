@@ -10,18 +10,17 @@ export default class BotModuleQuote {
         //  Quote of Day [from quotes.rest]
         for (const trigger of TRIGGERS.quote_fetch.OTD.default)
             if (bot.context.toString().toLowerCase().includes(trigger))
-                return bot.textChannel.send(await this.fetchQuoteOfTheDay())
+                return bot.textChannel.send(await this.fetchQuoteOfTheDay(trigger))
 
         //! API Depricated?  Movie quote [from MovieQuoter]
-        for (const trigger of TRIGGERS.quote_fetch.movie.default)
-            if (bot.context.toString().toLowerCase().includes(trigger))
-                return bot.textChannel.send(await this.fetchMovieQuote())
+        if (bot.containsRightTextContext('quote of the day', true))
+            return bot.textChannel.send(await this.fetchQuoteOfTheDay())
 
 
         //  Inspirational quote [from inspirational-quotes]
         for (const trigger of TRIGGERS.quote_fetch.inspirational)
             if (bot.context.toString().toLowerCase().includes(trigger))
-                return bot.textChannel.send(await this.fetchInspirationalQuote())
+                return bot.textChannel.send(await this.fetchInspirationalQuote(trigger))
     }
 
     static async fetchQuoteOfTheDay(trigger?: string, bot: Bot = globalThis.bot) {
@@ -33,7 +32,7 @@ export default class BotModuleQuote {
                 reqCategory = subTrig
         })
 
-        if (trigger) bot.preliminary(trigger, `quote fetch - ${reqCategory} of the day`, true)
+        bot.preliminary('lol', `quote fetch - ${reqCategory} of the day`, true)
 
         let quoteObject: any
 
@@ -49,6 +48,9 @@ export default class BotModuleQuote {
                     bot.textChannel.send(`Fetched too much right now! ${e.timeMessage}`)
             }
         })
+
+        if (!quoteObject.author)
+            quoteObject.author = 'Anonymous'
 
         console.log("Quote Object Returned from TheySaidSo.com: ",
             quoteObject)

@@ -182,9 +182,9 @@ export default class TriggerHandlers {
         //  Get anime recommendation [from My Anime List (JikanTS)]
     }
 
-    private static async checkForQuoteFetchRequest(message = TriggerHandlers.message) {
+    private static checkForQuoteFetchRequest(message = TriggerHandlers.message) {
         if (message.toString().toLowerCase().includes('quote'))
-            BotModuleQuote.fireQuoteMessage()
+            return BotModuleQuote.fireQuoteMessage()
     }
 
     /*  ----    Server-Management   ---- */

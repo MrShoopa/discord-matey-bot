@@ -11,6 +11,8 @@ import BotData from './bot_functions/DataHandler'
 
 import CREDS from './user_creds.json'
 
+import { main_trigger } from './bot_knowledge/triggers/triggers.json'
+
 export enum SongState {
     Unknown = 'unknown',
     Fetching = 'fetching',
@@ -346,6 +348,17 @@ export default class Bot extends Discord.Client {
                     rej(error)
                 })
         })
+    }
+
+    containsRightTextContext(desiredContext: string, withHotword?: boolean) {
+        let bot: Bot = globalThis.bot
+        let trigger: string
+
+        if (withHotword)
+            for (trigger of main_trigger)
+                return bot.context.toString().includes(trigger)
+
+        return bot.context.toString().includes(desiredContext)
     }
 
     //TODO:

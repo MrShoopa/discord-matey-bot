@@ -27,12 +27,11 @@ export default class QuotesAPI {
 					if (res.statusCode === 429) {
 						let timeMessage =
 							data.message.split('.')[data.message.split('.').length - 1]
-						reject({
-							code: 429,
-							timeMessage: timeMessage
-						})
+						reject(new Error('Fetched too many quotes right now.'))
+					} else if (res.statusCode === 401) {
+						reject(new Error('Incorrect credentials found.'))
 					} else {
-						reject(`Error fetching Quote of Day: ${data.error.message}`)
+						reject(new EvalError(`Error fetching Quote of Day: ${err.message}`))
 					}
 				} else resolve('Huh?')
 			})

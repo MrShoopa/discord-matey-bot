@@ -9,8 +9,8 @@ export default class BotRestrictedRoleModule {
 
         if (trigger) bot.preliminary(trigger, 'Set restricted role', true)
 
-        bot._context.mentions.members.forEach(member => {
-            bot._context.reply(
+        bot.context.mentions.members.forEach(member => {
+            bot.context.reply(
                 `${Bot.fetchRandomPhrase(PHRASES_SERVER_MOD.restricted_role_set)},
                 ${member.displayName}`)
             member.roles.add(bot.restrictedRoleId)
@@ -30,8 +30,8 @@ export default class BotRestrictedRoleModule {
 
         if (trigger) bot.preliminary(trigger, 'Unset restricted role', true)
 
-        bot._context.mentions.members.forEach(member => {
-            bot._context.reply(
+        bot.context.mentions.members.forEach(member => {
+            bot.context.reply(
                 `${Bot.fetchRandomPhrase(PHRASES_SERVER_MOD.restricted_role_unset)},
         ${member.displayName}`)
             member.roles.remove(bot.restrictedRoleId)

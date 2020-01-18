@@ -11,7 +11,7 @@ export default class BotModuleBirthday {
 		let bot: Bot = globalThis.bot
 		//  Trim trigger for easier parsing of date
 		bot.preliminary(trigger, "Birthday reminder", true)
-		let context: string = bot._context.toString().replace(trigger, "").trim()
+		let context: string = bot.context.toString().replace(trigger, "").trim()
 
 		let birthday: Date
 
@@ -31,41 +31,41 @@ export default class BotModuleBirthday {
 					birthday = new Date(yearNumber, monthNumber, dateNumber)
 
 				} else {
-					return bot._context.reply('Invalid date. Include a date from 1-31.')
+					return bot.context.reply('Invalid date. Include a date from 1-31.')
 				}
 			}
 
 		});
 
 		if (!birthday)
-			return bot._context.reply(`Invalid date. Type the month and date like this: 'September 10 (year optional)'`)
+			return bot.context.reply(`Invalid date. Type the month and date like this: 'September 10 (year optional)'`)
 
 		// TODO? Shrink code further + Take off error handling?
-		let userData = BotData.getUserData(bot._context.author.id)
+		let userData = BotData.getUserData(bot.context.author.id)
 
 		if (userData === undefined) {
-			BotData.createUserData(bot._context.author.id)
-			userData = BotData.getUserData(bot._context.author.id)
+			BotData.createUserData(bot.context.author.id)
+			userData = BotData.getUserData(bot.context.author.id)
 		}
 
 		try {
 			userData.birthday = birthday
 
 			if (!userData.birthday) {
-				bot._context.reply(`your birthday has been recorded as ` +
+				bot.context.reply(`your birthday has been recorded as ` +
 					`${CALENDAR.months_prettier[birthday.getMonth()]} ${birthday.getDate().toLocaleString()}!`)
 			} else {
-				bot._context.reply(`your birthday has been updated to ` +
+				bot.context.reply(`your birthday has been updated to ` +
 					`${CALENDAR.months_prettier[birthday.getMonth()]} ${birthday.getDate().toLocaleString()}!`)
 			}
 
 		} catch (error) {
 			bot.saveBugReport(error, true)
-			return bot._context.reply(`I couldn't save your birthday for some reason... :(`)
+			return bot.context.reply(`I couldn't save your birthday for some reason... :(`)
 		}
 
 
-		return BotData.updateUserData(bot._context.author.id, userData)
+		return BotData.updateUserData(bot.context.author.id, userData)
 	}
 
 	static inquireBirthdaySelf = (trigger?: string) => {

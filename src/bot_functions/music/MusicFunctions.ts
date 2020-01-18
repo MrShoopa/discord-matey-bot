@@ -86,15 +86,15 @@ export default class BotMusicModule {
         if (trigger) bot.preliminary(trigger, 'Singing Stop', true, true)
 
         if (bot.voiceChannel != null && bot.voice.connections.size !== 0) {
-            bot._context.member.voice.channel.leave()
+            bot.context.member.voice.channel.leave()
 
-            bot._context.reply(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.active))
+            bot.context.reply(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.active))
             console.log('Bot exited voice channel by user message.')
         } else {
-            if (bot._context.toString().substring(0, 6).toLowerCase().includes("stop"))
+            if (bot.context.toString().substring(0, 6).toLowerCase().includes("stop"))
                 return  // No message is sent when just saying 'stop' on no playback
 
-            bot._context.reply(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.null))
+            bot.context.reply(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.null))
             console.log('No sound was playing, nothing terminated.')
         }
     }

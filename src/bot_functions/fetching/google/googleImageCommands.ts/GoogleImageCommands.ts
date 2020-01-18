@@ -20,11 +20,11 @@ export default class BotModuleGoogleImage {
 
         for (const trigger in TRIGGERS.image_search_triggers.context_prefix)
             //  If user includes a specific thing to look for.
-            if (bot._context.toString().toLowerCase().includes(trigger))
+            if (bot.context.toString().toLowerCase().includes(trigger))
                 //  Sets query to user's query (after prefix trigger)
                 return userQuery =
-                    bot._context.toString().substring(
-                        bot._context.toString().indexOf(trigger) + trigger.length + 1)
+                    bot.context.toString().substring(
+                        bot.context.toString().indexOf(trigger) + trigger.length + 1)
 
         return BotModuleGoogleImage.fetchImageFromGoogle(userQuery, bot)
     }

@@ -46,13 +46,13 @@ export default class Bot extends Discord.Client {
     data: BotData;
     restrictedRoleId: string
 
-    _context: Discord.Message | Discord.PartialMessage
+    private _context: Discord.Message | Discord.PartialMessage
     waker: Discord.User
     textChannel: Discord.TextChannel | Discord.DMChannel
     voiceChannel: Discord.VoiceChannel
 
-    _lastMessage: Discord.Message | Discord.PartialMessage
-    _lastWaker: Discord.User
+    private _lastMessage: Discord.Message | Discord.PartialMessage
+    private _lastWaker: Discord.User
 
     commandSatisfied: boolean
     songState: SongState

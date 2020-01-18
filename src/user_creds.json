@@ -1,0 +1,20 @@
+/ Don't forget to set yet creds and settings here ;) {
+    "you": {
+        "restricted_role_name": "sKrUb!!! 😅👌🔥👈"
+    },
+    "discord": {
+        "API_KEY": ""
+    },
+    "google": {
+        "search": {
+            "CSE_ID": "",
+            "API_KEY": ""
+        }
+    },
+    "twitter": {
+        "consumer_key": "",
+        "consumer_secret": "",
+        "access_token_key": "",
+        "access_token_secret": ""
+    }
+}

@@ -49,7 +49,7 @@ export default class BotData {
 	 * @param  {number|string} id User's Discord ID
 	 * @param  {boolean} log? If true, logs extra info to console.
 	 */
-	static getUserData(id: number | string, log?: boolean) {
+	static getUserData(id: number | string, createIfMissing?: boolean) {
 		if (typeof id === 'string') Number(id)
 
 		let userData: Data.MemberSave
@@ -60,14 +60,15 @@ export default class BotData {
 				return matchedUser._id === id;
 			});
 		} catch (error) {
+			throw new ReferenceError(`Couldn't attempt to find user's data.`)
 		}
 
 		if (userData === undefined) {
 			console.log(`User data for ${id} not found.`)
+			if (createIfMissing) this.createUserData(id)
 			return undefined
 		} else {
 			console.log(`User data for ${id} accessed!`)
-			if (log) console.log(userData)
 			return userData
 		}
 	}
@@ -133,11 +134,11 @@ export default class BotData {
 	 * @param  {boolean} log? If true, logs extra info to console.
 	 */
 	static createUserData(id: number | string, force?: boolean) {
-		if (typeof id === 'string') Number(id)
+		if (typeof id === 'string') id = Number(id)
 
 		var data = BotData.getUserDataFile()
 
-		//  Find user,
+		//  Find user...
 		let userData: Data.MemberSave = data.find((matchedUser: {
 			_id: number;
 		}) => {
@@ -145,14 +146,18 @@ export default class BotData {
 		})
 
 		if (userData === undefined || force) {
-			// ,if not found, create new data.
-			data.push({
-				"_id": id
-			})
+			// ...if not found, create new data.
+			let newSave: Data.MemberSave = {
+				_id: id
+			}
+
+			data.push(newSave)
 
 			BotData.writeDataFile(data)
 			console.log(`Data created for User ${id}.`);
-			if (force) console.log(data)
+			if (force) console.warn(`YOU HAVE REWRITTEN SOMEONE'S SAVE!`)
+
+			return data
 		} else {
 			//  ,if found, do nothing.
 			console.log(`Data already exists for User ${id}.`)

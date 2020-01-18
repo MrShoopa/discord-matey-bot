@@ -12,7 +12,7 @@ import Discord from 'discord.js'
 import Bot from './Bot';
 
 import TriggerHandlers from './bot_functions/TriggerHandlers.js';
-import PostReadyFunctions from './bot_functions/state/PostReadyFunctions';
+import PostReadyFunctions from './bot_functions/_state/PostReadyFunctions';
 
 //  Initialize Discord Bot
 console.log('Initializing...')

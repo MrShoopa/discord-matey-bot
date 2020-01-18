@@ -4,7 +4,7 @@
     @author Joe Villegas (joevillegasisawesome@gmail.com)
 	@date   Started on May 16th, 2019.
 	
-	@see	./user_creds.json.json for providing API keys/secrets to use third-party services.
+	@see	./user_creds.json for providing API keys/secrets to use third-party services.
 */
 
 import Discord from 'discord.js'

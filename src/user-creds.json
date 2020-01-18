@@ -1,0 +1,20 @@
+/ Remember to git yer keys and set yer settings here :) / {
+    "you": {
+        "restricted_role_name": "the covenant"
+    },
+    "discord": {
+        "API_KEY": "",
+    },
+    "google": {
+        "search": {
+            "CSE_ID": "",
+            "API_KEY": ""
+        }
+    },
+    "twitter": {
+        "consumer_key": "",
+        "consumer_secret": "",
+        "access_token_key": "",
+        "access_token_secret": ""
+    }
+}

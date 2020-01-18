@@ -1,4 +1,4 @@
-import * as auth from '../../../auth.json'
+import * as auth from '../../../user-creds.json'
 
 var request = require('request')
 

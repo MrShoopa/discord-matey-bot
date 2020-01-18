@@ -1,18 +1,12 @@
 /*  
-    Oddly Specific Discord Bot
+    ~~~~~~Oddly Specific Discord Bot~~~~~~
     
     @author Joe Villegas (joevillegasisawesome@gmail.com)
-	@date   May 16th, 2019
+	@date   Started on May 16th, 2019.
 	
-	@important Refer to ./auth.json for providing API keys/secrets to use third-party services.
+	@see	./user-creds.json for providing API keys/secrets to use third-party services.
 */
 
-//*  Server-Specific settings    (INCLUDE YOUR SERVER'S INFO WHERE APPLICABLE)
-globalThis.RESTRICTED_ROLE_NAME = 'sKrUb!!! 😅👌🔥👈'
-
-/* --- Assets --- */
-
-//  DEPENDENCIES
 import Discord from 'discord.js'
 
 import Bot from './Bot';
@@ -70,7 +64,6 @@ bot.on('error', error => {
 	//  Re-login
 	bot = new Bot()
 })
-
 
 /*  ----    State Checking      ----   */
 //	TODO: Consider using a 'per-day' check system

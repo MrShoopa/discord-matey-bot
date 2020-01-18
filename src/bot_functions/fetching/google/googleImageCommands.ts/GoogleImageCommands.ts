@@ -2,7 +2,7 @@ import GoogleImages from 'google-images'
 import Discord from 'discord.js'
 import Bot from '../../../../Bot'
 
-import AUTH from '../../../../auth.json'
+import AUTH from '../../../../user-creds.json'
 
 import TRIGGERS from '../../../../bot_knowledge/triggers/triggers.json'
 

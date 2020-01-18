@@ -9,7 +9,7 @@ import Discord from 'discord.js'
 import * as Datypes from './ts/interfaces/index'
 import BotData from './bot_functions/DataHandler'
 
-import AUTH from './auth.json'
+import CREDS from './user-creds.json'
 
 export enum SongState {
     Unknown = 'unknown',
@@ -22,12 +22,12 @@ export enum SongState {
 
 export default class Bot extends Discord.Client {
 
-    constructor(apiKey: string = AUTH.discord.API_KEY) {
+    constructor(apiKey: string = CREDS.discord.API_KEY) {
         super()
 
         this.login(apiKey).catch(error => (console.log(`Discord connection error: ${error}`)))
             .then(
-                this.restrictedRoleId = this.fetchRoleID(globalThis.RESTRICTED_ROLE_NAME)
+                this.restrictedRoleId = this.fetchRoleID(CREDS.you.restricted_role_name)
             )
 
         //  Check data

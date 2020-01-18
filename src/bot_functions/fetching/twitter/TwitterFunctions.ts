@@ -1,3 +1,4 @@
+import Discord from 'discord.js';
 import Twitter from 'twitter'
 import Bot from '../../../Bot'
 
@@ -33,7 +34,25 @@ export default class BotTwitterModule {
 
         let tweet = await this.fetchTweetWithQuery(query)
 
-        bot.textChannel.send(`Tweet from @${tweet.user.name}\nabout '${query}':\n\n${tweet.text}`)
+        let url =
+            `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
+
+
+        let built = new Discord.MessageEmbed(tweet)
+            .setURL(url)
+            .setTitle(`Tweet about '${query}'`)
+            .setAuthor(tweet.user.name)
+            .setColor('#00aced')
+            .setDescription(tweet.text)
+            .setThumbnail('https://cdn.drawception.com/images/panels/2018/3-4/AWPpbeMmFT-10.png')
+            .setFooter('Megatweety Fetch')
+
+        if (tweet.entities.media)
+            built.setImage(tweet.entities.media[0].media_url)
+        else
+            built.setImage(tweet.user.profile_image_url)
+
+        bot.textChannel.send(built)
     }
 
     static async fetchBuiltMsgTweetWithUserTopPost(trigger: string) {

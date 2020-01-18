@@ -16,7 +16,7 @@ import BotModuleReddit from './fetching/reddit/RedditFunctions';
 import BotModuleBirthday from './novelty/birthday/BirthdayFunctions';
 import BotModuleAnime from './fetching/anime/AnimeFunctions';
 
-import BotWordplay from './wordplay/wordplayFunctions';
+import BotWordplay from './wordplay/WordplayFunctions';
 import BotModuleQuote from './fetching/quote/QuoteFunctions';
 
 

@@ -9,7 +9,7 @@ import Discord from 'discord.js'
 import * as Datypes from './ts/interfaces/index'
 import BotData from './bot_functions/DataHandler'
 
-import CREDS from './user-creds.json'
+import CREDS from './user_creds.json.json'
 
 export enum SongState {
     Unknown = 'unknown',

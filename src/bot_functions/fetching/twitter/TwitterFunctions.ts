@@ -1,7 +1,7 @@
 import Twitter from 'twitter'
 import Bot from '../../../Bot'
 
-import AUTH from '../../../user-creds.json'
+import AUTH from '../../../user_creds.json.json'
 
 
 export default class BotTwitterModule {

@@ -2,7 +2,7 @@ import * as FileSystem from 'fs'
 import * as Path from 'path'
 import Snekfetch from 'snekfetch'
 import Request from 'request'
-import YTDL, { validateID } from 'ytdl-core'
+import YTDL from 'ytdl-core'
 
 import Discord from 'discord.js'
 
@@ -49,14 +49,13 @@ export default class Bot extends Discord.Client {
     textChannel: Discord.TextChannel | Discord.DMChannel
     voiceChannel: Discord.VoiceChannel
 
-    lastMessage: Discord.Message | Discord.PartialMessage
-    lastWaker: Discord.User
+    _lastMessage: Discord.Message | Discord.PartialMessage
+    _lastWaker: Discord.User
 
     commandSatisfied: boolean
     songState: SongState
 
     get context() { return this._context }
-
     set context(value: Discord.Message | Discord.PartialMessage) {
         if (this.user.id !== value.author.id) {
             this.lastMessage = this._context
@@ -69,6 +68,18 @@ export default class Bot extends Discord.Client {
         this.textChannel = value.channel
         this.voiceChannel = value.member.voice.channel
     }
+
+    get lastMessage() {
+        if (!this.lastMessage) return this._context
+        else return this._lastMessage
+    }
+    get lastWaker() {
+        if (!this._lastWaker) return this.waker
+        else return this._lastWaker
+    }
+
+    set lastMessage(v) { this._lastMessage = v }
+    set lastWaker(v) { this._lastWaker = v }
 
     preliminary(trigger: string = 'None', intent?: string,
         preventNextAction?: boolean, overwriteLastMessage?: boolean) {
@@ -361,28 +372,35 @@ export default class Bot extends Discord.Client {
         if (logInConsole) console.error(`Error occured on: ${new Date().toString()}:\n
             ${error}`)
 
+        var reportPath: string = __dirname + `/../crash_logs`
 
-        FileSystem.exists('./crash_logs', exists => {
+        FileSystem.exists(reportPath, exists => {
             if (!exists)
-                FileSystem.mkdir('./crash_logs', folderError => {
+                FileSystem.mkdir(reportPath, folderError => {
                     console.error(`Error creating crash log folder: ${folderError}`)
                 })
+            reportPath = Path.join(reportPath)
 
-            FileSystem.appendFile(`crash_log_${Date.now()}.txt`,
+            FileSystem.appendFile(reportPath + `/` + `crash_log_` +
+                (new Date().getMonth() + 1) + `_` +
+                new Date().getDate() + `_` +
+                new Date().getFullYear().toString() +
+                `.txt`,
                 (`
-        Error encountered during bot runtime! -> S${Date.now}
+        Error encountered during bot runtime! -> ${new Date().toString()}
         ---------
-        ${error.name} on ${error.stack}
-        
-        ${error.message}
+        ${error.stack}
+        ---------
+
         `)
                 , logError => {
-                    console.error(`Error writing crash log: ${logError}`)
+                    console.error(`Error writing crash log: ${logError.message}`)
                 })
         }
         )
 
-        this.lastWaker.lastMessage.channel.send(`Log submitted to Joe.`)
+        if (this.lastWaker)
+            this.lastWaker.lastMessage.channel.send(`Log submitted to Joe.`)
     }
 
     /**

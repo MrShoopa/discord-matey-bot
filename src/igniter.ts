@@ -15,19 +15,17 @@ import TriggerHandlers from './bot_functions/TriggerHandlers.js';
 import PostReadyFunctions from './bot_functions/state/PostReadyFunctions';
 
 //  Initialize Discord Bot
-console.group('Initializing...')
+console.log('Initializing...')
 
 globalThis.bot = new Bot()
 var bot: Bot = globalThis.bot
 
 bot.on('ready', () => {
-	console.log(`Initialized at ${new Date().toLocaleString()}.`)
-	console.log('I\'m alive and ready to go!\n')
+	console.info(`Hey there! The time is ${new Date().toLocaleString()}. I'm ready! 😀\n`)
 
 	bot.user.setActivity(`with your servers`, { type: 'PLAYING' });
 
 	PostReadyFunctions.run()
-	console.groupEnd()
 })
 
 //  Bot joining server for first time

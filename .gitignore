@@ -13,6 +13,9 @@ node_modules
 # Builds
 /built
 
+# Bot Crash Logs
+/crash_logs
+
 # Logs
 logs
 *.log

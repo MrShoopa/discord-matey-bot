@@ -26,6 +26,28 @@ export default class TriggerHandlers {
 
     static audioLocation = __dirname + '/bot_knowledge/audio'
 
+    private static functions: any[] = [
+        TriggerHandlers.checkForBirthdayAppendRequest,
+        TriggerHandlers.checkForBirthdayInquiryRequest,
+
+        TriggerHandlers.checkForMusicPlaybackRequest,
+        TriggerHandlers.checkForMusicStopRequest,
+
+        TriggerHandlers.checkForImageFetchRequest,
+
+        //  Third-Party APIs
+        TriggerHandlers.checkForRedditFetchRequest,
+        TriggerHandlers.checkForTwitterFetchRequest,
+        TriggerHandlers.checkForMALFetchRequest,
+        TriggerHandlers.checkForQuoteFetchRequest,
+
+        TriggerHandlers.checkForRestrictedRoleAssignRequest,
+        TriggerHandlers.checkForRestrictedRoleUnassignRequest,
+
+        HelpTriggers.checkForHelpInfoRequest
+
+    ]
+
     public static validateMessage(message: Discord.Message | Discord.PartialMessage) {
         this.bot = globalThis.bot
         this.bot.commandSatisfied = false
@@ -34,14 +56,18 @@ export default class TriggerHandlers {
 
         if (this.preventUnnecessaryResponse()) return
 
+        //  Ambient events (Happens before requests are made)
         this.ambientEventCheck()
 
+        //  Does the user want to redo?
         this.checkForRedoActionRequest()
 
+        //  Actual processing
         this.requestCheck()
         this.chatterCheck()
 
-        if (!this.bot.commandSatisfied) this.replyGeneralDefault()
+        if (!this.bot.commandSatisfied)
+            this.replyGeneralDefault()
     }
 
     private static preventUnnecessaryResponse() {
@@ -66,34 +92,15 @@ export default class TriggerHandlers {
     }
 
     private static requestCheck() {
-        //TODO: Optimize speed and unnecessary actions?
-        /*  Actions */
-
-        this.checkForBirthdayAppendRequest()
-        this.checkForBirthdayInquiryRequest()
-
-        this.checkForMusicPlaybackRequest()
-        this.checkForMusicStopRequest()
-
-        this.checkForImageFetchRequest()
-
-        //  Third-Party APIs
-        this.checkForRedditFetchRequest()
-        this.checkForTwitterFetchRequest()
-        this.checkForMALFetchRequest()
-        this.checkForQuoteFetchRequest()
-
-        this.checkForRestrictedRoleAssignRequest()
-        this.checkForRestrictedRoleUnassignRequest()
-
-        HelpTriggers.checkForHelpInfoRequest()
+        for (var check of this.functions)
+            if (check()) return this.bot.commandSatisfied = true
     }
 
     private static chatterCheck() {
         BotWordplay.runWordplayCheck()
     }
 
-    private static checkForRedoActionRequest(message = this.message) {
+    private static checkForRedoActionRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.redo_trigger)
             if (message.toString().toLowerCase().includes(trigger))
                 return BotGeneralCommands.RedoLastAction(trigger)
@@ -103,7 +110,7 @@ export default class TriggerHandlers {
 
     /*  ---- Swear Jar Functionality ----  */
 
-    private static checkForSwearWord(message = this.message) {
+    private static checkForSwearWord(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.swear_jar_triggers.bad_words)
             if (message.toString().toLowerCase().includes(trigger))
                 return BotSwearJarModule.dingUser(trigger)
@@ -111,14 +118,14 @@ export default class TriggerHandlers {
 
     /*  ---- Birthday Functionality ----  */
 
-    private static checkForBirthdayAppendRequest(message = this.message) {
+    private static checkForBirthdayAppendRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.remember.birthday.self)
             if (message.toString().toLowerCase().includes(trigger))
                 return BotModuleBirthday.assignBirthdaySelf(trigger)
         //  Add birthday reminder!
     }
 
-    private static checkForBirthdayInquiryRequest(message = this.message) {
+    private static checkForBirthdayInquiryRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.remember.birthday.inquire)
             if (message.toString().toLowerCase().includes(trigger))
                 return BotModuleBirthday.inquireBirthdaySelf()
@@ -126,14 +133,14 @@ export default class TriggerHandlers {
 
     /*  ---- Music Functionality ----  */
 
-    private static checkForMusicPlaybackRequest(message = this.message) {
+    private static checkForMusicPlaybackRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.singing_triggers.play)
             if (message.toString().substring(0, 15).toLowerCase().includes(trigger))
                 return BotMusicModule.playMusic(trigger)
         //  Attempt to play song based on given info
     }
 
-    private static checkForMusicStopRequest(message = this.message) {
+    private static checkForMusicStopRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.singing_triggers.stop)
             if (!TriggerHandlers.bot.commandSatisfied) {
                 if (message.toString().substring(0, 25).toLowerCase().includes(trigger)) {
@@ -145,7 +152,7 @@ export default class TriggerHandlers {
 
     /*  ----    Image-Fetching (Google JS API)  ----    */
 
-    private static checkForImageFetchRequest(message = this.message) {
+    private static checkForImageFetchRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.image_search_triggers.random_image)
             if (message.toString().toLowerCase().includes(trigger))
                 return BotModuleGoogleImage.fetchBuiltImageFromGoogle(trigger)
@@ -154,42 +161,42 @@ export default class TriggerHandlers {
 
     /*      ---- External Data Retreival ----   */
 
-    private static checkForRedditFetchRequest(message = this.message) {
+    private static checkForRedditFetchRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.reddit_fetch.copypasta.default)
             if (message.toString().toLowerCase().includes(trigger))
                 return BotModuleReddit.fetchSomeCopypasta(trigger)
         //  Get copypasta post [from Reddit]
     }
 
-    private static checkForTwitterFetchRequest(message = this.message) {
+    private static checkForTwitterFetchRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.twitter_fetch.tweet.query)
             if (message.toString().toLowerCase().includes(trigger))
                 return BotTwitterModule.fetchBuiltMsgTweetWithQuery(trigger)
         //  Get latest Tweet with specific query [from Twitter]
     }
 
-    private static checkForMALFetchRequest(message = this.message) {
+    private static checkForMALFetchRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.anime_fetch.default)
             if (message.toString().toLowerCase().includes(trigger))
                 return BotModuleAnime.fetchBuiltMsgAnimeInfoMessageOfName()
         //  Get anime recommendation [from My Anime List (JikanTS)]
     }
 
-    private static async checkForQuoteFetchRequest(message = this.message) {
+    private static async checkForQuoteFetchRequest(message = TriggerHandlers.message) {
         if (message.toString().toLowerCase().includes('quote'))
             BotModuleQuote.fireQuoteMessage()
     }
 
     /*  ----    Server-Management   ---- */
 
-    private static checkForRestrictedRoleAssignRequest(message = this.message) {
+    private static checkForRestrictedRoleAssignRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.server_mod_triggers.set_restricted_role)
             if (message.toString().toLowerCase().includes(trigger))
                 return BotRestrictedRoleModule.assignToRestrictedRole(trigger)
         //  Set Restricted Role        
     }
 
-    private static checkForRestrictedRoleUnassignRequest(message = this.message) {
+    private static checkForRestrictedRoleUnassignRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.server_mod_triggers.unset_restricted_role)
             if (message.toString().toLowerCase().includes(trigger))
                 return BotRestrictedRoleModule.unassignFromRestrictedRole(trigger)
@@ -197,7 +204,7 @@ export default class TriggerHandlers {
     }
 
     //  All else comes around
-    private static replyGeneralDefault(message = this.message) {
+    private static replyGeneralDefault(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.main_trigger)
             if (message.toString().substring(0, 12).toLowerCase().includes(trigger))
                 return BotDefaultResponder.generateResponse()

@@ -98,10 +98,20 @@ export default class BotMusicModule {
         if (trigger) bot.preliminary(trigger, 'Singing Stop', true, true)
 
         if (bot.voiceChannel != null && bot.voice.connections.size !== 0) {
-            bot.context.member.voice.channel.leave()
 
-            bot.context.reply(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.active))
-            console.log('Bot exited voice channel by user message.')
+            try {
+                if (!bot.voice.connections.some(connection => {
+                    return connection.channel.id == bot.context.member.voice?.channel.id
+                })) bot.context.reply(`join my voice channel and repeat that action!`)
+                else {
+                    bot.context.member.voice.channel.leave()
+
+                    bot.context.reply(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.active))
+                    console.log('Bot exited voice channel by user message.')
+                }
+            } catch (error) {
+                bot.saveBugReport(error)
+            }
         } else {
             if (bot.context.toString().substring(0, 6).toLowerCase().includes("stop"))
                 return  // No message is sent when just saying 'stop' on no playback

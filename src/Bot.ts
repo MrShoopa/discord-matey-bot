@@ -189,6 +189,7 @@ export default class Bot extends Discord.Client {
         }
     }
 
+    //TODO: Add loop (see above for reference)
     async playAudioFromURL(url: string, loop?: boolean, trigger?: string) {
         if (!this.commandSatisfied) {
 

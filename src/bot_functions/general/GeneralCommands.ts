@@ -3,7 +3,7 @@ import Bot from "../../Bot"
 
 export default class BotGeneralCommands {
 
-    static RedoLastAction(trigger: string) {
+    static redoLastAction(trigger: string) {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'Redo command', true)
 

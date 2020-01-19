@@ -103,7 +103,7 @@ export default class TriggerHandlers {
     private static checkForRedoActionRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.redo_trigger)
             if (message.toString().toLowerCase().includes(trigger))
-                return BotGeneralCommands.RedoLastAction(trigger)
+                return BotGeneralCommands.redoLastAction(trigger)
         //  Redo last command
     }
 
@@ -155,7 +155,7 @@ export default class TriggerHandlers {
     private static checkForImageFetchRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.image_search_triggers.random_image)
             if (message.toString().toLowerCase().includes(trigger))
-                return BotModuleGoogleImage.fetchBuiltImageFromGoogle(trigger)
+                return BotModuleGoogleImage.fireImageMessageFromGoogle(trigger)
         //  Find random image (from Google Images)
     }
 
@@ -164,21 +164,21 @@ export default class TriggerHandlers {
     private static checkForRedditFetchRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.reddit_fetch.copypasta.default)
             if (message.toString().toLowerCase().includes(trigger))
-                return BotModuleReddit.fetchSomeCopypasta(trigger)
+                return BotModuleReddit.fireCopypastaFetch(trigger)
         //  Get copypasta post [from Reddit]
     }
 
     private static checkForTwitterFetchRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.twitter_fetch.tweet.query)
             if (message.toString().toLowerCase().includes(trigger))
-                return BotTwitterModule.fetchBuiltMsgTweetWithQuery(trigger)
+                return BotTwitterModule.fireTweetMessageOfQuery(message.toString(), trigger)
         //  Get latest Tweet with specific query [from Twitter]
     }
 
     private static checkForMALFetchRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.anime_fetch.default)
             if (message.toString().toLowerCase().includes(trigger))
-                return BotModuleAnime.fetchBuiltMsgAnimeInfoMessageOfName()
+                return BotModuleAnime.fireAnimeInfoMessageOfName(trigger)
         //  Get anime recommendation [from My Anime List (JikanTS)]
     }
 

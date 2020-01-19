@@ -62,8 +62,9 @@ export default class BotMusicModule {
 
                 let matchedSongs = Bot.searchFilesRecursive('./', `${songRequest}.mp3`);
                 if (matchedSongs.length > 0 && songRequest.length > 0) {
-                    console.group(`Local matching songs found:`)
-                    console.log(matchedSongs)
+                    console.group()
+                    console.log(`Local matching songs found:`)
+                    console.info(matchedSongs)
                     console.groupEnd()
 
                     //TODO: Give choice from multiple matches

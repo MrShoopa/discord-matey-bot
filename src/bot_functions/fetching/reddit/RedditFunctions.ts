@@ -3,17 +3,15 @@ import Discord from 'discord.js'
 import Bot from "../../../Bot"
 
 export default class BotModuleReddit {
-    static async fetchSomeCopypasta(trigger?: string) {
+    static async fetchTopPostFromSubreddit(trigger?: string) {
+
+    }
+
+
+    static async fireCopypastaFetch(trigger?: string) {
         let bot: Bot = globalThis.bot
 
-        if (trigger) bot.preliminary(trigger, 'reddit copypasta fetch', true)
-
-        let topPastaUrl = 'https://www.reddit.com/r/copypasta/top.json?limit=1'
-
-        let pastaObject = await bot.fetchJSONFromURL(topPastaUrl)
-            .catch((error: any) => {
-                bot.textChannel.send(`Could not fetch. Error: ${error}`)
-            })
+        let pastaObject = await this.fetchSomeCopypasta(trigger)
 
         let delivery = new Discord.MessageEmbed()
 
@@ -47,6 +45,27 @@ export default class BotModuleReddit {
         }
 
         bot.textChannel.send(delivery)
+    }
+
+    static async fireSubmissionImageMessage(redditObject: any) {
+        let bot: Bot = globalThis.bot
+
+        return bot.context.channel.send(await this.fetchImageFromSubmission(redditObject))
+    }
+
+    static async fetchSomeCopypasta(trigger?: string) {
+        let bot: Bot = globalThis.bot
+
+        if (trigger) bot.preliminary(trigger, 'reddit copypasta fetch', true)
+
+        let topPastaUrl = 'https://www.reddit.com/r/copypasta/top.json?limit=1'
+
+        let pastaObject = await bot.fetchJSONFromURL(topPastaUrl)
+            .catch((error: any) => {
+                bot.textChannel.send(`Could not fetch. Error: ${error}`)
+            })
+
+        return pastaObject
     }
 
     static async fetchImageFromSubmission(redditObject: any) {

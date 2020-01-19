@@ -90,12 +90,13 @@ export default class Bot extends Discord.Client {
         if (overwriteLastMessage && (this.user.id !== this.context.id))
             this.lastMessage = this.context
 
-        console.group(`--- BOT GO! ---`)
-        console.log(`TRIGGER: "${trigger}"`)
-        console.log(`CALLER: '${this.context.author.username}'`)
-        console.log(`CONTEXT: "${this.context}"`)
+        console.group()
+        console.log(`--- BOT GO! ---`)
+        console.info(`TRIGGER: "${trigger}"`)
+        console.info(`CALLER: '${this.context.author.username}'`)
+        console.info(`CONTEXT: "${this.context}"`)
         if (intent)
-            console.log(`ACTION: ${intent}`)
+            console.info(`ACTION: ${intent}`)
         console.groupEnd()
 
     }
@@ -123,7 +124,8 @@ export default class Bot extends Discord.Client {
 
             try {
                 this.voiceChannel.join().then(connection => {
-                    console.group(`Local song playing...`)
+                    console.group()
+                    console.log(`Local song playing...`)
                     console.info(
                         `Voice channel connection status: ${connection.status}`)
                     this.songState = SongState.Playing
@@ -216,7 +218,7 @@ export default class Bot extends Discord.Client {
                     })
                 } catch (error) {
                     if (error.message.includes('Video id'))
-                        return this._context.reply(`, this youtube link isn't valid`)
+                        return this._context.reply(`this youtube link isn't valid`)
                 }
 
                 streamInfo = { source: url, platform: 'YouTube' }
@@ -260,7 +262,8 @@ export default class Bot extends Discord.Client {
                             = connection.play(stream, streamOptions)
 
                         dispatcher.on('start', () => {
-                            console.group(`Now playing song from ${url}.`)
+                            console.group()
+                            console.log(`Now playing song from ${url}.`)
 
                             if (streamInfo.name && streamInfo.platform)
                                 this.context.reply(`\nPlaying ${streamInfo.name} from ${streamInfo.platform}. 👌`)
@@ -310,9 +313,10 @@ export default class Bot extends Discord.Client {
         }
     }
 
-    fetchJSONFromURL(url: string, includeURL?: boolean, log?: boolean): any {
-        console.group(`Fetching JSON from ${url}...`)
-        if (includeURL) this.textChannel.send(`Fetching from ${url}...`)
+    fetchJSONFromURL(url: string, announce?: boolean, log?: boolean): any {
+        console.group()
+        console.log(`Fetching JSON from ${url}...`)
+        if (announce) this.textChannel.send(`Fetching from ${url}...`)
 
         // Asyncrhonous fetching
         return new Promise((resolve, reject) => {
@@ -325,11 +329,11 @@ export default class Bot extends Discord.Client {
                         console.error(`Fetching JSON Failed - Code ${response.statusCode}`)
 
                         if (response.statusCode === 404)
-                            console.log(`Couldn't find JSON with URL.`)
+                            console.error(`Couldn't find JSON with URL.`)
                         else if (response.statusCode === 401)
-                            console.log(`Not authorized.`)
+                            console.error(`Not authorized.`)
                         else {
-                            console.log(`Unknown error. Logged to report.`)
+                            console.error(`Unknown error. Logged to report.`)
                             this.saveBugReport(error)
                         }
 
@@ -348,11 +352,15 @@ export default class Bot extends Discord.Client {
         })
     }
 
-    fetchImageFromURL(URL: string): any {
+    fetchImageFromURL(url: string): any {
+        if (typeof url !== 'string')
+            this.saveBugReport(
+                new TypeError(`Tried to fetch image that's not a string URL: ${url}`))
+
         return new Promise((res, rej) => {
-            Snekfetch.get('await')
+            Snekfetch.get(url)
                 .then(result => {
-                    console.log(`Image fetched from ${URL}.`)
+                    console.log(`Image fetched from ${url}.`)
                     res(result)
                 }).catch(error => {
                     console.error(`Could not fetch image - ${error}`)
@@ -418,7 +426,7 @@ export default class Bot extends Discord.Client {
 
         `)
                 , logError => {
-                    console.error(`Error writing crash log: ${logError.message}`)
+                    console.error(`Error writing crash log: ${logError}`)
                 })
         }
         )

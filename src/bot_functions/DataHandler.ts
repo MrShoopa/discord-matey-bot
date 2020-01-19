@@ -173,7 +173,8 @@ export default class BotData {
 	 */
 	static updateUserData(id: number | string, newData: object) {
 		if (typeof id === 'string') Number(id)
-		console.group(`Updating data for User ${id}:`)
+		console.group()
+		console.log(`Updating data for User ${id}:`)
 
 		//  Pointer to local user data
 		var data = BotData.getUserDataFile()
@@ -190,9 +191,9 @@ export default class BotData {
 			this.createUserData(id)
 		}
 		console.log(`Old Data:`)
-		console.log(JSON.stringify(userData))
+		console.info(JSON.stringify(userData))
 		console.log(`New Data:`)
-		console.log(JSON.stringify(newData))
+		console.info(JSON.stringify(newData))
 
 		Object.keys(newData).forEach(key => userData[key] = newData[key])
 

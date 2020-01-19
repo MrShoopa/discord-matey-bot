@@ -4,7 +4,6 @@ import Bot from '../../../Bot'
 
 import AUTH from '../../../user_creds.json'
 
-
 export default class BotTwitterModule {
     private static _twitterEntity: Twitter
 
@@ -25,12 +24,18 @@ export default class BotTwitterModule {
             })
     }
 
-    static async fetchBuiltMsgTweetWithQuery(trigger: string) {
+    static async fireTweetMessageOfQuery(query: string, trigger?: string) {
+        let bot: Bot = globalThis.bot
+        bot.textChannel.send(await this.fetchBuiltMsgTweetWithQuery(query.toString(), trigger))
+    }
+
+    static async fetchBuiltMsgTweetWithQuery(query: string, trigger?: string) {
         let bot: Bot = globalThis.bot
 
         bot.preliminary(trigger, 'twitter latest post fetch', true)
 
-        let query = bot.context.toString().split(trigger).pop()
+        if (query.includes(trigger))
+            query = query.replace(trigger, '').trim()
 
         let tweet = await this.fetchTweetWithQuery(query)
 
@@ -52,7 +57,7 @@ export default class BotTwitterModule {
         else
             built.setImage(tweet.user.profile_image_url)
 
-        bot.textChannel.send(built)
+        return built
     }
 
     static async fetchBuiltMsgTweetWithUserTopPost(trigger: string) {

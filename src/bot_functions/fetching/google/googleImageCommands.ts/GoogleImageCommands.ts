@@ -11,7 +11,13 @@ import DEFAULTS_IMAGE from '../../../../bot_knowledge/defaults/image_search.json
 
 export default class BotModuleGoogleImage {
 
-    static fetchBuiltImageFromGoogle(trigger?: string) {
+    static async fireImageMessageFromGoogle(trigger?: string) {
+        let bot: Bot = globalThis.bot
+
+        bot.context.channel.send(await this.fetchBuiltImageFromGoogle(trigger))
+    }
+
+    static async fetchBuiltImageFromGoogle(trigger?: string) {
         let bot: Bot = globalThis.bot
 
         if (trigger) bot.preliminary(trigger, 'Image Search', true)
@@ -26,11 +32,30 @@ export default class BotModuleGoogleImage {
                     bot.context.toString().substring(
                         bot.context.toString().indexOf(trigger) + trigger.length + 1)
 
-        return BotModuleGoogleImage.fetchImageFromGoogle(userQuery, bot)
+        var item = await this.fetchImageFromGoogle(userQuery, true)
+
+        let message = new Discord.MessageEmbed()
+            .setAuthor('MegaGoog Image Searcher 📷')
+            .setColor('lightblue')
+            .setFooter(`Powered by Google Images`,
+                'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/235px-Google_%22G%22_Logo.svg.png')
+            .setImage(item.toString())
+
+        //  Generates reply with random image and response
+        if (userQuery !== '') {
+            message.setDescription(
+                `${Bot.fetchRandomPhrase(PHRASES_IMAGE_SEARCH.image_search_fetch_response.image_search_with_context)}${userQuery}.`)
+        } else {
+            message.setDescription(
+                `${Bot.fetchRandomPhrase(PHRASES_IMAGE_SEARCH.image_search_fetch_response.image_search_random)}`)
+        }
+
+        return item
     }
 
     //TODO: Modularize like JSON and Tweet
-    static fetchImageFromGoogle(userQuery = '', bot: Bot = globalThis.bot) {
+    static async fetchImageFromGoogle(userQuery = '', urlOnly?: boolean, bot: Bot = globalThis.bot):
+        Promise<Discord.MessageAttachment | string> {
         //  Modules   
         const GOOGLE_IMAGER =
             new GoogleImages(
@@ -38,31 +63,26 @@ export default class BotModuleGoogleImage {
 
 
         //  Random generated (from defaults list) query if user doesn't specify specific item
-        userQuery = (userQuery == '') ?
-            DEFAULTS_IMAGE.random_query[Math.floor(Math.random() * DEFAULTS_IMAGE.random_query.length)] : userQuery
+        if (userQuery == '') {
+            console.log(`Performing generic image search.`)
+            userQuery = DEFAULTS_IMAGE.random_query[Math.floor(Math.random() * DEFAULTS_IMAGE.random_query.length)]
+        }
 
         try {
-            if (userQuery.length > 0)
-                console.log(`Performing image search for ${userQuery}.`)
-            else
-                console.log(`Performing generic image search.`)
+            console.log(`Performing image search for ${userQuery}.`)
 
             //  Attempts to search for query
-            GOOGLE_IMAGER.search(userQuery).then((results: string | any[]) => {
-                let resultReply: Discord.MessageAttachment | string
-                    = !results.length ?
-                        'Nothing found' :
-                        new Discord.MessageAttachment(results[Math.floor(Math.random() * results.length)].url)
-
-                //  Generates reply with random image and response
-                if (userQuery !== '') {
-                    bot.context.reply(
-                        `${Bot.fetchRandomPhrase(PHRASES_IMAGE_SEARCH.image_search_fetch_response.image_search_with_context)}${userQuery}.`)
-                } else {
-                    bot.context.reply(
-                        `${Bot.fetchRandomPhrase(PHRASES_IMAGE_SEARCH.image_search_fetch_response.image_search_random)}`)
-                }
-                bot.textChannel.send(resultReply)
+            return new Promise((res) => {
+                GOOGLE_IMAGER.search(userQuery).then(async (results: string | any[]) => {
+                    if (results.length) {
+                        if (urlOnly)
+                            res(results[Math.floor(Math.random() * results.length)].url)
+                        else
+                            res(await bot.fetchImageFromURL(results[Math.floor(Math.random() * results.length)].url))
+                    } else {
+                        res(null)
+                    }
+                })
             })
         } catch (error) {
             //  The other cases

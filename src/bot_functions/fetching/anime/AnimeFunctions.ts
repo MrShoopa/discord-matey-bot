@@ -3,14 +3,18 @@ import Bot from '../../../Bot'
 
 export default class BotModuleAnime {
 
-    static async fetchBuiltMsgAnimeInfoMessageOfName(trigger?: string) {
+    static async fireAnimeInfoMessageOfName(trigger) {
+        let bot: Bot = globalThis.bot
+
+        bot.context.channel.send(this.fetchBuiltMsgAnimeInfoMessageOfName(bot.context.toString(), trigger))
+    }
+
+    static async fetchBuiltMsgAnimeInfoMessageOfName(query, trigger?: string) {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'jikanTS anime fetch', true)
 
-        let query =
-            bot.context.toString().split(trigger).pop().length != 0 ?
-                bot.context.toString().split(trigger).pop() :
-                undefined
+        if (query.includes(trigger))
+            query = query.replace(trigger, '')
 
         let anime = await BotModuleAnime.fetchAnimeOfName(query)
 

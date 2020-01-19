@@ -7,12 +7,25 @@ import PHRASES_SING from '../../bot_knowledge/phrases/phrases_sing.json';
 
 export default class BotMusicModule {
 
-    static playMusic(trigger: string) {
+    static async playMusic(trigger: string, loop?: boolean) {
         let bot: Bot = globalThis.bot
         bot.songState = SongState.Fetching
 
-        let loop: boolean
-        //TODO if (messageString.substring(0, 20).toLowerCase().includes('loop')) loop = true
+        let context: string[] =
+            bot.context.toString().substring(0, 100).split(' ')
+
+        loop = loop ? true : checkForLoop()
+
+        function checkForLoop() {
+            if (TRIGGERS.singing_triggers.args.loop.some((trigger) => {
+                return context.some(word => {
+                    if (word === trigger)
+                        return bot.context.content =
+                            bot.context.content.replace(trigger, '').trimRight()
+                })
+            })) return true
+            else return false
+        }
 
         try {
 
@@ -32,7 +45,6 @@ export default class BotMusicModule {
                     let foundSong: Song.SongObject = song
 
                     return bot.playAudioFromFiles(foundSong, loop, trigger)
-                    break
                 } else if (bot.context.toString().toLowerCase().
                     includes(TRIGGERS.url_trigger.any) &&
                     !bot.commandSatisfied) {

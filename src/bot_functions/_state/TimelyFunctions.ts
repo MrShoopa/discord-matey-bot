@@ -13,7 +13,7 @@ export default class TimelyFunctions {
         return TimelyFunctions._now
     }
 
-    static timeContexual(pollTime?: number) {
+    static timeContexual(pollTime: number = 60000) {
         setInterval(() => this.runTimeSensitive(), pollTime)
     }
 
@@ -38,6 +38,9 @@ export default class TimelyFunctions {
     }
 
     static checkLastRun() {
+        if (!this.lastRun)
+            this.lastRun = new Date(0)
+
         if (this.lastRun.getDate() != this.now.getDate())
             this.doneForDay = false
         if (this.lastRun.getHours() != this.now.getHours())

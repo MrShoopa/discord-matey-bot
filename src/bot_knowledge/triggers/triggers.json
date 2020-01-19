@@ -17,16 +17,28 @@
         "any": "."
     },
     "help_questions": {
-        "actions": ["what can you summon", "what can you do", "help"],
-        "singing": ["what can you sing"]
+        "actions": [
+            "what can you summon",
+            "what can you do",
+            "help"
+        ],
+        "singing": [
+            "what can you sing"
+        ]
     },
     "third_person_phrase_triggers": {
         "suck_thing": [
-            "suck", "dick"
+            "suck",
+            "dick"
         ],
         "self_death_wish": {
-            "die": ["i wanna die", "can i die"],
-            "kill_self": ["kill myself"]
+            "die": [
+                "i wanna die",
+                "can i die"
+            ],
+            "kill_self": [
+                "kill myself"
+            ]
         }
     },
     "send_nude_triggers": [
@@ -55,8 +67,9 @@
             "sucks dick"
         ]
     },
-    "how_is_bot": ["how are you"],
-
+    "how_is_bot": [
+        "how are you"
+    ],
     "remember": {
         "birthday": {
             "self": [
@@ -85,7 +98,6 @@
             ]
         }
     },
-
     "singing_triggers": {
         "play": [
             "i summon",
@@ -97,9 +109,17 @@
             "megadork stop",
             "megadork stop music",
             "megadork kill the noise"
-        ]
+        ],
+        "args": {
+            "loop": [
+                "loop",
+                "looped",
+                "on repeat",
+                "repeat",
+                "repeated"
+            ]
+        }
     },
-
     "server_mod_triggers": {
         "set_restricted_role": [
             "megadork banish",
@@ -117,7 +137,6 @@
             "megadork what role am I"
         ]
     },
-
     "image_search_triggers": {
         "random_image": [
             "megadork random image",
@@ -160,7 +179,6 @@
             "that has"
         ]
     },
-
     "swear_jar_triggers": {
         "bad_words": [
             "4r5e",
@@ -616,7 +634,6 @@
             "xxx"
         ]
     },
-
     "reddit_fetch": {
         "copypasta": {
             "default": [
@@ -644,7 +661,6 @@
             ]
         }
     },
-
     "horoscope_fetch": {
         "default": [
             "megadork fetch horoscope",
@@ -663,7 +679,6 @@
             "about"
         ]
     },
-
     "anime_fetch": {
         "default": [
             "megadork fetch anime",
@@ -676,7 +691,6 @@
             "megadork get a new anime"
         ]
     },
-
     "quote_fetch": {
         "default": [
             "megadork random quote",
@@ -691,7 +705,6 @@
             "megadork give me a quote"
         ],
         "OTD": {
-
             "default": [
                 "megadork random quote of the day",
                 "megadork fetch quote of the day",

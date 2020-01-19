@@ -114,6 +114,8 @@ export default class Bot extends Discord.Client {
     }
 
     playAudioFromFiles(song: Datypes.Song.SongObject | string, loop?: boolean, trigger?: string) {
+        let dispatcher: Discord.StreamDispatcher
+
         if (!this.commandSatisfied) {
 
             if (trigger)
@@ -126,44 +128,10 @@ export default class Bot extends Discord.Client {
                         `Voice channel connection status: ${connection.status}`)
                     this.songState = SongState.Playing
 
-                    let dispatcher: Discord.StreamDispatcher
+                    playAudioFile(song, connection)
 
-                    if (typeof song == 'string') {
-                        dispatcher = connection.play(song)
-
-                        console.log(`Playing non-tagged song from first match: ${song}`)
-
-                        return this.context.reply(`Playing ${song.split('\\').pop()} 👌`)
-
-                    } else if (Datypes.Song.isSongObject(song)) {
-                        dispatcher = connection.play(song.file)
-
-                        console.log(`Playing tagged song: ${song.title}`)
-                        console.log(`Responding with '${song.play_phrase}'`)
-
-                        return this.context.reply(song.play_phrase)
-
-                    } else {
-                        console.log(`No song was played. Nothing... passed in?`)
-
-                        this.saveBugReport(
-                            new Error('Tried to play a null object.'))
-                    }
-
-                    dispatcher.on('end', () => {
-                        if (loop)
-                            this.context.reply('...loop-de-looped! 💫🤹‍♀️')
-                        //TODO connection.play(song)
-                        else {
-                            console.info(
-                                'Song played successfully.')
-                            this.songState = SongState.Finished
-                            this.voiceChannel.leave()
-                        }
-                    })
-                    dispatcher.on('close', () => {
-                        console.log(`Song interrupted by user.`)
-                    })
+                    if (loop)
+                        this.context.channel.send('This track is... loop-de-looped! 💫🤹‍♀️')
 
                     console.groupEnd()
                 })
@@ -174,8 +142,50 @@ export default class Bot extends Discord.Client {
                 else
                     this.saveBugReport(error)
             }
+        }
 
-            // FINISHED
+        function playAudioFile(song: string | Datypes.Song.SongObject, connection, replaying?: boolean) {
+            let bot: Bot = globalThis.bot
+
+            if (typeof song == 'string') {
+                dispatcher = connection.play(song)
+
+                if (!replaying) {
+                    console.log(`Playing non-tagged song from first match: ${song}`)
+
+                    bot.context.reply(`Playing ${song.split('\\').pop()} 👌`)
+                }
+            } else if (Datypes.Song.isSongObject(song)) {
+                dispatcher = connection.play(song.file)
+
+                if (!replaying) {
+                    console.log(`Playing tagged song: ${song.title}`)
+                    console.log(`Responding with '${song.play_phrase}'`)
+
+                    bot.context.reply(song.play_phrase)
+                }
+
+            } else {
+                console.log(`No song was played. Nothing... passed in?`)
+
+                bot.saveBugReport(
+                    new Error('Tried to play an unsupported audio-based object.'))
+            }
+
+            dispatcher.on('end', () => {
+                if (loop) {
+                    console.info('Looping song...')
+                    playAudioFile(song, connection, true)
+                } else {
+                    console.info('Song played successfully.')
+
+                    this.songState = SongState.Finished
+                    this.voiceChannel.leave()
+                }
+            })
+            dispatcher.on('close', () => {
+                console.log(`Song interrupted by user.`)
+            })
         }
     }
 

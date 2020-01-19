@@ -1,5 +1,5 @@
+import { BeanContainer } from '/../../ts/interfaces/data_types/Bean';
 import Bot from '../../Bot'
-import Discord from 'discord.js'
 
 import BotModuleGoogleImage from '../fetching/google/googleImageCommands.ts/GoogleImageCommands'
 import BotTwitterModule from '../fetching/twitter/TwitterFunctions'
@@ -12,6 +12,7 @@ import PHRASES_CONVO from '../../bot_knowledge/phrases/phrases_conversational.js
 import BotModuleReddit from '../fetching/reddit/RedditFunctions'
 
 export default class BotModuleBraindead {
+
     static communistRepsonse(bot = globalThis.bot) {
         bot.preliminary(TRIGGERS.are_you_triggers.communist, 'Communist response', true)
 
@@ -29,33 +30,29 @@ export default class BotModuleBraindead {
      * test most of the bot's functionalities. :)
      */
     static async beans(bot: Bot = globalThis.bot) {
-        bot.preliminary("beans", "beans", true)
+        let beans: BeanContainer = new BeanContainer()
+
+        bot.preliminary(beans.toString(), beans.toString(), true)
 
         bot.textChannel.send(`Did you say... BEANZ?!?!?!?`)
 
         let funnyImageJson =
             await bot.fetchJSONFromURL('https://www.reddit.com/r/beans/top.json?limit=1')
 
-
         bot.textChannel.send(
             Bot.fetchRandomPhrase(PHRASES_CONVO.beans.spam_intro))
 
-        await BotModuleGoogleImage.fetchImageFromGoogle('beans')
+        await BotModuleGoogleImage.fireImageMessageFromGoogle(beans.toString())
 
-        let response: any = await BotTwitterModule.fetchTweetWithQuery('beans')
-        bot.textChannel.send(response.text)
+        await BotTwitterModule.fireTweetMessageOfQuery(beans.toString())
 
-        await bot.playAudioFromURL('https://www.youtube.com/watch?v=wEEuzUGEWw')
+        await BotModuleReddit.fireSubmissionImageMessage(funnyImageJson)
 
-        /* good luck
-        let beansInThing: Discord.MessageAttachment =
-            new Discord.MessageAttachment(await BotModuleReddit.fetchImageFromSubmission(funnyImageJson))
-        bot.textChannel.send(beansInThing)
-        */
-        
-        bot.textChannel.send(
+        await bot.textChannel.send(
             Bot.fetchRandomPhrase(PHRASES_CONVO.beans.spam_intro))
+
+        await bot.playAudioFromURL('www.youtube.com/watch?v=wEEuzUGEWw')
 
         return bot.textChannel.send('...👌😤💨')
+
     }
-}

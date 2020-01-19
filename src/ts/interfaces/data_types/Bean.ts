@@ -1,0 +1,31 @@
+import * as FileSystem from 'fs'
+
+export default class Bean {
+    name: string
+    toString() { return 'bean' }
+    toEmoji() { return '🥫' }
+    toImage() { return FileSystem.readFileSync((__dirname + '/../../../bot_knowledge/images/bean.png')) }
+}
+
+export class BeanContainer<Bean> {
+    private beans: { [key: string]: Bean };
+
+    constructor() {
+        this.beans = {};
+    }
+
+    add(key: string, value: Bean): void {
+        this.beans[key] = value;
+    }
+
+    has(key: string): boolean {
+        return key in this.beans;
+    }
+
+    get(key: string): Bean {
+        return this.beans[key];
+    }
+
+    toString() { return 'beans' }
+
+}

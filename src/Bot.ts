@@ -400,9 +400,8 @@ export default class Bot extends Discord.Client {
      * @param error Error thrown by code
      */
     saveBugReport(error: Error
-        , logInConsole?: boolean) {
-        if (logInConsole) console.error(`Error occured on: ${new Date().toString()}:\n
-            ${error}`)
+        , logInConsole?: boolean, reply?: boolean) {
+        if (logInConsole) console.error(`Error occured on: ${new Date().toString()}:\n ${error.stack}`)
 
         var reportPath: string = __dirname + `/../crash_logs`
 
@@ -423,15 +422,25 @@ export default class Bot extends Discord.Client {
         ---------
         ${error.stack}
         ---------
-
+        ${this.waker.username} on ${this.context?.guild.name}` +
+                    // Add extra details where necessary            
+                    `${() => {
+                        if (this.textChannel instanceof Discord.TextChannel) {
+                            return `'s channel  ${this.textChannel.name}`
+                        }
+                    }}`
+                    // Finish adding details
+                    + ` said:
+        "${this.context.toString()}
         `)
-                , logError => {
-                    console.error(`Error writing crash log: ${logError}`)
+                , callback => {
+                    if (callback as Error)
+                        console.error(`Error writing crash log: ${callback}`)
                 })
         }
         )
 
-        if (this.lastWaker)
+        if (reply && this.lastWaker)
             this.lastWaker.lastMessage.channel.send(`Log submitted to Joe.`)
     }
 

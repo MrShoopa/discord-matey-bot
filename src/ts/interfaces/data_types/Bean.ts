@@ -7,7 +7,7 @@ export default class Bean {
     toImage() { return FileSystem.readFileSync((__dirname + '/../../../bot_knowledge/images/bean.png')) }
 }
 
-export class BeanContainer<Bean> {
+export class BeanContainer {
     private beans: { [key: string]: Bean };
 
     constructor() {
@@ -24,6 +24,12 @@ export class BeanContainer<Bean> {
 
     get(key: string): Bean {
         return this.beans[key];
+    }
+
+    addNewBean(): void {
+        let beanNumber = (Math.random() * 100).toString()
+        this.add(beanNumber, new Bean())
+        console.log(`Added Bean ${beanNumber}`)
     }
 
     toString() { return 'beans' }

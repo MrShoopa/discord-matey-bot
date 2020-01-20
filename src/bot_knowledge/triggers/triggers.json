@@ -651,13 +651,30 @@
         "tweet": {
             "default": [
                 "megadork fetch tweet",
+                "megadork fetch a tweet",
+                "megadork fetch new tweet",
                 "megadork fetch fresh tweet",
-                "megadork fetch top new tweet"
+                "megadork fetch fresh new tweet",
+                "megadork fetch top new tweet",
+                "megadork fetch twitter tweet"
             ],
             "query": [
                 "megadork fetch tweet about",
+                "megadork fetch a tweet about",
+                "megadork fetch new tweet about",
                 "megadork fetch fresh tweet about",
-                "megadork fetch a tweet about"
+                "megadork fetch fresh new tweet about",
+                "megadork fetch top new tweet about",
+                "megadork fetch twitter tweet about"
+            ],
+            "user_latest": [
+                "megadork fetch tweet from",
+                "megadork fetch a tweet from",
+                "megadork fetch new tweet from",
+                "megadork fetch fresh tweet from",
+                "megadork fetch fresh new tweet from",
+                "megadork fetch top new tweet from",
+                "megadork fetch twitter tweet from"
             ]
         }
     },

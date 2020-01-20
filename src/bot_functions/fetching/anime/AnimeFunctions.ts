@@ -9,7 +9,8 @@ export default class BotModuleAnime {
         bot.context.channel.send(this.fetchBuiltMsgAnimeInfoMessageOfName(bot.context.toString(), trigger))
     }
 
-    static async fetchBuiltMsgAnimeInfoMessageOfName(query: string, trigger?: string) {
+    static async fetchBuiltMsgAnimeInfoMessageOfName(query: string, trigger?: string):
+        Promise<Discord.Message | Discord.MessageEmbed> {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'jikanTS anime fetch', true)
 
@@ -22,7 +23,6 @@ export default class BotModuleAnime {
 
         if (!anime)
             return bot.generateErrorMessage(`I couldn't fetch swag info of your animoo at the moment.`)
-
 
         return bot.textChannel.send(BotModuleAnime.generateAnimeInfoMessage(anime))
     }

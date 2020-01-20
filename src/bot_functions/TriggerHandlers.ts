@@ -173,6 +173,11 @@ export default class TriggerHandlers {
             if (message.toString().toLowerCase().includes(trigger))
                 return BotTwitterModule.fireTweetMessageOfQuery(message.toString(), trigger)
         //  Get latest Tweet with specific query [from Twitter]
+
+        for (const trigger of TRIGGERS.twitter_fetch.tweet.user_latest)
+            if (message.toString().toLowerCase().includes(trigger))
+                return BotTwitterModule.fireTweetMessageFromUser(message.toString(), trigger)
+        //  Get latest Tweet from specific user
     }
 
     private static checkForMALFetchRequest(message = TriggerHandlers.message) {

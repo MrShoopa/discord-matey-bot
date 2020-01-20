@@ -17,7 +17,8 @@ export default class BotModuleGoogleImage {
         bot.context.channel.send(await this.fetchBuiltImageFromGoogle(trigger))
     }
 
-    static async fetchBuiltImageFromGoogle(trigger?: string) {
+    static async fetchBuiltImageFromGoogle(trigger?: string):
+        Promise<Discord.Message | Discord.MessageEmbed> {
         let bot: Bot = globalThis.bot
 
         if (trigger) bot.preliminary(trigger, 'Image Search', true)
@@ -28,7 +29,7 @@ export default class BotModuleGoogleImage {
             //  If user includes a specific thing to look for.
             if (bot.context.toString().toLowerCase().includes(trigger))
                 //  Sets query to user's query (after prefix trigger)
-                return userQuery =
+                userQuery =
                     bot.context.toString().substring(
                         bot.context.toString().indexOf(trigger) + trigger.length + 1)
 
@@ -46,6 +47,12 @@ export default class BotModuleGoogleImage {
                 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/235px-Google_%22G%22_Logo.svg.png')
             .setImage(item.toString())
 
+        if (item as string)
+            message.setImage(item)
+        else
+            message.setImage(item.url)
+
+
         //  Generates reply with random image and response
         if (userQuery !== '') {
             message.setDescription(
@@ -55,11 +62,11 @@ export default class BotModuleGoogleImage {
                 `${Bot.fetchRandomPhrase(PHRASES_IMAGE_SEARCH.image_search_fetch_response.image_search_random)}`)
         }
 
-        return item
+        return message
     }
 
     static async fetchImageFromGoogle(userQuery = '', urlOnly?: boolean, bot: Bot = globalThis.bot):
-        Promise<Discord.MessageAttachment | string> {
+        Promise<string | any> {
         //  Modules   
         const GOOGLE_IMAGER =
             new GoogleImages(

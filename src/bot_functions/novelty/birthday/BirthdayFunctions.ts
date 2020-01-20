@@ -31,7 +31,7 @@ export default class BotModuleBirthday {
 					birthday = new Date(yearNumber, monthNumber, dateNumber)
 
 				} else {
-					return bot.context.reply('Invalid date. Include a date from 1-31.')
+					return bot.context.reply('you wrote an invalid date. Include a date from 1-31.')
 				}
 			}
 
@@ -75,7 +75,7 @@ export default class BotModuleBirthday {
 		let userData = BotData.getUserData(bot.context.author.id)
 
 		if (userData?.birthday === undefined) {
-			bot.context.reply(`Looks like I don't know it? Maybe tell me to remember? 🍰`)
+			bot.context.reply(`looks like I don't know it? Maybe tell me to remember? 🍰`)
 		} else {
 			let birthday = new Date(userData.birthday)
 			bot.context.reply(`your birthday is on ${CALENDAR.months_prettier[birthday.getMonth()]} ${birthday.getDate()}! `)

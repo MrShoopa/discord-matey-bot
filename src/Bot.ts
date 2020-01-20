@@ -1,7 +1,8 @@
 import * as FileSystem from 'fs'
 import * as Path from 'path'
-import Snekfetch from 'snekfetch'
 import Request from 'request'
+import Stream from 'stream'
+import Snekfetch from 'snekfetch'
 import YTDL from 'ytdl-core'
 
 import Discord from 'discord.js'
@@ -139,10 +140,10 @@ export default class Bot extends Discord.Client {
                 })
             } catch (error) {
                 if (!this.voiceChannel)
-                    this._context
-                        .reply(`, where do I dump this noise? you gotta be in a voice channel first!`)
+                    this.context
+                        .reply(`where do I dump this noise? you gotta be in a voice channel first!`)
                 else
-                    this.saveBugReport(error)
+                    this.saveBugReport(error, true)
             }
         }
 
@@ -151,14 +152,17 @@ export default class Bot extends Discord.Client {
 
             if (typeof song == 'string') {
                 dispatcher = connection.play(song)
+                bot.songState = SongState.Playing
 
                 if (!replaying) {
                     console.log(`Playing non-tagged song from first match: ${song}`)
 
-                    bot.context.reply(`Playing ${song.split('\\').pop()} 👌`)
+                    bot.context.reply(`playing ${song.split('\\').pop()} 👌`)
                 }
             } else if (Datypes.Song.isSongObject(song)) {
                 dispatcher = connection.play(song.file)
+                bot.songState = SongState.Playing
+
 
                 if (!replaying) {
                     console.log(`Playing tagged song: ${song.title}`)
@@ -181,8 +185,8 @@ export default class Bot extends Discord.Client {
                 } else {
                     console.info('Song played successfully.')
 
-                    this.songState = SongState.Finished
-                    this.voiceChannel.leave()
+                    bot.songState = SongState.Finished
+                    bot.voiceChannel.leave()
                 }
             })
             dispatcher.on('close', () => {
@@ -191,15 +195,18 @@ export default class Bot extends Discord.Client {
         }
     }
 
-    //TODO: Add loop (see above for reference)
     async playAudioFromURL(url: string, loop?: boolean, trigger?: string) {
-        if (!this.commandSatisfied) {
+        var dispatcher: Discord.StreamDispatcher
+        var stream: Stream.Readable | Discord.VoiceBroadcast
+        var streamInfo: Datypes.Stream.StreamInfo
+            = { source: 'None' }
 
+        if (!this.commandSatisfied) {
             console.log('URL Command matched')
+
             if (trigger)
                 this.preliminary(trigger, 'Audio playback from URL', true)
 
-            var stream: string | import("stream").Readable | Discord.VoiceBroadcast
             var streamOptions: object = {
                 seek: 0,
                 volume: .75
@@ -207,21 +214,61 @@ export default class Bot extends Discord.Client {
             var streamInfo: Datypes.Stream.StreamInfo
                 = { source: 'None' }
 
+            //TODO: check effect of this
+            if (this.voiceChannel === null &&
+                this.waker.id === this.user.id)
+                this.voiceChannel = this.lastMessage.member.voice.channel
+
+            try {
+                return this.voiceChannel.join().then(connection => {
+                    console.group()
+                    console.info(
+                        `Voice channel connection status: ${connection.status}`)
+                    this.songState = SongState.Playing
+
+                    if (loop)
+                        this.context.channel.send(`Looks like I'm looping this one! 💫🤹‍♀️`)
+
+                    if (!playAudioURL(connection))
+                        return this.context.channel.send(`I couldn't play that source. Did you type in your URL correctly?`)
+                })
+            } catch (error) {
+                if (!this.voiceChannel)
+                    this.context
+                        .reply(`where do I dump this noise? you gotta be in a voice channel first!`)
+                else
+                    this.saveBugReport(error, true)
+            }
+        }
+
+        async function createStreamObject() {
 
             if (url.includes('youtu')) {
-                streamInfo.source = 'YouTube'
+                streamInfo = { source: url, platform: 'YouTube' }
+
 
                 try {
                     stream = YTDL(url.toString(), {
                         filter: 'audioonly',
                         highWaterMark: 1 << 25,
                     })
+
+                    await YTDL.getInfo(url.toString()).then(info => {
+                        streamInfo.name = info.title
+                        streamInfo.thumbnailUrl = info.thumbnail_url
+                        streamInfo.author = info.author.name
+                    })
+                    return stream
                 } catch (error) {
+                    let bot: Bot = globalThis.bot
                     if (error.message.includes('Video id'))
-                        return this._context.reply(`this youtube link isn't valid`)
+                        bot.context.reply(`this youtube link isn't valid`)
+                    else
+                        bot.saveBugReport(error, true)
+
+                    return null
                 }
 
-                streamInfo = { source: url, platform: 'YouTube' }
             } else if (url.includes('soundcloud')) {
 
                 //  TODO: SoundCloud support
@@ -244,72 +291,91 @@ export default class Bot extends Discord.Client {
                 */
 
                 return this.context.reply('SoundCloud support coming sometime later. :)')
-
             }
+        }
 
-            if (this.voiceChannel === null &&
-                this.waker.id === this.user.id)
-                this.voiceChannel = this.lastMessage.member.voice.channel
+        async function playAudioURL(
+            connection: Discord.VoiceConnection, replaying?: boolean) {
+            let bot: Bot = globalThis.bot
+
+            stream = await createStreamObject()
+            if (!stream) return null
 
             try {
-                this.voiceChannel.join().then(connection => {
-                    this.songState = SongState.Playing
-                    console.log(
-                        `Voice channel connection status: ${connection.status}`)
+                dispatcher = connection.play(stream, streamOptions)
 
-                    try {
-                        var dispatcher: Discord.StreamDispatcher
-                            = connection.play(stream, streamOptions)
+                dispatcher.on('start', () => {
+                    bot.songState = SongState.Playing
+                    console.group()
+                    console.log(`Now playing song from ${url}.`)
 
-                        dispatcher.on('start', () => {
-                            console.group()
-                            console.log(`Now playing song from ${url}.`)
+                    if (!replaying)
+                        bot.textChannel.send(generatePlaybackMessage())
 
-                            if (streamInfo.name && streamInfo.platform)
-                                this.context.reply(`\nPlaying ${streamInfo.name} from ${streamInfo.platform}. 👌`)
-                            else if (streamInfo.platform)
-                                this.context.reply(`\nI'm playing your song from ${streamInfo.platform}. 👌`)
-                            else
-                                this.context.reply(`\nPlaying song from your above URL.`)
-                        })
+                })
 
-                        dispatcher.on('close', () => {
-                            this.songState = SongState.Stopped
+                dispatcher.on('close', () => {
+                    bot.songState = SongState.Stopped
 
-                            console.log(`Song interrupted by user.`)
-                            console.groupEnd()
-                        })
+                    console.log(`Song interrupted by user.`)
+                    console.groupEnd()
+                })
 
-                        dispatcher.on('end', () => {
-                            if (loop)
-                                connection.play(stream, streamOptions)
-                            else {
-                                console.log('Song played successfully.')
-                                console.groupEnd()
+                dispatcher.on('end', () => {
+                    if (loop) {
+                        console.info('Looping song...')
+                        return playAudioURL(connection, true)
+                    } else {
+                        console.info('Song played successfully.')
 
-                                this.songState = SongState.Finished
-                                this.voiceChannel.leave()
-                            }
-                        })
-
-                    } catch (error) {
-                        console.log(`Error playing song!.`)
-                        this.saveBugReport(error)
-
-                        this.waker.lastMessage.channel
-                            .send(`Ah! I couldn't play that song for some reason. Sent a bug report to Joe.`)
+                        bot.songState = SongState.Finished
+                        bot.voiceChannel.leave()
                     }
 
-                    // FINISHED
-                    this.commandSatisfied = true
+                    console.groupEnd()
                 })
+
+                return true
             } catch (error) {
-                if (!this.voiceChannel)
-                    this._context
-                        .reply(`, where do I dump this noise? you gotta be in a voice channel first!`)
-                else
-                    this.saveBugReport(error)
+                console.log(`Error playing URL stream!`)
+                bot.saveBugReport(error, true)
+
+                bot.waker.lastMessage.channel
+                    .send(`Ah! I couldn't play that song for some reason. Sent a bug report to Joe.`)
             }
+
+        }
+
+        function generatePlaybackMessage(bot: Bot = globalThis.bot) {
+            let playbackMessage = new Discord.MessageEmbed()
+                .setAuthor('Mega-Juker! 🔊')
+                .setTitle('Playing Online Audio')
+                .setColor('ffc0cb')
+                .setURL(url)
+
+            playbackMessage
+                .setDescription(`\nI'm playing your request, ${bot.context.author.username}! 👌`)
+
+            if (streamInfo.name && streamInfo.author)
+                playbackMessage
+                    .addField(streamInfo.name, streamInfo.author)
+            else if (streamInfo.name)
+                playbackMessage
+                    .addField(streamInfo.name, streamInfo.source)
+
+            if (streamInfo.platform)
+                playbackMessage
+                    .setFooter(streamInfo.platform)
+
+            if (streamInfo.thumbnailUrl)
+                playbackMessage
+                    .setImage(streamInfo.thumbnailUrl)
+
+            if (loop)
+                playbackMessage
+                    .setFooter('this song is gonna be **LOOOOOPED**')
+
+            return playbackMessage
         }
     }
 
@@ -334,7 +400,7 @@ export default class Bot extends Discord.Client {
                             console.error(`Not authorized.`)
                         else {
                             console.error(`Unknown error. Logged to report.`)
-                            this.saveBugReport(error)
+                            this.saveBugReport(error, true)
                         }
 
                         console.groupEnd()
@@ -355,7 +421,7 @@ export default class Bot extends Discord.Client {
     fetchImageFromURL(url: string): any {
         if (typeof url !== 'string')
             this.saveBugReport(
-                new TypeError(`Tried to fetch image that's not a string URL: ${url}`))
+                new TypeError(`Tried to fetch image that's not a string URL: ${url}`), true)
 
         return new Promise((res, rej) => {
             Snekfetch.get(url)
@@ -424,15 +490,15 @@ export default class Bot extends Discord.Client {
         ---------
         ${this.waker.username} on ${this.context?.guild.name}` +
                     // Add extra details where necessary            
-                    `${() => {
+                    `${(() => {
                         if (this.textChannel instanceof Discord.TextChannel) {
-                            return `'s channel  ${this.textChannel.name}`
+                            return `'s channel '${this.textChannel.name}'`
                         }
-                    }}`
+                    })()}`
                     // Finish adding details
                     + ` said:
-        "${this.context.toString()}
-        `)
+            "${this.context.toString()}"
+                `)
                 , callback => {
                     if (callback as Error)
                         console.error(`Error writing crash log: ${callback}`)

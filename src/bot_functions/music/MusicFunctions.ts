@@ -103,11 +103,12 @@ export default class BotMusicModule {
             try {
                 if (!bot.voice.connections.some(connection => {
                     return connection.channel.id == bot.context.member.voice?.channel.id
-                })) bot.context.reply(`join my voice channel and repeat that action!`)
+                })) "the bottom might annoy some"
+                //.bot.context.reply(`join my voice channel and repeat that action!`)
                 else {
                     bot.context.member.voice.channel.leave()
 
-                    bot.context.reply(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.active))
+                    bot.textChannel.send(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.active))
                     console.log('Bot exited voice channel by user message.')
                 }
             } catch (error) {

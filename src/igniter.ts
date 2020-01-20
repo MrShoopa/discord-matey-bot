@@ -45,12 +45,16 @@ bot.on('message', async (message) => {
 	TriggerHandlers.validateMessage(message)
 })
 
-//TODO?:  Greeting
 bot.on('guildMemberAdd', member => {
 	let announcementChannel: Discord.TextChannel = member.guild.systemChannel
 
-	announcementChannel.send(
-		`Welcome to the server, ${member}! \n\n\n\n...\n\n who the f-`)
+	let message = new Discord.MessageEmbed()
+		.setAuthor('Hello hello? Hello hello!!! 😊')
+		.setTitle(`Welcome to the server, ${member}!`)
+		.setDescription(` \n\n\n\n...\n\n who the f-`)
+		.setImage(member.user.avatar)
+
+	announcementChannel.send(message)
 })
 
 bot.on('error', error => {
@@ -62,6 +66,3 @@ bot.on('error', error => {
 	//  Re-login
 	bot = new Bot()
 })
-
-/*  ----    State Checking      ----   */
-//	TODO: Consider using a 'per-day' check system

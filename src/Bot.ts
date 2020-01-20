@@ -2,8 +2,10 @@ import * as FileSystem from 'fs'
 import * as Path from 'path'
 import Request from 'request'
 import Stream from 'stream'
-import Snekfetch from 'snekfetch'
+import NodeFetch from 'node-fetch'
+
 import YTDL from 'ytdl-core'
+import SC from 'soundcloud-audio'
 
 import Discord from 'discord.js'
 
@@ -424,7 +426,7 @@ export default class Bot extends Discord.Client {
                 new TypeError(`Tried to fetch image that's not a string URL: ${url}`), true)
 
         return new Promise((res, rej) => {
-            Snekfetch.get(url)
+            NodeFetch(url)
                 .then(result => {
                     console.log(`Image fetched from ${url}.`)
                     res(result)

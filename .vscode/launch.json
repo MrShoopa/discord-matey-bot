@@ -7,17 +7,20 @@
 			"name": "Build and Run (Discord Matey Bot)",
 			"program": "${workspaceFolder}\\src\\igniter.ts",
 			"preLaunchTask": "tsc: build - tsconfig.json",
+			"showAsyncStacks": true,
 			"outFiles": [
 				"${workspaceFolder}/built/**/*.js"
-			]
+			],
+			"restart": true,
+			"postDebugTask": "Create fallback build"
 		},
 		{
 			"type": "node",
 			"request": "launch",
-			"name": "Run Last Build (Discord Matey Bot)",
+			"name": "Run Fallback Build (Discord Matey Bot)",
 			"program": "${workspaceFolder}\\src\\igniter.ts",
 			"outFiles": [
-				"${workspaceFolder}/built/**/*.js"
+				"${workspaceFolder}/built_fallback/**/*.js"
 			]
 		},
 	]

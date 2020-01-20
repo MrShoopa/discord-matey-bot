@@ -9,7 +9,7 @@ import SC from 'soundcloud-audio'
 
 import Discord from 'discord.js'
 
-import * as Datypes from './ts/interfaces/index'
+import * as Datypes from './types/index'
 import BotData from './bot_functions/DataHandler'
 
 import CREDS from './user_creds.json'
@@ -274,23 +274,22 @@ export default class Bot extends Discord.Client {
             } else if (url.includes('soundcloud')) {
 
                 //  TODO: SoundCloud support
-                /*
-                                const SC_CLIENT_ID = 'b45b1aa10f1ac2941910a7f0d10f8e28'
-                                const SC = require('soundcloud')
-                
-                                SC.initialize({
-                                    client_id: SC_CLIENT_ID
-                                })
-                
-                                stream = SC.stream('/tracks/293').then( (player) {
-                                    console.log('test)')
-                                    player.play();
-                                });
-                
-                                stream.resolve(url.toString())
-    
-                                streamInfo = { source: url, name: SC.info, platform: 'SoundCloud' }
-                */
+
+                const SC_CLIENT_ID = CREDS.soundcloud.client_id
+
+                SC.initialize({
+                    client_id: SC_CLIENT_ID
+                })
+
+                stream = SC.stream('/tracks/293').then((player: { play: () => void }) => {
+                    console.log('test)')
+                    player.play();
+                });
+
+                //stream.resolve(url.toString())
+
+                streamInfo = { source: url, name: SC.info, platform: 'SoundCloud' }
+
 
                 return this.context.reply('SoundCloud support coming sometime later. :)')
             }

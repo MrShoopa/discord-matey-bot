@@ -13,7 +13,7 @@
 
 /*  Modules  */
 import * as FileSystem from 'fs'
-import { Data } from '../ts/interfaces/index'
+import { Data } from '../types/index'
 
 /*  Locations  */
 const SAVE_DATA = __dirname + '/../../save_data'

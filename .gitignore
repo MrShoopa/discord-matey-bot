@@ -12,6 +12,7 @@ node_modules
 
 # Builds
 /built
+/built_fallback
 
 # Bot Crash Logs
 /crash_logs

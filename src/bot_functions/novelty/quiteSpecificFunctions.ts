@@ -1,4 +1,4 @@
-import { BeanContainer } from '../../ts/interfaces/data_types/Bean';
+import { BeanContainer } from '../../types/data_types/Bean';
 import Bot from '../../Bot'
 
 import BotModuleGoogleImage from '../fetching/google/googleImageCommands.ts/GoogleImageCommands'

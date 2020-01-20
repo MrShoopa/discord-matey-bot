@@ -3,7 +3,7 @@
         "baseUrl": ".",
         "paths": {
             "*": ["node_modules/@types",
-                "src/ts/*",
+                "src/ts/*"
             ]
         },
         "typeRoots": [
@@ -14,7 +14,6 @@
 
         "module": "commonjs",
         "target": "es2018",
-        "lib": ["es2018"],
 
         "allowJs": true,
         "sourceMap": true,
@@ -22,7 +21,8 @@
         "moduleResolution": "node",
         "resolveJsonModule": true,
 
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "diagnostics": true
     },
     "include": [
         "src/**/*"

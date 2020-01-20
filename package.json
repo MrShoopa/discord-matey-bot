@@ -10,12 +10,14 @@
         "test": "echo \"hey joe write some tests\" && exit 1"
     },
     "dependencies": {
+        "@types/chai": "^4.2.7",
         "@types/google-images": "^2.1.0",
         "@types/node": "^13.1.8",
         "@types/node-fetch": "^2.5.4",
         "@types/request": "^2.48.4",
         "@types/snekfetch": "^4.0.2",
         "@types/twitter": "^1.7.0",
+        "chai": "^4.2.0",
         "discord.js": "github:discordjs/discord.js",
         "eslint": "^6.8.0",
         "ffmpeg": "0.0.4",

@@ -1,5 +1,5 @@
 import Bot, { SongState } from "../../Bot"
-import { Song } from "../../ts/interfaces";
+import { Song } from "../../types";
 
 import TRIGGERS from '../../bot_knowledge/triggers/triggers.json';
 

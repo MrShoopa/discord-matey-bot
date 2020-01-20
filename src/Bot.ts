@@ -78,7 +78,7 @@ export default class Bot extends Discord.Client {
     }
 
     get lastMessage() {
-        if (!this.lastMessage) return this._context
+        if (!this._lastMessage) return this._context
         else return this._lastMessage
     }
     get lastWaker() {

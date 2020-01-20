@@ -32,12 +32,17 @@ export default class BotTwitterModule {
     static async fetchBuiltMsgTweetWithQuery(query: string, trigger?: string) {
         let bot: Bot = globalThis.bot
 
+        query = query.toLowerCase()
+
         bot.preliminary(trigger, 'twitter latest post fetch', true)
 
         if (query.includes(trigger))
             query = query.replace(trigger, '').trim()
 
         let tweet = await this.fetchTweetWithQuery(query)
+
+        if (!tweet)
+            return bot.generateErrorMessage(`I couldn't fetch that tweet at the moment.`)
 
         let url =
             `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
@@ -71,7 +76,7 @@ export default class BotTwitterModule {
         })
     }
 
-    static fetchTweetWithQuery(userQuery: string, top?: boolean, log?: boolean): any {
+    static fetchTweetWithQuery(userQuery: string, top?: boolean, log?: boolean): Promise<any> {
         //  Modules
         return new Promise((resolve, reject) => {
 

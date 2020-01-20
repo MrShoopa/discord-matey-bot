@@ -3,20 +3,26 @@ import Bot from '../../../Bot'
 
 export default class BotModuleAnime {
 
-    static async fireAnimeInfoMessageOfName(trigger) {
+    static async fireAnimeInfoMessageOfName(trigger: string) {
         let bot: Bot = globalThis.bot
 
         bot.context.channel.send(this.fetchBuiltMsgAnimeInfoMessageOfName(bot.context.toString(), trigger))
     }
 
-    static async fetchBuiltMsgAnimeInfoMessageOfName(query, trigger?: string) {
+    static async fetchBuiltMsgAnimeInfoMessageOfName(query: string, trigger?: string) {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'jikanTS anime fetch', true)
+
+        query = query.toLowerCase()
 
         if (query.includes(trigger))
             query = query.replace(trigger, '')
 
         let anime = await BotModuleAnime.fetchAnimeOfName(query)
+
+        if (!anime)
+            return bot.generateErrorMessage(`I couldn't fetch swag info of your animoo at the moment.`)
+
 
         return bot.textChannel.send(BotModuleAnime.generateAnimeInfoMessage(anime))
     }
@@ -42,9 +48,10 @@ export default class BotModuleAnime {
         return new Promise((resolve, reject) => {
             import('jikants').then(JikanTS => {
                 JikanTS.default.Search.search(name, "anime")
-                    .catch(reason => {
-                        console.log(reason)
-                        reject(reason)
+                    .catch(error => {
+                        let bot: Bot = globalThis.bot
+                        bot.saveBugReport(error)
+                        reject(error)
                     })
                     .then(anime => {
                         console.log(`Anime fetched for ${name}`)

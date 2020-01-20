@@ -73,8 +73,6 @@ export default class BotMusicModule {
             }
 
         } catch (error) {
-            //TODO bot.botError(4001)
-
             if (!bot.voiceChannel) {
                 console.warn(`Bot couldn't find a voice channel to join. Please have user join a channel first.`)
                 bot.context.reply(

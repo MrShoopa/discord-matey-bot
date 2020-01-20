@@ -69,7 +69,12 @@ export default class Bot extends Discord.Client {
 
         this.waker = value.author
         this.textChannel = value.channel
-        this.voiceChannel = value.member.voice.channel
+
+        if (this.voiceChannel === null &&
+            this.waker.id === this.user.id)
+            this.voiceChannel = this.lastMessage.member.voice.channel
+        else
+            this.voiceChannel = value.member.voice.channel
     }
 
     get lastMessage() {
@@ -213,11 +218,6 @@ export default class Bot extends Discord.Client {
             }
             var streamInfo: Datypes.Stream.StreamInfo
                 = { source: 'None' }
-
-            //TODO: check effect of this
-            if (this.voiceChannel === null &&
-                this.waker.id === this.user.id)
-                this.voiceChannel = this.lastMessage.member.voice.channel
 
             try {
                 return this.voiceChannel.join().then(connection => {
@@ -446,18 +446,16 @@ export default class Bot extends Discord.Client {
         return bot.context.toString().includes(desiredContext)
     }
 
-    //TODO:
-    botError(code?: number, messageString?: string) {
-        let errorMessage: string
+    generateErrorMessage(message?: string): Discord.Message {
+        let built = new Discord.Message(this,
+            {
+                content: "Unfortunately, I couldn't perform that action at the moment."
+            }, this.context.channel)
 
-        if (!messageString && !code) {
-            errorMessage = `Hmmm. Something wrong happened.`
-        } else if (code) {
-            if (code == 4001)
-                errorMessage = `Error ${code} - Couldn't play song.`
-        } else this.textChannel.send(`Error ${code} - ${messageString}`)
+        if (message)
+            built.content = message
 
-        this.textChannel.send(errorMessage)
+        return built
     }
 
     /**
@@ -507,7 +505,9 @@ export default class Bot extends Discord.Client {
         )
 
         if (reply && this.lastWaker)
-            this.lastWaker.lastMessage.channel.send(`Log submitted to Joe.`)
+            this.lastWaker.lastMessage.channel.send(new Discord.MessageEmbed()
+                .setAuthor('Megadork Crash Reporter 📝')
+                .setDescription`Log submitted to Joe.`)
     }
 
     /**

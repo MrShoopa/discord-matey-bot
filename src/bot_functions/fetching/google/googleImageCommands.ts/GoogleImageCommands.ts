@@ -34,6 +34,11 @@ export default class BotModuleGoogleImage {
 
         var item = await this.fetchImageFromGoogle(userQuery, true)
 
+        if (!item) {
+            bot.saveBugReport(new ReferenceError('No image was returned.'), true, true)
+            return bot.generateErrorMessage(`Due to some error, I couldn't fetch anything at the moment.`)
+        }
+
         let message = new Discord.MessageEmbed()
             .setAuthor('MegaGoog Image Searcher 📷')
             .setColor('lightblue')
@@ -53,7 +58,6 @@ export default class BotModuleGoogleImage {
         return item
     }
 
-    //TODO: Modularize like JSON and Tweet
     static async fetchImageFromGoogle(userQuery = '', urlOnly?: boolean, bot: Bot = globalThis.bot):
         Promise<Discord.MessageAttachment | string> {
         //  Modules   
@@ -61,6 +65,7 @@ export default class BotModuleGoogleImage {
             new GoogleImages(
                 AUTH.google.search.CSE_ID, AUTH.google.search.API_KEY)
 
+        userQuery = userQuery.toLowerCase()
 
         //  Random generated (from defaults list) query if user doesn't specify specific item
         if (userQuery == '') {
@@ -68,29 +73,26 @@ export default class BotModuleGoogleImage {
             userQuery = DEFAULTS_IMAGE.random_query[Math.floor(Math.random() * DEFAULTS_IMAGE.random_query.length)]
         }
 
-        try {
-            console.log(`Performing image search for ${userQuery}.`)
+        console.log(`Performing image search for ${userQuery}.`)
 
-            //  Attempts to search for query
-            return new Promise((res) => {
-                GOOGLE_IMAGER.search(userQuery).then(async (results: string | any[]) => {
-                    if (results.length) {
-                        if (urlOnly)
-                            res(results[Math.floor(Math.random() * results.length)].url)
-                        else
-                            res(await bot.fetchImageFromURL(results[Math.floor(Math.random() * results.length)].url))
-                    } else {
-                        res(null)
-                    }
-                })
+        //  Attempts to search for query
+        return new Promise((res) => {
+            GOOGLE_IMAGER.search(userQuery).then(async (results: string | any[]) => {
+                if (results.length) {
+                    if (urlOnly)
+                        res(results[Math.floor(Math.random() * results.length)].url)
+                    else
+                        res(await bot.fetchImageFromURL(results[Math.floor(Math.random() * results.length)].url))
+                } else {
+                    res(null)
+                }
+            }).catch(error => {
+                //  The other cases
+                bot.saveBugReport(error, true)
+
+                bot.textChannel.send(
+                    'Couldn\'t find image! Let Joe know to find the error.')
             })
-        } catch (error) {
-            //  The other cases
-            bot.saveBugReport(error)
-
-            bot.textChannel.send(
-                'Couldn\'t find image! Let Joe know to find the error.')
-
-        }
+        })
     }
 }

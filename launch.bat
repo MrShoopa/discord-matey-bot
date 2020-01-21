@@ -11,11 +11,14 @@ pause
 exit
 )
 
+:runLoop
 echo(
 node igniter.js
 )
 echo ----- Bot terminated. -----
 echo.
+choice /N /T 5 /D y /M "Rerunning bot in 3 seconds. Type 'n' to cancel."
+IF ERRORLEVEL 1 goto runLoop
 
 set /p runFallback=Run fallback build? [y/n]: 
 echo %runFallback%

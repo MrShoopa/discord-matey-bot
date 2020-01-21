@@ -42,7 +42,11 @@ bot.on('message', async (message) => {
 	//  Logging message
 	console.log(`\nOn ${new Date().toString()}, a user said:\n	"${(message.content).toString()}"`)
 
-	TriggerHandlers.validateMessage(message)
+	try {
+		TriggerHandlers.validateMessage(message)
+	} catch (e) {
+		bot.saveBugReport(e, true)
+	}
 })
 
 bot.on('guildMemberAdd', member => {
@@ -59,7 +63,7 @@ bot.on('guildMemberAdd', member => {
 
 bot.on('error', error => {
 	bot.waker.lastMessage.channel.send(`Ah! Something crashed my lil' engine!
-    Log submitted to Joe. Restarting...`)
+		Log submitted to Joe. Restarting...`)
 
 	bot.saveBugReport(error)
 

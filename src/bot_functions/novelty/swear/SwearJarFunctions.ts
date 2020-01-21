@@ -75,5 +75,21 @@ export default class BotSwearJarModule {
     // TODO
     static printSwearStats() {
         console.log('Swear stats of the month!')
+
+        var stats: string[]
+        let data: Object = BotData.getUserDataFile()
+
+        /* for (var userData in data) {
+            USER_LIST.forEach(userEntity => {
+                if (userEntity.id === data[userData]._id) {
+                    if (announce) { } //TODO
+    
+                    stats.push(`${userEntity.username}'s swear score:\t ${data[userData].swearScore}.`)
+                    //BOT.channels.
+                }
+            })
+        } */
+
+        return stats.join('\n')
     }
 }

@@ -275,6 +275,8 @@ export default class Bot extends Discord.Client {
 
                 //  TODO: SoundCloud support
 
+                return this.context.reply('SoundCloud support coming sometime later. :)')
+
                 const SC_CLIENT_ID = CREDS.soundcloud.client_id
 
                 SC.initialize({
@@ -290,8 +292,6 @@ export default class Bot extends Discord.Client {
 
                 streamInfo = { source: url, name: SC.info, platform: 'SoundCloud' }
 
-
-                return this.context.reply('SoundCloud support coming sometime later. :)')
             }
         }
 

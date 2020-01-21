@@ -15,6 +15,7 @@ export default class TimelyFunctions {
 
     static timeContexual(pollTime: number = 60000) {
         setInterval(() => this.runTimeSensitive(), pollTime)
+        setInterval(() => console.log('hew'), pollTime)
     }
 
     static runTimeSensitive() {
@@ -35,6 +36,7 @@ export default class TimelyFunctions {
             this.doneForHour = true
         }
 
+        this.lastRun = this.now
     }
 
     static checkLastRun() {

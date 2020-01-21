@@ -19,7 +19,6 @@ export default class HelpTriggers {
 
     static replyForGeneralInfo(message = TriggerHandlers.message) {
         //  HELP //TODO: Add instructions for anime, twitter, inspirational quotes, etc. Convert to Rich Message.
-        //  TODO: Rich Message
         for (const trigger of TRIGGERS.help_questions.actions)
             if (message.toString().toLowerCase().includes(trigger)) {
                 TriggerHandlers.bot.preliminary(trigger, 'Help with Actions', true);

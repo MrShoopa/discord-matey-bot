@@ -7,7 +7,7 @@ import * as CALENDAR from "../../../bot_knowledge/calendar/values.json"
 
 export default class BotModuleBirthday {
 
-	static assignBirthdaySelf = (trigger?: string) => {
+	static assignBirthdaySelf(trigger?: string) {
 		let bot: Bot = globalThis.bot
 		//  Trim trigger for easier parsing of date
 		bot.preliminary(trigger, "Birthday reminder", true)
@@ -38,9 +38,9 @@ export default class BotModuleBirthday {
 		});
 
 		if (!birthday)
-			return bot.context.reply(`Invalid date. Type the month and date like this: 'September 10 (year optional)'`)
+			return bot.context.reply(`invalid date. Type the month and date like this: 'September 10 (year optional)'`)
 
-		// TODO? Shrink code further + Take off error handling?
+		// TODO ? Shrink code further + Take off error handling?
 		let userData = BotData.getUserData(bot.context.author.id)
 
 		if (userData === undefined) {
@@ -68,7 +68,7 @@ export default class BotModuleBirthday {
 		return BotData.updateUserData(bot.context.author.id, userData)
 	}
 
-	static inquireBirthdaySelf = (trigger?: string) => {
+	static inquireBirthdaySelf(trigger?: string) {
 		let bot: Bot = globalThis.bot;
 		bot.preliminary(trigger, 'Birthday Inquiry', true);
 

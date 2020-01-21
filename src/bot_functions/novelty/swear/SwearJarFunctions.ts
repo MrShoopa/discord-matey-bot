@@ -72,7 +72,6 @@ export default class BotSwearJarModule {
         }
     }
 
-    // TODO
     static printSwearStats() {
         console.log('Swear stats of the month!')
 

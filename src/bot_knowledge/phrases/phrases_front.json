@@ -1,12 +1,25 @@
 {
-    "unknown_command": ["I didn't get that :/", "What did you say?", "Uhh whacha sayin'"],
-    "name_only_callout": "Yes, my manes?",
-
+    "unknown_command": [
+        "I didn't get that :/",
+        "what did you say?",
+        "uhh whacha sayin'?",
+        "I don't know how to help with that 🤔",
+        "no comprendo?"
+    ],
+    "name_only_callout": ", what's up? 😊",
     "asked": {
-        "thank_you": ["You got it!", "Pleasure's mine!", "You got it, fuckface :)"],
-        "communist": ["could be owned by not just joe", "WE ALL OWN EACH OTHER"]
+        "thank_you": [
+            "you got it!",
+            "pleasure's mine!",
+            "I'm happy to help-de-doo! 😊",
+            "thank you for enlisting me! 😀",
+            "you got it, fuckface :)"
+        ],
+        "communist": [
+            "could be owned by not just joe",
+            "WE ALL OWN EACH OTHER"
+        ]
     },
-
     "help_intro": "Hmmm so far I can... \n",
     "help_sing": "Sing: Pull out meme songs I know!  \n    \"*Megadork, what can you sing?* \" ",
     "help_image_search": "I can find a random picture!   \n    \"*Megadork random picture of [whatever your searching]* \"     ",
@@ -21,7 +34,6 @@
             "send_nudes": "\"*megadork send nudes* \""
         }
     },
-
     "help_secret": {
         "main": "I also have some top-secret commands my creator has made for me. :)     "
     }

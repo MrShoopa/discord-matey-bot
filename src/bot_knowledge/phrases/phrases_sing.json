@@ -1,18 +1,23 @@
 {
     "help_intro": "Ho boy, here's my list of slick tunes! \n Have me sing by saying: \n \"I summon [song_name]\" \n \"Megadork, sing [song_name]\"",
     "help_youtube": "I can also play music from YouTube. \n \"Megadork, play [url]\"",
-
     "message_unknown_summon": "Sing/Play what? Say \n*Megadork, what can you sing?*\n for a list of things I can sing.",
     "message_not_in_channel": "Heya, before I can make some noise, you gotta be in a voice channel!",
-
     "command_feedback": {
         "stop": {
-            "active": ["Stopping...", "Ok..."],
-            "null": ["Currently not making noise.", "Nothing is playing 😜"]
+            "active": [
+                "stopping...",
+                "ok...",
+                "killing the noise..."
+            ],
+            "null": [
+                "Currently not making noise.",
+                "Nothing is playing 😜"
+            ]
         }
     },
-
-    "songs_to_sing": [{
+    "songs_to_sing": [
+        {
             "category": "Example Category",
             "file": "src/bot_knowledge/audio/FILE_EXAMPLE.MP3",
             "title": "SONG TITLE",
@@ -20,94 +25,107 @@
             "play_phrase": "MESSAGE SENT WHILE PLAYING",
             "explicit_text": " [Explicit]"
         },
-
-
-
         {
             "category": "Joe's Picks",
             "file": "src/bot_knowledge/audio/meme-stash/how-to-wake-up.mp3",
             "title": "Wake Up Song",
             "play_phrase": "sending killer vibes"
-        }, {
+        },
+        {
             "category": "Joe's Picks",
             "file": "src/bot_knowledge/audio/meme-stash/john-cena-bassboosted.mp3",
             "title": "JOHN CENA",
             "play_phrase": "WATCH OUT WATCH OUT WATCH OUT"
-        }, {
+        },
+        {
             "category": "Joe's Picks",
             "file": "src/bot_knowledge/audio/meme-stash/7th-element.mp3",
             "title": "7th Element",
             "play_phrase": "chadrum"
-        }, {
+        },
+        {
             "category": "Joe's Picks",
             "file": "src/bot_knowledge/audio/meme-stash/lelelele.mp3",
             "title": "lel lel",
             "play_phrase": "lel"
-        }, {
+        },
+        {
             "category": "Joe's Picks",
             "file": "src/bot_knowledge/audio/meme-stash/whatcha-say.mp3",
             "title": "whatcha say",
             "play_phrase": "Mmmm!"
-        }, {
+        },
+        {
             "category": "Joe's Picks",
             "file": "src/bot_knowledge/audio/meme-stash/wii-u-chat-calling.mp3",
             "title": "Wii U Chat Song",
             "play_phrase": "Calling death"
-        }, {
+        },
+        {
             "category": "Joe's Picks",
             "file": "src/bot_knowledge/audio/meme-stash/don't-you-try-it.mp3",
             "title": "DON'T YOU TRY IT",
             "play_phrase": "DON'T YOU TRYYYY EHHH"
-        }, {
+        },
+        {
             "category": "Joe's Picks",
             "file": "src/bot_knowledge/audio/meme-stash/imma-hump-a-caucasian.mp3",
             "title": "imma hump a caucasian",
             "explicit": true,
             "play_phrase": "Ya"
-        }, {
+        },
+        {
             "category": "Joe's Picks",
             "file": "src/bot_knowledge/audio/meme-stash/greenhillzone.mp3",
             "title": "Green Hill Zone BASSBOOSTED",
             "play_phrase": "GOTTA GO FAST"
-        }, {
+        },
+        {
             "category": "Joe's Picks",
             "file": "src/bot_knowledge/audio/meme-stash/nfl-theme.mp3",
             "title": "NFL Theme Song",
             "play_phrase": "HIKE"
-        }, {
+        },
+        {
             "category": "Joe's Picks",
             "file": "src/bot_knowledge/audio/meme-stash/sad-violin.mp3",
             "title": "Sad Violin",
             "play_phrase": "2sad4me"
-        }, {
+        },
+        {
             "category": "Joe's Picks",
             "file": "src/bot_knowledge/audio/meme-stash/f-bees.mp3",
             "title": "bees",
             "explicit": true,
             "play_phrase": "b e e s"
-        }, {
+        },
+        {
             "category": "Joe's Picks",
             "file": "src/bot_knowledge/audio/meme-stash/jellyfish-jam.mp3",
             "title": "jellyfish jam",
             "play_phrase": "bzzzz!"
-        }, {
+        },
+        {
             "category": "Joe's Picks",
             "file": "src/bot_knowledge/audio/meme-stash/despacito.mp3",
             "title": "despacito",
             "play_phrase": "can you PlEasE gO t0 ALexA 4 THAT?!!?!?!??"
-        }, {
+        },
+        {
             "category": "Joe's Picks",
             "file": "src/bot_knowledge/audio/meme-stash/ussr.mp3",
             "title": "USSR Anthem",
             "explicit": true,
             "play_phrase": "we own you now"
-        }, {
+        },
+        {
             "category": "Joe's Picks",
             "file": "src/bot_knowledge/audio/meme-stash/playboi-carti-kid-cudi-bassboosted.mp3",
             "title": "Kid Cudi BASSBOOSTED",
             "explicit": true,
             "play_phrase": "she wanna meet CARTI"
-        }, {
+        },
+        {
             "category": "Joe's Picks",
             "file": "src/bot_knowledge/audio/meme-stash/SWIGGITY SWAG.mp3",
             "title": "Swiggity Swag",
@@ -121,7 +139,6 @@
             "explicit": false,
             "play_phrase": "ASSEMBLE!"
         },
-
         {
             "category": "Nick's Soundclown",
             "file": "src/bot_knowledge/audio/meme-stash/nicks-soundclown/2 to the 1 to the 1 to the meme.mp3",
@@ -129,7 +146,6 @@
             "explicit": true,
             "play_phrase": "I LIKE BIG MEMES"
         },
-
         {
             "category": "Video Game Soundtracks",
             "file": "src/bot_knowledge/audio/music/vg-soundtrack/mii-channel.mp3",

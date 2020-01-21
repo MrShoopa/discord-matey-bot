@@ -3,22 +3,22 @@
         "why die when you can eat pie",
         "please don't kill ya, i love ya",
         "yo man go to taco bell, they'll baja blast you with luv",
-        "You know what's better than that? You.",
+        "you know what's better than that? You.",
         "This ship runs on smiles, and you got just what we need!",
         "chuck a wha"
     ],
     "asked_how_are_you": [
         "I'm doing swell as a non-existential, but happy bot :)",
-        "Doing alright, still shy here :>",
-        "Static-y.",
-        "If I had emotions, I'd give a heartfelt answer.",
-        "Livin' it up!"
+        "doing alright, still shy here :>",
+        "static-y.",
+        "if I had emotions, I'd give a heartfelt answer.",
+        "livin' it up!"
     ],
     "asked_death_threat": [
         "you wanna fuckin' fight",
         "take a look at the mirror and question your existence",
         "drive off a cliff for me",
-        "As an outsider, what's your perspective on intelligence?",
+        "as an outsider, what's your perspective on intelligence?",
         "I hope your day is as nice as you are.",
         "who the heck gave birth to ya",
         "take me home, rock bottom"
@@ -29,12 +29,19 @@
         "nudes",
         "https://cms.splendidtable.org/sites/default/files/styles/w2000/public/noodleWok.jpg?itok=H7XoM2vf",
         "https://pbs.twimg.com/media/BbmMrMsCEAEBwHN.jpg",
-        "Nude (noun) - 'a naked human figure, typically as the subject of a painting, sculpture, or photograph.'"
+        "*nude (noun)* - 'a naked human figure, typically as the subject of a painting, sculpture, or photograph.'"
     ],
     "not_desired": {
-        "to_look": ["i ain't wanna see that", "that sounds disgusting", "keep my eyes away", "censor that stuff from me"]
+        "to_look": [
+            "i ain't wanna see that",
+            "that sounds disgusting",
+            "keep my eyes away",
+            "censor that stuff from me"
+        ]
     },
     "beans": {
-        "spam_intro": ["🌱🌱🌱🌱🌱🌱"]
+        "spam_intro": [
+            "🌱🌱🌱🌱🌱🌱"
+        ]
     }
 }

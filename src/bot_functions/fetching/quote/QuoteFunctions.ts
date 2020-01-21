@@ -24,22 +24,21 @@ export default class BotModuleQuote {
     }
 
     static async fetchQuoteOfTheDay(trigger?: string, bot: Bot = globalThis.bot) {
-        let reqCategory
+        let categoryRequest: string
 
-        //TODO: Naturalize language (Ex. {Megadork fetch 'FUNNY' quote of the day} doesn't work)
         TRIGGERS.quote_fetch.OTD.sub_triggers.some(subTrig => {
             if (bot.context.toString().toLowerCase().includes(subTrig))
-                reqCategory = subTrig
+                categoryRequest = subTrig
         })
 
-        bot.preliminary('lol', `quote fetch - ${reqCategory} of the day`, true)
+        bot.preliminary('lol', `quote fetch - ${categoryRequest} of the day`, true)
 
         let quoteObject: any
 
         await import('../../../bot_modules/_external_wrappers/TheySaidSo/index').then(async quoteMaster => {
             try {
-                if (reqCategory)
-                    quoteObject = await quoteMaster.default.getQuoteOfTheDay(reqCategory)
+                if (categoryRequest)
+                    quoteObject = await quoteMaster.default.getQuoteOfTheDay(categoryRequest)
                 else
                     quoteObject = await quoteMaster.default.getQuoteOfTheDay()
             } catch (e) {

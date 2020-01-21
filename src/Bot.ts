@@ -144,7 +144,7 @@ export default class Bot extends Discord.Client {
                         this.context.channel.send('This track is... loop-de-looped! 💫🤹‍♀️')
 
                     console.groupEnd()
-                })
+                }).catch(e => { throw e })
             } catch (error) {
                 if (!this.voiceChannel)
                     this.context
@@ -233,7 +233,7 @@ export default class Bot extends Discord.Client {
 
                     if (!playAudioURL(connection))
                         return this.context.channel.send(`I couldn't play that source. Did you type in your URL correctly?`)
-                })
+                }).catch(e => { throw e })
             } catch (error) {
                 if (!this.voiceChannel)
                     this.context

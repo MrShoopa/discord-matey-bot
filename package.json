@@ -10,6 +10,7 @@
         "test": "echo \"hey joe write some tests\" && exit 1"
     },
     "dependencies": {
+        "@discordjs/opus": "^0.1.0",
         "@types/chai": "^4.2.7",
         "@types/google-images": "^2.1.0",
         "@types/node": "^13.1.8",
@@ -29,11 +30,9 @@
         "m3u8stream": "^0.6.4",
         "node-fetch": "^2.6.0",
         "opus": "0.0.0",
-        "opusscript": "0.0.7",
         "parse-time": "^0.1.4",
         "request": "^2.88.0",
         "snekfetch": "^4.0.4",
-        "soundcloud": "^3.3.2",
         "soundcloud-audio": "^1.4.0",
         "twitter": "^1.7.1",
         "winston": "^3.2.1",

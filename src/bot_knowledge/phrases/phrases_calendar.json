@@ -1,7 +1,19 @@
 {
     "birthday": {
-        "reminder_request": {
-
-        }
+        "updated_user": [
+            "your birthday has been recorded as",
+            "I'll remember your birthday as",
+            "changed your birthday mark on"
+        ],
+        "created_user": [
+            "your birthday has been recorded as",
+            "I'll remember your birthday as",
+            ", cool! I'll remember that special day:"
+        ],
+        "reminder_request": {},
+        "turning_old": [
+            "You're gaining an extra level! ✅",
+            "Not such a babey no mo'!"
+        ]
     }
 }

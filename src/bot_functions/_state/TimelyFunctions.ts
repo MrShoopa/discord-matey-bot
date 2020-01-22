@@ -15,7 +15,7 @@ export default class TimelyFunctions {
 
     static timeContexual(pollTime: number = 60000) {
         setInterval(() => this.runTimeSensitive(), pollTime)
-        setInterval(() => console.log('hew'), pollTime)
+        setInterval(() => console.log(`${new Date().toISOString()}: I sit...`), 3600000)
     }
 
     static runTimeSensitive() {
@@ -26,7 +26,7 @@ export default class TimelyFunctions {
             if (this.now.getDate() === 1)
                 BotSwearJarModule.printSwearStats()
 
-            BotModuleBirthday.checkBirthdays()
+            BotModuleBirthday.checkBirthdaysToday(true)
 
             this.doneForDay = true
         }

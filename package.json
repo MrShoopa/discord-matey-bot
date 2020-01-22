@@ -1,13 +1,19 @@
 {
     "name": "discord-matey-bot",
-    "version": "0.4.2",
+    "version": "0.6.0",
     "description": "MrShoopa's Lil' Discord Bot",
     "author": "MrShoopa",
     "license": "ISC",
-    "main": "botCore.ts",
+    "main": "igniter.ts",
     "scripts": {
         "start": "ts-node src/igniter.ts",
         "test": "echo \"hey joe write some tests\" && exit 1"
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com/"
+    },
+    "repository": {
+        "url": "git://github.com//MrShoopa/discord-matey-bot.git"
     },
     "dependencies": {
         "@discordjs/opus": "^0.1.0",

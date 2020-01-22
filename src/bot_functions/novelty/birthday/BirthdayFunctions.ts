@@ -5,6 +5,8 @@ import BotData from "../../DataHandler"
 
 import * as CALENDAR from "../../../bot_knowledge/calendar/values.json"
 
+import * as PHRASES from "../../../bot_knowledge/phrases/phrases_calendar.json"
+
 export default class BotModuleBirthday {
 
 	static assignBirthdaySelf(trigger?: string) {
@@ -15,7 +17,7 @@ export default class BotModuleBirthday {
 
 		let birthday: Date
 
-		CALENDAR.months.forEach(month => {
+		CALENDAR.months.some(month => {
 			if (context.toLowerCase().includes(month)) {
 
 				let dateNumber: number = parseInt(context.match(/([0-9])\w+/g)[0].toString())
@@ -40,23 +42,20 @@ export default class BotModuleBirthday {
 		if (!birthday)
 			return bot.context.reply(`invalid date. Type the month and date like this: 'September 10 (year optional)'`)
 
-		// TODO ? Shrink code further + Take off error handling?
 		let userData = BotData.getUserData(bot.context.author.id)
 
-		if (userData === undefined) {
-			BotData.createUserData(bot.context.author.id)
-			userData = BotData.getUserData(bot.context.author.id)
-		}
+		if (userData === undefined)
+			userData = BotData.createUserData(bot.context.author.id)
 
 		try {
 			userData.birthday = birthday
 
 			if (!userData.birthday) {
-				bot.context.reply(`your birthday has been recorded as ` +
-					`${CALENDAR.months_prettier[birthday.getMonth()]} ${birthday.getDate().toLocaleString()}!`)
+				bot.context.reply(Bot.fetchRandomPhrase(PHRASES.birthday.created_user) +
+					` ${CALENDAR.months_prettier[birthday.getMonth()]} ${birthday.getDate().toLocaleString()}!`)
 			} else {
-				bot.context.reply(`your birthday has been updated to ` +
-					`${CALENDAR.months_prettier[birthday.getMonth()]} ${birthday.getDate().toLocaleString()}!`)
+				bot.context.reply(Bot.fetchRandomPhrase(PHRASES.birthday.updated_user) +
+					` ${CALENDAR.months_prettier[birthday.getMonth()]} ${birthday.getDate().toLocaleString()}!`)
 			}
 
 		} catch (error) {
@@ -96,33 +95,47 @@ export default class BotModuleBirthday {
 		return
 	}
 
-	//	TODO: improve and make this flashy af
-	static checkBirthdays() {
-		let bot: Bot = globalThis.bot
-
+	static checkBirthdaysToday(announce?: boolean) {
 		BotData.getUserDataFile().forEach(user => {
 			let birthday = new Date(user?.birthday)
 			if (birthday.getDate() === new Date().getDate()
 				&& birthday.getMonth() === new Date().getDate())
-				bot.guilds.forEach(guild => {
-					if (guild.members.has(user._id)) {
-						let specialUser = guild.members.get(user._id)
+				if (announce)
+					this.announceBirthday(user)
+		});
+	}
 
-						let specialSong
-							= "Happy Birthday to You\n" +
-							"You live in a zoo\n" +
-							"You look like a monkey\n" +
-							"And you smell like one too.\n"
+	static announceBirthday(user, earrape?: boolean) {
+		let bot: Bot = globalThis.bot
 
-						guild.systemChannel.send(new Discord.MessageEmbed()
-							.setColor('#FFC0CB')
-							.setTitle(`DOOT DOOT! IT'S SOMEONE'S BIRTHDAY!!!! `)
-							.setDescription(`GIVE IT THE F UP FOR ${specialUser.nickname}!!!!1111!! \n aite hit the mic \n\n\n`)
-							.setImage(specialUser.user.avatar)
-							.setThumbnail('./bot_knowledge/images/birthday-stock-image.jpg')
-						)
-					}
-				});
+		bot.guilds.forEach(guild => {
+			if (guild.members.has(user._id)) {
+				let specialUser = guild.members.get(user._id)
+
+				let specialSong
+					= "Happy Birthday to You\n" +
+					"You live in a zoo\n" +
+					"You look like a monkey\n" +
+					"And you smell like one too.\n"
+
+				let birthdayMesssage = new Discord.MessageEmbed()
+					.setColor('#FFC0CB')
+					.setFooter('🎂🎂🎂🎂🎂🎂🎂🎂🎂')
+					.setTitle(`DOOT DOOT! IT'S SOMEONE'S BIRTHDAY!!!! `)
+					.setDescription(`GIVE IT THE F UP FOR ${specialUser.nickname}!!!!1111!! \n aite hit the mic \n\n\n`)
+					.setImage(specialUser.user.avatar)
+					.setThumbnail('./bot_knowledge/images/birthday-stock-image.jpg')
+
+				if (new Date(user.birthday).getUTCFullYear() !== 2120)
+					birthdayMesssage.addField(`${specialUser.user.username} turns` +
+						(new Date().getUTCFullYear() - new Date(user.birthday).getUTCFullYear()),
+						Bot.fetchRandomPhrase(PHRASES.birthday.turning_old))
+
+				if (earrape && specialUser.voice.channel) {
+					bot.voiceChannel = specialUser.voice.channel
+					bot.playAudioFromURL('https://www.youtube.com/watch?v=s6gLh6mf0Ig&ab_channel=jobv3')
+				}
+			}
 		});
 	}
 }

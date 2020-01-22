@@ -28,6 +28,8 @@ export default class BotMusicModule {
         }
 
         try {
+            let urlRegex: RegExp =
+                /(^|\s)(https?:\/\/)?(www\.)?[\s\S]+\.com(\/[^\s]+)($|\s)/
 
             /*  Iterates over list of listed songs before taking action.
                 
@@ -46,7 +48,7 @@ export default class BotMusicModule {
 
                     return bot.playAudioFromFiles(foundSong, loop, trigger)
                 } else if (bot.context.toString().toLowerCase().
-                    includes(TRIGGERS.url_trigger.any) &&
+                    match(urlRegex) &&
                     !bot.commandSatisfied) {
                     //  When song from URL is found
 

@@ -1,6 +1,6 @@
 export module Data {
-    export interface MemberSave {
-        _id?: number;
-        [x: string]: any;
+    export interface UserSave {
+        _id: number
+        [x: string]: any
     }
 }

@@ -36,17 +36,12 @@ export default class Bot extends Discord.Client {
             )
 
         //  Check data
-        try {
-            this.data = BotData.getUserDataFile()
-            if (!this.data)
-                BotData.createNewDataFile()
-            this.data = BotData.getUserDataFile()
-        } catch {
 
-        }
+        if (!BotData.getUserDataFile())
+            BotData.createNewDataFile()
+
     }
 
-    data: BotData;
     restrictedRoleId: string
 
     private _context: Discord.Message | Discord.PartialMessage

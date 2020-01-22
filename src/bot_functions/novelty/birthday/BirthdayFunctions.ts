@@ -44,19 +44,19 @@ export default class BotModuleBirthday {
 
 		let userData = BotData.getUserData(bot.context.author.id)
 
-		if (userData === undefined)
-			userData = BotData.createUserData(bot.context.author.id)
-
 		try {
+			let newBirthday: boolean = userData.birthday !== null
 			userData.birthday = birthday
 
-			if (!userData.birthday) {
+			if (newBirthday) {
 				bot.context.reply(Bot.fetchRandomPhrase(PHRASES.birthday.created_user) +
 					` ${CALENDAR.months_prettier[birthday.getMonth()]} ${birthday.getDate().toLocaleString()}!`)
 			} else {
 				bot.context.reply(Bot.fetchRandomPhrase(PHRASES.birthday.updated_user) +
 					` ${CALENDAR.months_prettier[birthday.getMonth()]} ${birthday.getDate().toLocaleString()}!`)
 			}
+
+			userData.birthday = birthday
 
 		} catch (error) {
 			bot.saveBugReport(error, true)

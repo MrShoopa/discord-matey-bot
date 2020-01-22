@@ -11,9 +11,10 @@
  * @date June 2019
  */
 
-/*  Modules  */
 import * as FileSystem from 'fs'
 import { Data } from '../types/index'
+
+import Bot from '../Bot'
 
 /*  Locations  */
 const SAVE_DATA = __dirname + '/../../save_data'
@@ -21,9 +22,8 @@ const SAVE_DATA_FILE = `${SAVE_DATA}/user_data.json`
 
 /*  -----  */
 export default class BotData {
-	//TODO? Moar function
-	//TODO? Types? (MemberDatabase)
 
+	static get bot(): Bot { return globalThis.bot }
 
 	//  User Data
 	static getUserDataFile(log?: boolean) {
@@ -34,6 +34,11 @@ export default class BotData {
 
 			if (err.code === 'ENOENT') {
 				console.error('Save file is missing. Have you deleted the save file?')
+				try {
+					return this.createNewDataFile()
+				} catch (err) {
+					this.bot.saveBugReport(err, true)
+				}
 				return null
 			}
 
@@ -50,23 +55,23 @@ export default class BotData {
 	 * @param  {boolean} log? If true, logs extra info to console.
 	 */
 	static getUserData(id: number | string, createIfMissing?: boolean) {
-		if (typeof id === 'string') Number(id)
+		if (typeof id === 'string') id = Number(id)
 
-		let userData: Data.MemberSave
+		let userData: Data.UserSave
 		try {
 			userData = BotData.getUserDataFile().find((matchedUser: {
 				_id: number;
 			}) => {
-				return matchedUser._id === id;
+				return matchedUser._id == id;
 			});
-		} catch (error) {
+		} catch (err) {
+			this.bot.saveBugReport(err)
 			throw new ReferenceError(`Couldn't attempt to find user's data.`)
 		}
 
 		if (userData === undefined) {
 			console.log(`User data for ${id} not found.`)
-			if (createIfMissing) this.createUserData(id)
-			return undefined
+			if (createIfMissing) return this.createUserData(id)
 		} else {
 			console.log(`User data for ${id} accessed!`)
 			return userData
@@ -102,9 +107,10 @@ export default class BotData {
 	/**
 	 * Creates a new datastore file for the server's instance.
 	 * 
+	 * @param  {boolean} fetch? Returns the new data file.
 	 * @param  {boolean} force? Erases the existing datastore if it already exists.
 	 */
-	static createNewDataFile(force?: boolean) {
+	static createNewDataFile(fetch?: boolean, force?: boolean) {
 		let dataSkeleton = [{ _id: 42069, sampleData: "Mega!" }]
 
 		if (BotData.getUserDataFile() && !force) return console.log('Data already exists.')
@@ -121,12 +127,15 @@ export default class BotData {
 						throw err
 				}
 			});
+
+			if (fetch) return this.getUserDataFile()
 			console.log(`New User Data save file created.\n`);
-		} catch (error) {
+		} catch (err) {
 			console.error('Error creating new save file.')
-			console.error(error)
+			this.bot.saveBugReport(err)
 		}
 	}
+
 	/**
 	 * Creates a new Datype.MemberSave object based off a user's ID and saves it to the datastore file.
 	 * 
@@ -139,15 +148,15 @@ export default class BotData {
 		var data = BotData.getUserDataFile()
 
 		//  Find user...
-		let userData: Data.MemberSave = data.find((matchedUser: {
+		let userData: Data.UserSave = data.find((matchedUser: {
 			_id: number;
 		}) => {
-			return matchedUser._id === id;
+			return matchedUser._id == id;
 		})
 
 		if (userData === undefined || force) {
 			// ...if not found, create new data.
-			let newSave: Data.MemberSave = {
+			let newSave: Data.UserSave = {
 				_id: id
 			}
 
@@ -172,7 +181,7 @@ export default class BotData {
 	 * @param  {object} newData New data to overwrite existing data with.
 	 */
 	static updateUserData(id: number | string, newData: object) {
-		if (typeof id === 'string') Number(id)
+		if (typeof id === 'string') id = Number(id)
 		console.group()
 		console.log(`Updating data for User ${id}:`)
 
@@ -180,20 +189,21 @@ export default class BotData {
 		var data = BotData.getUserDataFile()
 
 		//  Pointer to single user's data through above variable
-		let userData: Data.MemberSave = data.find((matchedUser: {
+		let userData: Data.UserSave = data.find((matchedUser: {
 			_id: number;
 		}) => {
-			return matchedUser._id === id;
+			return matchedUser._id == id;
 		})
 
 		if (!userData) {
 			console.log(`Data for User ${id} is missing. Creating new data subset.`)
 			this.createUserData(id)
 		}
+
 		console.log(`Old Data:`)
-		console.info(JSON.stringify(userData))
+		console.info(userData)
 		console.log(`New Data:`)
-		console.info(JSON.stringify(newData))
+		console.info(newData)
 
 		Object.keys(newData).forEach(key => userData[key] = newData[key])
 
@@ -213,6 +223,7 @@ export default class BotData {
 			try {
 				FileSystem.writeFileSync(SAVE_DATA_FILE, JSON.stringify(data))
 			} catch (err) {
+				this.bot.saveBugReport(err, true)
 				if (err.code === 'ENOENT') {
 					console.error(`Data has been deleted. Please restart the Bot.`)
 					process.exit(404)

@@ -6,7 +6,13 @@
         "I don't know how to help with that 🤔",
         "no comprendo?"
     ],
-    "name_only_callout": ", what's up? 😊",
+    "name_only_callout": [
+        "what's up? 😊",
+        "hi there!",
+        "need something?",
+        "🙋🏿‍♂️",
+        "did ya wake me?"
+    ],
     "asked": {
         "thank_you": [
             "you got it!",

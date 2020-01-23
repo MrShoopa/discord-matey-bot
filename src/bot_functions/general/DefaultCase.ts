@@ -16,7 +16,7 @@ export default class BotDefaultResponder {
 
     static noContextResponse(trigger, bot: Bot = globalThis.bot) {
         bot.preliminary(trigger, 'Generic response', true)
-        return bot.context.reply(PHRASES_FRONT.name_only_callout)
+        return bot.context.reply(Bot.fetchRandomPhrase(PHRASES_FRONT.name_only_callout))
     }
 
     static unknownCommandResponse(message = globalThis.bot.context) {

@@ -3,11 +3,22 @@
     // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [{
-        "label": "Create fallback build",
-        "detail": "Duplicate the current built bot project into a fallback folder",
-        "type": "shell",
-        "command": "Copy-item -Force -Recurse \"${workspaceFolder}\\built\\*\" -Destination \"${workspaceFolder}\\built_fallback\"",
-        "args": [],
-        "group": "build"
-    }]
+            "label": "Build latest changes",
+            "detail": "Create a new build of the project as is.",
+            "type": "typescript",
+            "tsconfig": "tsconfig.json",
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "group": "build"
+        },
+        {
+            "label": "Create fallback build",
+            "detail": "Duplicate the current built bot project into a fallback folder",
+            "type": "shell",
+            "command": "Copy-item -Force -Recurse \"${workspaceFolder}\\built\\*\" -Destination \"${workspaceFolder}\\built_fallback\"",
+            "args": [],
+            "group": "build"
+        }
+    ]
 }

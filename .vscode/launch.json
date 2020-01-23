@@ -6,7 +6,7 @@
 			"request": "launch",
 			"name": "Build and Run (Discord Matey Bot)",
 			"program": "${workspaceFolder}\\src\\igniter.ts",
-			"preLaunchTask": "tsc: build - tsconfig.json",
+			"preLaunchTask": "Build latest changes",
 			"showAsyncStacks": true,
 			"outFiles": [
 				"${workspaceFolder}/built/**/*.js"

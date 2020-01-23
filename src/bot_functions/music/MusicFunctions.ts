@@ -2,10 +2,15 @@ import Bot, { SongState } from "../../Bot"
 import { Song } from "../../types";
 
 import TRIGGERS from '../../bot_knowledge/triggers/triggers.json';
-
 import PHRASES_SING from '../../bot_knowledge/phrases/phrases_sing.json';
 
-export default class BotMusicModule {
+import AUTH from '../../user_creds.json'
+
+
+import Soundcloud from "soundcloud.ts";
+export default class BotModuleMusic {
+
+    static scClient: Soundcloud = new Soundcloud(AUTH.soundcloud.client_id)
 
     static async playMusic(trigger: string, loop?: boolean) {
         let bot: Bot = globalThis.bot
@@ -34,44 +39,42 @@ export default class BotMusicModule {
             /*  Iterates over list of listed songs before taking action.
                 
                 Music search priorities:
-                1. Local Files w/ special names,
-                2. URLs,
+                1. URLs
+                2. Local Files w/ special names
                 3. Local Files w/ exact file
             */
+            if (bot.context.toString().toLowerCase().match(urlRegex)
+                && !bot.commandSatisfied) {
+                //  When song from URL is found
+
+                var url_string: string[] = bot.context.toString().split(' ')
+
+                return bot.playAudioFromURL(url_string[url_string.length - 1], loop, trigger)
+                    .catch(error => { throw error })
+            }
+
             for (const song of PHRASES_SING.songs_to_sing)
-                if (bot.context.toString().toLowerCase().
-                    includes(song.title.toLowerCase())
+                if (bot.context.toString().toLowerCase().includes(song.title.toLowerCase())
                     && !bot.commandSatisfied) {
                     //  When song from local files is found
 
                     let foundSong: Song.SongObject = song
 
                     return bot.playAudioFromFiles(foundSong, loop, trigger)
-                } else if (bot.context.toString().toLowerCase().
-                    match(urlRegex) &&
-                    !bot.commandSatisfied) {
-                    //  When song from URL is found
-
-                    var url_string: string[] = bot.context.toString().split(' ')
-
-                    return bot.playAudioFromURL(url_string[url_string.length - 1], loop, trigger)
-                        .catch(error => { throw error })
                 }
 
             // Start searching local audio folder for 'non-tagged' songs
-            if (bot.songState == SongState.Fetching) {
-                let songRequest = bot.context.toString().substring(trigger.length + 1)
+            let songRequest = bot.context.toString().substring(trigger.length + 1)
 
-                let matchedSongs = Bot.searchFilesRecursive('./', `${songRequest}.mp3`);
-                if (matchedSongs.length > 0 && songRequest.length > 0) {
-                    console.group()
-                    console.log(`Local matching songs found:`)
-                    console.info(matchedSongs)
-                    console.groupEnd()
+            let matchedSongs = Bot.searchFilesRecursive('./', `${songRequest}.mp3`);
+            if (matchedSongs.length > 0 && songRequest) {
+                console.group()
+                console.log(`Local matching songs found:`)
+                console.info(matchedSongs)
+                console.groupEnd()
 
-                    //TODO: Give choice from multiple matches
-                    return bot.playAudioFromFiles(matchedSongs[0], loop)
-                }
+                //TODO: Give choice from multiple matches
+                return bot.playAudioFromFiles(matchedSongs[0], loop)
             }
 
         } catch (error) {

@@ -3,7 +3,7 @@ import Bot from "../../../Bot"
 import PHRASES_SERVER_MOD from '../../../bot_knowledge/phrases/phrases_server_mod.json';
 
 
-export default class BotRestrictedRoleModule {
+export default class BotModuleRestrictedRole {
     static assignToRestrictedRole(trigger?: string) {
         let bot: Bot = globalThis.bot
 

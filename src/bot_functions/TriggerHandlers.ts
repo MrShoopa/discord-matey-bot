@@ -7,10 +7,10 @@ import BotDefaultResponder from './general/DefaultCase';
 import TRIGGERS from '../bot_knowledge/triggers/triggers.json';
 import HelpTriggers from './general/HelpTriggers';
 
-import BotMusicModule from './music/MusicFunctions';
-import BotSwearJarModule from './novelty/swear/SwearJarFunctions';
-import BotRestrictedRoleModule from './novelty/restricted_role/RestrictiedRoleFunctions';
-import BotTwitterModule from './fetching/twitter/TwitterFunctions';
+import BotModuleMusic from './music/MusicFunctions';
+import BotModuleSwearJar from './novelty/swear/SwearJarFunctions';
+import BotModuleRestrictedRole from './novelty/restricted_role/RestrictiedRoleFunctions';
+import BotModuleTwitter from './fetching/twitter/TwitterFunctions';
 import BotModuleGoogleImage from './fetching/google/googleImageCommands.ts/GoogleImageCommands';
 import BotModuleReddit from './fetching/reddit/RedditFunctions';
 import BotModuleBirthday from './novelty/birthday/BirthdayFunctions';
@@ -113,7 +113,7 @@ export default class TriggerHandlers {
     private static checkForSwearWord(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.swear_jar_triggers.bad_words)
             if (message.toString().toLowerCase().includes(trigger))
-                return BotSwearJarModule.dingUser(trigger)
+                return BotModuleSwearJar.dingUser(trigger)
     }
 
     /*  ---- Birthday Functionality ----  */
@@ -136,7 +136,7 @@ export default class TriggerHandlers {
     private static checkForMusicPlaybackRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.singing_triggers.play)
             if (message.toString().substring(0, 15).toLowerCase().includes(trigger))
-                return BotMusicModule.playMusic(trigger)
+                return BotModuleMusic.playMusic(trigger)
         //  Attempt to play song based on given info
     }
 
@@ -144,7 +144,7 @@ export default class TriggerHandlers {
         for (const trigger of TRIGGERS.singing_triggers.stop)
             if (!TriggerHandlers.bot.commandSatisfied) {
                 if (message.toString().substring(0, 25).toLowerCase().includes(trigger)) {
-                    return BotMusicModule.stopMusic(trigger)
+                    return BotModuleMusic.stopMusic(trigger)
                 }
             } else { return }
     }
@@ -171,12 +171,12 @@ export default class TriggerHandlers {
     private static checkForTwitterFetchRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.twitter_fetch.tweet.query)
             if (message.toString().toLowerCase().includes(trigger))
-                return BotTwitterModule.fireTweetMessageOfQuery(message.toString(), trigger)
+                return BotModuleTwitter.fireTweetMessageOfQuery(message.toString(), trigger)
         //  Get latest Tweet with specific query [from Twitter]
 
         for (const trigger of TRIGGERS.twitter_fetch.tweet.user_latest)
             if (message.toString().toLowerCase().includes(trigger))
-                return BotTwitterModule.fireTweetMessageFromUser(message.toString(), trigger)
+                return BotModuleTwitter.fireTweetMessageFromUser(message.toString(), trigger)
         //  Get latest Tweet from specific user
     }
 
@@ -197,14 +197,14 @@ export default class TriggerHandlers {
     private static checkForRestrictedRoleAssignRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.server_mod_triggers.set_restricted_role)
             if (message.toString().toLowerCase().includes(trigger))
-                return BotRestrictedRoleModule.assignToRestrictedRole(trigger)
+                return BotModuleRestrictedRole.assignToRestrictedRole(trigger)
         //  Set Restricted Role        
     }
 
     private static checkForRestrictedRoleUnassignRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.server_mod_triggers.unset_restricted_role)
             if (message.toString().toLowerCase().includes(trigger))
-                return BotRestrictedRoleModule.unassignFromRestrictedRole(trigger)
+                return BotModuleRestrictedRole.unassignFromRestrictedRole(trigger)
         //  Unset Restricted Role
     }
 

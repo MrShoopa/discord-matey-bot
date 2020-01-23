@@ -8,7 +8,6 @@ import * as CALENDAR from "../../../bot_knowledge/calendar/values.json"
 import * as PHRASES from "../../../bot_knowledge/phrases/phrases_calendar.json"
 
 export default class BotModuleBirthday {
-
 	static assignBirthdaySelf(trigger?: string) {
 		let bot: Bot = globalThis.bot
 		//  Trim trigger for easier parsing of date

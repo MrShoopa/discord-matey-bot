@@ -5,7 +5,7 @@ import Stream from 'stream'
 import NodeFetch from 'node-fetch'
 
 import YTDL from 'ytdl-core'
-import SC from 'soundcloud-audio'
+import SC from 'soundcloud.ts'
 
 import Discord from 'discord.js'
 
@@ -15,6 +15,7 @@ import BotData from './bot_functions/DataHandler'
 import CREDS from './user_creds.json'
 
 import { main_trigger } from './bot_knowledge/triggers/triggers.json'
+import BotModuleMusic from './bot_functions/music/MusicFunctions'
 
 export enum SongState {
     Unknown = 'unknown',
@@ -133,7 +134,9 @@ export default class Bot extends Discord.Client {
                         `Voice channel connection status: ${connection.status}`)
                     this.songState = SongState.Playing
 
-                    playAudioFile(song, connection)
+                    try {
+                        playAudioFile(song, connection)
+                    } catch (e) { throw e }
 
                     if (loop)
                         this.context.channel.send('This track is... loop-de-looped! 💫🤹‍♀️')
@@ -226,8 +229,10 @@ export default class Bot extends Discord.Client {
                     if (loop)
                         this.context.channel.send(`Looks like I'm looping this one! 💫🤹‍♀️`)
 
-                    if (!playAudioURL(connection))
-                        return this.context.channel.send(`I couldn't play that source. Did you type in your URL correctly?`)
+                    try {
+                        if (!playAudioURL(connection))
+                            return this.context.channel.send(`I couldn't play that source. Did you type in your URL correctly?`)
+                    } catch (e) { throw e }
                 }).catch(e => { throw e })
             } catch (error) {
                 if (!this.voiceChannel)
@@ -243,50 +248,54 @@ export default class Bot extends Discord.Client {
             if (url.includes('youtu')) {
                 streamInfo = { source: url, platform: 'YouTube' }
 
-
                 try {
                     stream = YTDL(url.toString(), {
                         filter: 'audioonly',
                         highWaterMark: 1 << 25,
                     })
 
-                    await YTDL.getInfo(url.toString()).then(info => {
-                        streamInfo.name = info.title
-                        streamInfo.thumbnailUrl = info.thumbnail_url
-                        streamInfo.author = info.author.name
+                    await YTDL.getInfo(url.toString()).then(video => {
+                        streamInfo.name = video.title
+                        streamInfo.thumbnailUrl = video.thumbnail_url
+                        streamInfo.author = video.author.name
                     })
                     return stream
                 } catch (error) {
                     let bot: Bot = globalThis.bot
                     if (error.message.includes('Video id'))
-                        bot.context.reply(`this youtube link isn't valid`)
+                        bot.context.reply(`this YouTube link isn't valid...`)
                     else
                         bot.saveBugReport(error, true)
 
                     return null
                 }
-
             } else if (url.includes('soundcloud')) {
-
-                //  TODO: SoundCloud support
-
                 return this.context.reply('SoundCloud support coming sometime later. :)')
 
-                const SC_CLIENT_ID = CREDS.soundcloud.client_id
+                streamInfo = { source: url, platform: 'SoundCloud' }
 
-                SC.initialize({
-                    client_id: SC_CLIENT_ID
-                })
+                let sc = BotModuleMusic.scClient
 
-                stream = SC.stream('/tracks/293').then((player: { play: () => void }) => {
-                    console.log('test)')
-                    player.play();
-                });
+                try {
+                    stream = await sc.util.streamTrack(url)
 
-                //stream.resolve(url.toString())
+                    await sc.tracks.get(url).then(track => {
+                        streamInfo.name = track.title
+                        streamInfo.author = track.user.username
+                        streamInfo.thumbnailUrl = track.artwork_url
+                        streamInfo.authorImgUrl = track.user.avatar_url
+                        streamInfo.genre = track.genre
+                    })
+                    return stream
+                } catch (error) {
+                    let bot: Bot = globalThis.bot
+                    if (error.message.includes('Video id'))
+                        bot.context.reply(`this SoundCloud link isn't valid...`)
+                    else
+                        bot.saveBugReport(error, true)
 
-                streamInfo = { source: url, name: SC.info, platform: 'SoundCloud' }
-
+                    return null
+                }
             }
         }
 
@@ -366,6 +375,18 @@ export default class Bot extends Discord.Client {
             if (streamInfo.thumbnailUrl)
                 playbackMessage
                     .setImage(streamInfo.thumbnailUrl)
+
+            if (streamInfo.authorImgUrl)
+                playbackMessage
+                    .setImage(streamInfo.authorImgUrl)
+
+            if (streamInfo.genre)
+                playbackMessage
+                    .addField('Genre', streamInfo.genre)
+
+            if (streamInfo.length)
+                playbackMessage
+                    .addField('Length', streamInfo.length)
 
             if (loop)
                 playbackMessage

@@ -42,7 +42,7 @@ export default class HelpTriggers {
                 TriggerHandlers.bot.preliminary(trigger, 'Help with Singing', true);
                 var songList = '';
                 message.reply(PHRASES_SING.help_intro);
-                message.reply(PHRASES_SING.help_youtube);
+                message.reply(PHRASES_SING.help_url);
                 PHRASES_SING.songs_to_sing.some(song => {
                     if (song.title != PHRASES_SING.songs_to_sing[0].title) {
                         songList += `\n ${song.title}`;

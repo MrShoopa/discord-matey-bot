@@ -3,7 +3,10 @@ export module Stream {
         source: string;
         name?: any;
         author?: string;
+        authorImgUrl?: string;
+        genre?: string
         platform?: string;
+        length?: string;
         thumbnailUrl?: string;
     }
 }

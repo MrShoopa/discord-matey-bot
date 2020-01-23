@@ -4,14 +4,14 @@ import Bot from '../../../Bot'
 
 import AUTH from '../../../user_creds.json'
 
-export default class BotTwitterModule {
+export default class BotModuleTwitter {
     private static _twitterEntity: Twitter
 
     static get twitterEntity() {
-        if (!BotTwitterModule._twitterEntity) {
-            BotTwitterModule.initializeTwitter()
+        if (!BotModuleTwitter._twitterEntity) {
+            BotModuleTwitter.initializeTwitter()
             return this._twitterEntity
-        } else return BotTwitterModule._twitterEntity
+        } else return BotModuleTwitter._twitterEntity
     }
 
     private static initializeTwitter() {

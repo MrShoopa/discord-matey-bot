@@ -2,7 +2,7 @@ import { BeanContainer } from '../../types/data_types/Bean';
 import Bot from '../../Bot'
 
 import BotModuleGoogleImage from '../fetching/google/googleImageCommands.ts/GoogleImageCommands'
-import BotTwitterModule from '../fetching/twitter/TwitterFunctions'
+import BotModuleTwitter from '../fetching/twitter/TwitterFunctions'
 
 import TRIGGERS from '../../bot_knowledge/triggers/triggers.json'
 
@@ -44,7 +44,7 @@ export default class BotModuleBraindead {
 
         await BotModuleGoogleImage.fireImageMessageFromGoogle(beans.toString())
 
-        await BotTwitterModule.fireTweetMessageOfQuery(beans.toString())
+        await BotModuleTwitter.fireTweetMessageOfQuery(beans.toString())
 
         await BotModuleReddit.fireSubmissionImageMessage(funnyImageJson)
 

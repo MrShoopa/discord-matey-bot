@@ -6,7 +6,7 @@ import { swear_jar_triggers } from '../../../bot_knowledge/triggers/triggers.jso
 
 import PHRASES_SWEAR_JAR from '../../../bot_knowledge/phrases/phrases_swear_jar.json';
 
-export default class BotSwearJarModule {
+export default class BotModuleSwearJar {
     static dingUser(trigger: string) {
         let bot: Bot = globalThis.bot
         let words: string[] =

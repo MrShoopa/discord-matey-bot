@@ -1,4 +1,4 @@
-import BotSwearJarModule from "../novelty/swear/SwearJarFunctions"
+import BotModuleSwearJar from "../novelty/swear/SwearJarFunctions"
 import BotModuleBirthday from "../novelty/birthday/BirthdayFunctions"
 
 export default class TimelyFunctions {
@@ -24,7 +24,7 @@ export default class TimelyFunctions {
         if (!this.doneForDay) {
 
             if (this.now.getDate() === 1)
-                BotSwearJarModule.printSwearStats()
+                BotModuleSwearJar.printSwearStats()
 
             BotModuleBirthday.checkBirthdaysToday(true)
 

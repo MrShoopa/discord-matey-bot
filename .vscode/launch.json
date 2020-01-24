@@ -22,5 +22,20 @@
 				"${workspaceFolder}/built_fallback/**/*.js"
 			]
 		},
+		{
+			"type": "node",
+			"request": "launch",
+			"name": "Run Opened Test",
+			"program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+			"args": [
+				"--no-timeouts",
+				"--colors",
+				"${file}",
+				"--require",
+				"ts-node/register"
+			],
+			"console": "integratedTerminal",
+			"sourceMaps": true,
+		}
 	]
 }

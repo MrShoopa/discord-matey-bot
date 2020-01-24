@@ -3,7 +3,7 @@
         "baseUrl": ".",
         "paths": {
             "*": ["node_modules/@types",
-                "src/ts/*"
+                "src/types/*"
             ]
         },
         "typeRoots": [

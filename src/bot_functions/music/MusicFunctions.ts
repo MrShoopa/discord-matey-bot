@@ -1,5 +1,6 @@
+import Discord from 'discord.js'
 import Bot, { SongState } from "../../Bot"
-import { Song } from "../../types";
+import { Song, Stream } from "../../types";
 
 import TRIGGERS from '../../bot_knowledge/triggers/triggers.json';
 import PHRASES_SING from '../../bot_knowledge/phrases/phrases_sing.json';
@@ -74,7 +75,6 @@ export default class BotModuleMusic {
                 console.info(matchedSongs)
                 console.groupEnd()
 
-                //TODO: Give choice from multiple matches
                 return bot.playAudioFromFiles(matchedSongs[0], loop)
             }
 
@@ -125,6 +125,62 @@ export default class BotModuleMusic {
             bot.context.reply(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.null))
             console.log('No sound was playing, nothing terminated.')
         }
+    }
+
+    static generatePlaybackMessage(songInfo?: Stream.SongInfo, bot: Bot = globalThis.bot)
+        : Discord.MessageEmbed {
+        let playbackMessage = new Discord.MessageEmbed()
+            .setAuthor('Mega-Juker! 🔊')
+            .setTitle('Playing some 🅱eatz')
+            .setColor('ffc0cb')
+
+        playbackMessage
+            .setDescription(`\nI'm playing your request, ${bot.context.author.username}! 👌`)
+
+        if (songInfo.name && songInfo.author)
+            playbackMessage
+                .addField(songInfo.author, songInfo.name)
+        else if (songInfo.name && songInfo.source && songInfo.url)
+            playbackMessage
+                .addField(songInfo.source, songInfo.name)
+        else if (songInfo.name)
+            playbackMessage
+                .addField('Local File', songInfo.name)
+
+        if (songInfo.platform)
+            playbackMessage
+                .setFooter(songInfo.platform)
+
+        if (songInfo.url)
+            playbackMessage
+                .setURL(songInfo.url)
+
+        if (songInfo.localFolder)
+            playbackMessage
+                .addField(`Home grown!`,
+                    `Locally from my *${songInfo.localFolder}* collection!`)
+
+        if (songInfo.thumbnailUrl)
+            playbackMessage
+                .setImage(songInfo.thumbnailUrl)
+
+        if (songInfo.authorImgUrl)
+            playbackMessage
+                .setImage(songInfo.authorImgUrl)
+
+        if (songInfo.genre)
+            playbackMessage
+                .addField('Genre', songInfo.genre)
+
+        if (songInfo.length)
+            playbackMessage
+                .addField('Length', songInfo.length)
+
+        if (songInfo.botPhrase)
+            playbackMessage
+                .setTitle(songInfo.botPhrase)
+
+        return playbackMessage
     }
 
     static loadClients() {

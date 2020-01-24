@@ -4,16 +4,15 @@ import Request from 'request'
 import Stream from 'stream'
 import NodeFetch from 'node-fetch'
 
-import YTDL from 'ytdl-core'
-
 import Discord from 'discord.js'
+import YTDL from 'ytdl-core'
 
 import * as Datypes from './types/index'
 import BotData from './bot_functions/DataHandler'
 
 import CREDS from './user_creds.json'
-
 import { main_trigger } from './bot_knowledge/triggers/triggers.json'
+
 import BotModuleMusic from './bot_functions/music/MusicFunctions'
 
 export enum SongState {
@@ -119,6 +118,11 @@ export default class Bot extends Discord.Client {
 
     playAudioFromFiles(song: Datypes.Song.SongObject | string, loop?: boolean, trigger?: string) {
         let dispatcher: Discord.StreamDispatcher
+        let songInfo: Datypes.Stream.SongInfo
+            = {
+            source: 'local',
+            platform: 'Local Files 💖'
+        }
 
         if (!this.commandSatisfied) {
 
@@ -158,21 +162,30 @@ export default class Bot extends Discord.Client {
                 dispatcher = connection.play(song)
                 bot.songState = SongState.Playing
 
+                let songPath = song.split('\\')
+
+                songInfo.name = songPath.pop()
+                songInfo.localFolder = songPath[songPath.length - 2]
+
                 if (!replaying) {
                     console.log(`Playing non-tagged song from first match: ${song}`)
 
-                    bot.context.reply(`playing ${song.split('\\').pop()} 👌`)
+                    bot.context.channel
+                        .send(BotModuleMusic.generatePlaybackMessage(songInfo))
                 }
             } else if (Datypes.Song.isSongObject(song)) {
                 dispatcher = connection.play(song.file)
                 bot.songState = SongState.Playing
 
+                songInfo.name = song.title
+                songInfo.localFolder = song.file.split(`/`)[song.file.split(`/`).length - 2]
+                songInfo.botPhrase = song.play_phrase
 
                 if (!replaying) {
-                    console.log(`Playing tagged song: ${song.title}`)
-                    console.log(`Responding with '${song.play_phrase}'`)
+                    console.log(`Playing tagged song: ${songInfo.name}`)
 
-                    bot.context.reply(song.play_phrase)
+                    bot.context.channel
+                        .send(BotModuleMusic.generatePlaybackMessage(songInfo))
                 }
 
             } else {
@@ -202,8 +215,8 @@ export default class Bot extends Discord.Client {
     async playAudioFromURL(url: string, loop?: boolean, trigger?: string) {
         var dispatcher: Discord.StreamDispatcher
         var stream: Stream.Readable | Discord.VoiceBroadcast
-        var streamInfo: Datypes.Stream.StreamInfo
-            = { source: 'None' }
+        var songInfo: Datypes.Stream.SongInfo
+            = { source: 'undefined turtle', url: url }
 
         if (!this.commandSatisfied) {
             console.log('URL Command matched')
@@ -215,7 +228,7 @@ export default class Bot extends Discord.Client {
                 seek: 0,
                 volume: .75
             }
-            var streamInfo: Datypes.Stream.StreamInfo
+            var songInfo: Datypes.Stream.SongInfo
                 = { source: 'None' }
 
             try {
@@ -245,7 +258,7 @@ export default class Bot extends Discord.Client {
         async function createStreamObject() {
 
             if (url.includes('youtu')) {
-                streamInfo = { source: url, platform: 'YouTube' }
+                songInfo = { source: url, platform: 'YouTube' }
 
                 try {
                     stream = YTDL(url.toString(), {
@@ -254,9 +267,9 @@ export default class Bot extends Discord.Client {
                     })
 
                     await YTDL.getInfo(url.toString()).then(video => {
-                        streamInfo.name = video.title
-                        streamInfo.thumbnailUrl = video.thumbnail_url
-                        streamInfo.author = video.author.name
+                        songInfo.name = video.title
+                        songInfo.thumbnailUrl = video.thumbnail_url
+                        songInfo.author = video.author.name
                     })
                     return stream
                 } catch (error) {
@@ -273,18 +286,18 @@ export default class Bot extends Discord.Client {
                     .reply('SoundCloud support coming sometime ' +
                         `when SoundCloud opens up to developers again  :''''''')`)
 
-                streamInfo = { source: url, platform: 'SoundCloud' }
+                songInfo = { source: url, platform: 'SoundCloud' }
 
                 let sc = await BotModuleMusic.scClient
 
                 try {
 
                     await sc.tracks.get(url).then(async track => {
-                        streamInfo.name = track.title
-                        streamInfo.author = track.user.username
-                        streamInfo.thumbnailUrl = track.artwork_url
-                        streamInfo.authorImgUrl = track.user.avatar_url
-                        streamInfo.genre = track.genre
+                        songInfo.name = track.title
+                        songInfo.author = track.user.username
+                        songInfo.thumbnailUrl = track.artwork_url
+                        songInfo.authorImgUrl = track.user.avatar_url
+                        songInfo.genre = track.genre
 
                         stream = await BotModuleMusic.scClient.util.streamTrack(`${track.id}`)
                             .then(s => {
@@ -306,7 +319,7 @@ export default class Bot extends Discord.Client {
                     return null
                 }
             } else if (url.includes('spotify')) {
-                //TODO: Spotify support!
+                //This will never happen (Look at Spotify ToS)
             }
         }
 
@@ -326,7 +339,8 @@ export default class Bot extends Discord.Client {
                     console.log(`Now playing song from ${url}.`)
 
                     if (!replaying)
-                        bot.textChannel.send(generatePlaybackMessage())
+                        bot.textChannel
+                            .send(BotModuleMusic.generatePlaybackMessage(songInfo))
 
                 })
 
@@ -360,50 +374,6 @@ export default class Bot extends Discord.Client {
                     .send(`Ah! I couldn't play that song for some reason. Sent a bug report to Joe.`)
             }
 
-        }
-
-        function generatePlaybackMessage(bot: Bot = globalThis.bot) {
-            let playbackMessage = new Discord.MessageEmbed()
-                .setAuthor('Mega-Juker! 🔊')
-                .setTitle('Playing Online Audio')
-                .setColor('ffc0cb')
-                .setURL(url)
-
-            playbackMessage
-                .setDescription(`\nI'm playing your request, ${bot.context.author.username}! 👌`)
-
-            if (streamInfo.name && streamInfo.author)
-                playbackMessage
-                    .addField(streamInfo.name, streamInfo.author)
-            else if (streamInfo.name)
-                playbackMessage
-                    .addField(streamInfo.name, streamInfo.source)
-
-            if (streamInfo.platform)
-                playbackMessage
-                    .setFooter(streamInfo.platform)
-
-            if (streamInfo.thumbnailUrl)
-                playbackMessage
-                    .setImage(streamInfo.thumbnailUrl)
-
-            if (streamInfo.authorImgUrl)
-                playbackMessage
-                    .setImage(streamInfo.authorImgUrl)
-
-            if (streamInfo.genre)
-                playbackMessage
-                    .addField('Genre', streamInfo.genre)
-
-            if (streamInfo.length)
-                playbackMessage
-                    .addField('Length', streamInfo.length)
-
-            if (loop)
-                playbackMessage
-                    .setFooter('this song is gonna be **LOOOOOPED**')
-
-            return playbackMessage
         }
     }
 

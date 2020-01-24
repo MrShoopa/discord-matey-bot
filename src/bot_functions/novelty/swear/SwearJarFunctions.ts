@@ -78,16 +78,16 @@ export default class BotModuleSwearJar {
         var stats: string[]
         let data: Object = BotData.getUserDataFile()
 
-        /* for (var userData in data) {
-            USER_LIST.forEach(userEntity => {
+        for (var userData in data) {
+            /*  USER_LIST.forEach(userEntity => {
                 if (userEntity.id === data[userData]._id) {
                     if (announce) { } //TODO
-    
+
                     stats.push(`${userEntity.username}'s swear score:\t ${data[userData].swearScore}.`)
-                    //BOT.channels.
+                    BOT.channels.
                 }
-            })
-        } */
+            }) */
+        }
 
         return stats.join('\n')
     }

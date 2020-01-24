@@ -59,7 +59,7 @@ export default class BotData {
 
 		let userData: Data.UserSave
 		try {
-			userData = BotData.getUserDataFile().find((matchedUser: {
+			userData = this.getUserDataFile().find((matchedUser: {
 				_id: number;
 			}) => {
 				return matchedUser._id == id;
@@ -79,28 +79,17 @@ export default class BotData {
 	}
 
 	/**
-	 * Retreive all users' data of a certain single value
+	 * Retreive any user data with a specific attribute
 	 * 
-	 * @param  {string} the single requested value to be retrieved per user
+	 * @param  {string} the single requested attribute to be retrieved per user
 	 * @param  {boolean} log? If true, logs extra info to console.
 	*/
-	getAllUserDataOfValue(value: string, log?: boolean): Array<any> {
-		let userDataArray: Array<string> = []
+	static getAllUserDataWithAttribute(attribute: string, log?: boolean): Array<Data.UserSave> {
+		let dataObj = this.getUserDataFile()
 
-		let dataObj = BotData.getUserDataFile()
-
-		dataObj.forEach(user => {
-			if (user[value]) {
-				let userObj = {
-					//TODO'id', value
-				}
-
-				userDataArray.push()
-			}
-
-		});
-
-		return userDataArray
+		return dataObj.map((user: Data.UserSave) => {
+			return attribute in user
+		})
 	}
 
 
@@ -113,7 +102,7 @@ export default class BotData {
 	static createNewDataFile(fetch?: boolean, force?: boolean) {
 		let dataSkeleton = [{ _id: 42069, sampleData: "Mega!" }]
 
-		if (BotData.getUserDataFile() && !force) return console.log('Data already exists.')
+		if (this.getUserDataFile() && !force) return console.log('Data already exists.')
 
 		try {
 			FileSystem.writeFile(SAVE_DATA_FILE, JSON.stringify(dataSkeleton), err => {
@@ -145,7 +134,7 @@ export default class BotData {
 	static createUserData(id: number | string, force?: boolean) {
 		if (typeof id === 'string') id = Number(id)
 
-		var data = BotData.getUserDataFile()
+		var data = this.getUserDataFile()
 
 		//  Find user...
 		let userData: Data.UserSave = data.find((matchedUser: {
@@ -162,7 +151,7 @@ export default class BotData {
 
 			data.push(newSave)
 
-			BotData.writeDataFile(data)
+			this.writeDataFile(data)
 			console.log(`Data created for User ${id}.`);
 			if (force) console.warn(`YOU HAVE REWRITTEN SOMEONE'S SAVE!`)
 
@@ -186,7 +175,7 @@ export default class BotData {
 		console.log(`Updating data for User ${id}:`)
 
 		//  Pointer to local user data
-		var data = BotData.getUserDataFile()
+		var data = this.getUserDataFile()
 
 		//  Pointer to single user's data through above variable
 		let userData: Data.UserSave = data.find((matchedUser: {
@@ -207,7 +196,7 @@ export default class BotData {
 
 		Object.keys(newData).forEach(key => userData[key] = newData[key])
 
-		BotData.writeDataFile(data)
+		this.writeDataFile(data)
 
 		console.log(`\nUpdate completed.`)
 		console.groupEnd()

@@ -1,6 +1,8 @@
 export module Stream {
-    export interface StreamInfo {
+    export interface SongInfo {
         source: string;
+        url?: any;
+        localFolder?: string
         name?: any;
         author?: string;
         authorImgUrl?: string;
@@ -8,5 +10,7 @@ export module Stream {
         platform?: string;
         length?: string;
         thumbnailUrl?: string;
+
+        botPhrase?: string;
     }
 }

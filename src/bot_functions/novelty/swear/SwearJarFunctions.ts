@@ -32,10 +32,10 @@ export default class BotModuleSwearJar {
 
             //  Get current swear count
             try {
-                if (!userData.swearScore) {
-                    userData.swearScore = matchedWords
+                if (!userData.swear_score) {
+                    userData.swear_score = matchedWords
                     bot.context.reply(Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.new_user))
-                } else userData.swearScore += matchedWords
+                } else userData.swear_score += matchedWords
             } catch (error) {
                 console.error(new EvalError(`Error updating swear score for ${bot.context.author.username}!`))
                 bot.saveBugReport(error)
@@ -66,29 +66,49 @@ export default class BotModuleSwearJar {
                 .setDescription(response)
                 .setImage(bot.context.author.avatarURL())
                 .addField(`Watch out, ${bot.context.member.displayName}!`,
-                    `Your score has been updated to ${userData.swearScore}`)
+                    `Your score has been updated to ${userData.swear_score}`)
 
             return bot.context.channel.send(swearDetectedMessage)
         }
     }
 
-    static printSwearStats() {
+    static generateSwearStatsMessage() {
+
         console.log('Swear stats of the month!')
 
-        var stats: string[]
-        let data: Object = BotData.getUserDataFile()
+        let swearingUsers =
+            BotData.getAllUserDataWithAttribute('swear_score')
+                .sort((a, b) => {
+                    return b.swear_score - a.swear_score
+                })
 
-        for (var userData in data) {
-            /*  USER_LIST.forEach(userEntity => {
-                if (userEntity.id === data[userData]._id) {
-                    if (announce) { } //TODO
+        let swearStatsMessage = new Discord.MessageEmbed()
+            .setTitle('Swear Kings of the Month! 🤬')
+            .setAuthor(`✝ Pope Megadork ✝`)
+            .setColor('DARK_VIVID_PINK')
+            .setDescription(`How many times have y'al spoke the nasties??!?!`)
+            .setFooter(`congrats to y'all`)
+            .setImage('../../../bot_knowledge/images/dedede-christian.jpg')
+            .setTimestamp(new Date().getMonth() - 1)
 
-                    stats.push(`${userEntity.username}'s swear score:\t ${data[userData].swearScore}.`)
-                    BOT.channels.
-                }
-            }) */
-        }
+        let bot: Bot = globalThis.bot
 
-        return stats.join('\n')
+        bot.guilds.forEach(guild => {
+            guild.members.forEach(member => {
+                swearingUsers.some(user => {
+                    if (member.id == user._id.toString())
+                        swearStatsMessage
+                            .addField(member.user.username, user.swear_score)
+                })
+            })
+        })
+
+        return swearStatsMessage
+    }
+
+    static printSwearStats() {
+        let bot: Bot = globalThis.bot
+
+        //TODO: bot.context.channel.send(this.generateSwearStatsMessage())
     }
 }

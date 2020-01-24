@@ -6,11 +6,12 @@ import PHRASES_SING from '../../bot_knowledge/phrases/phrases_sing.json';
 
 import AUTH from '../../user_creds.json'
 
+import Soundcloud from "soundcloud.ts"
 
-import Soundcloud from "soundcloud.ts";
 export default class BotModuleMusic {
 
-    static scClient: Soundcloud = new Soundcloud(AUTH.soundcloud.client_id)
+    static scClient: Soundcloud =
+        new Soundcloud(AUTH.soundcloud.client_id, AUTH.soundcloud.o_auth_token)
 
     static async playMusic(trigger: string, loop?: boolean) {
         let bot: Bot = globalThis.bot
@@ -124,5 +125,9 @@ export default class BotModuleMusic {
             bot.context.reply(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.null))
             console.log('No sound was playing, nothing terminated.')
         }
+    }
+
+    static loadClients() {
+        BotModuleMusic.scClient
     }
 }

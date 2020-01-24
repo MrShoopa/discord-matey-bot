@@ -5,7 +5,6 @@ import Stream from 'stream'
 import NodeFetch from 'node-fetch'
 
 import YTDL from 'ytdl-core'
-import SC from 'soundcloud.ts'
 
 import Discord from 'discord.js'
 
@@ -270,22 +269,32 @@ export default class Bot extends Discord.Client {
                     return null
                 }
             } else if (url.includes('soundcloud')) {
-                return this.context.reply('SoundCloud support coming sometime later. :)')
+                return this.context
+                    .reply('SoundCloud support coming sometime ' +
+                        `when SoundCloud opens up to developers again  :''''''')`)
 
                 streamInfo = { source: url, platform: 'SoundCloud' }
 
-                let sc = BotModuleMusic.scClient
+                let sc = await BotModuleMusic.scClient
 
                 try {
-                    stream = await sc.util.streamTrack(url)
 
-                    await sc.tracks.get(url).then(track => {
+                    await sc.tracks.get(url).then(async track => {
                         streamInfo.name = track.title
                         streamInfo.author = track.user.username
                         streamInfo.thumbnailUrl = track.artwork_url
                         streamInfo.authorImgUrl = track.user.avatar_url
                         streamInfo.genre = track.genre
+
+                        stream = await BotModuleMusic.scClient.util.streamTrack(`${track.id}`)
+                            .then(s => {
+                                return s
+                            }).catch(e => {
+                                console.log(e)
+                                return null
+                            })
                     })
+
                     return stream
                 } catch (error) {
                     let bot: Bot = globalThis.bot
@@ -296,6 +305,8 @@ export default class Bot extends Discord.Client {
 
                     return null
                 }
+            } else if (url.includes('spotify')) {
+                //TODO: Spotify support!
             }
         }
 

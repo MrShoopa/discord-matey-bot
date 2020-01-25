@@ -1,6 +1,6 @@
 export module Data {
     export interface UserSave extends Object {
-        _id: number
+        _id: string
         [x: string]: any
     }
 

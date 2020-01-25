@@ -9,7 +9,7 @@ import Bot from '../Bot'
 let bot = new Bot()
 globalThis.bot = bot
 
-let timeout: number = 200
+let timeout: number = 2000
 
 describe('calculate', function () {
     it('done and done lmao', function () {
@@ -24,7 +24,7 @@ describe(`Bot connects and populates info`, () => {
         setTimeout(function () {
             try {
                 expect(bot.guilds.size)
-                    .to.not.be.null
+                    .to.not.eql(0)
                 done()
             } catch (e) {
                 done(e)
@@ -55,15 +55,16 @@ describe('Bot can find specific user in guilds', () => {
     it('matched', () => {
         let wholeData = BotData.getUserDataFile()
 
-        wholeData[0]._id
+        let randomID: string = wholeData[0]._id
 
         let matchedUser
 
         bot.guilds.forEach(guild => {
-            guild.members.get('')
+            if (guild.members.has(randomID))
+                matchedUser = guild.members.get(randomID)
         })
 
         expect(matchedUser)
-            .to.not.be.null
+            .to.not.be.undefined
     })
 })

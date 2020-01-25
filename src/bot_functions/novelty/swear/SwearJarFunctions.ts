@@ -84,13 +84,19 @@ export default class BotModuleSwearJar {
 
         if (swearingUsers) {
 
+            const att =
+                new Discord.MessageAttachment(__dirname +
+                    '../../../../bot_knowledge/images/dedede-christian.jpg',
+                    'dedede-chiristian.jpg')
+
             let swearStatsMessage = new Discord.MessageEmbed()
                 .setTitle('Swear Kings of the Month! 🤬')
                 .setAuthor(`✝ Pope Megadork ✝`)
                 .setColor('DARK_VIVID_PINK')
                 .setDescription(`How many times have y'al spoke the nasties??!?!`)
                 .setFooter(`congrats to y'all`)
-                .setImage('../../../bot_knowledge/images/dedede-christian.jpg')
+                .attachFiles([att])
+                .setImage('attachment://dedede-christian.png')
                 .setTimestamp(new Date().getMonth() - 1)
 
             guild.members.forEach(member => {

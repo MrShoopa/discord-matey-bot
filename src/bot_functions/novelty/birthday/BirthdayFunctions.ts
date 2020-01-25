@@ -2,6 +2,7 @@ import Discord from 'discord.js'
 
 import Bot from "../../../Bot"
 import BotData from "../../DataHandler"
+import { Data } from './../../../types/data_types/Data';
 
 import * as CALENDAR from "../../../bot_knowledge/calendar/values.json"
 
@@ -27,7 +28,7 @@ export default class BotModuleBirthday {
 
 				if ((1 <= dateNumber) && (31 >= dateNumber)) {
 					// Construct birthday object
-					if (!yearNumber) yearNumber = 2120
+					if (!yearNumber) yearNumber = 6969
 
 					birthday = new Date(yearNumber, monthNumber, dateNumber)
 
@@ -107,12 +108,12 @@ export default class BotModuleBirthday {
 		return birthdayList
 	}
 
-	static announceBirthday(user, earrape?: boolean) {
+	static announceBirthday(user: Data.UserSave, earrape?: boolean) {
 		let bot: Bot = globalThis.bot
 
-		bot.guilds.forEach(guild => {
-			if (guild.members.has(user._id.toString())) {
-				let specialUser = guild.members.get(user._id.toString())
+		bot.guilds.some(guild => {
+			if (guild.members.has(user._id)) {
+				let specialUser = guild.members.get(user._id)
 
 				let specialSong
 					= "Happy Birthday to You\n" +
@@ -120,18 +121,24 @@ export default class BotModuleBirthday {
 					"You look like a monkey\n" +
 					"And you smell like one too.\n"
 
+				const att =
+					new Discord.MessageAttachment(__dirname +
+						'../../../../bot_knowledge/images/birthday-stock-image.jpg',
+						'birthday-stock.jpg')
+
 				let birthdayMesssage = new Discord.MessageEmbed()
 					.setColor('#FFC0CB')
 					.setFooter('🎂🎂🎂🎂🎂🎂🎂🎂🎂')
 					.setTitle(`DOOT DOOT! IT'S SOMEONE'S BIRTHDAY!!!! `)
-					.setDescription(`GIVE IT THE F UP FOR ${specialUser.nickname}!!!!1111!! \n aite hit the mic \n\n\n`)
-					.setImage(specialUser.user.avatar)
-					.setThumbnail('./bot_knowledge/images/birthday-stock-image.jpg')
+					.setDescription(`GIVE IT THE F UP FOR ${specialUser.displayName}!!!!1111!! \n aite hit the mic \n\n\n`)
+					.setImage(specialUser.user.avatarURL())
+					.attachFiles([att])
+					.setThumbnail('attachment://birthday-stock.jpg')
 
-				if (new Date(user.birthday).getUTCFullYear() !== 2120)
+				if (new Date(user.birthday).getUTCFullYear() !== 6969)
 					birthdayMesssage.addField(`${specialUser.user.username} turns ` +
 						(new Date().getUTCFullYear() - new Date(user.birthday).getUTCFullYear()),
-						Bot.fetchRandomPhrase(PHRASES.birthday.turning_old))
+						Bot.fetchRandomPhrase(PHRASES.birthday.singing))
 
 				if (earrape && specialUser.voice.channel) {
 					bot.voiceChannel = specialUser.voice.channel
@@ -139,7 +146,8 @@ export default class BotModuleBirthday {
 				}
 
 				guild.systemChannel.send(birthdayMesssage)
-			}
+				return true
+			} else return false
 		})
 	}
 }

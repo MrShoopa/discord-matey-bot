@@ -56,12 +56,12 @@ export default class BotData {
 	 */
 	static getUserData(id: number | string, createIfMissing?: boolean):
 		Data.UserSave {
-		if (typeof id === 'string') id = Number(id)
+		if (typeof id === 'number') id = id.toString()
 
 		let userData: Data.UserSave
 		try {
 			userData = this.getUserDataFile().find((matchedUser: {
-				_id: number
+				_id: string
 			}) => {
 				return matchedUser._id == id
 			})
@@ -102,7 +102,7 @@ export default class BotData {
 	 * @param  {boolean} force? Erases the existing datastore if it already exists.
 	 */
 	static createNewDataFile(fetch?: boolean, force?: boolean) {
-		let dataSkeleton: Data.UserSave = { _id: 42069, sampleData: "Mega!" }
+		let dataSkeleton: Data.UserSave = { _id: '42069', sampleData: "Mega!" }
 
 		if (!force &&
 			JSON.parse(FileSystem.readFileSync(SAVE_DATA_FILE).toString()))
@@ -131,13 +131,13 @@ export default class BotData {
 	 * @param  {boolean} log? If true, logs extra info to console.
 	 */
 	static createUserData(id: number | string, force?: boolean): Data.UserSave {
-		if (typeof id === 'string') id = Number(id)
+		if (typeof id === 'number') id = id.toString()
 
 		var data = this.getUserDataFile()
 
 		//  Find user...
 		let userData: Data.UserSave = data.find((matchedUser: {
-			_id: number
+			_id: string
 		}) => {
 			return matchedUser._id == id
 		})
@@ -169,7 +169,7 @@ export default class BotData {
 	 * @param  {object} newData New data to overwrite existing data with.
 	 */
 	static updateUserData(id: number | string, newData: Data.UserSave) {
-		if (typeof id === 'string') id = Number(id)
+		if (typeof id === 'number') id = id.toString()
 		console.group()
 		console.log(`Updating data for User ${id}:`)
 
@@ -178,7 +178,7 @@ export default class BotData {
 
 		//  Pointer to single user's data through above variable
 		let userData: Data.UserSave = data.find((matchedUser: {
-			_id: number
+			_id: string
 		}) => {
 			return matchedUser._id == id
 		})

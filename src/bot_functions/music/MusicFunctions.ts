@@ -1,9 +1,9 @@
 import Discord from 'discord.js'
 import Bot, { SongState } from "../../Bot"
-import { Song, Stream } from "../../types";
+import { Song, Stream } from "../../types"
 
-import TRIGGERS from '../../bot_knowledge/triggers/triggers.json';
-import PHRASES_SING from '../../bot_knowledge/phrases/phrases_sing.json';
+import TRIGGERS from '../../bot_knowledge/triggers/triggers.json'
+import PHRASES_SING from '../../bot_knowledge/phrases/phrases_sing.json'
 
 import AUTH from '../../user_creds.json'
 
@@ -68,7 +68,7 @@ export default class BotModuleMusic {
             // Start searching local audio folder for 'non-tagged' songs
             let songRequest = bot.context.toString().substring(trigger.length + 1)
 
-            let matchedSongs = Bot.searchFilesRecursive('./', `${songRequest}.mp3`);
+            let matchedSongs = Bot.searchFilesRecursive('./', `${songRequest}.mp3`)
             if (matchedSongs.length > 0 && songRequest) {
                 console.group()
                 console.log(`Local matching songs found:`)

@@ -1,4 +1,4 @@
-import Discord from 'discord.js';
+import Discord from 'discord.js'
 import Twitter from 'twitter'
 import Bot from '../../../Bot'
 

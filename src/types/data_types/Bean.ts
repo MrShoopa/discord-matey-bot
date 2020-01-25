@@ -8,22 +8,22 @@ export default class Bean {
 }
 
 export class BeanContainer {
-    private beans: { [key: string]: Bean };
+    private beans: { [key: string]: Bean }
 
     constructor() {
-        this.beans = {};
+        this.beans = {}
     }
 
     add(key: string, value: Bean): void {
-        this.beans[key] = value;
+        this.beans[key] = value
     }
 
     has(key: string): boolean {
-        return key in this.beans;
+        return key in this.beans
     }
 
     get(key: string): Bean {
-        return this.beans[key];
+        return this.beans[key]
     }
 
     addNewBean(): void {

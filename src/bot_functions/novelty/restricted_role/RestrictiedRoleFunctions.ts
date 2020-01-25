@@ -1,6 +1,6 @@
 import Bot from "../../../Bot"
 
-import PHRASES_SERVER_MOD from '../../../bot_knowledge/phrases/phrases_server_mod.json';
+import PHRASES_SERVER_MOD from '../../../bot_knowledge/phrases/phrases_server_mod.json'
 
 
 export default class BotModuleRestrictedRole {

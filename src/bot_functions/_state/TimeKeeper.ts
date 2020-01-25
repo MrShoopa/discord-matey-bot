@@ -12,7 +12,7 @@
  */
 
 import * as FileSystem from 'fs'
-import { Data } from './../../types/data_types/Data';
+import { Data } from './../../types/data_types/Data'
 import Bot from '../../Bot'
 
 /*  Locations  */

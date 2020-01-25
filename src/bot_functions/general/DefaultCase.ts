@@ -1,6 +1,6 @@
-import Bot from '../../Bot';
-import TRIGGERS from '../../bot_knowledge/triggers/triggers.json';
-import PHRASES_FRONT from '../../bot_knowledge/phrases/phrases_front.json';
+import Bot from '../../Bot'
+import TRIGGERS from '../../bot_knowledge/triggers/triggers.json'
+import PHRASES_FRONT from '../../bot_knowledge/phrases/phrases_front.json'
 
 export default class BotDefaultResponder {
 

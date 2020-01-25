@@ -1,23 +1,23 @@
-import Discord from 'discord.js';
+import Discord from 'discord.js'
 
-import Bot from '../Bot';
-import BotGeneralCommands from './general/GeneralCommands.js';
-import BotDefaultResponder from './general/DefaultCase';
+import Bot from '../Bot'
+import BotGeneralCommands from './general/GeneralCommands.js'
+import BotDefaultResponder from './general/DefaultCase'
 
-import TRIGGERS from '../bot_knowledge/triggers/triggers.json';
-import HelpTriggers from './general/HelpTriggers';
+import TRIGGERS from '../bot_knowledge/triggers/triggers.json'
+import HelpTriggers from './general/HelpTriggers'
 
-import BotModuleMusic from './music/MusicFunctions';
-import BotModuleSwearJar from './novelty/swear/SwearJarFunctions';
-import BotModuleRestrictedRole from './novelty/restricted_role/RestrictiedRoleFunctions';
-import BotModuleTwitter from './fetching/twitter/TwitterFunctions';
-import BotModuleGoogleImage from './fetching/google/googleImageCommands.ts/GoogleImageCommands';
-import BotModuleReddit from './fetching/reddit/RedditFunctions';
-import BotModuleBirthday from './novelty/birthday/BirthdayFunctions';
-import BotModuleAnime from './fetching/anime/AnimeFunctions';
+import BotModuleMusic from './music/MusicFunctions'
+import BotModuleSwearJar from './novelty/swear/SwearJarFunctions'
+import BotModuleRestrictedRole from './novelty/restricted_role/RestrictiedRoleFunctions'
+import BotModuleTwitter from './fetching/twitter/TwitterFunctions'
+import BotModuleGoogleImage from './fetching/google/googleImageCommands.ts/GoogleImageCommands'
+import BotModuleReddit from './fetching/reddit/RedditFunctions'
+import BotModuleBirthday from './novelty/birthday/BirthdayFunctions'
+import BotModuleAnime from './fetching/anime/AnimeFunctions'
 
-import BotWordplay from './wordplay/WordplayFunctions';
-import BotModuleQuote from './fetching/quote/QuoteFunctions';
+import BotWordplay from './wordplay/WordplayFunctions'
+import BotModuleQuote from './fetching/quote/QuoteFunctions'
 
 
 export default class TriggerHandlers {

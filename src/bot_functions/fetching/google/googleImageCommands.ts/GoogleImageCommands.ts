@@ -6,8 +6,8 @@ import AUTH from '../../../../user_creds.json'
 
 import TRIGGERS from '../../../../bot_knowledge/triggers/triggers.json'
 
-import PHRASES_IMAGE_SEARCH from '../../../../bot_knowledge/phrases/phrases_image_search.json';
-import DEFAULTS_IMAGE from '../../../../bot_knowledge/defaults/image_search.json';
+import PHRASES_IMAGE_SEARCH from '../../../../bot_knowledge/phrases/phrases_image_search.json'
+import DEFAULTS_IMAGE from '../../../../bot_knowledge/defaults/image_search.json'
 
 export default class BotModuleGoogleImage {
 

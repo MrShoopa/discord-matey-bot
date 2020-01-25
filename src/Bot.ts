@@ -522,31 +522,31 @@ export default class Bot extends Discord.Client {
         caseSensitive: boolean = false) {
         if (!caseSensitive) pattern = pattern.toLowerCase()
 
-        var results = [];
+        var results = []
 
         // Read contents of directory
         FileSystem.readdirSync(dir).forEach(dirInner => {
             if (!caseSensitive) dirInner = dirInner.toLowerCase()
 
             // Obtain absolute path
-            dirInner = Path.resolve(dir, dirInner);
+            dirInner = Path.resolve(dir, dirInner)
 
             // Get stats to determine if path is a directory or a file
-            var stat = FileSystem.statSync(dirInner);
+            var stat = FileSystem.statSync(dirInner)
 
             // If path is a directory, scan it and combine results
             if (stat.isDirectory()) {
-                results = results.concat(Bot.searchFilesRecursive(dirInner, pattern));
+                results = results.concat(Bot.searchFilesRecursive(dirInner, pattern))
             }
 
             // If path is a file and ends with pattern then push it onto results
             if (stat.isFile() && dirInner.endsWith(pattern)) {
-                results.push(dirInner);
+                results.push(dirInner)
             }
-        });
+        })
 
-        return results;
-    };
+        return results
+    }
 
     /**
      * Helper for blind-picking phrases of lists

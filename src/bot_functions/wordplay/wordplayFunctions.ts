@@ -1,11 +1,11 @@
 import Bot from '../../Bot'
 
-import TRIGGERS from '../../bot_knowledge/triggers/triggers.json';
+import TRIGGERS from '../../bot_knowledge/triggers/triggers.json'
 
-import PHRASES_FRONT from '../../bot_knowledge/phrases/phrases_front.json';
-import PHRASES_CONVO from '../../bot_knowledge/phrases/phrases_conversational.json';
+import PHRASES_FRONT from '../../bot_knowledge/phrases/phrases_front.json'
+import PHRASES_CONVO from '../../bot_knowledge/phrases/phrases_conversational.json'
 
-import BotModuleBraindead from '../novelty/QuiteSpecificFunctions';
+import BotModuleBraindead from '../novelty/QuiteSpecificFunctions'
 
 export default class BotWordplay {
     static bot: Bot

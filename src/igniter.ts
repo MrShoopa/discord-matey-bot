@@ -9,10 +9,10 @@
 
 import Discord from 'discord.js'
 
-import Bot from './Bot';
+import Bot from './Bot'
 
-import TriggerHandlers from './bot_functions/TriggerHandlers.js';
-import PostReadyFunctions from './bot_functions/_state/PostReadyFunctions';
+import TriggerHandlers from './bot_functions/TriggerHandlers.js'
+import PostReadyFunctions from './bot_functions/_state/PostReadyFunctions'
 
 //  Initialize Discord Bot
 console.log('Initializing...')
@@ -23,17 +23,17 @@ var bot: Bot = globalThis.bot
 bot.on('ready', () => {
 	console.info(`Hey there! The time is ${new Date().toLocaleString()}. I'm ready! 😀\n`)
 
-	bot.user.setActivity(`with your servers`, { type: 'PLAYING' });
+	bot.user.setActivity(`with your servers`, { type: 'PLAYING' })
 
 	PostReadyFunctions.run()
 })
 
 //  Bot joining server for first time
 bot.on('guildCreate', guild => {
-	console.log(`New guild joined: ${guild.name} (id: ${guild.id}). There are ${guild.memberCount} members here.`);
+	console.log(`New guild joined: ${guild.name} (id: ${guild.id}). There are ${guild.memberCount} members here.`)
 
 	guild.systemChannel.send('Hello world?')
-});
+})
 
 //  Messaging to bot
 bot.on('message', async (message) => {

@@ -35,11 +35,11 @@ export default class BotModuleReddit {
 
                 delivery.setDescription(pasta)
 
-                pasta = pasta.match(/(?!&amp;#x200B;)[\s\S]{1,2000}/g)
+                pasta = pasta.match(/(?!&amp#x200B)[\s\S]{1,2000}/g)
 
                 pasta.forEach((chunk: any) => {
                     bot.textChannel.send(chunk)
-                });
+                })
             } else delivery.setDescription(pastaObject.data.children[0].data.selftext)
 
         }

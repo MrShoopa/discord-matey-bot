@@ -30,7 +30,7 @@ export default class BotData {
 		try {
 			var data: any = JSON.parse(FileSystem.readFileSync(SAVE_DATA_FILE).toString())
 		} catch (err) {
-			if (log) console.error(err);
+			if (log) console.error(err)
 
 			if (err.code === 'ENOENT') {
 				console.error('Save file is missing. Have you deleted the save file?')
@@ -61,10 +61,10 @@ export default class BotData {
 		let userData: Data.UserSave
 		try {
 			userData = this.getUserDataFile().find((matchedUser: {
-				_id: number;
+				_id: number
 			}) => {
-				return matchedUser._id == id;
-			});
+				return matchedUser._id == id
+			})
 		} catch (err) {
 			this.bot.saveBugReport(err)
 			throw new ReferenceError(`Couldn't attempt to find user's data.`)
@@ -112,7 +112,7 @@ export default class BotData {
 			FileSystem.writeFileSync(SAVE_DATA_FILE, JSON.stringify(dataSkeleton))
 
 			if (fetch) return this.getUserDataFile()
-			console.log(`New User Data save file created.\n`);
+			console.log(`New User Data save file created.\n`)
 		} catch (err) {
 			//  If folder is missing
 			if (err.code === 'ENOENT') {
@@ -137,9 +137,9 @@ export default class BotData {
 
 		//  Find user...
 		let userData: Data.UserSave = data.find((matchedUser: {
-			_id: number;
+			_id: number
 		}) => {
-			return matchedUser._id == id;
+			return matchedUser._id == id
 		})
 
 		if (userData === undefined || force) {
@@ -151,7 +151,7 @@ export default class BotData {
 			data.push(newSave)
 
 			this.writeDataFile(data)
-			console.log(`Data created for User ${id}.`);
+			console.log(`Data created for User ${id}.`)
 			if (force) console.warn(`YOU HAVE REWRITTEN SOMEONE'S SAVE!`)
 
 			return data
@@ -178,9 +178,9 @@ export default class BotData {
 
 		//  Pointer to single user's data through above variable
 		let userData: Data.UserSave = data.find((matchedUser: {
-			_id: number;
+			_id: number
 		}) => {
-			return matchedUser._id == id;
+			return matchedUser._id == id
 		})
 
 		if (!userData) {

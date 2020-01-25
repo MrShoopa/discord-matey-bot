@@ -1,8 +1,8 @@
-import Discord from 'discord.js';
+import Discord from 'discord.js'
 
-import Bot from '../../../Bot';
+import Bot from '../../../Bot'
 
-import TRIGGERS from '../../../bot_knowledge/triggers/triggers.json';
+import TRIGGERS from '../../../bot_knowledge/triggers/triggers.json'
 
 export default class BotModuleQuote {
     static async fireQuoteMessage() {

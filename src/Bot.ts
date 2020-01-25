@@ -4,7 +4,7 @@ import Request from 'request'
 import Stream from 'stream'
 import NodeFetch from 'node-fetch'
 
-import Discord from 'discord.js'
+import Discord, { Role } from 'discord.js'
 import YTDL from 'ytdl-core'
 
 import * as Datypes from './types/index'
@@ -30,9 +30,11 @@ export default class Bot extends Discord.Client {
         super()
 
         this.login(apiKey).catch(error => (console.log(`Discord connection error: ${error}`)))
-            .then(
-                this.restrictedRoleId = this.fetchRoleID(CREDS.you.restricted_role_name)
-            )
+            .then(() => {
+                CREDS.you.restricted_role_names.forEach(name => {
+                    this.restrictedRoleIds.push(this.fetchRoleID(name))
+                })
+            })
 
         //  Check data
 
@@ -40,7 +42,7 @@ export default class Bot extends Discord.Client {
             BotData.createNewDataFile()
     }
 
-    restrictedRoleId: string
+    restrictedRoleIds: string[] = []
 
     private _context: Discord.Message | Discord.PartialMessage
     waker: Discord.User
@@ -103,16 +105,19 @@ export default class Bot extends Discord.Client {
     }
 
     /*  ---- Bot Helper Background Functions ---- */
+    fetchRoleID(roleName: string) {
+        let role: Role = null
 
-    //TODO: Make a version that works for multiple guilds.
-    fetchRoleID(roleName = this.restrictedRoleId) {
-        this.guilds.forEach(guild => {
-            guild.roles.forEach(role => {
-                if (role.name == roleName)
-                    return role.id
+        role = this.guilds.map(guild => {
+            return guild.roles.find(r => {
+                return r.name == roleName
             })
-        })
-        return null
+        })[0]
+
+        if (role)
+            return role.id
+        else
+            return null
     }
 
     playAudioFromFiles(song: Datypes.Song.SongObject | string, loop?: boolean, trigger?: string) {

@@ -13,7 +13,7 @@ export default class BotModuleRestrictedRole {
             bot.context.reply(
                 `${Bot.fetchRandomPhrase(PHRASES_SERVER_MOD.restricted_role_set)},
                 ${member.displayName}`)
-            member.roles.add(bot.restrictedRoleId)
+            member.roles.add(bot.restrictedRoleIds[0])
                 .then(() => {
                     console.log(
                         `Adding ${member.displayName} to the role: ${globalThis.RESTRICTED_ROLE_NAME}`)
@@ -34,7 +34,7 @@ export default class BotModuleRestrictedRole {
             bot.context.reply(
                 `${Bot.fetchRandomPhrase(PHRASES_SERVER_MOD.restricted_role_unset)},
         ${member.displayName}`)
-            member.roles.remove(bot.restrictedRoleId)
+            member.roles.remove(bot.restrictedRoleIds[0])
                 .then(() => {
                     console.log(
                         `Removing ${member.displayName} from the role: ${globalThis.RESTRICTED_ROLE_NAME}`)

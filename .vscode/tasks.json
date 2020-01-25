@@ -18,7 +18,6 @@
             "type": "shell",
             "command": "Copy-item -Force -Recurse \"${workspaceFolder}\\built\\*\" -Destination \"${workspaceFolder}\\built_fallback\"",
             "args": [],
-            "group": "build"
         }
     ]
 }

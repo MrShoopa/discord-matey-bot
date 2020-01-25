@@ -1,4 +1,4 @@
-import Discord from 'discord.js';
+import Discord, { Guild } from 'discord.js';
 import Bot from "../../../Bot"
 import BotData from "../../DataHandler"
 
@@ -72,7 +72,7 @@ export default class BotModuleSwearJar {
         }
     }
 
-    static generateSwearStatsMessage() {
+    static generateSwearStatsMessage(guild: Guild) {
 
         console.log('Swear stats of the month!')
 
@@ -82,33 +82,37 @@ export default class BotModuleSwearJar {
                     return b.swear_score - a.swear_score
                 })
 
-        let swearStatsMessage = new Discord.MessageEmbed()
-            .setTitle('Swear Kings of the Month! 🤬')
-            .setAuthor(`✝ Pope Megadork ✝`)
-            .setColor('DARK_VIVID_PINK')
-            .setDescription(`How many times have y'al spoke the nasties??!?!`)
-            .setFooter(`congrats to y'all`)
-            .setImage('../../../bot_knowledge/images/dedede-christian.jpg')
-            .setTimestamp(new Date().getMonth() - 1)
+        if (swearingUsers) {
 
-        let bot: Bot = globalThis.bot
+            let swearStatsMessage = new Discord.MessageEmbed()
+                .setTitle('Swear Kings of the Month! 🤬')
+                .setAuthor(`✝ Pope Megadork ✝`)
+                .setColor('DARK_VIVID_PINK')
+                .setDescription(`How many times have y'al spoke the nasties??!?!`)
+                .setFooter(`congrats to y'all`)
+                .setImage('../../../bot_knowledge/images/dedede-christian.jpg')
+                .setTimestamp(new Date().getMonth() - 1)
 
-        bot.guilds.forEach(guild => {
             guild.members.forEach(member => {
                 swearingUsers.some(user => {
-                    if (member.id == user._id.toString())
+                    if (member.user.id == user._id.toString())
                         swearStatsMessage
                             .addField(member.user.username, user.swear_score)
                 })
             })
-        })
 
-        return swearStatsMessage
+            return swearStatsMessage
+        } else return null
     }
 
     static printSwearStats() {
         let bot: Bot = globalThis.bot
 
-        //TODO: bot.context.channel.send(this.generateSwearStatsMessage())
+        bot.guilds.forEach(guild => {
+            let msg = this.generateSwearStatsMessage(guild)
+
+            if (msg)
+                guild.systemChannel.send(msg)
+        })
     }
 }

@@ -54,9 +54,6 @@ export default class BotModuleBirthday {
 				bot.context.reply(Bot.fetchRandomPhrase(PHRASES.birthday.updated_user) +
 					` ${CALENDAR.months_prettier[birthday.getMonth()]} ${birthday.getDate().toLocaleString()}!`)
 			}
-
-			userData.birthday = birthday
-
 		} catch (error) {
 			bot.saveBugReport(error, true)
 			return bot.context.reply(`I couldn't save your birthday for some reason... :(`)
@@ -97,8 +94,8 @@ export default class BotModuleBirthday {
 	static checkBirthdaysToday(announce?: boolean) {
 		BotData.getUserDataFile().forEach(user => {
 			let birthday = new Date(user?.birthday)
-			if (birthday.getDate() === new Date().getDate()
-				&& birthday.getMonth() === new Date().getDate())
+			if (birthday?.getDate() === new Date().getDate()
+				&& birthday?.getMonth() === new Date().getMonth())
 				if (announce)
 					this.announceBirthday(user)
 		});
@@ -134,6 +131,8 @@ export default class BotModuleBirthday {
 					bot.voiceChannel = specialUser.voice.channel
 					bot.playAudioFromURL('https://www.youtube.com/watch?v=s6gLh6mf0Ig&ab_channel=jobv3')
 				}
+
+				guild.systemChannel.send(birthdayMesssage)
 			}
 		});
 	}

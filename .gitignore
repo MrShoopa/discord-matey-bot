@@ -2,7 +2,7 @@
 user_creds.json
 
 # Save Data
-user_data.json
+**/save_data
 
 # Code Runner
 tempCodeRunnerFile.js

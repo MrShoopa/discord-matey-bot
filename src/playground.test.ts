@@ -1,3 +1,4 @@
+import FileSystem from 'fs';
 // yeah just write whatever here to test
 
 import { expect } from 'chai';
@@ -17,6 +18,13 @@ describe('calculate', function () {
 	});
 });
 
+describe('Being able to read save data', () => {
+	it('access', () => {
+		let wholeData = BotData.getUserDataFile()
+		expect(wholeData).to.be.not.null
+	})
+})
+
 describe('Fetching user saves with certain property', () => {
 	it('access', () => {
 		let pickedData = BotData.getAllUserDataWithAttribute('_id')
@@ -25,6 +33,5 @@ describe('Fetching user saves with certain property', () => {
 
 		expect(Object.keys(pickedData).length)
 			.equal(Object.keys(wholeData).length)
-
 	})
 })

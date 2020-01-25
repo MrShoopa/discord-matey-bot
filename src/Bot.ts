@@ -38,7 +38,6 @@ export default class Bot extends Discord.Client {
 
         if (!BotData.getUserDataFile())
             BotData.createNewDataFile()
-
     }
 
     restrictedRoleId: string

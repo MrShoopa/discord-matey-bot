@@ -70,8 +70,6 @@ export default class TimelyFunctions {
             lastRun.getDate() == this.now.getDate()
         this.doneForMonth =
             lastRun.getMonth() == this.now.getMonth()
-
-        this.timeSave = timeObject
     }
 
     static updateLastRun() {

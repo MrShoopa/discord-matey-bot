@@ -36,7 +36,7 @@ export default class BotModuleBirthday {
 				}
 			}
 
-		});
+		})
 
 		if (!birthday)
 			return bot.context.reply(`invalid date. Type the month and date like this: 'September 10 (year optional)'`)
@@ -64,8 +64,8 @@ export default class BotModuleBirthday {
 	}
 
 	static inquireBirthdaySelf(trigger?: string) {
-		let bot: Bot = globalThis.bot;
-		bot.preliminary(trigger, 'Birthday Inquiry', true);
+		let bot: Bot = globalThis.bot
+		bot.preliminary(trigger, 'Birthday Inquiry', true)
 
 		let userData = BotData.getUserData(bot.context.author.id)
 
@@ -92,21 +92,27 @@ export default class BotModuleBirthday {
 	}
 
 	static checkBirthdaysToday(announce?: boolean) {
-		BotData.getUserDataFile().forEach(user => {
+		let birthdayList: [{ userId: string, date: Date }?] = []
+
+		BotData.getUserDataFile().forEach((user: { birthday: string | number | Date; _id: any }) => {
 			let birthday = new Date(user?.birthday)
 			if (birthday?.getDate() === new Date().getDate()
-				&& birthday?.getMonth() === new Date().getMonth())
+				&& birthday?.getMonth() === new Date().getMonth()) {
 				if (announce)
 					this.announceBirthday(user)
-		});
+				birthdayList.push({ userId: user._id, date: new Date(user.birthday) })
+			}
+		})
+
+		return birthdayList
 	}
 
 	static announceBirthday(user, earrape?: boolean) {
 		let bot: Bot = globalThis.bot
 
 		bot.guilds.forEach(guild => {
-			if (guild.members.has(user._id)) {
-				let specialUser = guild.members.get(user._id)
+			if (guild.members.has(user._id.toString())) {
+				let specialUser = guild.members.get(user._id.toString())
 
 				let specialSong
 					= "Happy Birthday to You\n" +
@@ -123,7 +129,7 @@ export default class BotModuleBirthday {
 					.setThumbnail('./bot_knowledge/images/birthday-stock-image.jpg')
 
 				if (new Date(user.birthday).getUTCFullYear() !== 2120)
-					birthdayMesssage.addField(`${specialUser.user.username} turns` +
+					birthdayMesssage.addField(`${specialUser.user.username} turns ` +
 						(new Date().getUTCFullYear() - new Date(user.birthday).getUTCFullYear()),
 						Bot.fetchRandomPhrase(PHRASES.birthday.turning_old))
 
@@ -134,6 +140,6 @@ export default class BotModuleBirthday {
 
 				guild.systemChannel.send(birthdayMesssage)
 			}
-		});
+		})
 	}
 }

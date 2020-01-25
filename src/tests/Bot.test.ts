@@ -1,32 +1,69 @@
-import Chai from 'chai';
+import FileSystem from 'fs'
+// yeah just write whatever here to test
 
-import Bot from "../Bot";
-import TriggerHandlers from '../bot_functions/TriggerHandlers';
+import { expect } from 'chai'
+import 'mocha'
+import BotData from '../bot_functions/DataHandler'
+import Bot from '../Bot'
 
-globalThis.bot = new Bot()
-let bot: Bot = globalThis.bot
+let bot = new Bot()
+globalThis.bot = bot
 
-bot.on('ready', () => {
-    console.log(`Connected.`)
-    console.log(`Please enter in a voice and text channel the bot can see before beginning.`)
-    console.log(`then type 'test' with a following listed argument to run a test.`)
+let timeout: number = 200
+
+describe('calculate', function () {
+    it('done and done lmao', function () {
+        let result = 2 + 2
+        expect(result)
+            .equal(4)
+    })
 })
 
-bot.on('message', message => {
-    if (message.toString() === 'test everything') {
-        testAllTriggersandFetchers
-    }
+describe(`Bot connects and populates info`, () => {
+    it('connected', done => {
+        setTimeout(function () {
+            try {
+                expect(bot.guilds.size)
+                    .to.not.be.null
+                done()
+            } catch (e) {
+                done(e)
+            }
+        }, timeout)
+    })
 })
 
+describe('User data file is being read', () => {
+    it('accessed', () => {
+        let wholeData = BotData.getUserDataFile()
+        expect(wholeData).to.be.not.null
+    })
+})
 
-//* TEST FUNCTIONS
+describe('Can fetch specific users with available attribute', () => {
+    it('access', () => {
+        let pickedData = BotData.getAllUserDataWithAttribute('_id')
 
-export function testAllTriggersandFetchers(message = bot.context) {
-    TriggerHandlers.validateMessage(message)
-}
+        let wholeData = BotData.getUserDataFile()
 
-function printOptionsList() {
-    console.group()
-    console.log('   test everything - Does what it says.')
-    console.error()
-}
+        expect(Object.keys(pickedData).length)
+            .equal(Object.keys(wholeData).length)
+    })
+})
+
+describe('Bot can find specific user in guilds', () => {
+    it('matched', () => {
+        let wholeData = BotData.getUserDataFile()
+
+        wholeData[0]._id
+
+        let matchedUser
+
+        bot.guilds.forEach(guild => {
+            guild.members.get('')
+        })
+
+        expect(matchedUser)
+            .to.not.be.null
+    })
+})

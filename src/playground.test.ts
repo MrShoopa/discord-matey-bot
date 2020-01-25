@@ -1,37 +1,47 @@
-import FileSystem from 'fs';
-// yeah just write whatever here to test
+// Test any functions uncovered here!
 
-import { expect } from 'chai';
-import 'mocha';
-import BotData from './bot_functions/DataHandler';
+import { expect } from 'chai'
+import 'mocha'
+import BotData from './bot_functions/DataHandler'
+import Bot from './Bot'
 
 var test = 'megadork hi'
 var testInput = 'megadork! hi'
 
 console.log(`are you cool? ${test.includes(testInput)}`)
 
-describe('calculate', function () {
-	it('add', function () {
-		let result = 2 + 2
-		expect(result)
-			.equal(4);
-	});
-});
+let bot = new Bot()
+globalThis.bot = bot
 
-describe('Being able to read save data', () => {
-	it('access', () => {
-		let wholeData = BotData.getUserDataFile()
-		expect(wholeData).to.be.not.null
+let timeout: number = 200
+
+describe(`Bot connected`, () => {
+	it('connected', done => {
+		setTimeout(function () {
+			try {
+				expect(bot.guilds.size)
+					.to.not.be.null
+				done()
+			} catch (e) {
+				done(e)
+			}
+		}, timeout)
 	})
 })
 
-describe('Fetching user saves with certain property', () => {
-	it('access', () => {
-		let pickedData = BotData.getAllUserDataWithAttribute('_id')
-
+describe('Finding specific user in guilds', () => {
+	it('matched', () => {
 		let wholeData = BotData.getUserDataFile()
 
-		expect(Object.keys(pickedData).length)
-			.equal(Object.keys(wholeData).length)
+		wholeData[0]._id
+
+		let matchedUser
+
+		bot.guilds.forEach(guild => {
+			guild.members.get('')
+		})
+
+		expect(matchedUser)
+			.to.not.be.null
 	})
 })

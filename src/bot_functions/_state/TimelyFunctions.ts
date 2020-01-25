@@ -1,12 +1,21 @@
+import BotTimeKeeper from '../_state/TimeKeeper'
+
 import BotModuleSwearJar from "../novelty/swear/SwearJarFunctions"
 import BotModuleBirthday from "../novelty/birthday/BirthdayFunctions"
 
 export default class TimelyFunctions {
-    static lastRun: Date
+    static get timeSave() {
+        return BotTimeKeeper.getTimeData()
+    }
+    static set timeSave(newData) {
+        BotTimeKeeper.updateTimeData(newData)
+    }
+
     private static _now: Date
 
-    static doneForDay: boolean
     static doneForHour: boolean
+    static doneForDateMonth: boolean
+    static doneForMonth: boolean
 
     static get now() {
         TimelyFunctions._now = new Date()
@@ -14,21 +23,26 @@ export default class TimelyFunctions {
     }
 
     static timeContexual(pollTime: number = 60000) {
+        let timeObject = this.timeSave
+        timeObject.last_initiliazed = new Date().toString()
+
         setInterval(() => this.runTimeSensitive(), pollTime)
-        setInterval(() => console.log(`${new Date().toISOString()}: I sit...`), 3600000)
+        setInterval(() => console.log(`${new Date().toString()}: I sit...`), 3600000)
+
+        this.timeSave = timeObject
     }
 
-    static runTimeSensitive() {
+    static runTimeSensitive(log?: boolean) {
         this.checkLastRun()
 
-        if (!this.doneForDay) {
+        if (!this.doneForDateMonth) {
 
             if (this.now.getDate() === 1)
                 BotModuleSwearJar.printSwearStats()
 
             BotModuleBirthday.checkBirthdaysToday(true)
 
-            this.doneForDay = true
+            this.doneForDateMonth = true
         }
 
         if (!this.doneForHour) {
@@ -36,16 +50,35 @@ export default class TimelyFunctions {
             this.doneForHour = true
         }
 
-        this.lastRun = this.now
+        if (log) console.info(`Timely functions ran at ${new Date()}.`)
+
+        this.updateLastRun()
     }
 
     static checkLastRun() {
-        if (!this.lastRun)
-            this.lastRun = new Date(0)
+        let timeObject = this.timeSave
 
-        if (this.lastRun.getDate() != this.now.getDate())
-            this.doneForDay = false
-        if (this.lastRun.getHours() != this.now.getHours())
-            this.doneForHour = false
+        if (isNaN(Date.parse(timeObject.last_ran_functions.time)))
+            timeObject.last_ran_functions.time = new Date(0).toString()
+
+        let lastRun =
+            new Date(timeObject.last_ran_functions.time)
+
+        this.doneForHour =
+            lastRun.getHours() == this.now.getHours()
+        this.doneForDateMonth =
+            lastRun.getDate() == this.now.getDate()
+        this.doneForMonth =
+            lastRun.getMonth() == this.now.getMonth()
+
+        this.timeSave = timeObject
+    }
+
+    static updateLastRun() {
+        let timeObject = this.timeSave
+
+        timeObject.last_ran_functions.time = new Date().toString()
+
+        this.timeSave = timeObject
     }
 }

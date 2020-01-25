@@ -35,7 +35,7 @@ export default class BotData {
 			if (err.code === 'ENOENT') {
 				console.error('Save file is missing. Have you deleted the save file?')
 				try {
-					return this.createNewDataFile()
+					return this.createNewDataFile(true, true)
 				} catch (err) {
 					this.bot.saveBugReport(err, true)
 				}
@@ -54,7 +54,8 @@ export default class BotData {
 	 * @param  {number|string} id User's Discord ID
 	 * @param  {boolean} log? If true, logs extra info to console.
 	 */
-	static getUserData(id: number | string, createIfMissing?: boolean) {
+	static getUserData(id: number | string, createIfMissing?: boolean):
+		Data.UserSave {
 		if (typeof id === 'string') id = Number(id)
 
 		let userData: Data.UserSave
@@ -84,7 +85,8 @@ export default class BotData {
 	 * @param  {string} the single requested attribute to be retrieved per user
 	 * @param  {boolean} log? If true, logs extra info to console.
 	*/
-	static getAllUserDataWithAttribute(attribute: string, log?: boolean): Array<Data.UserSave> {
+	static getAllUserDataWithAttribute(attribute: string, log?: boolean):
+		Array<Data.UserSave> {
 		let dataObj = this.getUserDataFile()
 
 		return dataObj.map((user: Data.UserSave) => {
@@ -100,28 +102,25 @@ export default class BotData {
 	 * @param  {boolean} force? Erases the existing datastore if it already exists.
 	 */
 	static createNewDataFile(fetch?: boolean, force?: boolean) {
-		let dataSkeleton = [{ _id: 42069, sampleData: "Mega!" }]
+		let dataSkeleton: Data.UserSave = { _id: 42069, sampleData: "Mega!" }
 
-		if (this.getUserDataFile() && !force) return console.log('Data already exists.')
+		if (!force &&
+			JSON.parse(FileSystem.readFileSync(SAVE_DATA_FILE).toString()))
+			return console.log('Data already exists.')
 
 		try {
-			FileSystem.writeFile(SAVE_DATA_FILE, JSON.stringify(dataSkeleton), err => {
-				if (err) {
-					//  If folder is missing
-					if (err.code === 'ENOENT')
-						FileSystem.mkdir(SAVE_DATA_FILE, { recursive: true }, (err) => {
-							if (err) throw err;
-						});
-					else
-						throw err
-				}
-			});
+			FileSystem.writeFileSync(SAVE_DATA_FILE, JSON.stringify(dataSkeleton))
 
 			if (fetch) return this.getUserDataFile()
 			console.log(`New User Data save file created.\n`);
 		} catch (err) {
-			console.error('Error creating new save file.')
-			this.bot.saveBugReport(err)
+			//  If folder is missing
+			if (err.code === 'ENOENT') {
+				FileSystem.mkdirSync(SAVE_DATA_FILE, { recursive: true })
+			} else {
+				console.error('Error creating new save file.')
+				this.bot.saveBugReport(err)
+			}
 		}
 	}
 
@@ -131,7 +130,7 @@ export default class BotData {
 	 * @param  {number|string} id User's Discord ID
 	 * @param  {boolean} log? If true, logs extra info to console.
 	 */
-	static createUserData(id: number | string, force?: boolean) {
+	static createUserData(id: number | string, force?: boolean): Data.UserSave {
 		if (typeof id === 'string') id = Number(id)
 
 		var data = this.getUserDataFile()
@@ -169,7 +168,7 @@ export default class BotData {
 	 * @param  {number|string} id User's Discord ID
 	 * @param  {object} newData New data to overwrite existing data with.
 	 */
-	static updateUserData(id: number | string, newData: object) {
+	static updateUserData(id: number | string, newData: Data.UserSave) {
 		if (typeof id === 'string') id = Number(id)
 		console.group()
 		console.log(`Updating data for User ${id}:`)
@@ -206,7 +205,7 @@ export default class BotData {
 	 * 
 	 * @param  {any} data
 	 */
-	private static writeDataFile(data: any) {
+	private static writeDataFile(data: Array<Data.UserSave>) {
 
 		if (typeof data === 'object')
 			try {

@@ -23,8 +23,6 @@ var bot: Bot = globalThis.bot
 bot.on('ready', () => {
 	console.info(`Hey there! The time is ${new Date().toLocaleString()}. I'm ready! 😀\n`)
 
-	bot.user.setActivity(`with your servers`, { type: 'PLAYING' })
-
 	PostReadyFunctions.run()
 })
 

@@ -3,8 +3,10 @@ import FileSystem from 'fs'
 
 import { expect } from 'chai'
 import 'mocha'
-import BotData from '../bot_functions/DataHandler'
+
 import Bot from '../Bot'
+import BotData from '../bot_functions/DataHandler'
+import BotDiscordActivity from '../bot_knowledge/statuses/DiscordActivityStatus'
 
 let bot = new Bot()
 globalThis.bot = bot
@@ -66,5 +68,23 @@ describe('Bot can find specific user in guilds', () => {
 
         expect(matchedUser)
             .to.not.be.undefined
+    })
+})
+
+describe(`Bot cycles through different statuses`, () => {
+    it('cycled statuses', done => {
+        try {
+            let numberCycle = 5
+
+            while (numberCycle > 0) {
+                //await five successes
+                BotDiscordActivity.updateRandomStatus()
+                numberCycle--
+            }
+
+            done()
+        } catch (e) {
+            done(e)
+        }
     })
 })

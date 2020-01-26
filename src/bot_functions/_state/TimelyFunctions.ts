@@ -1,6 +1,6 @@
 import BotTimeKeeper from '../_state/TimeKeeper'
 
-import BotDiscordActivity from '../../bot_knowledge/statuses/DiscordActivityStatus'
+import BotDiscordActivity from './DiscordActivityStatus'
 import BotModuleSwearJar from "../novelty/swear/SwearJarFunctions"
 import BotModuleBirthday from "../novelty/birthday/BirthdayFunctions"
 

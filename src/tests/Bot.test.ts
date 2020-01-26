@@ -6,7 +6,7 @@ import 'mocha'
 
 import Bot from '../Bot'
 import BotData from '../bot_functions/DataHandler'
-import BotDiscordActivity from '../bot_knowledge/statuses/DiscordActivityStatus'
+import BotDiscordActivity from '../bot_functions/_state/DiscordActivityStatus'
 
 let bot = new Bot()
 globalThis.bot = bot

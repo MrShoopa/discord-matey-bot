@@ -1,4 +1,4 @@
-import BotDiscordActivity from './../../bot_knowledge/statuses/DiscordActivityStatus'
+import BotDiscordActivity from './DiscordActivityStatus'
 import TimelyFunctions from "./TimelyFunctions"
 
 import BotModuleMusic from "../music/MusicFunctions"

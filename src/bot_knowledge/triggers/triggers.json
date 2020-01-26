@@ -766,5 +766,13 @@
                 "megadork give me a movie quote"
             ]
         }
-    }
+    },
+    "dice_roll": [
+        "megadork roll",
+        "megadork roll dice",
+        "megadork roll a dice",
+        "megadork diceroll",
+        "megadork throw dice",
+        "megadork throw a dice"
+    ]
 }

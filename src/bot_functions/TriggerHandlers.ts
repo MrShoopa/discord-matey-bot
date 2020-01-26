@@ -15,6 +15,7 @@ import BotModuleGoogleImage from './fetching/google/googleImageCommands.ts/Googl
 import BotModuleReddit from './fetching/reddit/RedditFunctions'
 import BotModuleBirthday from './novelty/birthday/BirthdayFunctions'
 import BotModuleAnime from './fetching/anime/AnimeFunctions'
+import BotModuleFun from './general/FunFunctions'
 
 import BotWordplay from './wordplay/WordplayFunctions'
 import BotModuleQuote from './fetching/quote/QuoteFunctions'
@@ -43,6 +44,8 @@ export default class TriggerHandlers {
 
         TriggerHandlers.checkForRestrictedRoleAssignRequest,
         TriggerHandlers.checkForRestrictedRoleUnassignRequest,
+
+        TriggerHandlers.checkForDiceRollRequest,
 
         HelpTriggers.checkForHelpInfoRequest
 
@@ -206,6 +209,17 @@ export default class TriggerHandlers {
             if (message.toString().toLowerCase().includes(trigger))
                 return BotModuleRestrictedRole.unassignFromRestrictedRole(trigger)
         //  Unset Restricted Role
+    }
+
+    /* ---- Fun stuff ---- */
+    private static checkForDiceRollRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.dice_roll)
+            if (message.toString().toLowerCase().includes(trigger))
+                if (/\d/.test(message.toString())) {
+                    let number = parseInt((message.toString().match(/\d\w+/g)).pop())
+                    return BotModuleFun.rollDice(number, trigger)
+                } else return BotModuleFun.rollDice(6, trigger)
+        //  Get anime recommendation [from My Anime List (JikanTS)]
     }
 
     //  All else comes around

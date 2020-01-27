@@ -7,7 +7,7 @@ export default class BotDiscordActivity {
         { name: `with null exceptions`, type: 'PLAYING' },
         { name: `Y O U`, type: 'WATCHING' },
         {
-            name: `stripping to this`, type: 'CUSTOM_STATUS',
+            name: `stripping to this`, type: 'STREAMING',
             url: "https://www.youtube.com/watch?v=WSwDJUhP8Oo"
         },
         { name: `joe overeat that cake 🎂`, type: 'WATCHING' },
@@ -19,7 +19,7 @@ export default class BotDiscordActivity {
         { name: `nothing cuz i can't IM A BOT`, type: 'STREAMING' },
         { name: `shrek bingewatches`, type: 'WATCHING' },
         {
-            name: `to t̷̳̞̙̣͓͈̝̣̯̠̺̱͐̂̑̍̂̅̿̀̑̄̈h̴̟͇͇̥͉̅̄̋̉̅͛̌͜͝ͅi̶̧̛̪͔̺͉͓̽̾̚ͅs̸̩͍̝̿́̿́̋̿̽̏̚ ̵̧̘̞̬̥͂̈́̃̋̅̍s̵̛͇̈́͗̎̄͆̃̃̈͑h̷̛̥̯̞̹͎̲̜͔̼̬̫̻̓̍͝i̵̢̨̲͚̳͈̋̉̏̍̒́̚͝t̶̜̲͈͇͔̆̏̈͌͊͑͜`, type: 'LISTENING',
+            name: `t̷̳̞̙̣͓͈̝̣̯̠̺̱͐̂̑̍̂̅̿̀̑̄̈h̴̟͇͇̥͉̅̄̋̉̅͛̌͜͝ͅi̶̧̛̪͔̺͉͓̽̾̚ͅs̸̩͍̝̿́̿́̋̿̽̏̚ ̵̧̘̞̬̥͂̈́̃̋̅̍s̵̛͇̈́͗̎̄͆̃̃̈͑h̷̛̥̯̞̹͎̲̜͔̼̬̫̻̓̍͝i̵̢̨̲͚̳͈̋̉̏̍̒́̚͝t̶̜̲͈͇͔̆̏̈͌͊͑͜`, type: 'STREAMING',
             url: "https://www.youtube.com/watch?v=DBejlYvfBF8"
         },
         {

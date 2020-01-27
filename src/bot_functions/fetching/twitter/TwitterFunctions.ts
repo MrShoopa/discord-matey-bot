@@ -55,7 +55,7 @@ export default class BotModuleTwitter {
             `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
 
 
-        let built = new Discord.MessageEmbed(tweet)
+        let built = new Discord.MessageEmbed()
             .setURL(url)
             .setTitle(`Tweet about '${query}'`)
             .setAuthor(tweet.user.name)

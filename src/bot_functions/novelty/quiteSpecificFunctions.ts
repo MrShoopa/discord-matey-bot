@@ -1,7 +1,7 @@
 import { BeanContainer } from '../../types/data_types/Bean'
 import Bot from '../../Bot'
 
-import BotModuleGoogleImage from '../fetching/google/googleImageCommands.ts/GoogleImageCommands'
+import BotModuleGoogleImage from '../fetching/google/GoogleImageCommands'
 import BotModuleTwitter from '../fetching/twitter/TwitterFunctions'
 
 import TRIGGERS from '../../bot_knowledge/triggers/triggers.json'

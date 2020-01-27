@@ -11,7 +11,7 @@ import BotModuleMusic from './music/MusicFunctions'
 import BotModuleSwearJar from './novelty/swear/SwearJarFunctions'
 import BotModuleRestrictedRole from './novelty/restricted_role/RestrictiedRoleFunctions'
 import BotModuleTwitter from './fetching/twitter/TwitterFunctions'
-import BotModuleGoogleImage from './fetching/google/googleImageCommands.ts/GoogleImageCommands'
+import BotModuleGoogleImage from './fetching/google/GoogleImageCommands'
 import BotModuleReddit from './fetching/reddit/RedditFunctions'
 import BotModuleBirthday from './novelty/birthday/BirthdayFunctions'
 import BotModuleAnime from './fetching/anime/AnimeFunctions'
@@ -19,6 +19,7 @@ import BotModuleFun from './general/FunFunctions'
 
 import BotWordplay from './wordplay/WordplayFunctions'
 import BotModuleQuote from './fetching/quote/QuoteFunctions'
+import BotModuleLyric from './fetching/lyrics/LyricFunctions'
 
 
 export default class TriggerHandlers {
@@ -41,6 +42,8 @@ export default class TriggerHandlers {
         TriggerHandlers.checkForTwitterFetchRequest,
         TriggerHandlers.checkForMALFetchRequest,
         TriggerHandlers.checkForQuoteFetchRequest,
+        TriggerHandlers.checkForLyricFetchRequest,
+        TriggerHandlers.checkForLyricSingRequest,
 
         TriggerHandlers.checkForRestrictedRoleAssignRequest,
         TriggerHandlers.checkForRestrictedRoleUnassignRequest,
@@ -195,6 +198,18 @@ export default class TriggerHandlers {
             return BotModuleQuote.fireQuoteMessage()
     }
 
+    private static checkForLyricFetchRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.lyric_fetch.default)
+            if (message.toString().toLowerCase().includes(trigger))
+                return BotModuleLyric.fireLyricMatchMessage(trigger)
+    }
+
+    private static checkForLyricSingRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.lyric_sing.default)
+            if (message.toString().toLowerCase().includes(trigger))
+                return BotModuleLyric.singSongInChat(message.toString(), trigger)
+    }
+
     /*  ----    Server-Management   ---- */
 
     private static checkForRestrictedRoleAssignRequest(message = TriggerHandlers.message) {
@@ -211,7 +226,8 @@ export default class TriggerHandlers {
         //  Unset Restricted Role
     }
 
-    /* ---- Fun stuff ---- */
+    /*  ----    Fun Functions   ---- */
+
     private static checkForDiceRollRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.dice_roll)
             if (message.toString().toLowerCase().includes(trigger))

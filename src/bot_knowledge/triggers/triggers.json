@@ -101,7 +101,6 @@
     "singing_triggers": {
         "play": [
             "i summon",
-            "megadork sing",
             "megadork play"
         ],
         "stop": [
@@ -774,5 +773,29 @@
         "megadork diceroll",
         "megadork throw dice",
         "megadork throw a dice"
-    ]
+    ],
+    "lyric_fetch": {
+        "default": [
+            "megadork fetch song lyrics from",
+            "megadork fetch song lyrics for",
+            "megadork fetch get lyrics from",
+            "megadork fetch get lyrics for",
+            "megadork fetch lyrics about",
+            "megadork fetch lyrics for",
+            "megadork fetch lyrics of",
+            "megadork lyrics from",
+            "megadork fetch some lyrics",
+            "megadork fetch lyrics"
+        ]
+    },
+    "lyric_sing": {
+        "default": [
+            "megadork sing the song",
+            "megadork sing song",
+            "megadork sing",
+            "megadork rap the song",
+            "megadork rap song",
+            "megadork rap"
+        ]
+    }
 }

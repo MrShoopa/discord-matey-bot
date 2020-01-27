@@ -27,6 +27,7 @@
         "discord.js": "github:discordjs/discord.js",
         "eslint": "^6.8.0",
         "ffmpeg": "0.0.4",
+        "genius-lyrics": "^1.0.9",
         "google-images": "^2.1.0",
         "horoscope": "^2.0.1",
         "inspirational-quotes": "^1.0.8",

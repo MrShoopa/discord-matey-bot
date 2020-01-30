@@ -25,13 +25,15 @@ export default class BotModuleGoogleImage {
 
         var userQuery: string = ''
 
-        for (const trigger in TRIGGERS.image_search_triggers.context_prefix)
+        for (const trigAppender of TRIGGERS.image_search_triggers.context_prefix)
             //  If user includes a specific thing to look for.
-            if (bot.context.toString().toLowerCase().includes(trigger))
+            if (bot.context.toString().toLowerCase().includes(trigAppender)) {
                 //  Sets query to user's query (after prefix trigger)
                 userQuery =
-                    bot.context.toString().substring(
-                        bot.context.toString().indexOf(trigger) + trigger.length + 1)
+                    bot.context.toString()
+                        .replace(`${trigger} ${trigAppender}`, '').trim()
+                break
+            }
 
         var item = await this.fetchImageFromGoogle(userQuery, true)
 
@@ -42,7 +44,7 @@ export default class BotModuleGoogleImage {
 
         let message = new Discord.MessageEmbed()
             .setAuthor('MegaGoog Image Searcher 📷')
-            .setColor('lightblue')
+            .setColor('BLUE')
             .setFooter(`Powered by Google Images`,
                 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/235px-Google_%22G%22_Logo.svg.png')
             .setImage(item.toString())

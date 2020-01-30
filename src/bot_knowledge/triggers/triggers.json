@@ -142,14 +142,26 @@
             "megadork random photo",
             "megadork random picture",
             "megadork fetch picture",
+            "megadork fetch photo",
+            "megadork fetch pic",
+            "megadork fetch image",
+            "megadork fetch a pic",
             "megadork fetch a picture",
             "megadork fetch me a picture",
             "megadork fetch image",
             "megadork find picture",
             "megadork find a picture",
             "megadork find a random picture",
+            "megadork find me picture",
+            "megadork find me a picture",
+            "megadork find me a random picture",
             "megadork get picture",
             "megadork get a picture",
+            "megadork get me a picture",
+            "megadork get me an image",
+            "megadork get me a photo",
+            "megadork get me a random image",
+            "megadork get me a random picture",
             "megadork give me an image",
             "megadork give me a photo",
             "megadork give me a random image",
@@ -173,9 +185,11 @@
         ],
         "context_prefix": [
             "of",
+            "with",
             "about",
             "showing",
-            "that has"
+            "that has",
+            "that includes"
         ]
     },
     "swear_jar_triggers": {
@@ -778,14 +792,17 @@
         "default": [
             "megadork fetch song lyrics from",
             "megadork fetch song lyrics for",
+            "megadork fetch song lyrics of",
             "megadork fetch get lyrics from",
             "megadork fetch get lyrics for",
+            "megadork fetch get lyrics of",
             "megadork fetch lyrics about",
+            "megadork fetch lyrics from",
             "megadork fetch lyrics for",
             "megadork fetch lyrics of",
-            "megadork lyrics from",
             "megadork fetch some lyrics",
-            "megadork fetch lyrics"
+            "megadork fetch lyrics",
+            "megadork lyrics from"
         ]
     },
     "lyric_sing": {

@@ -152,7 +152,7 @@ export default class TriggerHandlers {
                 if (message.toString().substring(0, 25).toLowerCase().includes(trigger)) {
                     return BotModuleMusic.stopMusic(trigger)
                 }
-            } else { return }
+            } else return
     }
 
 

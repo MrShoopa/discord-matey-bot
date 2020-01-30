@@ -168,6 +168,13 @@ export default class TriggerHandlers {
     /*      ---- External Data Retreival ----   */
 
     private static checkForRedditFetchRequest(message = TriggerHandlers.message) {
+        for (const baseTrigger of TRIGGERS.reddit_fetch.default)
+            for (const trigger of TRIGGERS.reddit_fetch.query_type.post)
+                if (message.toString().toLowerCase().includes(`${baseTrigger} ${trigger}`))
+                    return BotModuleReddit.fireRedditSubmissionMessage(`${baseTrigger} ${trigger}`)
+        //  Get copypasta post [from Reddit]
+
+
         for (const trigger of TRIGGERS.reddit_fetch.copypasta.default)
             if (message.toString().toLowerCase().includes(trigger))
                 return BotModuleReddit.fireCopypastaFetch(trigger)

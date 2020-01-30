@@ -25,7 +25,7 @@ export default class BotModuleGoogleImage {
 
         var userQuery: string = ''
 
-        for (const trigAppender of TRIGGERS.image_search_triggers.context_prefix)
+        for (const trigAppender of TRIGGERS.context_prefix)
             //  If user includes a specific thing to look for.
             if (bot.context.toString().toLowerCase().includes(trigAppender)) {
                 //  Sets query to user's query (after prefix trigger)

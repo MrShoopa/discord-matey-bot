@@ -2,48 +2,68 @@ import Discord from 'discord.js'
 
 import Bot from "../../../Bot"
 
+import TRIGGERS from '../../../bot_knowledge/triggers/triggers.json'
+
 export default class BotModuleReddit {
-    static async fetchTopPostFromSubreddit(trigger?: string) {
 
+    static async fireRedditSubmissionMessage(trigger?: string) {
+        let bot: Bot = globalThis.bot
+        if (trigger) bot.preliminary(trigger, 'reddit post fetch', true)
+
+        let query = bot.context.toString().toLowerCase()
+
+        for (const keyword of TRIGGERS.context_prefix)
+            if (query.includes(keyword)) {
+                query = query.replace(`${trigger} ${keyword}`, '').trim()
+                break
+            }
+        let post: any
+        if (query.includes('r/')) {
+            post = await this.fetchRandomSubmission(query.replace('r/', ''))
+        } else if (query.includes('u/')) {
+            post = await this.fetchRandomSubmissionFromUser(query.replace('u/', ""))
+        }
+
+        this.buildRedditSubmissionMessage(post).forEach(message => {
+            bot.context.channel.send(message)
+        })
+        return true
     }
-
 
     static async fireCopypastaFetch(trigger?: string) {
         let bot: Bot = globalThis.bot
 
-        let pastaObject = await this.fetchSomeCopypasta(trigger)
+        if (trigger) bot.preliminary(trigger, 'reddit copypasta fetch', true)
+
+        let pasta = await this.fetchRandomSubmission('copypasta', 'best')
 
         let delivery = new Discord.MessageEmbed()
-
-        //  References reddit post
-        delivery.setTitle(`From r/${pastaObject.data.children[0].data.subreddit}`)
-        delivery.setAuthor(`Courtesy of u/${pastaObject.data.children[0].data.author}`)
-        delivery.setURL(pastaObject.data.children[0].data.url)
-        delivery.setColor('#FF5700')
-        delivery.setFooter('Copypasta Fetcher - reddit',
-            'https://icons-for-free.com/iconfiles/png/512/reddit+round+icon+icon-1320190507793599697.png')
-        //  Replies back 'currently best' copypasta
-        if (pastaObject.data.children[0].data.selftext == '')
+            .setTitle(`From r/${pasta.data.subreddit}`)
+            .setAuthor(`Courtesy of u/${pasta.data.author}`)
+            .setURL(pasta.data.url)
+            .setColor('#FF5700')
+            .setFooter('Copypasta Fetcher - reddit',
+                'https://icons-for-free.com/iconfiles/png/512/reddit+round+icon+icon-1320190507793599697.png')
+        if (pasta.data.selftext == '')
             //  Replies by title if it's not in the subtext of the post.
-            delivery.setDescription(pastaObject.data.children[0].data.title)
+            delivery.setDescription(pasta.data.title)
         else {
 
-            let pasta = pastaObject.data.children[0].data.selftext
+            let text = pasta.data.selftext
 
-            if (pasta.length >= 2000) {
+            if (text.length >= 2000) {
                 console.log("Copypasta exceeds 2000 characters. 🔥🍝 Splitting...")
 
-                delivery.setDescription(pasta)
+                delivery.setDescription(text)
 
-                pasta = pasta.match(/(?!&amp#x200B)[\s\S]{1,2000}/g)
+                text = pasta.match(/(?!&amp#x200B)[\s\S]{1,2000}/g)
 
-                pasta.forEach((chunk: any) => {
+                text.forEach((chunk: any) => {
                     bot.textChannel.send(chunk)
                 })
-            } else delivery.setDescription(pastaObject.data.children[0].data.selftext)
+            } else delivery.setDescription(pasta.data.selftext)
 
         }
-
         bot.textChannel.send(delivery)
     }
 
@@ -53,19 +73,45 @@ export default class BotModuleReddit {
         return bot.context.channel.send(await this.fetchImageFromSubmission(redditObject))
     }
 
-    static async fetchSomeCopypasta(trigger?: string) {
+
+    static async fetchSubmissions(
+        subreddit: string = 'funny', sort: string = 'best', limit: number = 25) {
         let bot: Bot = globalThis.bot
 
-        if (trigger) bot.preliminary(trigger, 'reddit copypasta fetch', true)
+        let redditUrl = `https://www.reddit.com/r/${subreddit}/${sort}.json?limit=${limit}`
 
-        let topPastaUrl = 'https://www.reddit.com/r/copypasta/top.json?limit=1'
-
-        let pastaObject = await bot.fetchJSONFromURL(topPastaUrl)
+        let submissions = await bot.fetchJSONFromURL(redditUrl)
             .catch((error: any) => {
-                bot.textChannel.send(`Could not fetch. Error: ${error}`)
+                bot.saveBugReport(error, true)
             })
+        return submissions.data.children
+    }
 
-        return pastaObject
+    static async fetchSubmissionsFromUser(
+        user: string, sort: string = 'best', limit: number = 25) {
+        let bot: Bot = globalThis.bot
+
+        let redditUrl = `https://www.reddit.com/user/${user}/submitted.json?limit=${limit}?sort=${sort}`
+
+        let submissions = await bot.fetchJSONFromURL(redditUrl)
+            .catch((error: any) => {
+                bot.saveBugReport(error, true)
+            })
+        return submissions.data.children
+    }
+
+    static async fetchRandomSubmission(
+        subreddit: string = 'funny', category: string = 'best') {
+        let list = await this.fetchSubmissions(subreddit, category, 100)
+
+        return list[Math.floor(Math.random() * list.length)]
+    }
+
+    static async fetchRandomSubmissionFromUser(
+        user: string, category: string = 'best') {
+        let list = await this.fetchSubmissionsFromUser(user, category, 100)
+
+        return list[Math.floor(Math.random() * list.length)]
     }
 
     static async fetchImageFromSubmission(redditObject: any) {
@@ -74,5 +120,56 @@ export default class BotModuleReddit {
         // @see https://www.reddit.com/dev/api/ for more info.
         let image = await bot.fetchImageFromURL(redditObject.data.children[0].data.url)
         return image
+    }
+
+    static buildRedditSubmissionMessage(redditObject: any):
+        Array<Discord.MessageEmbed> {
+        let messageArray: Discord.MessageEmbed[] = []
+
+        let message = new Discord.MessageEmbed()
+            .setTitle(`${redditObject.data.title} - *r/${redditObject.data.subreddit}*`)
+            .setAuthor(`u/${redditObject.data.author} posted:`)
+            .setURL(redditObject.data.url)
+            .setDescription(redditObject.data.selftext)
+            //.setTimestamp(new Date(redditObject.data.created_utc))
+            .setColor('#FF5700')
+            .setFooter('redditdork',
+                'https://icons-for-free.com/iconfiles/png/512/reddit+round+icon+icon-1320190507793599697.png')
+
+        if (redditObject.data.selftext == '')
+            //  Replies by title if it's not in the subtext of the post.
+            messageArray.push(new Discord.MessageEmbed(message)
+                .setDescription(redditObject.data.title)
+                .setTitle(`r/${redditObject.data.subreddit} post`))
+        else {
+            let text = redditObject.data.selftext
+
+            if (text.length >= 2000) {
+                console.log("Post exceeds 2000 characters. 🔥 Splitting...")
+
+                let textblocks: any[] = text.match(/(?!&amp#x200B)[\s\S]{1,2000}/g)
+
+                message.setDescription(text[0])
+
+                textblocks.forEach((chunk: any, i) => {
+                    if (i == 0)
+                        messageArray.push(new Discord.MessageEmbed(message)
+                            .setDescription(chunk))
+                    else
+                        messageArray.push(new Discord.MessageEmbed(message)
+                            .setTitle('Continued...')
+                            .setDescription(chunk))
+                })
+            } else if (!text) {
+                message.setDescription('')
+            } else messageArray.push(message)
+        }
+
+        if (redditObject.data.post_hint == 'image')
+            messageArray[0]
+                .setImage(redditObject.data.url)
+
+
+        return messageArray
     }
 }

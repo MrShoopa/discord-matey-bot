@@ -16,6 +16,16 @@
     "url_trigger": {
         "any": "."
     },
+    "context_prefix": [
+        "for",
+        "of",
+        "from",
+        "with",
+        "about",
+        "showing",
+        "that has",
+        "that includes"
+    ],
     "help_questions": {
         "actions": [
             "what can you summon",
@@ -182,14 +192,6 @@
             "megadork meme me",
             "megadork show me memes",
             "megadork send dank memes"
-        ],
-        "context_prefix": [
-            "of",
-            "with",
-            "about",
-            "showing",
-            "that has",
-            "that includes"
         ]
     },
     "swear_jar_triggers": {
@@ -648,6 +650,19 @@
         ]
     },
     "reddit_fetch": {
+        "default": [
+            "megadork fetch reddit"
+        ],
+        "query_type": {
+            "post": [
+                "post",
+                "submission",
+                "posting"
+            ],
+            "user": [
+                "user"
+            ]
+        },
         "copypasta": {
             "default": [
                 "megadork fetch copypasta",
@@ -702,11 +717,6 @@
             "megadork get new horoscope reading",
             "megadork get a horoscope",
             "megadork get a horoscope reading"
-        ],
-        "context_prefix": [
-            "for",
-            "of",
-            "about"
         ]
     },
     "anime_fetch": {

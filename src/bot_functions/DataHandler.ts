@@ -90,7 +90,8 @@ export default class BotData {
 		let dataObj = this.getUserDataFile()
 
 		return dataObj.map((user: Data.UserSave) => {
-			return attribute in user
+			if (user.hasOwnProperty(attribute))
+				return user
 		})
 	}
 

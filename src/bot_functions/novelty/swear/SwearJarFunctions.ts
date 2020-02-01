@@ -64,7 +64,7 @@ export default class BotModuleSwearJar {
                 .setTitle(Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.bad_language_detected))
                 .setAuthor('Your Friendly Neighborhood Megadork ✝', bot.user.avatarURL())
                 .setDescription(response)
-                .setImage(bot.context.author.avatarURL())
+                //.setImage(bot.context.author.avatarURL()) <- Noise
                 .addField(`Watch out, ${bot.context.member.displayName}!`,
                     `Your score has been updated to ${userData.swear_score}`)
 
@@ -78,15 +78,15 @@ export default class BotModuleSwearJar {
 
         let swearingUsers =
             BotData.getAllUserDataWithAttribute('swear_score')
-                .sort((a, b) => {
-                    return b.swear_score - a.swear_score
-                })
+                .sort((a, b) =>
+                    b.swear_score - a.swear_score
+                )
 
         if (swearingUsers) {
 
             const att =
                 new Discord.MessageAttachment(__dirname +
-                    '../../../../bot_knowledge/images/dedede-christian.jpg',
+                    '../../../bot_knowledge/images/dedede-christian.jpg',
                     'dedede-chiristian.jpg')
 
             let swearStatsMessage = new Discord.MessageEmbed()
@@ -101,7 +101,7 @@ export default class BotModuleSwearJar {
 
             guild.members.forEach(member => {
                 swearingUsers.some(user => {
-                    if (member.user.id == user._id.toString())
+                    if (member.user.id == user?._id)
                         swearStatsMessage
                             .addField(member.user.username, user.swear_score)
                 })
@@ -117,7 +117,7 @@ export default class BotModuleSwearJar {
         bot.guilds.forEach(guild => {
             let msg = this.generateSwearStatsMessage(guild)
 
-            if (msg)
+            if (msg && guild.systemChannel)
                 guild.systemChannel.send(msg)
         })
     }

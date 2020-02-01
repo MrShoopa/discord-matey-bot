@@ -53,8 +53,6 @@ export default class BotWordplay {
 
         if (context.includes(TRIGGERS.third_person_phrase_triggers.suck_thing[0]) &&
             context.includes(TRIGGERS.third_person_phrase_triggers.suck_thing[1])) {
-            this.bot.commandSatisfied = true
-
             return message.reply(
                 Bot.fetchRandomPhrase(PHRASES_CONVO.not_desired.to_look))
         }

@@ -7,7 +7,9 @@ import PHRASES_SING from '../../bot_knowledge/phrases/phrases_sing.json'
 
 import AUTH from '../../user_creds.json'
 
+import YouTube from 'youtube-search'
 import Soundcloud from "soundcloud.ts"
+import { Context } from 'mocha'
 
 export default class BotModuleMusic {
 
@@ -26,15 +28,36 @@ export default class BotModuleMusic {
         function checkForLoop() {
             if (TRIGGERS.singing_triggers.args.loop.some((trigger) => {
                 return context.some(word => {
-                    if (word === trigger)
+                    if (word === trigger) {
+                        context = context.slice(0, context.length - 1)
                         return bot.context.content =
                             bot.context.content.replace(trigger, '').trimRight()
+                    }
                 })
             })) return true
             else return false
         }
 
+        await (async function checkForPlatform() {
+            for (const trig of TRIGGERS.singing_triggers.args.platform.yt) {
+                for (let i = 0; i < context.length; i++) {
+                    if (context[i] === trig) {
+                        let requestedQuery = context.slice(i + 1).join(' ')
+
+                        let newQuery = await
+                            BotModuleMusic.searchUrlofYouTubeVideo(requestedQuery)
+
+                        bot.context.content =
+                            bot.context.content.replace(`${trig} ${requestedQuery}`, newQuery).trim()
+                    }
+                }
+            }
+        }())
+
+
         try {
+            bot.commandSatisfied = false //? heheheheheh
+
             let urlRegex: RegExp =
                 /(^|\s)(https?:\/\/)?(www\.)?[\s\S]+\.com(\/[^\s]+)($|\s)/
 
@@ -181,6 +204,37 @@ export default class BotModuleMusic {
                 .setTitle(songInfo.botPhrase)
 
         return playbackMessage
+    }
+
+    static async searchUrlofYouTubeVideo(query: string): Promise<string> {
+        let result = await this.fetchSingleYouTubeSearchResult(query)
+        return result.link
+    }
+
+    static async fetchSingleYouTubeSearchResult(query: string)
+        : Promise<YouTube.YouTubeSearchResults> {
+        let result = await this.processYouTubeSearch(query, 1)
+        return result[0]
+    }
+
+    static async processYouTubeSearch(query: string, resultCount = 10)
+        : Promise<Array<YouTube.YouTubeSearchResults>> {
+        var opts: YouTube.YouTubeSearchOptions = {
+            maxResults: resultCount,
+            key: AUTH.youtube.api_key
+        };
+
+        return new Promise(async (res, rej) => {
+            await YouTube(query, opts, (err, result) => {
+                if (err)
+                    globalThis.bot.saveBugReport(err, true)
+
+                console.info(`Fetched YouTube search results:`)
+                console.log(result)
+
+                res(result)
+            })
+        })
     }
 
     static loadClients() {

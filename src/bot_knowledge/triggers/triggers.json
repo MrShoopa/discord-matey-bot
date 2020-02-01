@@ -126,7 +126,19 @@
                 "on repeat",
                 "repeat",
                 "repeated"
-            ]
+            ],
+            "platform": {
+                "yt": [
+                    "yt",
+                    "youtube",
+                    "YouTube"
+                ],
+                "sc": [
+                    "sc",
+                    "soundcloud",
+                    "SoundCloud"
+                ]
+            }
         }
     },
     "server_mod_triggers": {

@@ -117,6 +117,9 @@ export default class BotModuleLyric {
         if (song.includes(trigger))
             song = song.replace(trigger, '').trim()
 
+        if (song.length === 0)
+            song = this.fetchRandomSongTitle()
+
         const songInfo = await this.fetchLyricsInfoOfSong(song)
 
         //Limited to just a portion to prevent TTS annoyance

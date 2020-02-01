@@ -135,6 +135,7 @@ export default class Bot extends Discord.Client {
 
             try {
                 this.voiceChannel.join().then(connection => {
+                    console.groupEnd()
                     console.group()
                     console.log(`Local song playing...`)
                     console.info(
@@ -237,6 +238,7 @@ export default class Bot extends Discord.Client {
 
             try {
                 return this.voiceChannel.join().then(connection => {
+                    console.groupEnd()
                     console.group()
                     console.info(
                         `Voice channel connection status: ${connection.status}`)
@@ -274,6 +276,7 @@ export default class Bot extends Discord.Client {
                         songInfo.name = video.title
                         songInfo.thumbnailUrl = video.thumbnail_url
                         songInfo.author = video.author.name
+                        songInfo.url = url
                     })
                     return stream
                 } catch (error) {
@@ -339,6 +342,7 @@ export default class Bot extends Discord.Client {
 
                 dispatcher.on('start', () => {
                     bot.songState = SongState.Playing
+                    console.groupEnd()
                     console.group()
                     console.log(`Now playing song from ${url}.`)
 

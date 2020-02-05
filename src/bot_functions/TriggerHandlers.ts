@@ -239,7 +239,7 @@ export default class TriggerHandlers {
         for (const trigger of TRIGGERS.dice_roll)
             if (message.toString().toLowerCase().includes(trigger))
                 if (/\d/.test(message.toString())) {
-                    let number = parseInt((message.toString().match(/\d\w+/g)).pop())
+                    let number = parseInt((message.toString().match(/\d+/g)).pop())
                     return BotModuleFun.rollDice(number, trigger)
                 } else return BotModuleFun.rollDice(6, trigger)
         //  Get anime recommendation [from My Anime List (JikanTS)]

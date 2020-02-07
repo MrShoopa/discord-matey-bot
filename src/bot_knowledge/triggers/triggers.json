@@ -13,6 +13,14 @@
         "megarewind",
         "megaredo"
     ],
+    "kill_trigger": [
+        "megadork go kill yourself",
+        "megadork reset please",
+        "megadork do me a favor and kill yourself",
+        "megadork restart",
+        "megadork reboot",
+        "megadie"
+    ],
     "url_trigger": {
         "any": "."
     },

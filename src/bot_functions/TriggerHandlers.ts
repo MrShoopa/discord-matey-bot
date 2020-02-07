@@ -50,6 +50,8 @@ export default class TriggerHandlers {
 
         TriggerHandlers.checkForDiceRollRequest,
 
+        TriggerHandlers.checkForBotKillRequest,
+
         HelpTriggers.checkForHelpInfoRequest
 
     ]
@@ -243,6 +245,14 @@ export default class TriggerHandlers {
                     return BotModuleFun.rollDice(number, trigger)
                 } else return BotModuleFun.rollDice(6, trigger)
         //  Get anime recommendation [from My Anime List (JikanTS)]
+    }
+
+    /* ----  Admin-only functions --- */
+    private static checkForBotKillRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.kill_trigger)
+            if (message.toString().toLowerCase().includes(trigger))
+                return BotGeneralCommands.killBot(true, trigger)
+        //  Redo last command
     }
 
     //  All else comes around

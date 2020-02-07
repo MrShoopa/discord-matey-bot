@@ -9,7 +9,6 @@ import AUTH from '../../user_creds.json'
 
 import YouTube from 'youtube-search'
 import Soundcloud from "soundcloud.ts"
-import { Context } from 'mocha'
 
 export default class BotModuleMusic {
 
@@ -189,7 +188,7 @@ export default class BotModuleMusic {
 
         if (songInfo.authorImgUrl)
             playbackMessage
-                .setImage(songInfo.authorImgUrl)
+                .setThumbnail(songInfo.authorImgUrl)
 
         if (songInfo.genre)
             playbackMessage

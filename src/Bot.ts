@@ -289,7 +289,7 @@ export default class Bot extends Discord.Client {
                     return null
                 }
             } else if (url.includes('soundcloud')) {
-                return this.context
+                return globalThis.bot.context
                     .reply('SoundCloud support coming sometime ' +
                         `when SoundCloud opens up to developers again  :''''''')`)
 

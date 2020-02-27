@@ -137,7 +137,7 @@ export default class BotModuleLyric {
             .setTitle(`${songInfo.title} - ${songInfo.primary_artist.name}`)
             .setDescription(`Megadork sings ${songInfo.title}!`)
             .setURL(songInfo.url)
-            .addField(`Excuse the 'Megadork says' ...that's Discord's control!`, `🤔`)
+            .addFields({ name: `Excuse the 'Megadork says' ...that's Discord's control!`, value: `🤔` })
             .setColor('#ffff64')
             .setThumbnail(songInfo.header_image_thumbnail_url)
             .setFooter('Megadork Bowie - Powered by Genius © 2020',

@@ -25,7 +25,7 @@ describe(`Bot connects and populates info`, () => {
     it('connected', done => {
         setTimeout(function () {
             try {
-                expect(bot.guilds.size)
+                expect(bot.guilds.cache.size)
                     .to.not.eql(0)
                 done()
             } catch (e) {
@@ -61,9 +61,9 @@ describe('Bot can find specific user in guilds', () => {
 
         let matchedUser
 
-        bot.guilds.forEach(guild => {
-            if (guild.members.has(randomID))
-                matchedUser = guild.members.get(randomID)
+        bot.guilds.cache.forEach(guild => {
+            if (guild.members.cache.has(randomID))
+                matchedUser = guild.members.cache.get(randomID)
         })
 
         expect(matchedUser)

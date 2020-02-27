@@ -34,9 +34,11 @@ export default class BotModuleAnime {
             .setAuthor('Megaweeb Finds')
             .setImage(anime.image_url)
             .setURL(anime.url)
-            .addField('MAL Score', `${anime.score}`, true)
-            .addField('Rated', `${anime.rated}`, true)
-            .addField('Synopsis', `${anime.synopsis}`)
+            .addFields(
+                { name: 'MAL Score', value: `${anime.score}`, inline: true },
+                { name: 'Rated', value: `${anime.rated}`, inline: true },
+                { name: 'Synopsis', value: `${anime.synopsis}` }
+            )
         if (anime.airing)
             message.setFooter('This show is currently airing!')
 

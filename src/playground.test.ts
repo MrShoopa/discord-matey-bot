@@ -19,7 +19,7 @@ describe(`Bot connected`, () => {
 	it('connected', done => {
 		setTimeout(function () {
 			try {
-				expect(bot.guilds.size)
+				expect(bot.guilds.cache.size)
 					.to.not.be.null
 				done()
 			} catch (e) {
@@ -37,8 +37,8 @@ describe('Finding specific user in guilds', () => {
 
 		let matchedUser
 
-		bot.guilds.forEach(guild => {
-			guild.members.get('')
+		bot.guilds.cache.forEach(guild => {
+			guild.members.cache.get('')
 		})
 
 		expect(matchedUser)

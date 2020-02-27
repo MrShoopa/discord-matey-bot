@@ -12,7 +12,7 @@ describe(`Bot connects and populates info`, () => {
     it('connected', done => {
         setTimeout(function () {
             try {
-                expect(bot.guilds.size)
+                expect(bot.guilds.cache.size)
                     .to.not.eql(0)
                 done()
             } catch (e) {

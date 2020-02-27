@@ -111,9 +111,9 @@ export default class BotModuleBirthday {
 	static announceBirthday(user: Data.UserSave, earrape?: boolean) {
 		let bot: Bot = globalThis.bot
 
-		bot.guilds.some(guild => {
-			if (guild.members.has(user._id)) {
-				let specialUser = guild.members.get(user._id)
+		bot.guilds.cache.some(guild => {
+			if (guild.members.cache.has(user._id)) {
+				let specialUser = guild.members.cache.get(user._id)
 
 				let specialSong
 					= "Happy Birthday to You\n" +
@@ -136,9 +136,11 @@ export default class BotModuleBirthday {
 					.setThumbnail('attachment://birthday-stock.jpg')
 
 				if (new Date(user.birthday).getUTCFullYear() !== 6969)
-					birthdayMesssage.addField(`${specialUser.user.username} turns ` +
-						(new Date().getUTCFullYear() - new Date(user.birthday).getUTCFullYear()),
-						Bot.fetchRandomPhrase(PHRASES.birthday.singing))
+					birthdayMesssage.addFields({
+						name: `${specialUser.user.username} turns ` +
+							(new Date().getUTCFullYear() - new Date(user.birthday).getUTCFullYear()),
+						value: Bot.fetchRandomPhrase(PHRASES.birthday.singing)
+					})
 
 				if (earrape && specialUser.voice.channel) {
 					bot.voiceChannel = specialUser.voice.channel

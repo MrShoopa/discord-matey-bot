@@ -108,8 +108,8 @@ export default class Bot extends Discord.Client {
     fetchRoleID(roleName: string) {
         let role: Role = null
 
-        role = this.guilds.map(guild => {
-            return guild.roles.find(r => {
+        role = this.guilds.cache.map(guild => {
+            return guild.roles.cache.find(r => {
                 return r.name == roleName
             })
         })[0]

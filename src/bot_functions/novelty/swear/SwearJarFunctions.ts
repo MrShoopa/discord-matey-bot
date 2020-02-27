@@ -65,8 +65,10 @@ export default class BotModuleSwearJar {
                 .setAuthor('Your Friendly Neighborhood Megadork ✝', bot.user.avatarURL())
                 .setDescription(response)
                 //.setImage(bot.context.author.avatarURL()) <- Noise
-                .addField(`Watch out, ${bot.context.member.displayName}!`,
-                    `Your score has been updated to ${userData.swear_score}`)
+                .addFields({
+                    name: `Watch out, ${bot.context.member.displayName}!`,
+                    value: `Your score has been updated to ${userData.swear_score}`
+                })
 
             return bot.context.channel.send(swearDetectedMessage)
         }
@@ -99,11 +101,11 @@ export default class BotModuleSwearJar {
                 .setImage('attachment://dedede-christian.jpg')
                 .setTimestamp(new Date().getMonth() - 1)
 
-            guild.members.forEach(member => {
+            guild.members.cache.forEach(member => {
                 swearingUsers.some(user => {
                     if (member.user.id == user?._id)
                         swearStatsMessage
-                            .addField(member.user.username, user.swear_score)
+                            .addFields({ name: member.user.username, value: user.swear_score })
                 })
             })
 
@@ -114,7 +116,7 @@ export default class BotModuleSwearJar {
     static printSwearStats() {
         let bot: Bot = globalThis.bot
 
-        bot.guilds.forEach(guild => {
+        bot.guilds.cache.forEach(guild => {
             let msg = this.generateSwearStatsMessage(guild)
 
             if (msg && guild.systemChannel)

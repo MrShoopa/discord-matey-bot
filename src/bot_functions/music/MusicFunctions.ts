@@ -161,13 +161,13 @@ export default class BotModuleMusic {
 
         if (songInfo.name && songInfo.author)
             playbackMessage
-                .addField(songInfo.author, songInfo.name)
+                .addFields({ name: songInfo.author, value: songInfo.name })
         else if (songInfo.name && songInfo.source && songInfo.url)
             playbackMessage
-                .addField(songInfo.source, songInfo.name)
+                .addFields({ name: songInfo.source, value: songInfo.name })
         else if (songInfo.name)
             playbackMessage
-                .addField('Local File', songInfo.name)
+                .addFields({ name: 'Local File', value: songInfo.name })
 
         if (songInfo.platform)
             playbackMessage
@@ -179,8 +179,10 @@ export default class BotModuleMusic {
 
         if (songInfo.localFolder)
             playbackMessage
-                .addField(`Home grown!`,
-                    `Locally from my *${songInfo.localFolder}* collection!`)
+                .addFields({
+                    name: `Home grown!`,
+                    value: `Locally from my *${songInfo.localFolder}* collection!`
+                })
 
         if (songInfo.thumbnailUrl)
             playbackMessage
@@ -192,11 +194,16 @@ export default class BotModuleMusic {
 
         if (songInfo.genre)
             playbackMessage
-                .addField('Genre', songInfo.genre)
+                .addFields({
+                    name: 'Genre',
+                    value: songInfo.genre
+                })
 
         if (songInfo.length)
             playbackMessage
-                .addField('Length', songInfo.length)
+                .addFields({
+                    name: 'Length', value: songInfo.length
+                })
 
         if (songInfo.botPhrase)
             playbackMessage

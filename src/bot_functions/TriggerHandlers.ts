@@ -34,6 +34,12 @@ export default class TriggerHandlers {
 
         TriggerHandlers.checkForMusicPlaybackRequest,
         TriggerHandlers.checkForMusicStopRequest,
+        TriggerHandlers.checkForMusicQueueAddRequest,
+        TriggerHandlers.checkForMusicQueueStartRequest,
+        TriggerHandlers.checkForMusicQueueSkipRequest,
+        TriggerHandlers.checkForMusicQueueAvoidNextRequest,
+        TriggerHandlers.checkForMusicQueueInquireNextRequest,
+        TriggerHandlers.checkForMusicQueueInquireListRequest,
 
         TriggerHandlers.checkForImageFetchRequest,
 
@@ -155,6 +161,37 @@ export default class TriggerHandlers {
                     return BotModuleMusic.stopMusic(trigger)
                 }
             } else return
+    }
+
+    private static checkForMusicQueueAddRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.singing_triggers.queue.add)
+            if (message.toString().substring(0).toLowerCase().includes(trigger))
+                return BotModuleMusic.addNewSongRequest(trigger)
+    }
+    private static checkForMusicQueueStartRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.singing_triggers.queue.start)
+            if (message.toString().substring(0).toLowerCase().includes(trigger))
+                return BotModuleMusic.proccessNextSongRequest(false, trigger)
+    }
+    private static checkForMusicQueueSkipRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.singing_triggers.queue.play_next)
+            if (message.toString().substring(0).toLowerCase().includes(trigger))
+                return BotModuleMusic.proccessNextSongRequest(false, trigger)
+    }
+    private static checkForMusicQueueAvoidNextRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.singing_triggers.queue.skip)
+            if (message.toString().substring(0).toLowerCase().includes(trigger))
+                return BotModuleMusic.proccessNextSongRequest(true, trigger)
+    }
+    private static checkForMusicQueueInquireNextRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.singing_triggers.queue.inquire.next)
+            if (message.toString().substring(0).toLowerCase().includes(trigger))
+                return BotModuleMusic.fireQueueNextUpMessage(trigger)
+    }
+    private static checkForMusicQueueInquireListRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.singing_triggers.queue.inquire.list)
+            if (message.toString().substring(0).toLowerCase().includes(trigger))
+                return BotModuleMusic.fireQueueListMessage(trigger)
     }
 
 

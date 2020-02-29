@@ -3,16 +3,20 @@
  * 
  * Addtional features on top of standard queue: multi-lookup and index-based addition/removal.
  */
-class QueueHandler<T> {
+export default class QueueHandler<T> {
     private queue: T[];
+
+    constructor() {
+        this.queue = new Array<T>()
+    }
 
     /**
      * @param  {T} item
      * @param  {number} index where to add item in queue
      */
-    add(item: T, index: number) {
+    add(item: T, index?: number) {
         if (!index)
-            this.queue.unshift(item);
+            this.queue.push(item);
         else {
             if (index > this.queue.length - 1) {
                 throw new ReferenceError(`Index out of length`)
@@ -44,27 +48,40 @@ class QueueHandler<T> {
         }
     }
 
+    empty() {
+        this.queue = new Array<T>()
+    }
+
     dequeue() {
         return this.queue.splice(0, 1)[0]
     }
 
     peek(end?: boolean) {
+        let pseudo = Array.from(this.queue)
+
         if (end)
-            return this.queue[this.queue.length - 1]
+            return pseudo[this.queue.length - 1]
         else
-            return this.queue[0]
+            return pseudo[0]
     }
 
     peekMultiple(depth: number, reverse?: boolean) {
+        let pseudo = Array.from(this.queue)
+
         if (reverse)
-            return this.queue.slice().reverse().map((item, i) => {
+            return pseudo.slice().reverse().map((item, i) => {
                 if (i <= depth)
                     return item
             })
         else
-            return this.queue.map((item, i) => {
+            return pseudo.map((item, i) => {
                 if (i <= depth)
                     return item
             })
+    }
+
+    peekAll() {
+        let pseudo = Array.from(this.queue)
+        return pseudo
     }
 }

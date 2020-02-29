@@ -147,6 +147,59 @@
                     "SoundCloud"
                 ]
             }
+        },
+        "queue": {
+            "add": [
+                "megadork jukebox add",
+                "megadork music queue add",
+                "megadork add to queue",
+                "megadork i request the song",
+                "megadork add to music queue"
+            ],
+            "skip": [
+                "megadork skip next song",
+                "megadork avoid next song",
+                "megadork omit next song",
+                "megadork remove next song"
+            ],
+            "start": [
+                "megadork start jukebox",
+                "megadork jukebox start",
+                "megadork begin jukebox",
+                "megadork jukebox ignite",
+                "megadork fire jukebox",
+                "megadork start music queue",
+                "megadork music queue start",
+                "megadork begin music queue",
+                "megadork music queue ignite",
+                "megadork fire music queue"
+            ],
+            "play_next": [
+                "megadork play next",
+                "megadork start next",
+                "megadork next song",
+                "megadork play next song",
+                "megadork start next song",
+                "megadork begin next song",
+                "megadork do next song"
+            ],
+            "inquire": {
+                "next": [
+                    "megadork what's the next song",
+                    "megadork jukebox next up",
+                    "megadork jukebox next song",
+                    "megadork check next song",
+                    "megadork music queue next up"
+                ],
+                "list": [
+                    "megadork music queue",
+                    "megadork jukebox list",
+                    "megadork jukebox queue",
+                    "megadork what's on the jukebox",
+                    "megadork what's on the music queue",
+                    "megadork music requests"
+                ]
+            }
         }
     },
     "server_mod_triggers": {

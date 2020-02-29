@@ -1,6 +1,7 @@
-import Discord from 'discord.js'
+import Discord, { Message } from 'discord.js'
 import Bot, { SongState } from "../../Bot"
 import { Song, Stream } from "../../types"
+import QueueHandler from '../_state/QueueHandler'
 
 import TRIGGERS from '../../bot_knowledge/triggers/triggers.json'
 import PHRASES_SING from '../../bot_knowledge/phrases/phrases_sing.json'
@@ -11,6 +12,8 @@ import YouTube from 'youtube-search'
 import Soundcloud from "soundcloud.ts"
 
 export default class BotModuleMusic {
+
+    static musicQueue = new QueueHandler<Message>()
 
     static scClient: Soundcloud =
         new Soundcloud(AUTH.soundcloud.client_id, AUTH.soundcloud.o_auth_token)
@@ -117,6 +120,7 @@ export default class BotModuleMusic {
 
         // Finished
         bot.commandSatisfied = true
+        this.proccessNextSongRequest()
     }
 
     static stopMusic(trigger?: string) {
@@ -136,6 +140,11 @@ export default class BotModuleMusic {
 
                     bot.textChannel.send(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.active))
                     console.log('Bot exited voice channel by user message.')
+
+                    if (this.musicQueue.peek() !== undefined) {
+                        bot.textChannel.send(`Jukebox is cleaned out too.`)
+                        this.musicQueue.empty()
+                    }
                 }
             } catch (error) {
                 bot.saveBugReport(error)
@@ -241,6 +250,109 @@ export default class BotModuleMusic {
                 res(result)
             })
         })
+    }
+
+    static addNewSongRequest(trigger?: string) {
+        let bot: Bot = globalThis.bot
+        if (trigger) {
+            bot.preliminary(trigger, 'Song Request Enqueue', true)
+
+            bot.context.content = bot.context.content.replace(trigger, "").trim()
+        }
+
+        try {
+            bot.context.channel.send(`${bot.context.author.username}, queuing your request.`)
+
+            this.musicQueue.add(bot.context as Message)
+        } catch (err) {
+            bot.saveBugReport(err, true)
+        }
+
+        return true
+    }
+
+    static proccessNextSongRequest(skip?: boolean, trigger?: string) {
+        let request = this.musicQueue.dequeue()
+        let bot: Bot = globalThis.bot
+        if (trigger) bot.preliminary(trigger, 'Song Request Process', true)
+
+        if (request === undefined) {
+            console.info(`Music queue list is now empty.`)
+            bot.context.channel.send(`📻... *that's all folks*!`)
+            return true
+        }
+
+        try {
+            if (!skip) {
+                request.channel.send(`${request.author.username}'s song is up next!`)
+
+                let channel = bot.context.member.voice.channel
+                bot.context = request
+                bot.voiceChannel = channel
+
+                this.playMusic(request.content.toString())
+            }
+            else {
+                request.channel.send(`${request.author.username}'s request is being skipped.`)
+            }
+        } catch (err) {
+            bot.saveBugReport(err, true)
+        }
+
+        return true
+    }
+
+    static fireQueueListMessage(trigger?: string) {
+        let bot: Bot = globalThis.bot
+        if (trigger) bot.preliminary(trigger, 'Song Request List Inquiry', true)
+
+        let currentList = this.musicQueue.peekAll()
+
+        if (currentList.length === 0)
+            return bot.context.channel.send(`The song queue is empty... 🍃`)
+
+        let message = new Discord.MessageEmbed()
+            .setTitle(`Current Music Queue 💽`)
+            .setColor('LUMINOUS_VIVID_PINK')
+            .setFooter(`${currentList.length} request(s) to play...`)
+
+        currentList.forEach(request => {
+            let refactoredRequest =
+                request.content.replace("megadork play", "")
+
+            message.addFields(
+                { name: request.author.username, value: refactoredRequest }
+            )
+        })
+
+        bot.context.channel.send(message)
+
+        return true
+    }
+
+
+    static fireQueueNextUpMessage(trigger?: string) {
+        let bot: Bot = globalThis.bot
+        if (trigger) bot.preliminary(trigger, 'Song Next Up Inquiry', true)
+
+        let next = this.musicQueue.peek()
+
+        if (next === undefined)
+            return bot.context.channel.send(`There's nothing next to play. 😶`)
+
+        let refactoredRequest =
+            next.content.replace("megadork play", "")
+
+        let message = new Discord.MessageEmbed()
+            .setTitle(`💿 Next up...`)
+            .addFields({ name: next.author.username, value: refactoredRequest })
+            .setColor('LUMINOUS_VIVID_PINK')
+            .setFooter(`${this.musicQueue.peekAll().length} request(s) to play...`)
+
+        bot.context.channel.send(message)
+
+        return true
+
     }
 
     static loadClients() {

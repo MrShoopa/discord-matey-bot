@@ -70,6 +70,8 @@ export default class Bot extends Discord.Client {
         if (this.voiceChannel === null &&
             this.waker.id === this.user.id)
             this.voiceChannel = this.lastMessage.member.voice.channel
+        else if (this.waker.id === this.user.id)
+            this.voiceChannel = this.voiceChannel
         else
             this.voiceChannel = value.member.voice.channel
     }

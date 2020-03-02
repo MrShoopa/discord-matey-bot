@@ -30,11 +30,6 @@ export default class Bot extends Discord.Client {
         super()
 
         this.login(apiKey).catch(error => (console.log(`Discord connection error: ${error}`)))
-            .then(() => {
-                CREDS.you.restricted_role_names.forEach(name => {
-                    this.restrictedRoleIds.push(this.fetchRoleID(name))
-                })
-            })
 
         //  Check data
 
@@ -106,7 +101,16 @@ export default class Bot extends Discord.Client {
 
     }
 
+    /*  ---- Post-Connect Functions ---- */
+
+    populateRestrictedRoleList() {
+        CREDS.you.restricted_role_names.forEach(name => {
+            this.restrictedRoleIds.push(this.fetchRoleID(name))
+        })
+    }
+
     /*  ---- Bot Helper Background Functions ---- */
+
     fetchRoleID(roleName: string) {
         let role: Role = null
 

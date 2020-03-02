@@ -16,10 +16,10 @@ export default class BotModuleRestrictedRole {
             member.roles.add(bot.restrictedRoleIds[0])
                 .then(() => {
                     console.log(
-                        `Adding ${member.displayName} to the role: ${globalThis.RESTRICTED_ROLE_NAME}`)
+                        `Adding ${member.displayName} to the role: ${bot.restrictedRoleIds[0]}`)
                 })
                 .catch((error) => {
-                    console.error(`Failed to add ${member.displayName} to the role: ${globalThis.RESTRICTED_ROLE_NAME}`)
+                    console.error(`Failed to add ${member.displayName} to the role: ${bot.restrictedRoleIds[0]}`)
                     bot.saveBugReport(error)
                 })
         })

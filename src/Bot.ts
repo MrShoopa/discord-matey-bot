@@ -13,6 +13,8 @@ import BotData from './bot_functions/DataHandler'
 import CREDS from './user_creds.json'
 import { main_trigger } from './bot_knowledge/triggers/triggers.json'
 
+import BotLoggerFunctions from './bot_functions/general/LoggerFunctions'
+
 import BotModuleMusic from './bot_functions/music/MusicFunctions'
 
 export enum SongState {
@@ -475,51 +477,8 @@ export default class Bot extends Discord.Client {
      * bug report.
      * @param error Error thrown by code
      */
-    saveBugReport(error: Error
-        , logInConsole?: boolean, reply?: boolean) {
-        if (logInConsole) console.error(`Error occured on: ${new Date().toString()}:\n ${error.stack}`)
-
-        var reportPath: string = __dirname + `/../crash_logs`
-
-        FileSystem.exists(reportPath, exists => {
-            if (!exists)
-                FileSystem.mkdir(reportPath, folderError => {
-                    console.error(`Error creating crash log folder: ${folderError}`)
-                })
-            reportPath = Path.join(reportPath)
-
-            FileSystem.appendFile(reportPath + `/` + `crash_log_` +
-                (new Date().getMonth() + 1) + `_` +
-                new Date().getDate() + `_` +
-                new Date().getFullYear().toString() +
-                `.txt`,
-                (`
-        Error encountered during bot runtime! -> ${new Date().toString()}
-        ---------
-        ${error.stack}
-        ---------
-        ${this.waker.username} on ${this.context?.guild.name}` +
-                    // Add extra details where necessary            
-                    `${(() => {
-                        if (this.textChannel instanceof Discord.TextChannel) {
-                            return `'s channel '${this.textChannel.name}'`
-                        }
-                    })()}`
-                    // Finish adding details
-                    + ` said:
-            "${this.context.toString()}"
-                `)
-                , callback => {
-                    if (callback as Error)
-                        console.error(`Error writing crash log: ${callback}`)
-                })
-        }
-        )
-
-        if (reply && this.lastWaker)
-            this.lastWaker.lastMessage.channel.send(new Discord.MessageEmbed()
-                .setAuthor('Megadork Crash Reporter 📝')
-                .setDescription`Log submitted to Joe.`)
+    saveBugReport(error: Error, logInConsole?: boolean, reply?: boolean) {
+        BotLoggerFunctions.saveBugReport(error, logInConsole, reply)
     }
 
     /**

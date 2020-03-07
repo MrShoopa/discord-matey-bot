@@ -1,6 +1,8 @@
 import Bot from '../../Bot'
 import BotDiscordActivity from './DiscordActivityStatus'
+
 import TimelyFunctions from "./TimelyFunctions"
+import BotLoggerFunctions from '../general/LoggerFunctions'
 
 import BotModuleMusic from "../music/MusicFunctions"
 
@@ -10,6 +12,8 @@ export default class PostReadyFunctions {
         this.loadClients()
 
         this.postBotConnectDataFetch()
+
+        BotLoggerFunctions.instantiateLogFolder()
 
         BotDiscordActivity.updateRandomStatus()
 

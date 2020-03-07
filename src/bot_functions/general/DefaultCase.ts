@@ -26,7 +26,7 @@ export default class BotDefaultResponder {
     static unknownCommandResponse(bot: Bot = globalThis.bot) {
         let context = bot.context
 
-        BotLoggerFunctions.saveUnknownCommand(context, true, true)
+        BotLoggerFunctions.saveUnknownCommand(context, true)
 
         return context.reply(Bot.fetchRandomPhrase(PHRASES_FRONT.unknown_command))
     }

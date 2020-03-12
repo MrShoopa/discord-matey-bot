@@ -289,6 +289,7 @@ export default class BotModuleMusic {
         if (request === undefined) {
             console.info(`Music queue list is now empty.`)
             bot.context.channel.send(`📻... *that's all folks*!`)
+            if (bot.voice.connections) this.stopMusic()
             return true
         }
 

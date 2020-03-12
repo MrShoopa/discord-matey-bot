@@ -92,14 +92,14 @@ export default class BotLoggerFunctions {
 class ErrorLog {
     static reportPath: string = BotLoggerFunctions.logPathName + `/error_logs`
     static filename: string = ErrorLog.reportPath + `/` + `crash_log_` +
-        new Date().getMonth() + 1 + `_` +
+        (new Date().getMonth() + 1) + `_` +
         new Date().getDate() + `_` +
         new Date().getFullYear().toString() +
         `.txt`
 
     static generateText(error: Error, bot: Bot) {
         return `
-        Error encountered during bot runtime! -> ${new Date().toTimeString()}
+        Error encountered during bot runtime! -> ${new Date().toLocaleTimeString()}
         ---------
         ${error.stack}
         ---------
@@ -120,7 +120,7 @@ class ErrorLog {
 class UnknownCommandLog {
     static reportPath: string = BotLoggerFunctions.logPathName + `/unknown_commands`
     static filename: string = UnknownCommandLog.reportPath + `/` + `unknown_commands_` +
-        new Date().getMonth() + 1 + `_` +
+        (new Date().getMonth() + 1) + `_` +
         new Date().getDate() + `_` +
         new Date().getFullYear().toString() +
         `.txt`
@@ -128,7 +128,7 @@ class UnknownCommandLog {
     static generateText(message: Discord.Message | Discord.PartialMessage,
         bot: Bot) {
         return `
-        Unknown command attempted on ${new Date().toTimeString()}:
+        Unknown command attempted on ${new Date().toLocaleTimeString()}:
         ---------
         \t"${message}"
         \t\tfrom user: ${message.author.username}

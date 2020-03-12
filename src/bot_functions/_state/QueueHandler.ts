@@ -84,4 +84,8 @@ export default class QueueHandler<T> {
         let pseudo = Array.from(this.queue)
         return pseudo
     }
+
+    size() {
+        return Array.from(this.queue).length
+    }
 }

@@ -76,8 +76,12 @@ export default class BotModuleMusic {
 
                 var url_string: string[] = bot.context.toString().split(' ')
 
-                return bot.playAudioFromURL(url_string[url_string.length - 1], loop, trigger)
+
+                bot.playAudioFromURL(url_string[url_string.length - 1], loop, trigger)
                     .catch(error => { throw error })
+
+                if (this.musicQueue.size() === 0) this.stopMusic()
+                return true
             }
 
             for (const song of PHRASES_SING.songs_to_sing)
@@ -87,7 +91,10 @@ export default class BotModuleMusic {
 
                     let foundSong: Song.SongObject = song
 
-                    return bot.playAudioFromFiles(foundSong, loop, trigger)
+                    bot.playAudioFromFiles(foundSong, loop, trigger)
+
+                    if (this.musicQueue.size() === 0) this.stopMusic()
+                    return true
                 }
 
             // Start searching local audio folder for 'non-tagged' songs
@@ -100,7 +107,10 @@ export default class BotModuleMusic {
                 console.info(matchedSongs)
                 console.groupEnd()
 
-                return bot.playAudioFromFiles(matchedSongs[0], loop)
+                bot.playAudioFromFiles(matchedSongs[0], loop)
+
+                if (this.musicQueue.size() === 0) this.stopMusic()
+                return true
             }
 
         } catch (error) {

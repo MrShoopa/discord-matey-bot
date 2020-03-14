@@ -18,7 +18,7 @@ export default class BotModuleMusic {
     static scClient: Soundcloud =
         new Soundcloud(AUTH.soundcloud.client_id, AUTH.soundcloud.o_auth_token)
 
-    static async playMusic(trigger: string, loop?: boolean) {
+    static async playMusic(trigger: string, loop?: boolean, queueMode = false) {
         let bot: Bot = globalThis.bot
         bot.songState = SongState.Fetching
 
@@ -80,7 +80,8 @@ export default class BotModuleMusic {
                 bot.playAudioFromURL(url_string[url_string.length - 1], loop, trigger)
                     .catch(error => { throw error })
 
-                if (this.musicQueue.size() === 0) this.stopMusic()
+                if (this.musicQueue.size() === 0 && queueMode)
+                    this.stopMusic()
                 return true
             }
 
@@ -93,7 +94,8 @@ export default class BotModuleMusic {
 
                     bot.playAudioFromFiles(foundSong, loop, trigger)
 
-                    if (this.musicQueue.size() === 0) this.stopMusic()
+                    if (this.musicQueue.size() === 0 && queueMode)
+                        this.stopMusic()
                     return true
                 }
 
@@ -109,7 +111,8 @@ export default class BotModuleMusic {
 
                 bot.playAudioFromFiles(matchedSongs[0], loop)
 
-                if (this.musicQueue.size() === 0) this.stopMusic()
+                if (this.musicQueue.size() === 0 && queueMode)
+                    this.stopMusic()
                 return true
             }
 
@@ -130,7 +133,7 @@ export default class BotModuleMusic {
 
         // Finished
         bot.commandSatisfied = true
-        this.proccessNextSongRequest()
+        if (queueMode) this.proccessNextSongRequest()
     }
 
     static stopMusic(trigger?: string) {
@@ -301,7 +304,7 @@ export default class BotModuleMusic {
                 bot.context = request
                 bot.voiceChannel = channel
 
-                this.playMusic(request.content.toString())
+                this.playMusic(request.content.toString(), false, true)
             }
             else {
                 request.channel.send(`${request.author.username}'s request is being skipped.`)

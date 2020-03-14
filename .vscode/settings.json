@@ -18,6 +18,6 @@
 	"discord.lowerDetailsEditing": "Line {currentline} of {filename}",
 	"discord.detailsIdle": "Chillin'",
 	"discord.lowerDetailsIdle": "{null}",
-	"discord.detailsDebugging": "Running Megadork",
-	"discord.lowerDetailsDebugging": "Debugging {totallines} lines of code"
+	"discord.detailsDebugging": "Debugging Megadork",
+	"discord.lowerDetailsDebugging": "Debugging {totallines} lines of code in {filename}"
 }

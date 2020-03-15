@@ -27,12 +27,10 @@
         ]
     },
     "help_intro": "Hmmm so far I can... \n",
-    "help_sing": "Sing: Pull out meme songs I know!  \n    \"*Megadork, what can you sing?* \" ",
-    "help_image_search": "I can find a random picture!   \n    \"*Megadork random picture of [whatever your searching]* \"     ",
-    "help_quote": "I can fetch a quote!  \n    \"*Megadork fetch quote of the day* \"     ",
-    "help_copypasta": "Want a copypasta?  \n    \"*Megadork fetch copypasta* \"     ",
+    "help_function_intro": "Here is my current command list... 😊 \n Type in *megadork help **keyword*** to learn more about that category of functions.",
+    "help_extras": "And here are some unordinary things I can do. 😛",
     "help_conversation": {
-        "main": "Phrase-play: Respond to some conversation :)  \n    ",
+        "main": "Phrase-play: (Respond to some conversation 🙂)  \n    ",
         "example": {
             "suicide": "\"*I wanna kill myself* \"",
             "how_are_you": "\"*megadork, how are you* \"",
@@ -41,6 +39,7 @@
         }
     },
     "help_secret": {
-        "main": "I also have some top-secret commands my creator has made for me. :)     "
+        "main": "I also have some top-secret commands my creator has made for me. :)",
+        "egg": "Easter eggs included. 🥚"
     }
 }

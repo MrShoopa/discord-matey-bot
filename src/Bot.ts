@@ -1,4 +1,4 @@
-import * as FileSystem from 'fs'
+import * as FileSystem from 'fs-extra'
 import * as Path from 'path'
 import Request from 'request'
 import Stream from 'stream'
@@ -227,9 +227,10 @@ export default class Bot extends Discord.Client {
 
     async playAudioFromURL(url: string, loop?: boolean, trigger?: string) {
         var dispatcher: Discord.StreamDispatcher
-        var stream: Stream.Readable | Discord.VoiceBroadcast
+        var stream: Stream.Readable | FileSystem.ReadStream
         var songInfo: Datypes.Stream.SongInfo
             = { source: 'undefined turtle', url: url }
+        var cacheFolder = './cache/music', tempSong: string
 
         if (!this.commandSatisfied) {
             console.log('URL Command matched')
@@ -297,10 +298,6 @@ export default class Bot extends Discord.Client {
                     return null
                 }
             } else if (url.includes('soundcloud')) {
-                return globalThis.bot.context
-                    .reply('SoundCloud support coming sometime ' +
-                        `when SoundCloud opens up to developers again  :''''''')`)
-
                 songInfo = { source: url, platform: 'SoundCloud' }
 
                 let sc = await BotModuleMusic.scClient
@@ -314,14 +311,20 @@ export default class Bot extends Discord.Client {
                         songInfo.authorImgUrl = track.user.avatar_url
                         songInfo.genre = track.genre
 
-                        stream = await BotModuleMusic.scClient.util.streamTrack(`${track.id}`)
+                        stream = await BotModuleMusic.scClient.util.streamTrack(`${track.id}`,
+                            './cache/music/soundcloud')
                             .then(s => {
-                                return s
+                                return s as FileSystem.ReadStream
                             }).catch(e => {
                                 console.log(e)
                                 return null
-                            })
+                            }) as FileSystem.ReadStream
+
+
                     })
+
+                    if (stream instanceof FileSystem.ReadStream)
+                        tempSong = stream.path.toString()
 
                     return stream
                 } catch (error) {
@@ -374,6 +377,13 @@ export default class Bot extends Discord.Client {
                     } else {
                         console.info('Song played successfully.')
 
+                        let fileInstance = cacheFolder + `/${tempSong}`
+
+                        FileSystem.exists(fileInstance, (exists) => {
+                            if (exists)
+                                FileSystem.remove(fileInstance)
+                        })
+
                         bot.songState = SongState.Finished
                         bot.voiceChannel.leave()
                     }
@@ -381,7 +391,7 @@ export default class Bot extends Discord.Client {
                     console.groupEnd()
                 })
 
-                return true
+                //return true
             } catch (error) {
                 console.log(`Error playing URL stream!`)
                 bot.saveBugReport(error, true)

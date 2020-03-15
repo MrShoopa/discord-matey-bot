@@ -34,16 +34,6 @@
         "that has",
         "that includes"
     ],
-    "help_questions": {
-        "actions": [
-            "what can you summon",
-            "what can you do",
-            "help"
-        ],
-        "singing": [
-            "what can you sing"
-        ]
-    },
     "third_person_phrase_triggers": {
         "suck_thing": [
             "suck",

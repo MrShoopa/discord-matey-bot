@@ -4,6 +4,9 @@ user_creds.json
 # Save Data
 **/save_data
 
+# Cache
+/cache
+
 # Code Runner
 tempCodeRunnerFile.js
 

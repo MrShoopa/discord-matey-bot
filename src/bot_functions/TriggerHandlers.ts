@@ -171,17 +171,17 @@ export default class TriggerHandlers {
     private static checkForMusicQueueStartRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.singing_triggers.queue.start)
             if (message.toString().substring(0).toLowerCase().includes(trigger))
-                return BotModuleMusic.proccessNextSongRequest(false, trigger)
+                return BotModuleMusic.processNextSongRequest(false, true, trigger)
     }
     private static checkForMusicQueueSkipRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.singing_triggers.queue.play_next)
             if (message.toString().substring(0).toLowerCase().includes(trigger))
-                return BotModuleMusic.proccessNextSongRequest(false, trigger)
+                return BotModuleMusic.processNextSongRequest(false, false, trigger)
     }
     private static checkForMusicQueueAvoidNextRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.singing_triggers.queue.skip)
             if (message.toString().substring(0).toLowerCase().includes(trigger))
-                return BotModuleMusic.proccessNextSongRequest(true, trigger)
+                return BotModuleMusic.processNextSongRequest(true, false, trigger)
     }
     private static checkForMusicQueueInquireNextRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.singing_triggers.queue.inquire.next)

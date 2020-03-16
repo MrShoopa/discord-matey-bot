@@ -42,7 +42,7 @@ export default class BotModuleQuote {
                 else
                     quoteObject = await quoteMaster.default.getQuoteOfTheDay()
             } catch (e) {
-                bot.saveBugReport(e)
+                bot.saveBugReport(e, this.fetchQuoteOfTheDay.name)
                 if (e.includes('Fetched'))
                     bot.textChannel.send(`Fetched too much right now! ${e.timeMessage}`)
             }
@@ -70,7 +70,7 @@ export default class BotModuleQuote {
                 try {
                     quoteObject = await quoteMaster.default.getQuote()
                 } catch (e) {
-                    bot.saveBugReport(e)
+                    bot.saveBugReport(e, this.fetchMovieQuote.name)
                     console.log('asd')
                     if (e as EvalError) return "Looks like I can't fetch quotes right now..."
                 }
@@ -99,7 +99,7 @@ export default class BotModuleQuote {
                 try {
                     quoteObject = await quoteMaster.default.getQuote()
                 } catch (e) {
-                    bot.saveBugReport(e)
+                    bot.saveBugReport(e, this.fetchInspirationalQuote.name)
                     return "Looks like I can't fetch quotes right now..."
                 }
         })

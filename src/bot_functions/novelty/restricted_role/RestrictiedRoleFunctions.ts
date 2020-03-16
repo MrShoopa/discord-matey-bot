@@ -20,7 +20,7 @@ export default class BotModuleRestrictedRole {
                 })
                 .catch((error) => {
                     console.error(`Failed to add ${member.displayName} to the role: ${bot.restrictedRoleIds[0]}`)
-                    bot.saveBugReport(error)
+                    bot.saveBugReport(error, this.assignToRestrictedRole.name)
                 })
         })
     }

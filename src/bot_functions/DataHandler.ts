@@ -37,7 +37,7 @@ export default class BotData {
 				try {
 					return this.createNewDataFile(true, true)
 				} catch (err) {
-					this.bot.saveBugReport(err, true)
+					this.bot.saveBugReport(err, this.getUserDataFile.name, true)
 				}
 				return null
 			}
@@ -212,7 +212,7 @@ export default class BotData {
 			try {
 				FileSystem.writeFileSync(SAVE_DATA_FILE, JSON.stringify(data))
 			} catch (err) {
-				this.bot.saveBugReport(err, true)
+				this.bot.saveBugReport(err, this.writeDataFile.name, true)
 				if (err.code === 'ENOENT') {
 					console.error(`Data has been deleted. Please restart the Bot.`)
 					process.exit(404)

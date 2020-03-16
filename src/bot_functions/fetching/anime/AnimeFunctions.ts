@@ -52,7 +52,7 @@ export default class BotModuleAnime {
                 JikanTS.default.Search.search(name, "anime")
                     .catch(error => {
                         let bot: Bot = globalThis.bot
-                        bot.saveBugReport(error)
+                        bot.saveBugReport(error, this.fetchAnimeOfName.name)
                         reject(error)
                     })
                     .then(anime => {

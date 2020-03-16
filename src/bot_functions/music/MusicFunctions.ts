@@ -18,9 +18,9 @@ export default class BotModuleMusic {
     static scClient: Soundcloud =
         new Soundcloud(AUTH.soundcloud.client_id, AUTH.soundcloud.o_auth_token)
 
-    static async playMusic(trigger: string, loop?: boolean, queueMode = false) {
+    static async playMusic(trigger: string, loop?: boolean, queueMode?: boolean) {
         let bot: Bot = globalThis.bot
-        bot.songState = SongState.Fetching
+        let songState = SongState.Fetching
 
         let context: string[] =
             bot.context.toString().substring(0, 100).split(' ')
@@ -313,7 +313,7 @@ export default class BotModuleMusic {
                 request.channel.send(`${request.author.username}'s request is being skipped.`)
             }
         } catch (err) {
-            bot.saveBugReport(err, true)
+            bot.saveBugReport(err, this.processNextSongRequest.name, true)
         }
 
         return true

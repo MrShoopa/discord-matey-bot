@@ -120,7 +120,7 @@ export default class BotModuleTwitter {
             this.twitterEntity.get('search/tweets', { q: `from:${user}`, count: 1 },
                 (error, tweets, response) => {
                     if (error) {
-                        globalThis.bot.saveBugReport(error)
+                        globalThis.bot.saveBugReport(error, this.fetchLatestTweetFromUser.name)
                         reject(error)
                     }
 
@@ -144,7 +144,7 @@ export default class BotModuleTwitter {
 
             this.twitterEntity.get('search/tweets', { q: userQuery }, (error, tweets, response) => {
                 if (error) {
-                    globalThis.bot.saveBugReport(error)
+                    globalThis.bot.saveBugReport(error, this.fetchTweetWithQuery.name)
                     reject(error)
                 }
 

@@ -38,7 +38,7 @@ export default class BotModuleSwearJar {
                 } else userData.swear_score += matchedWords
             } catch (error) {
                 console.error(new EvalError(`Error updating swear score for ${bot.context.author.username}!`))
-                bot.saveBugReport(error)
+                bot.saveBugReport(error, this.dingUser.name)
             }
 
             BotData.updateUserData(bot.context.author.id, userData)

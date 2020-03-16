@@ -43,7 +43,7 @@ bot.on('message', async (message) => {
 	try {
 		TriggerHandlers.validateMessage(message)
 	} catch (e) {
-		bot.saveBugReport(e, true)
+		bot.saveBugReport(e, 'on message event', true)
 	}
 })
 

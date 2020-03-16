@@ -82,7 +82,7 @@ export default class BotModuleReddit {
 
         let submissions = await bot.fetchJSONFromURL(redditUrl)
             .catch((error: any) => {
-                bot.saveBugReport(error, true)
+                bot.saveBugReport(error, this.fetchSubmissions.name, true)
             })
         return submissions.data.children
     }
@@ -95,7 +95,7 @@ export default class BotModuleReddit {
 
         let submissions = await bot.fetchJSONFromURL(redditUrl)
             .catch((error: any) => {
-                bot.saveBugReport(error, true)
+                bot.saveBugReport(error, this.fetchSubmissionsFromUser.name, true)
             })
         return submissions.data.children
     }

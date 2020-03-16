@@ -23,9 +23,13 @@ export default class BotDiscordActivity {
             url: "https://www.youtube.com/watch?v=DBejlYvfBF8"
         },
         {
-            name: `this on repeat`, type: 'WATCHING',
+            name: `this on repeat`, type: 'STREAMING',
             url: "https://www.youtube.com/watch?v=jF-KRZmXfF4&list=WL&index=2&t=0s&ab_channel=sylicaa"
         },
+        { name: `red velvet. pls stan.`, type: 'LISTENING' },
+        { name: `EoE 👁👁👁👁👁`, type: 'WATCHING' },
+        { name: `Sonic '06, The Greatest Game in the Universe`, type: 'PLAYING' },
+        { name: `with coronavirus test kits`, type: 'PLAYING' },
 
     ]
 

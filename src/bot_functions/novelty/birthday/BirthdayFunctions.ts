@@ -56,7 +56,7 @@ export default class BotModuleBirthday {
 					` ${CALENDAR.months_prettier[birthday.getMonth()]} ${birthday.getDate().toLocaleString()}!`)
 			}
 		} catch (error) {
-			bot.saveBugReport(error, true)
+			bot.saveBugReport(error, this.assignBirthdaySelf.name, true)
 			return bot.context.reply(`I couldn't save your birthday for some reason... :(`)
 		}
 

@@ -8,11 +8,13 @@ export default class BotLoggerFunctions {
     static logPathName = __dirname + `/../../../logs`
 
     static saveBugReport(error: Error
-        , logInConsole?: boolean, reply?: boolean) {
+        , func?: string, logInConsole?: boolean, reply?: boolean) {
         let bot: Bot = globalThis.bot
 
+        if (func)
+            console.error(`Error! On function: ${func} `)
         if (logInConsole)
-            console.error(`Error occured on: ${new Date().toString()}:\n ${error.stack}`)
+            console.error(`Error occured on: ${new Date().toLocaleTimeString()}:\n ${error.stack}`)
 
         // Finalize
         this.writeTextToFile(ErrorLog.generateText(error, bot), ErrorLog.filename, ErrorLog.reportPath)

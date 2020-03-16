@@ -35,7 +35,7 @@ export default class BotTimeKeeper {
                     return this.createNewDataFile(true, true)
                 } catch (err) {
 
-                    bot.saveBugReport(err, true)
+                    bot.saveBugReport(err, this.getTimeData.name, true)
                 }
                 return null
             } else bot.saveBugReport(err)
@@ -124,7 +124,7 @@ export default class BotTimeKeeper {
             } catch (err) {
                 let bot: Bot = globalThis.bot
 
-                bot.saveBugReport(err, true)
+                bot.saveBugReport(err, this.writeDataFile.name, true)
                 if (err.code === 'ENOENT') {
                     console.error(`Data has been deleted. Please restart the Bot.`)
                     process.exit(404)

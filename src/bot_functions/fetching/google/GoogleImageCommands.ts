@@ -38,7 +38,9 @@ export default class BotModuleGoogleImage {
         var item = await this.fetchImageFromGoogle(userQuery, true)
 
         if (!item) {
-            bot.saveBugReport(new ReferenceError('No image was returned.'), true, true)
+            bot.saveBugReport(new ReferenceError('No image was returned.'),
+                this.fetchBuiltImageFromGoogle.name,
+                true, true)
             return bot.generateErrorMessage(`Due to some error, I couldn't fetch anything at the moment.`)
         }
 
@@ -97,7 +99,7 @@ export default class BotModuleGoogleImage {
                 }
             }).catch(error => {
                 //  The other cases
-                bot.saveBugReport(error, true)
+                bot.saveBugReport(error, this.fetchImageFromGoogle.name, true)
 
                 bot.textChannel.send(
                     'Couldn\'t find image! Let Joe know to find the error.')

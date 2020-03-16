@@ -475,7 +475,7 @@ export default class Bot extends Discord.Client {
                             console.error(`Not authorized.`)
                         else {
                             console.error(`Unknown error. Logged to report.`)
-                            this.saveBugReport(error, true)
+                            this.saveBugReport(error, this.fetchJSONFromURL.name, true)
                         }
 
                         console.groupEnd()
@@ -496,7 +496,8 @@ export default class Bot extends Discord.Client {
     fetchImageFromURL(url: string): any {
         if (typeof url !== 'string')
             this.saveBugReport(
-                new TypeError(`Tried to fetch image that's not a string URL: ${url}`), true)
+                new TypeError(`Tried to fetch image that's not a string URL: ${url}`),
+                this.fetchImageFromURL.name, true)
 
         return new Promise((res, rej) => {
             NodeFetch(url)
@@ -538,8 +539,8 @@ export default class Bot extends Discord.Client {
      * bug report.
      * @param error Error thrown by code
      */
-    saveBugReport(error: Error, logInConsole?: boolean, reply?: boolean) {
-        BotLoggerFunctions.saveBugReport(error, logInConsole, reply)
+    saveBugReport(error: Error, func?: string, logInConsole?: boolean, reply?: boolean) {
+        BotLoggerFunctions.saveBugReport(error, func, logInConsole, reply)
     }
 
     /**

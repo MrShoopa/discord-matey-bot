@@ -103,7 +103,7 @@ export default class BotModuleLyric {
                 console.info(`Please update your Genius API token.`)
 
 
-            bot.saveBugReport(e, true)
+            bot.saveBugReport(e, this.fetchLyricsInfoOfSong.name, true)
             return null
         }
     }

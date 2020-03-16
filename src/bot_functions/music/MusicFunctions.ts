@@ -71,49 +71,49 @@ export default class BotModuleMusic {
                 3. Local Files w/ exact file
             */
             if (bot.context.toString().toLowerCase().match(urlRegex)
-                && !bot.commandSatisfied) {
+                && songState == SongState.Fetching) {
                 //  When song from URL is found
 
                 var url_string: string[] = bot.context.toString().split(' ')
 
-
-                bot.playAudioFromURL(url_string[url_string.length - 1], loop, trigger)
-                    .catch(error => { throw error })
-
-                if (this.musicQueue.size() === 0 && queueMode)
-                    this.stopMusic()
-                return true
+                songState = SongState.Playing
+                songState =
+                    await bot.playAudioFromURL(url_string[url_string.length - 1], loop, queueMode, trigger)
+                        .catch(error => { throw error })
             }
 
-            for (const song of PHRASES_SING.songs_to_sing)
-                if (bot.context.toString().toLowerCase().includes(song.title.toLowerCase())
-                    && !bot.commandSatisfied) {
-                    //  When song from local files is found
+            if (songState == SongState.Fetching) {
+                for (const song of PHRASES_SING.songs_to_sing) {
+                    if (bot.context.toString().toLowerCase().includes(song.title.toLowerCase())) {
 
-                    let foundSong: Song.SongObject = song
+                        //  When song from local files is found
 
-                    bot.playAudioFromFiles(foundSong, loop, trigger)
+                        let foundSong: Song.SongObject = song
 
-                    if (this.musicQueue.size() === 0 && queueMode)
-                        this.stopMusic()
-                    return true
+                        songState = SongState.Playing
+                        songState =
+                            await bot.playAudioFromFiles(foundSong, loop, queueMode, trigger)
+                                .catch(error => { throw error })
+                    }
                 }
+            }
 
-            // Start searching local audio folder for 'non-tagged' songs
-            let songRequest = bot.context.toString().substring(trigger.length + 1)
+            if (songState == SongState.Fetching) {
+                // Start searching local audio folder for 'non-tagged' songs
+                let songRequest = bot.context.toString().substring(trigger.length + 1)
 
-            let matchedSongs = Bot.searchFilesRecursive('./', `${songRequest}.mp3`)
-            if (matchedSongs.length > 0 && songRequest) {
-                console.group()
-                console.log(`Local matching songs found:`)
-                console.info(matchedSongs)
-                console.groupEnd()
+                let matchedSongs = Bot.searchFilesRecursive('./', `${songRequest}.mp3`)
+                if (matchedSongs.length > 0 && songRequest) {
+                    console.group()
+                    console.log(`Local matching songs found:`)
+                    console.info(matchedSongs)
+                    console.groupEnd()
 
-                bot.playAudioFromFiles(matchedSongs[0], loop)
-
-                if (this.musicQueue.size() === 0 && queueMode)
-                    this.stopMusic()
-                return true
+                    songState = SongState.Playing
+                    songState =
+                        await bot.playAudioFromFiles(matchedSongs[0], loop, queueMode, trigger)
+                            .catch(error => { throw error })
+                }
             }
 
         } catch (error) {
@@ -121,10 +121,12 @@ export default class BotModuleMusic {
                 console.warn(`Bot couldn't find a voice channel to join. Please have user join a channel first.`)
                 bot.context.reply(
                     PHRASES_SING.message_not_in_channel)
-            } else bot.saveBugReport(error)
+
+                songState = SongState.Unknown
+            } else bot.saveBugReport(error, this.playMusic.name, true)
         }
 
-        if (bot.songState == SongState.Fetching) { //  When song is not found
+        if (songState == SongState.Fetching) { //  When song is not found
             bot.context.reply(
                 PHRASES_SING.message_unknown_summon)
 
@@ -133,7 +135,7 @@ export default class BotModuleMusic {
 
         // Finished
         bot.commandSatisfied = true
-        if (queueMode) this.proccessNextSongRequest()
+        if (queueMode && songState == SongState.Finished) this.processNextSongRequest()
     }
 
     static stopMusic(trigger?: string) {
@@ -160,7 +162,7 @@ export default class BotModuleMusic {
                     }
                 }
             } catch (error) {
-                bot.saveBugReport(error)
+                bot.saveBugReport(error, this.stopMusic.name)
             }
         } else {
             if (bot.context.toString().substring(0, 6).toLowerCase().includes("stop"))
@@ -255,7 +257,7 @@ export default class BotModuleMusic {
         return new Promise(async (res, rej) => {
             await YouTube(query, opts, (err, result) => {
                 if (err)
-                    globalThis.bot.saveBugReport(err, true)
+                    globalThis.bot.saveBugReport(err, this.processYouTubeSearch.name, true)
 
                 console.info(`Fetched YouTube search results:`)
                 console.log(result)
@@ -278,13 +280,13 @@ export default class BotModuleMusic {
 
             this.musicQueue.add(bot.context as Message)
         } catch (err) {
-            bot.saveBugReport(err, true)
+            bot.saveBugReport(err, this.addNewSongRequest.name, true)
         }
 
         return true
     }
 
-    static proccessNextSongRequest(skip?: boolean, trigger?: string) {
+    static processNextSongRequest(skip?: boolean, restart?: boolean, trigger?: string) {
         let request = this.musicQueue.dequeue()
         let bot: Bot = globalThis.bot
         if (trigger) bot.preliminary(trigger, 'Song Request Process', true)
@@ -292,7 +294,8 @@ export default class BotModuleMusic {
         if (request === undefined) {
             console.info(`Music queue list is now empty.`)
             bot.context.channel.send(`📻... *that's all folks*!`)
-            if (bot.voice.connections) this.stopMusic()
+            // if (bot.voice.connections.find(bot.context.author.))
+            // this.stopMusic()
             return true
         }
 

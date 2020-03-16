@@ -128,7 +128,8 @@ export default class Bot extends Discord.Client {
             return null
     }
 
-    playAudioFromFiles(song: Datypes.Song.SongObject | string, loop?: boolean, trigger?: string) {
+    async playAudioFromFiles(song: Datypes.Song.SongObject | string, loop?: boolean, gapless?: boolean, trigger?: string)
+        : Promise<SongState> {
         let dispatcher: Discord.StreamDispatcher
         let songInfo: Datypes.Stream.SongInfo
             = {
@@ -142,90 +143,122 @@ export default class Bot extends Discord.Client {
                 this.preliminary(trigger, 'Audio playback from files', true)
 
             try {
-                this.voiceChannel.join().then(connection => {
-                    console.groupEnd()
-                    console.group()
-                    console.log(`Local song playing...`)
-                    console.info(
-                        `Voice channel connection status: ${connection.status}`)
-                    this.songState = SongState.Playing
+                let connection = await this.voiceChannel.join().catch(e => { throw e })
+                console.groupEnd()
+                console.group()
+                console.log(`Local song playing...`)
+                console.info(
+                    `Voice channel connection status: ${connection.status}`)
 
-                    try {
-                        playAudioFile(song, connection)
-                    } catch (e) { throw e }
+                if (loop)
+                    this.context.channel.send('This track is... loop-de-looped! 💫🤹‍♀️')
 
-                    if (loop)
-                        this.context.channel.send('This track is... loop-de-looped! 💫🤹‍♀️')
+                try {
+                    let result = await playAudioFile(song, connection).catch(e => { throw e })
 
-                    console.groupEnd()
-                }).catch(e => { throw e })
+                    return new Promise(resolve => {
+                        resolve(result)
+                    })
+                } catch (err) { throw err }
             } catch (error) {
                 if (!this.voiceChannel)
                     this.context
                         .reply(`where do I dump this noise? you gotta be in a voice channel first!`)
                 else
-                    this.saveBugReport(error, true)
+                    this.saveBugReport(error, this.playAudioFromFiles.name, true)
+
+                return new Promise(resolve => {
+                    resolve(SongState.Unknown)
+                })
             }
         }
 
-        function playAudioFile(song: string | Datypes.Song.SongObject, connection, replaying?: boolean) {
+        async function playAudioFile(song: string | Datypes.Song.SongObject,
+            connection: Discord.VoiceConnection, replaying?: boolean) {
             let bot: Bot = globalThis.bot
 
-            if (typeof song == 'string') {
-                dispatcher = connection.play(song)
-                bot.songState = SongState.Playing
+            try {
+                return new Promise<SongState>((resolve, reject) => {
+                    let state = SongState.Loading
 
-                let songPath = song.split('\\')
+                    if (typeof song == 'string') {
 
-                songInfo.name = songPath.pop()
-                songInfo.localFolder = songPath[songPath.length - 2]
+                        dispatcher = connection.play(song)
+                        state = SongState.Playing
 
-                if (!replaying) {
-                    console.log(`Playing non-tagged song from first match: ${song}`)
+                        let songPath = song.split('\\')
 
-                    bot.context.channel
-                        .send(BotModuleMusic.generatePlaybackMessage(songInfo))
-                }
-            } else if (Datypes.Song.isSongObject(song)) {
-                dispatcher = connection.play(song.file)
-                bot.songState = SongState.Playing
+                        songInfo.name = songPath.pop()
+                        songInfo.localFolder = songPath[songPath.length - 2]
 
-                songInfo.name = song.title
-                songInfo.localFolder = song.file.split(`/`)[song.file.split(`/`).length - 2]
-                songInfo.botPhrase = song.play_phrase
+                    } else if (Datypes.Song.isSongObject(song)) {
 
-                if (!replaying) {
-                    console.log(`Playing tagged song: ${songInfo.name}`)
+                        dispatcher = connection.play(song.file)
+                        state = SongState.Playing
 
-                    bot.context.channel
-                        .send(BotModuleMusic.generatePlaybackMessage(songInfo))
-                }
+                        songInfo.name = song.title
+                        songInfo.localFolder = song.file.split(`/`)[song.file.split(`/`).length - 2]
+                        songInfo.botPhrase = song.play_phrase
 
-            } else {
-                console.log(`No song was played. Nothing... passed in?`)
+                    } else {
+                        console.log(`No song was played. Nothing... passed in?`)
 
-                bot.saveBugReport(
-                    new Error('Tried to play an unsupported audio-based object.'))
+                        bot.saveBugReport(
+                            new Error('Tried to play an unsupported audio-based object.'))
+
+                        reject(SongState.Unknown)
+                    }
+
+                    dispatcher.on('start', () => {
+                        state = SongState.Playing
+                        console.groupEnd()
+                        console.group()
+                        if (Datypes.Song.isSongObject(song))
+                            console.log(`Now playing local and tagged file: ${songInfo.name} in ${songInfo.localFolder}.`)
+                        else
+                            console.log(`Now playing local file: ${song}`)
+
+                        if (!replaying)
+                            bot.textChannel
+                                .send(BotModuleMusic.generatePlaybackMessage(songInfo))
+                    })
+
+                    dispatcher.on('close', () => {
+                        console.log(`Song interrupted by user.`)
+                        console.groupEnd()
+
+                        resolve(SongState.Stopped)
+                    })
+
+                    dispatcher.on('finish', () => {
+                        if (loop) {
+                            console.info('Looping song...')
+                            playAudioFile(song, connection, true)
+                        } else {
+                            console.info('Song played successfully.')
+
+                            bot.songState = SongState.Finished
+                            if (!gapless) bot.voiceChannel.leave()
+                        }
+
+                        console.groupEnd()
+
+                        resolve(SongState.Finished)
+                    })
+                })
+            } catch (error) {
+                bot.saveBugReport(error, playAudioFile.name, true)
+
+                bot.waker.lastMessage.channel
+                    .send(`Ah! I couldn't play that song for some reason. Sent a bug report to Joe.`)
+
+                throw new Error(`Music playback error (file), see above for error message.`)
             }
-
-            dispatcher.on('end', () => {
-                if (loop) {
-                    console.info('Looping song...')
-                    playAudioFile(song, connection, true)
-                } else {
-                    console.info('Song played successfully.')
-
-                    bot.songState = SongState.Finished
-                    bot.voiceChannel.leave()
-                }
-            })
-            dispatcher.on('close', () => {
-                console.log(`Song interrupted by user.`)
-            })
         }
     }
 
-    async playAudioFromURL(url: string, loop?: boolean, trigger?: string) {
+    async playAudioFromURL(url: string, loop?: boolean, gapless?: boolean, trigger?: string)
+        : Promise<SongState> {
         var dispatcher: Discord.StreamDispatcher
         var stream: Stream.Readable | FileSystem.ReadStream
         var songInfo: Datypes.Stream.SongInfo
@@ -246,27 +279,34 @@ export default class Bot extends Discord.Client {
                 = { source: 'None' }
 
             try {
-                return this.voiceChannel.join().then(connection => {
-                    console.groupEnd()
-                    console.group()
-                    console.info(
-                        `Voice channel connection status: ${connection.status}`)
-                    this.songState = SongState.Playing
+                let connection = await this.voiceChannel.join().catch(e => { throw e })
+                console.groupEnd()
+                console.group()
+                console.info(
+                    `Voice channel connection status: ${connection.status}`)
 
-                    if (loop)
-                        this.context.channel.send(`Looks like I'm looping this one! 💫🤹‍♀️`)
+                if (loop)
+                    this.context.channel.send(`Looks like I'm looping this one! 💫🤹‍♀️`)
 
-                    try {
-                        if (!playAudioURL(connection))
-                            return this.context.channel.send(`I couldn't play that source. Did you type in your URL correctly?`)
-                    } catch (e) { throw e }
-                }).catch(e => { throw e })
-            } catch (error) {
+                try {
+                    let result = await playAudioURL(connection).catch(e => { throw e })
+                    if (result == SongState.Unknown)
+                        this.context.channel.send(`I couldn't play that source. Did you type in your URL correctly?`)
+
+                    return new Promise(resolve => {
+                        resolve(result)
+                    })
+                } catch (err) { throw err }
+            } catch (err) {
                 if (!this.voiceChannel)
                     this.context
                         .reply(`where do I dump this noise? you gotta be in a voice channel first!`)
                 else
-                    this.saveBugReport(error, true)
+                    this.saveBugReport(err, playAudioURL.name, true)
+
+                return new Promise(resolve => {
+                    resolve(SongState.Unknown)
+                })
             }
         }
 
@@ -286,21 +326,23 @@ export default class Bot extends Discord.Client {
                         songInfo.thumbnailUrl = video.thumbnail_url
                         songInfo.author = video.author.name
                         songInfo.url = url
-                    })
+                    }).catch(e => { throw e })
                     return stream
                 } catch (error) {
                     let bot: Bot = globalThis.bot
                     if (error.message.includes('Video id'))
                         bot.context.reply(`this YouTube link isn't valid...`)
+                    else if (error.message.includes('unavailable'))
+                        bot.context.reply(`unfortunately this YouTube video is unavailable to play.`)
                     else
-                        bot.saveBugReport(error, true)
+                        bot.saveBugReport(error, createStreamObject.name, true)
 
                     return null
                 }
             } else if (url.includes('soundcloud')) {
                 songInfo = { source: url, platform: 'SoundCloud' }
 
-                let sc = await BotModuleMusic.scClient
+                let sc = BotModuleMusic.scClient
 
                 try {
 
@@ -310,6 +352,7 @@ export default class Bot extends Discord.Client {
                         songInfo.thumbnailUrl = track.artwork_url
                         songInfo.authorImgUrl = track.user.avatar_url
                         songInfo.genre = track.genre
+                            .catch(e => { throw e })
 
                         stream = await BotModuleMusic.scClient.util.streamTrack(`${track.id}`,
                             './cache/music/soundcloud')
@@ -317,22 +360,22 @@ export default class Bot extends Discord.Client {
                                 return s as FileSystem.ReadStream
                             }).catch(e => {
                                 console.log(e)
-                                return null
+                                throw e
                             }) as FileSystem.ReadStream
-
-
                     })
 
                     if (stream instanceof FileSystem.ReadStream)
                         tempSong = stream.path.toString()
 
                     return stream
-                } catch (error) {
+                } catch (err) {
                     let bot: Bot = globalThis.bot
-                    if (error.message.includes('Video id'))
+                    if (err.message.includes('Video id'))
                         bot.context.reply(`this SoundCloud link isn't valid...`)
+                    else if (err.message.includes('unavailable'))
+                        bot.context.reply(`unfortunately this SoundCloud track is unavailable to play.`)
                     else
-                        bot.saveBugReport(error, true)
+                        bot.saveBugReport(err, createStreamObject.name, true)
 
                     return null
                 }
@@ -349,55 +392,63 @@ export default class Bot extends Discord.Client {
             if (!stream) return null
 
             try {
-                dispatcher = connection.play(stream, streamOptions)
 
-                dispatcher.on('start', () => {
-                    bot.songState = SongState.Playing
-                    console.groupEnd()
-                    console.group()
-                    console.log(`Now playing song from ${url}.`)
+                return new Promise<SongState>(resolve => {
+                    dispatcher = connection.play(stream, streamOptions)
+                    let state = SongState.Loading
 
-                    if (!replaying)
-                        bot.textChannel
-                            .send(BotModuleMusic.generatePlaybackMessage(songInfo))
+                    dispatcher.on('start', () => {
+                        state = SongState.Playing
+                        console.groupEnd()
+                        console.group()
+                        console.log(`Now playing song from ${url}.`)
+                        console.log(dispatcher.paused)
 
-                })
+                        if (!replaying)
+                            bot.textChannel
+                                .send(BotModuleMusic.generatePlaybackMessage(songInfo))
 
-                dispatcher.on('close', () => {
-                    bot.songState = SongState.Stopped
+                    })
 
-                    console.log(`Song interrupted by user.`)
-                    console.groupEnd()
-                })
+                    dispatcher.on('close', () => {
+                        console.log(`Song interrupted by user.`)
+                        console.groupEnd()
 
-                dispatcher.on('end', () => {
-                    if (loop) {
-                        console.info('Looping song...')
-                        return playAudioURL(connection, true)
-                    } else {
-                        console.info('Song played successfully.')
+                        resolve(SongState.Stopped)
+                    })
 
-                        let fileInstance = cacheFolder + `/${tempSong}`
+                    dispatcher.on('finish', () => {
+                        if (loop) {
+                            console.info('Looping song...')
+                            return playAudioURL(connection, true)
+                        } else {
+                            console.info('Song played successfully.')
 
-                        FileSystem.exists(fileInstance, (exists) => {
-                            if (exists)
-                                FileSystem.remove(fileInstance)
-                        })
+                            let fileInstance = cacheFolder + `/${tempSong}`
 
-                        bot.songState = SongState.Finished
-                        bot.voiceChannel.leave()
-                    }
+                            FileSystem.exists(fileInstance, (exists) => {
+                                if (exists)
+                                    FileSystem.remove(fileInstance)
+                            })
 
-                    console.groupEnd()
+                            bot.songState = SongState.Finished
+                            if (!gapless) bot.voiceChannel.leave()
+                        }
+
+                        console.groupEnd()
+
+                        resolve(SongState.Finished)
+                    })
                 })
 
                 //return true
             } catch (error) {
-                console.log(`Error playing URL stream!`)
-                bot.saveBugReport(error, true)
+                bot.saveBugReport(error, playAudioURL.name, true)
 
                 bot.waker.lastMessage.channel
                     .send(`Ah! I couldn't play that song for some reason. Sent a bug report to Joe.`)
+
+                throw new Error(`Music playback error (URL), see above for error message.`)
             }
 
         }

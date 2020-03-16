@@ -1,6 +1,6 @@
 {
-    "help_intro": "Ho boy, here's my list of slick tunes! \n Have me sing by saying: \n \"I summon [song_name]\" \n \"Megadork, sing [song_name]\"",
-    "help_url": "I can also play music from YouTube and SoundCloud. \n \"Megadork, play [url]\"",
+    "help_intro": "Have me sing by saying: \n \"I summon *request*\" \n \"Megadork, sing *request*\"",
+    "help_url": "I can also play music from YouTube and SoundCloud. \n \"Megadork, play *url*\"",
     "message_unknown_summon": "Play what? Say \n*megadork help music*\n for a list of things I can play.",
     "message_not_in_channel": "Heya, before I can make some noise, you gotta be in a voice channel!",
     "command_feedback": {

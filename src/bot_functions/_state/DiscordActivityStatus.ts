@@ -45,4 +45,17 @@ export default class BotDiscordActivity {
 
         bot.user.setActivity(BotDiscordActivity.getRandomStatus())
     }
+
+    static useDevModeStatus() {
+        let bot: Bot = globalThis.bot
+
+        let status: ActivityOptions =
+        {
+            name: `DEBUGGING. Sorry for unexpected weirdness :)`,
+            type: 'PLAYING',
+
+        }
+
+        bot.user.setActivity(status)
+    }
 }

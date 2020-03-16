@@ -4,10 +4,21 @@
 	"configurations": [{
 			"type": "node",
 			"request": "launch",
-			"name": "Build and Run (Discord Matey Bot)",
+			"name": "Build and Run",
 			"program": "${workspaceFolder}\\src\\igniter.ts",
 			"preLaunchTask": "Build latest changes",
 			"showAsyncStacks": true,
+			"outFiles": [
+				"${workspaceFolder}/built/**/*.js"
+			],
+		}, {
+			"type": "node",
+			"request": "launch",
+			"name": "Build and Run - DEV MODE",
+			"program": "${workspaceFolder}\\src\\igniter.ts",
+			"preLaunchTask": "Build latest changes",
+			"showAsyncStacks": true,
+			"args": ["dev-mode"],
 			"outFiles": [
 				"${workspaceFolder}/built/**/*.js"
 			],

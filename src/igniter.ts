@@ -41,7 +41,12 @@ bot.on('message', async (message) => {
 	console.log(`\nOn ${new Date().toString()}, a user said:\n	"${(message.content).toString()}"`)
 
 	try {
-		TriggerHandlers.validateMessage(message)
+		if (globalThis.devMode) {
+			if (message.toString().startsWith('^&')) {
+				message.content = message.content.substring(2)
+				TriggerHandlers.validateMessage(message)
+			}
+		} else TriggerHandlers.validateMessage(message)
 	} catch (e) {
 		bot.saveBugReport(e, 'on message event', true)
 	}

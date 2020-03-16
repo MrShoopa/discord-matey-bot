@@ -13,9 +13,14 @@ export default class PostReadyFunctions {
 
         this.postBotConnectDataFetch()
 
+        globalThis.devMode = this.checkDevMode()
+
         BotLoggerFunctions.instantiateLogFolder()
 
-        BotDiscordActivity.updateRandomStatus()
+        if (!globalThis.devMode)
+            BotDiscordActivity.updateRandomStatus()
+        else
+            BotDiscordActivity.useDevModeStatus()
 
         TimelyFunctions.timeContexual()
     }
@@ -28,5 +33,15 @@ export default class PostReadyFunctions {
         let bot: Bot = globalThis.bot
 
         bot.populateRestrictedRoleList()
+    }
+
+    static checkDevMode() {
+        var myArgs = process.argv.slice(2);
+        return myArgs.some(arg => {
+            if (arg === 'dev-mode') {
+                console.log('~~~~~~~~~~~Dev mode enabled.~~~~~~~~~~\n')
+                return true
+            }
+        })
     }
 }

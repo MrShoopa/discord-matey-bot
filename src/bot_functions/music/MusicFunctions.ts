@@ -41,19 +41,32 @@ export default class BotModuleMusic {
         }
 
         await (async function checkForPlatform() {
-            for (const trig of TRIGGERS.singing_triggers.args.platform.yt) {
-                for (let i = 0; i < context.length; i++) {
-                    if (context[i] === trig) {
-                        let requestedQuery = context.slice(i + 1).join(' ')
 
-                        let newQuery = await
-                            BotModuleMusic.searchUrlofYouTubeVideo(requestedQuery)
+            if (TRIGGERS.singing_triggers.args.platform.yt.some((keyword, i) => {
+                if (keyword in context) {
+                    let requestedQuery = context.slice(i + 1).join(' ')
 
-                        bot.context.content =
-                            bot.context.content.replace(`${trig} ${requestedQuery}`, newQuery).trim()
-                    }
+                    let newQuery = await
+                    BotModuleMusic.searchUrlofYouTubeVideo(requestedQuery)
+
+                    bot.context.content =
+                        bot.context.content.replace(`${keyword} ${requestedQuery}`, newQuery).trim()
+                    return true
                 }
-            }
+            })) return true
+
+            if (TRIGGERS.singing_triggers.args.platform.sc.some((keyword, i) => {
+                if (keyword in context) {
+                    let requestedQuery = context.slice(i + 1).join(' ')
+
+                    let newQuery = await
+                    BotModuleMusic.searchUrlofSoundCloudTrack(requestedQuery)
+
+                    bot.context.content =
+                        bot.context.content.replace(`${keyword} ${requestedQuery}`, newQuery).trim()
+                }
+            })) return true
+
         }())
 
 

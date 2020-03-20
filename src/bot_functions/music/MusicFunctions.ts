@@ -9,7 +9,7 @@ import PHRASES_SING from '../../bot_knowledge/phrases/phrases_sing.json'
 import AUTH from '../../user_creds.json'
 
 import YouTube from 'youtube-search'
-import Soundcloud from "soundcloud.ts"
+import Soundcloud, { SoundCloudTrack } from "soundcloud.ts"
 
 export default class BotModuleMusic {
 
@@ -41,31 +41,45 @@ export default class BotModuleMusic {
         }
 
         await (async function checkForPlatform() {
+            let platform, index, requestedQuery, newQuery, hotword
 
-            if (TRIGGERS.singing_triggers.args.platform.yt.some((keyword, i) => {
-                if (keyword in context) {
-                    let requestedQuery = context.slice(i + 1).join(' ')
+            while (!platform) {
+                if (TRIGGERS.singing_triggers.args.platform.yt.some((keyword, i) => {
+                    if (context.includes(keyword)) {
+                        index = i, hotword = keyword, platform = "yt"
+                        return true
+                    }
+                })) break
 
-                    let newQuery = await
-                    BotModuleMusic.searchUrlofYouTubeVideo(requestedQuery)
+                if (TRIGGERS.singing_triggers.args.platform.sc.some((keyword, i) => {
+                    if (context.includes(keyword)) {
+                        index = i, hotword = keyword, platform = "sc"
+                        return true
+                    }
+                })) break
 
-                    bot.context.content =
-                        bot.context.content.replace(`${keyword} ${requestedQuery}`, newQuery).trim()
-                    return true
+                break
+            }
+
+            if (platform) {
+
+                requestedQuery = context.slice(index + 1).join(' ')
+
+                switch (platform) {
+                    case 'yt':
+                        newQuery = await
+                            BotModuleMusic.searchUrlofYouTubeVideo(requestedQuery)
+                        break
+                    case 'sc':
+                        newQuery = await
+                            BotModuleMusic.searchUrlofSoundcloudTrack(requestedQuery)
+                        break
                 }
-            })) return true
 
-            if (TRIGGERS.singing_triggers.args.platform.sc.some((keyword, i) => {
-                if (keyword in context) {
-                    let requestedQuery = context.slice(i + 1).join(' ')
-
-                    let newQuery = await
-                    BotModuleMusic.searchUrlofSoundCloudTrack(requestedQuery)
-
-                    bot.context.content =
-                        bot.context.content.replace(`${keyword} ${requestedQuery}`, newQuery).trim()
-                }
-            })) return true
+                bot.context.content =
+                    bot.context.content.replace(`${requestedQuery}`, newQuery).trim()
+                return true
+            } else return false
 
         }())
 
@@ -254,9 +268,20 @@ export default class BotModuleMusic {
         return result.link
     }
 
+    static async searchUrlofSoundcloudTrack(query: string): Promise<string> {
+        let result = await this.fetchSingleSoundCloudSearchResult(query)
+        return result.permalink_url
+    }
+
     static async fetchSingleYouTubeSearchResult(query: string)
         : Promise<YouTube.YouTubeSearchResults> {
         let result = await this.processYouTubeSearch(query, 1)
+        return result[0]
+    }
+
+    static async fetchSingleSoundCloudSearchResult(query: string)
+        : Promise<SoundCloudTrack> {
+        let result = await this.processSoundCloudSearch(query, 1)
         return result[0]
     }
 
@@ -278,6 +303,23 @@ export default class BotModuleMusic {
                 res(result)
             })
         })
+    }
+
+    static async processSoundCloudSearch(query: string, resultCount = 10)
+        : Promise<Array<SoundCloudTrack>> {
+
+        return await this.scClient.tracks.search({ q: query })
+            .then(res => {
+                console.info(`Fetched YouTube search results:`)
+                console.log(res)
+
+                return res
+            })
+            .catch(err => {
+                globalThis.bot.saveBugReport(err, this.processSoundCloudSearch.name, true)
+
+                return null
+            })
     }
 
     static addNewSongRequest(trigger?: string) {

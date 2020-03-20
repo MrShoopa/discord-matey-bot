@@ -352,7 +352,6 @@ export default class Bot extends Discord.Client {
                         songInfo.thumbnailUrl = track.artwork_url
                         songInfo.authorImgUrl = track.user.avatar_url
                         songInfo.genre = track.genre
-                            .catch(e => { throw e })
 
                         stream = await BotModuleMusic.scClient.util.streamTrack(`${track.id}`,
                             './cache/music/soundcloud')
@@ -362,7 +361,7 @@ export default class Bot extends Discord.Client {
                                 console.log(e)
                                 throw e
                             }) as FileSystem.ReadStream
-                    })
+                    }).catch(e => { throw e })
 
                     if (stream instanceof FileSystem.ReadStream)
                         tempSong = stream.path.toString()
@@ -370,10 +369,12 @@ export default class Bot extends Discord.Client {
                     return stream
                 } catch (err) {
                     let bot: Bot = globalThis.bot
-                    if (err.message.includes('Video id'))
+                    if (err.response.status == 400)
                         bot.context.reply(`this SoundCloud link isn't valid...`)
-                    else if (err.message.includes('unavailable'))
+                    else if (err.response.status == 404)
                         bot.context.reply(`unfortunately this SoundCloud track is unavailable to play.`)
+                    else if (err.response.status == 403)
+                        bot.context.reply(`I need to get something updated. Pinged Joe.`)
                     else
                         bot.saveBugReport(err, createStreamObject.name, true)
 

@@ -11,20 +11,14 @@ export default class BotModuleSwearJar {
         let bot: Bot = globalThis.bot
         let words: string[] =
             bot.context.toString().toLowerCase().split(" ")
-        let matchedWords: number = 0
+        let wordMatches: number = 0
 
         bot.preliminary(trigger, 'Swear Jar')
 
-        wordLoop:
         for (const word of words)
-            for (const trigger of swear_jar_triggers.bad_words)
-                if (word.includes(trigger)) {
-                    matchedWords++
-                    continue wordLoop
-                }
+            wordMatches += this.matchWord(word)
 
-
-        if (matchedWords !== 0) {
+        if (wordMatches !== 0) {
             let userData = BotData.getUserData(bot.context.author.id, true)
 
             if (userData === undefined)
@@ -33,9 +27,9 @@ export default class BotModuleSwearJar {
             //  Get current swear count
             try {
                 if (!userData.swear_score) {
-                    userData.swear_score = matchedWords
+                    userData.swear_score = wordMatches
                     bot.context.reply(Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.new_user))
-                } else userData.swear_score += matchedWords
+                } else userData.swear_score += wordMatches
             } catch (error) {
                 console.error(new EvalError(`Error updating swear score for ${bot.context.author.username}!`))
                 bot.saveBugReport(error, this.dingUser.name)
@@ -44,15 +38,15 @@ export default class BotModuleSwearJar {
             BotData.updateUserData(bot.context.author.id, userData)
 
             let response = function determineResponse() {
-                if (matchedWords == 1)
+                if (wordMatches == 1)
                     return Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.swear_point_increment.one_point)
-                else if (matchedWords < 5)
+                else if (wordMatches < 5)
                     return Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.swear_point_increment.multi_small)
-                else if (matchedWords < 10)
+                else if (wordMatches < 10)
                     return Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.swear_point_increment.multi_medium)
-                else if (matchedWords < 100)
+                else if (wordMatches < 100)
                     return Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.swear_point_increment.multi_large)
-                else if (matchedWords < 1000)
+                else if (wordMatches < 1000)
                     return Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.swear_point_increment.multi_metricfrickton)
                 else
                     return Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.swear_point_increment.multi_unbound)
@@ -122,5 +116,27 @@ export default class BotModuleSwearJar {
             if (msg && guild.systemChannel)
                 guild.systemChannel.send(msg)
         })
+    }
+
+    static matchWord(word: string) {
+        let count = 0
+        for (const trigger of swear_jar_triggers.bad_words) {
+
+            if (word === trigger)
+                return 1
+            else if (word.startsWith(trigger)) {
+                count++
+
+                let index = trigger.length
+                while (word.length > index) {
+                    console.log(word.substring(index, index + trigger.length))
+                    if (word.substring(index, index + trigger.length) == trigger)
+                        count++
+                    index += trigger.length
+                }
+            }
+        }
+
+        return count
     }
 }

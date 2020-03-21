@@ -887,5 +887,26 @@
             "megadork rap song",
             "megadork rap"
         ]
+    },
+    "translate": {
+        "hotword_to": [
+            "translate to"
+        ],
+        "hotword_default": [
+            "translate"
+        ],
+        "warcraft": [
+            "draenei",
+            "dwarven",
+            "gnomish",
+            "darnassian",
+            "thalassian",
+            "gutterspeak",
+            "orcish",
+            "taurahe",
+            "zandali",
+            "eredun",
+            "kalimag"
+        ]
     }
 }

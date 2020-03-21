@@ -43,6 +43,7 @@
         "soundcloud.ts": "0.1.8",
         "twitter": "^1.7.1",
         "winston": "^3.2.1",
+        "wow-lexicon": "0.0.1",
         "youtube-api": "^2.0.10",
         "youtube-search": "^1.1.4",
         "ytdl-core": "^2.0.0"

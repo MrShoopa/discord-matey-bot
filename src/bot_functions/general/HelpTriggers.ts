@@ -109,7 +109,7 @@ export default class HelpTriggers {
                 else if (Object.keys(list).length > 0) {
                     // TODO: Organize lines console.log(Object.keys(list).length - 1 == i)
                     // if (Object.keys(list).length - 1 == i)
-                    // TODO: Organize lines message.addFields({ name: '\u200B', value: '\u200B' })
+                    // message.addFields({ name: '\u200B', value: '\u200B' })
                     buildCommandList(list[key], message) // RECURSSSIONNNN
                 }
             });

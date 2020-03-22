@@ -22,11 +22,15 @@ export default class TranslationFunctions {
             else
                 this.replyUnknownLanguageMessage()
         else {
+
             // TODO: translate default case
+            this.replyUnknownLanguageMessage()
         }
     }
 
     static replyUnknownLanguageMessage() {
-        // TODO
+        let bot: Bot = globalThis.bot
+
+        bot.context.channel.send(`I couldn't translate that. Type *megadork help translate* to see what I can translate.`)
     }
 }

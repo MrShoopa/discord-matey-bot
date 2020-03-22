@@ -33,6 +33,8 @@ export default class HelpTriggers {
                             return HelpTriggers.replyForGeneralInfo(message)
                         case 'music':
                             return HelpTriggers.replyForMusicInfo(message)
+                        case 'translate':
+                            return HelpTriggers.replyForTranslateInfo(message)
                     }
     }
 
@@ -87,6 +89,24 @@ export default class HelpTriggers {
             + '\n' + PHRASES_SING.help_url
             + '\n\n **Local Song List**:' + songList
         )
+
+        return message.channel.send(listedMessage)
+    }
+
+    static replyForTranslateInfo(message = TriggerHandlers.message) {
+        TriggerHandlers.bot.preliminary(message.toString(), 'Help with Translation', true)
+        var languageList = ''
+
+        let listedMessage = new Discord.MessageEmbed()
+            .setTitle("Translation List 💬")
+            .setAuthor(this.helpAuthor)
+            .setColor('BLUE')
+
+        help_special.translate.list.some((lang: string) => {
+            languageList += lang + '\n'
+        })
+
+        listedMessage.setDescription(languageList)
 
         return message.channel.send(listedMessage)
     }

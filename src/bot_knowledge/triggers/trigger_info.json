@@ -36,6 +36,9 @@
         "lyric": [
             "help lyrics",
             "help lyric"
+        ],
+        "translate": [
+            "help translate"
         ]
     },
     "help_special": {
@@ -49,235 +52,266 @@
             "help music list",
             "music list",
             "song list"
-        ]
-    },
-    "i": {
-        "birthday": {
-            "_title": "Birthday Reminders",
-            "_description": "Make Megadork remember your birthday and get alerts from it!",
-            "_footer": "🎂",
-            "_command_list": {
-                "self": {
-                    "title": "Remember birthday",
-                    "example": "megadork remember my birthday *month* *day* (*year*)"
-                },
-                "inquire": {
-                    "title": "Ask birthday",
-                    "example": "megadork whats my birthday"
-                }
-            }
+        ],
+        "translate": {
+            "keyword": [
+                "translate list",
+                "translation languages"
+            ],
+            "list": [
+                "draenei",
+                "dwarven",
+                "gnomish",
+                "darnassian",
+                "thalassian",
+                "gutterspeak",
+                "orcish",
+                "taurahe",
+                "zandali",
+                "eredun",
+                "draconic",
+                "kalimag"
+            ]
         },
-        "music": {
-            "_title": "Music Player",
-            "_description": "Have Megadork play music from YouTube or from local files. Queue system included as well. Keywords must be included after request. \n For a list of local songs, type in *megadork song list*.",
-            "_footer": "🎵",
-            "_command_list": {
-                "play": {
-                    "title": "**Basic Request**",
-                    "example": "megadork play *URL/platform+name/localsongname*"
-                },
-                "stop": {
-                    "title": "Stop Music",
-                    "example": "stop"
-                },
-                "args": {
-                    "loop": {
-                        "title": "Loop",
-                        "example": "*request* looped"
+        "i": {
+            "birthday": {
+                "_title": "Birthday Reminders",
+                "_description": "Make Megadork remember your birthday and get alerts from it!",
+                "_footer": "🎂",
+                "_command_list": {
+                    "self": {
+                        "title": "Remember birthday",
+                        "example": "megadork remember my birthday *month* *day* (*year*)"
                     },
-                    "yt": {
-                        "title": "YouTube search keyword",
-                        "example": "youtube *searchName*"
-                    },
-                    "sc": {
-                        "title": "SoundCloud search keyword",
-                        "example": "soundcloud *searchName*"
-                    }
-                },
-                "queue": {
-                    "add": {
-                        "title": "Queue add",
-                        "example": "megadork jukebox add *song request*"
-                    },
-                    "skip": {
-                        "title": "Queue skip",
-                        "example": "megadork skip next song"
-                    },
-                    "start": {
-                        "title": "Queue start",
-                        "example": "megadork start jukebox"
-                    },
-                    "play_next": {
-                        "title": "Queue play next",
-                        "example": "megadork play next"
-                    },
-                    "next": {
-                        "title": "Queue check next",
-                        "example": "megadork jukebox next up"
-                    },
-                    "list": {
-                        "title": "Queue check list",
-                        "example": "megadork jukebox list"
+                    "inquire": {
+                        "title": "Ask birthday",
+                        "example": "megadork whats my birthday"
                     }
                 }
-            }
-        },
-        "image_search": {
-            "_title": "Image Fetch",
-            "_description": "Find an image from Google. Make a random search or something specific!",
-            "_footer": "📷",
-            "_command_list": {
-                "random_image": {
-                    "title": "Get photo (of *topic*)",
-                    "example": "megadork fetch photo *optionalRequest*"
-                },
-                "dank_meme": {
-                    "title": "Get meme",
-                    "example": "megadork throw me a meme"
-                }
-            }
-        },
-        "reddit": {
-            "_title": "Birthday Reminders",
-            "_description": "Pull info from Reddit such as posts, images, or even copypasta. Keywords come after base request.",
-            "_footer": "↕",
-            "_command_list": {
-                "default": {
-                    "title": "**Basic Request**",
-                    "example": "megadork fetch reddit"
-                },
-                "query_type": {
-                    "post": {
-                        "title": "Get post keyword",
-                        "example": "post from *r/subreddit / u/user*"
+            },
+            "music": {
+                "_title": "Music Player",
+                "_description": "Have Megadork play music from YouTube or from local files. Queue system included as well. Keywords must be included after request. \n For a list of local songs, type in *megadork song list*.",
+                "_footer": "🎵",
+                "_command_list": {
+                    "play": {
+                        "title": "**Basic Request**",
+                        "example": "megadork play *URL/platform+name/localsongname*"
                     },
-                    "user": {
-                        "title": "Get user keyword",
-                        "example": "user *X*"
-                    }
-                },
-                "copypasta": {
-                    "default": {
-                        "title": "Get random copypasta",
-                        "example": "megadork fetch copypasta"
+                    "stop": {
+                        "title": "Stop Music",
+                        "example": "stop"
                     },
-                    "top_of_week": {
-                        "title": "Get week's top copypasta",
-                        "example": "megadork fetch this week's copypasta"
-                    }
-                }
-            }
-        },
-        "twitter": {
-            "_title": "Twitter Fetcher",
-            "_description": "Get Twitter tweets from your favorite user or topic.",
-            "_footer": "🐦",
-            "_command_list": {
-                "default": {
-                    "title": "**Basic Request**",
-                    "example": "megadork fetch tweet"
-                },
-                "queries": {
-                    "query": {
-                        "title": "Fetch from topic",
-                        "example": "megadork fetch tweet about *topic*"
+                    "args": {
+                        "loop": {
+                            "title": "Loop",
+                            "example": "*request* looped"
+                        },
+                        "yt": {
+                            "title": "YouTube search keyword",
+                            "example": "youtube *searchName*"
+                        },
+                        "sc": {
+                            "title": "SoundCloud search keyword",
+                            "example": "soundcloud *searchName*"
+                        }
                     },
-                    "user_latest": {
-                        "title": "Fetch from user",
-                        "example": "megadork fetch tweet from *@user*"
-                    }
-                }
-            }
-        },
-        "horoscope": {
-            "_title": "Horocope Fetch",
-            "_description": "Grab a crystal ball and see what life fortells from a dumb bot",
-            "_footer": "🔮",
-            "_command_list": {
-                "default": {
-                    "title": "Fetch horoscope (WIP)",
-                    "example": "megadork fetch horoscope"
-                }
-            }
-        },
-        "anime": {
-            "_title": "Anime-worm",
-            "_description": "Pull info from an anime from MyAnimeList. Find a specific one or get a random new one.",
-            "_footer": "🎌",
-            "_command_list": {
-                "default": {
-                    "title": "Fetch specific anime info",
-                    "example": "megadork fetch anime *X*"
-                },
-                "new": {
-                    "title": "Fetch random new anime",
-                    "example": "megadork fetch new anime"
-                }
-            }
-        },
-        "quote": {
-            "_title": "Quote Digger",
-            "_description": "Get quotes from a variety of topics such as art or management.",
-            "_footer": "⁉",
-            "_command_list": {
-                "default": {
-                    "title": "**Basic Request**",
-                    "example": "megadork fetch quote"
-                },
-                "OTD": {
-                    "default": {
-                        "title": "Fetch random quote of the day",
-                        "example": "megadork random quote of the day (*optional topic*)"
-                    },
-                    "topics": {
-                        "title": "*Topic Keywords*",
-                        "example": "management, art, students, sports, life, funny, love"
-                    }
-                },
-                "topics": {
-                    "inspirational": {
-                        "title": "Fetch random inspirational quote",
-                        "example": "megadork fetch inspirational quote"
-                    },
-                    "movie": {
-                        "default": {
-                            "title": "Fetch random movie quote",
-                            "example": "megadork random movie quote"
+                    "queue": {
+                        "add": {
+                            "title": "Queue add",
+                            "example": "megadork jukebox add *song request*"
+                        },
+                        "skip": {
+                            "title": "Queue skip",
+                            "example": "megadork skip next song"
+                        },
+                        "start": {
+                            "title": "Queue start",
+                            "example": "megadork start jukebox"
+                        },
+                        "play_next": {
+                            "title": "Queue play next",
+                            "example": "megadork play next"
+                        },
+                        "next": {
+                            "title": "Queue check next",
+                            "example": "megadork jukebox next up"
+                        },
+                        "list": {
+                            "title": "Queue check list",
+                            "example": "megadork jukebox list"
                         }
                     }
                 }
-            }
-        },
-        "dice_roll": {
-            "_title": "Dice Roll",
-            "_description": "Throw a dice. You can pick the size too!",
-            "_footer": "🎲",
-            "_command_list": {
-                "default": {
-                    "title": "Roll a dice",
-                    "example": "megadork roll (*number size*)"
+            },
+            "image_search": {
+                "_title": "Image Fetch",
+                "_description": "Find an image from Google. Make a random search or something specific!",
+                "_footer": "📷",
+                "_command_list": {
+                    "random_image": {
+                        "title": "Get photo (of *topic*)",
+                        "example": "megadork fetch photo *optionalRequest*"
+                    },
+                    "dank_meme": {
+                        "title": "Get meme",
+                        "example": "megadork throw me a meme"
+                    }
                 }
-            }
-        },
-        "lyric": {
-            "_title": "Lyric Fetching",
-            "_description": "Pull some lyrics from your favorite song or something you don't understand!",
-            "_footer": "📝",
-            "_command_list": {
-                "default": {
-                    "title": "Fetch a song's lyrics",
-                    "example": "megadork fetch song lyrics for *name of song*"
+            },
+            "reddit": {
+                "_title": "Birthday Reminders",
+                "_description": "Pull info from Reddit such as posts, images, or even copypasta. Keywords come after base request.",
+                "_footer": "↕",
+                "_command_list": {
+                    "default": {
+                        "title": "**Basic Request**",
+                        "example": "megadork fetch reddit"
+                    },
+                    "query_type": {
+                        "post": {
+                            "title": "Get post keyword",
+                            "example": "post from *r/subreddit / u/user*"
+                        },
+                        "user": {
+                            "title": "Get user keyword",
+                            "example": "user *X*"
+                        }
+                    },
+                    "copypasta": {
+                        "default": {
+                            "title": "Get random copypasta",
+                            "example": "megadork fetch copypasta"
+                        },
+                        "top_of_week": {
+                            "title": "Get week's top copypasta",
+                            "example": "megadork fetch this week's copypasta"
+                        }
+                    }
                 }
-            }
-        },
-        "lyric_sing": {
-            "_title": "Lyric Singing",
-            "_description": "Get Megadork to send a TTS message with a snippet of a song's lyrics.",
-            "_footer": "🎤",
-            "_command_list": {
-                "default": {
-                    "title": "Fire TTS message with song lyrics",
-                    "example": "megadork sing the song *name of song*"
+            },
+            "twitter": {
+                "_title": "Twitter Fetcher",
+                "_description": "Get Twitter tweets from your favorite user or topic.",
+                "_footer": "🐦",
+                "_command_list": {
+                    "default": {
+                        "title": "**Basic Request**",
+                        "example": "megadork fetch tweet"
+                    },
+                    "queries": {
+                        "query": {
+                            "title": "Fetch from topic",
+                            "example": "megadork fetch tweet about *topic*"
+                        },
+                        "user_latest": {
+                            "title": "Fetch from user",
+                            "example": "megadork fetch tweet from *@user*"
+                        }
+                    }
+                }
+            },
+            "horoscope": {
+                "_title": "Horocope Fetch",
+                "_description": "Grab a crystal ball and see what life fortells from a dumb bot",
+                "_footer": "🔮",
+                "_command_list": {
+                    "default": {
+                        "title": "Fetch horoscope (WIP)",
+                        "example": "megadork fetch horoscope"
+                    }
+                }
+            },
+            "anime": {
+                "_title": "Anime-worm",
+                "_description": "Pull info from an anime from MyAnimeList. Find a specific one or get a random new one.",
+                "_footer": "🎌",
+                "_command_list": {
+                    "default": {
+                        "title": "Fetch specific anime info",
+                        "example": "megadork fetch anime *X*"
+                    },
+                    "new": {
+                        "title": "Fetch random new anime",
+                        "example": "megadork fetch new anime"
+                    }
+                }
+            },
+            "quote": {
+                "_title": "Quote Digger",
+                "_description": "Get quotes from a variety of topics such as art or management.",
+                "_footer": "⁉",
+                "_command_list": {
+                    "default": {
+                        "title": "**Basic Request**",
+                        "example": "megadork fetch quote"
+                    },
+                    "OTD": {
+                        "default": {
+                            "title": "Fetch random quote of the day",
+                            "example": "megadork random quote of the day (*optional topic*)"
+                        },
+                        "topics": {
+                            "title": "*Topic Keywords*",
+                            "example": "management, art, students, sports, life, funny, love"
+                        }
+                    },
+                    "topics": {
+                        "inspirational": {
+                            "title": "Fetch random inspirational quote",
+                            "example": "megadork fetch inspirational quote"
+                        },
+                        "movie": {
+                            "default": {
+                                "title": "Fetch random movie quote",
+                                "example": "megadork random movie quote"
+                            }
+                        }
+                    }
+                }
+            },
+            "dice_roll": {
+                "_title": "Dice Roll",
+                "_description": "Throw a dice. You can pick the size too!",
+                "_footer": "🎲",
+                "_command_list": {
+                    "default": {
+                        "title": "Roll a dice",
+                        "example": "megadork roll (*number size*)"
+                    }
+                }
+            },
+            "lyric": {
+                "_title": "Lyric Fetching",
+                "_description": "Pull some lyrics from your favorite song or something you don't understand!",
+                "_footer": "📝",
+                "_command_list": {
+                    "default": {
+                        "title": "Fetch a song's lyrics",
+                        "example": "megadork fetch song lyrics for *name of song*"
+                    }
+                }
+            },
+            "lyric_sing": {
+                "_title": "Lyric Singing",
+                "_description": "Get Megadork to send a TTS message with a snippet of a song's lyrics.",
+                "_footer": "🎤",
+                "_command_list": {
+                    "default": {
+                        "title": "Fire TTS message with song lyrics",
+                        "example": "megadork sing the song *name of song*"
+                    }
+                }
+            },
+            "translate": {
+                "_title": "Translating",
+                "_description": "Send text to Megadork to translate to a known language. *megadork translate list* for a list of languages.",
+                "_footer": "💬",
+                "_command_list": {
+                    "default": {
+                        "title": "Translate to (basic keyword)",
+                        "example": "megadork translate to"
+                    }
                 }
             }
         }

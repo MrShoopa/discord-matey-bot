@@ -6,7 +6,7 @@
 			"request": "launch",
 			"name": "Build and Run",
 			"program": "${workspaceFolder}\\src\\igniter.ts",
-			"preLaunchTask": "Build latest changes",
+			"preLaunchTask": "Build - Stable",
 			"showAsyncStacks": true,
 			"outFiles": [
 				"${workspaceFolder}/built/**/*.js"
@@ -16,11 +16,11 @@
 			"request": "launch",
 			"name": "Build and Run - DEV MODE",
 			"program": "${workspaceFolder}\\src\\igniter.ts",
-			"preLaunchTask": "Build latest changes",
+			"preLaunchTask": "Build - Dev",
 			"showAsyncStacks": true,
 			"args": ["dev-mode"],
 			"outFiles": [
-				"${workspaceFolder}/built/**/*.js"
+				"${workspaceFolder}/built_dev/**/*.js"
 			],
 		},
 		{

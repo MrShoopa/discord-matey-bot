@@ -3,10 +3,20 @@
     // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [{
-            "label": "Build latest changes",
+            "label": "Build - Stable",
             "detail": "Create a new build of the project as is.",
             "type": "typescript",
             "tsconfig": "tsconfig.json",
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "group": "build",
+        },
+        {
+            "label": "Build - Dev",
+            "detail": "Create a new build of the project as is, with a stricter hotword for testing.",
+            "type": "shell",
+            "command": "tsc --outDir ./built_dev",
             "problemMatcher": [
                 "$tsc"
             ],

@@ -16,6 +16,7 @@ node_modules
 # Builds
 /built
 /built_fallback
+/built_dev
 
 # Any additional music (gotta save space lol)
 **/audio/*

@@ -5,6 +5,8 @@ import BotData from "../../DataHandler"
 import { swear_jar_triggers } from '../../../bot_knowledge/triggers/triggers.json'
 
 import PHRASES_SWEAR_JAR from '../../../bot_knowledge/phrases/phrases_swear_jar.json'
+import BotModuleSwearWhitelist from './WhitelistFunctions'
+import BotModuleSwearBlacklist from './BlacklistFunctions'
 
 export default class BotModuleSwearJar {
     static dingUser(trigger: string) {
@@ -16,7 +18,16 @@ export default class BotModuleSwearJar {
         bot.preliminary(trigger, 'Swear Jar')
 
         for (const word of words)
+            BotModuleSwearBlacklist.banUserIfInBlacklist(word, bot.context.member)
+
+        for (const word of words) {
+            if (BotModuleSwearWhitelist.checkIfWordWhitelistedForRole(word, bot.context.member))
+                wordMatches -= this.matchWord(word)
             wordMatches += this.matchWord(word)
+
+            if (wordMatches <= 0)
+                wordMatches = 0
+        }
 
         if (wordMatches !== 0) {
             let userData = BotData.getUserData(bot.context.author.id, true)

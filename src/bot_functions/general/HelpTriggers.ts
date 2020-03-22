@@ -1,7 +1,7 @@
 import Discord from 'discord.js'
 import TriggerHandlers from '../TriggerHandlers'
 
-import { help_author, help_functions, help_special, i } from '../../bot_knowledge/triggers/trigger_info.json'
+import { help_author, help_functions, help_special, help_reference, i } from '../../bot_knowledge/triggers/trigger_info.json'
 
 import PHRASES_FRONT from '../../bot_knowledge/phrases/phrases_front.json'
 import PHRASES_SING from '../../bot_knowledge/phrases/phrases_sing.json'
@@ -102,7 +102,7 @@ export default class HelpTriggers {
             .setAuthor(this.helpAuthor)
             .setColor('BLUE')
 
-        help_special.translate.list.some((lang: string) => {
+        help_reference.translate.some((lang: string) => {
             languageList += lang + '\n'
         })
 

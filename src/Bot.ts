@@ -51,14 +51,17 @@ export default class Bot extends Discord.Client {
 
     commandSatisfied: boolean
     songState: SongState
+    overrideContext: boolean
 
     get context() { return this._context }
     set context(value: Discord.Message | Discord.PartialMessage) {
-        if (this.user.id !== value.author.id) {
+        if (this.user.id !== value.author.id || this.overrideContext) {
             this.lastMessage = this._context
             this.lastWaker = this._context?.author
 
             this._context = value
+
+            this.overrideContext = false
         }
 
         this.waker = value.author

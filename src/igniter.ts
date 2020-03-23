@@ -13,6 +13,8 @@ import Bot from './Bot'
 
 import TriggerHandlers from './bot_functions/TriggerHandlers.js'
 import PostReadyFunctions from './bot_functions/_state/PostReadyFunctions'
+import su from './tools/ConsoleFunctions' // Keep here for console.
+globalThis.su = new su()
 
 //  Initialize Discord Bot
 console.log('Initializing...')

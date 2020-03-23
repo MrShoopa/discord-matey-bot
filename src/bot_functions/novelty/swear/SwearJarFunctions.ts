@@ -18,12 +18,14 @@ export default class BotModuleSwearJar {
         bot.preliminary(trigger, 'Swear Jar')
 
         for (const word of words)
-            BotModuleSwearBlacklist.banUserIfInBlacklist(word, bot.context.member)
+            if (BotModuleSwearBlacklist.banUserIfInBlacklist(word, bot.context.member))
+                return
 
         for (const word of words) {
             if (BotModuleSwearWhitelist.checkIfWordWhitelistedForRole(word, bot.context.member))
                 wordMatches -= this.matchWord(word)
-            wordMatches += this.matchWord(word)
+            else
+                wordMatches += this.matchWord(word)
 
             if (wordMatches <= 0)
                 wordMatches = 0

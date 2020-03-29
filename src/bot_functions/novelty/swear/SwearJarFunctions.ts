@@ -67,9 +67,9 @@ export default class BotModuleSwearJar {
             }()
 
             let swearDetectedMessage = new Discord.MessageEmbed()
-                .setColor('pink')
-                .setTitle(Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.bad_language_detected))
-                .setAuthor('Your Friendly Neighborhood Megadork ✝', bot.user.avatarURL())
+                .setColor('PINK')
+                //.setTitle(Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.bad_language_detected))
+                //.setAuthor('Your Friendly Neighborhood Megadork ✝', bot.user.avatarURL())
                 .setDescription(response)
                 //.setImage(bot.context.author.avatarURL()) <- Noise
                 .addFields({

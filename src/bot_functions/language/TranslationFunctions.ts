@@ -12,7 +12,7 @@ export default class TranslationFunctions {
         let lingua
 
         if (translate.hotword_to.some(hotword => {
-            if (context.toString().includes(hotword) && main_trigger.includes(context.toString().split(' ')[0]))
+            if (context.toString().includes(hotword))
                 if (translate.warcraft.some(h => context.toString().includes(h)))
                     return lingua = 'warcraft'
                 else if (translate.yoda.some(h => context.toString().includes(h)))

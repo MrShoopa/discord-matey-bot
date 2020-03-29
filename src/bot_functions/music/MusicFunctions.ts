@@ -192,9 +192,6 @@ export default class BotModuleMusic {
                 bot.saveBugReport(error, this.stopMusic.name)
             }
         } else {
-            if (bot.context.toString().substring(0, 6).toLowerCase().includes("stop"))
-                return  // No message is sent when just saying 'stop' on no playback
-
             bot.context.reply(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.null))
             console.log('No sound was playing, nothing terminated.')
         }

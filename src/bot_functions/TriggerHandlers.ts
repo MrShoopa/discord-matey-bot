@@ -108,9 +108,13 @@ export default class TriggerHandlers {
         this.checkForSwearWord()
     }
 
-    private static requestCheck() {
-        for (var check of this.functions)
-            if (check()) return this.bot.commandSatisfied = true
+    private static requestCheck(message = TriggerHandlers.message) {
+        for (var hotword of TRIGGERS.main_trigger)
+            if (message.toString().toLowerCase().startsWith(hotword)) {
+                message.content = message.content.replace(hotword, '').trim()
+                for (var check of this.functions)
+                    if (check()) return this.bot.commandSatisfied = true
+            }
     }
 
     private static chatterCheck() {

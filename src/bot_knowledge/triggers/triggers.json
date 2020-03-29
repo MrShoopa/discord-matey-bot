@@ -3,23 +3,24 @@
         "megadork",
         "cyberplop",
         "megadick",
-        "megafaggot"
+        "megafaggot",
+        "md",
+        "!mega",
+        ".m",
+        "<"
     ],
     "redo_trigger": [
-        "megadork redo",
-        "megadork redo that",
-        "megadork rewind that",
-        "megadork do that again",
-        "megarewind",
-        "megaredo"
+        "redo",
+        "redo that",
+        "rewind that",
+        "do that again"
     ],
     "kill_trigger": [
-        "megadork go kill yourself",
-        "megadork reset please",
-        "megadork do me a favor and kill yourself",
-        "megadork restart",
-        "megadork reboot",
-        "megadie"
+        "go kill yourself",
+        "reset please",
+        "do me a favor and kill yourself",
+        "restart",
+        "reboot"
     ],
     "url_trigger": {
         "any": "."
@@ -50,9 +51,9 @@
         }
     },
     "send_nude_triggers": [
-        "megadork send nudes",
-        "megadork send noodz",
-        "megadork send hot nudes"
+        "send nudes",
+        "send noodz",
+        "send hot nudes"
     ],
     "thank_you_triggers": [
         "thank you megadork",
@@ -60,9 +61,9 @@
         "god bless megadork"
     ],
     "are_you_triggers": {
-        "communist": "megadork are you a communist",
-        "real": "megadork are you real",
-        "robot:": "megadork are you a robot"
+        "communist": "are you a communist",
+        "real": "are you real",
+        "robot:": "are you a robot"
     },
     "threat": {
         "kill_self": [
@@ -81,41 +82,39 @@
     "remember": {
         "birthday": {
             "self": [
-                "megadork remember my birthday",
-                "megadork remember my birthday's",
-                "megadork remember my birthday's on",
-                "megadork remember that my birthday is",
-                "megadork my birthday's on",
-                "megadork my birthday is on",
-                "megadork celebrate my birthday on",
-                "megadork set my birthday to",
-                "megadork change my birthday to"
+                "remember my birthday",
+                "remember my birthday's",
+                "remember my birthday's on",
+                "remember that my birthday is",
+                "my birthday's on",
+                "my birthday is on",
+                "celebrate my birthday on",
+                "set my birthday to",
+                "change my birthday to"
             ],
             "inquire": [
-                "megadork whats my birthday",
-                "megadork whats my birthday?",
-                "megadork what's my birthday",
-                "megadork what's my birthday?",
-                "megadork whens my birthday",
-                "megadork when's my birthday",
-                "megadork when's my birthday?",
-                "megadork my birthday",
-                "megadork tell me my birthday",
-                "megadork when was i born",
-                "megadork when do i turn"
+                "whats my birthday",
+                "whats my birthday?",
+                "what's my birthday",
+                "what's my birthday?",
+                "whens my birthday",
+                "when's my birthday",
+                "when's my birthday?",
+                "my birthday",
+                "tell me my birthday",
+                "when was i born",
+                "when do i turn"
             ]
         }
     },
     "singing_triggers": {
         "play": [
-            "i summon",
-            "megadork play"
+            "play"
         ],
         "stop": [
             "stop",
-            "megadork stop",
-            "megadork stop music",
-            "megadork kill the noise"
+            "stop music",
+            "kill the noise"
         ],
         "args": {
             "loop": [
@@ -140,121 +139,121 @@
         },
         "queue": {
             "add": [
-                "megadork jukebox add",
-                "megadork music queue add",
-                "megadork add to queue",
-                "megadork i request the song",
-                "megadork add to music queue"
+                "jukebox add",
+                "music queue add",
+                "add to queue",
+                "i request the song",
+                "add to music queue"
             ],
             "skip": [
-                "megadork skip next song",
-                "megadork avoid next song",
-                "megadork omit next song",
-                "megadork remove next song"
+                "skip next song",
+                "avoid next song",
+                "omit next song",
+                "remove next song"
             ],
             "start": [
-                "megadork start jukebox",
-                "megadork jukebox start",
-                "megadork begin jukebox",
-                "megadork jukebox ignite",
-                "megadork fire jukebox",
-                "megadork start music queue",
-                "megadork music queue start",
-                "megadork begin music queue",
-                "megadork music queue ignite",
-                "megadork fire music queue"
+                "start jukebox",
+                "jukebox start",
+                "begin jukebox",
+                "jukebox ignite",
+                "fire jukebox",
+                "start music queue",
+                "music queue start",
+                "begin music queue",
+                "music queue ignite",
+                "fire music queue"
             ],
             "play_next": [
-                "megadork play next",
-                "megadork start next",
-                "megadork next song",
-                "megadork play next song",
-                "megadork start next song",
-                "megadork begin next song",
-                "megadork do next song"
+                "play next",
+                "start next",
+                "next song",
+                "play next song",
+                "start next song",
+                "begin next song",
+                "do next song"
             ],
             "inquire": {
                 "next": [
-                    "megadork what's the next song",
-                    "megadork jukebox next up",
-                    "megadork jukebox next song",
-                    "megadork check next song",
-                    "megadork music queue next up"
+                    "what's the next song",
+                    "jukebox next up",
+                    "jukebox next song",
+                    "check next song",
+                    "music queue next up"
                 ],
                 "list": [
-                    "megadork music queue",
-                    "megadork jukebox list",
-                    "megadork jukebox queue",
-                    "megadork what's on the jukebox",
-                    "megadork what's on the music queue",
-                    "megadork music requests"
+                    "music queue",
+                    "jukebox list",
+                    "jukebox queue",
+                    "what's on the jukebox",
+                    "what's on the music queue",
+                    "music requests"
                 ]
             }
         }
     },
     "server_mod_triggers": {
         "set_restricted_role": [
-            "megadork banish",
-            "megadork cage"
+            "banish",
+            "cage"
         ],
         "unset_restricted_role": [
-            "megadork unbanish",
-            "megadork uncage",
-            "megadork revive"
+            "unbanish",
+            "uncage",
+            "revive"
         ],
         "get_roles": [
-            "megadork whats my role",
-            "megadork what are my roles",
-            "megadork what's my role",
-            "megadork what role am I"
+            "whats my role",
+            "what are my roles",
+            "what's my role",
+            "what role am I"
         ]
     },
     "image_search_triggers": {
         "random_image": [
-            "megadork random image",
-            "megadork random photo",
-            "megadork random picture",
-            "megadork fetch picture",
-            "megadork fetch photo",
-            "megadork fetch pic",
-            "megadork fetch image",
-            "megadork fetch a pic",
-            "megadork fetch a picture",
-            "megadork fetch me a picture",
-            "megadork fetch image",
-            "megadork find picture",
-            "megadork find a picture",
-            "megadork find a random picture",
-            "megadork find me picture",
-            "megadork find me a picture",
-            "megadork find me a random picture",
-            "megadork get picture",
-            "megadork get a picture",
-            "megadork get me a picture",
-            "megadork get me an image",
-            "megadork get me a photo",
-            "megadork get me a random image",
-            "megadork get me a random picture",
-            "megadork give me an image",
-            "megadork give me a photo",
-            "megadork give me a random image",
-            "megadork give me a random picture",
-            "megadork send me a picture",
-            "megadork send me a photo",
-            "megadork send me a random image",
-            "megadork send me a random picture",
-            "megadork show me a picture",
-            "megadork show me a photo",
-            "megadork show me a random image",
-            "megadork show me a random picture",
-            "megadork throw me a random picture"
+            "random image",
+            "random photo",
+            "random picture",
+            "fetch picture",
+            "fetch photo",
+            "fetch pic",
+            "fetch image",
+            "fetch a pic",
+            "fetch a picture",
+            "fetch me a picture",
+            "fetch image",
+            "find picture",
+            "find a picture",
+            "find a random picture",
+            "find me picture",
+            "find me a picture",
+            "find me a random picture",
+            "get picture",
+            "get a picture",
+            "get me a picture",
+            "get me an image",
+            "get me a photo",
+            "get me a random image",
+            "get me a random picture",
+            "give me an image",
+            "give me a photo",
+            "give me a random image",
+            "give me a random picture",
+            "send me a picture",
+            "send me a photo",
+            "send me a random image",
+            "send me a random picture",
+            "show me a picture",
+            "show me a photo",
+            "show me a random image",
+            "show me a random picture",
+            "throw me a random picture"
         ],
         "dank_meme": [
-            "megadork throw me a meme",
-            "megadork send me a meme",
-            "megadork meme me",
-            "megadork show me memes",
-            "megadork send dank memes"
+            "throw me a meme",
+            "send me a meme",
+            "meme me",
+            "show me memes",
+            "send dank memes"
         ]
     },
     "swear_jar_triggers": {
@@ -714,7 +713,7 @@
     },
     "reddit_fetch": {
         "default": [
-            "megadork fetch reddit"
+            "fetch reddit"
         ],
         "query_type": {
             "post": [
@@ -728,96 +727,96 @@
         },
         "copypasta": {
             "default": [
-                "megadork fetch copypasta",
-                "megadork fetch fresh copypasta",
-                "megadork fetch top new copypasta"
+                "fetch copypasta",
+                "fetch fresh copypasta",
+                "fetch top new copypasta"
             ],
             "top_of_week": [
-                "megadork fetch this week's copypasta",
-                "megadork get this week's copypasta"
+                "fetch this week's copypasta",
+                "get this week's copypasta"
             ]
         }
     },
     "twitter_fetch": {
         "tweet": {
             "default": [
-                "megadork fetch tweet",
-                "megadork fetch a tweet",
-                "megadork fetch new tweet",
-                "megadork fetch fresh tweet",
-                "megadork fetch fresh new tweet",
-                "megadork fetch top new tweet",
-                "megadork fetch twitter tweet"
+                "fetch tweet",
+                "fetch a tweet",
+                "fetch new tweet",
+                "fetch fresh tweet",
+                "fetch fresh new tweet",
+                "fetch top new tweet",
+                "fetch twitter tweet"
             ],
             "query": [
-                "megadork fetch tweet about",
-                "megadork fetch a tweet about",
-                "megadork fetch new tweet about",
-                "megadork fetch fresh tweet about",
-                "megadork fetch fresh new tweet about",
-                "megadork fetch top new tweet about",
-                "megadork fetch twitter tweet about"
+                "fetch tweet about",
+                "fetch a tweet about",
+                "fetch new tweet about",
+                "fetch fresh tweet about",
+                "fetch fresh new tweet about",
+                "fetch top new tweet about",
+                "fetch twitter tweet about"
             ],
             "user_latest": [
-                "megadork fetch tweet from",
-                "megadork fetch a tweet from",
-                "megadork fetch new tweet from",
-                "megadork fetch fresh tweet from",
-                "megadork fetch fresh new tweet from",
-                "megadork fetch top new tweet from",
-                "megadork fetch twitter tweet from"
+                "fetch tweet from",
+                "fetch a tweet from",
+                "fetch new tweet from",
+                "fetch fresh tweet from",
+                "fetch fresh new tweet from",
+                "fetch top new tweet from",
+                "fetch twitter tweet from"
             ]
         }
     },
     "horoscope_fetch": {
         "default": [
-            "megadork fetch horoscope",
-            "megadork fetch horoscope reading",
-            "megadork fetch new horoscope",
-            "megadork get horoscope",
-            "megadork get horoscope reading",
-            "megadork get new horoscope",
-            "megadork get new horoscope reading",
-            "megadork get a horoscope",
-            "megadork get a horoscope reading"
+            "fetch horoscope",
+            "fetch horoscope reading",
+            "fetch new horoscope",
+            "get horoscope",
+            "get horoscope reading",
+            "get new horoscope",
+            "get new horoscope reading",
+            "get a horoscope",
+            "get a horoscope reading"
         ]
     },
     "anime_fetch": {
         "default": [
-            "megadork fetch anime",
-            "megadork get anime",
-            "megadork get an anime"
+            "fetch anime",
+            "get anime",
+            "get an anime"
         ],
         "new": [
-            "megadork fetch new anime",
-            "megadork get new anime",
-            "megadork get a new anime"
+            "fetch new anime",
+            "get new anime",
+            "get a new anime"
         ]
     },
     "quote_fetch": {
         "default": [
-            "megadork random quote",
-            "megadork fetch quote",
-            "megadork fetch a quote",
-            "megadork fetch quote",
-            "megadork fetch a quote",
-            "megadork get quote",
-            "megadork get a quote",
-            "megadork give quote",
-            "megadork give a quote",
-            "megadork give me a quote"
+            "random quote",
+            "fetch quote",
+            "fetch a quote",
+            "fetch quote",
+            "fetch a quote",
+            "get quote",
+            "get a quote",
+            "give quote",
+            "give a quote",
+            "give me a quote"
         ],
         "OTD": {
             "default": [
-                "megadork random quote of the day",
-                "megadork fetch quote of the day",
-                "megadork fetch a quote of the day",
-                "megadork fetch me quote of the day",
-                "megadork get quote of the day",
-                "megadork get a quote of the day",
-                "megadork give quote of the day",
-                "megadork give a quote of the day",
-                "megadork give me quote of the day"
+                "random quote of the day",
+                "fetch quote of the day",
+                "fetch a quote of the day",
+                "fetch me quote of the day",
+                "get quote of the day",
+                "get a quote of the day",
+                "give quote of the day",
+                "give a quote of the day",
+                "give me quote of the day"
             ],
             "sub_triggers": [
                 "management",
@@ -830,62 +829,62 @@
             ]
         },
         "inspirational": [
-            "megadork fetch inspirational quote",
-            "megadork fetch an inspirational quote",
-            "megadork get inspirational quote",
-            "megadork get an inspirational quote",
-            "megadork give inspirational quote",
-            "megadork give an inspirational quote",
-            "megadork give me an inspirational quote"
+            "fetch inspirational quote",
+            "fetch an inspirational quote",
+            "get inspirational quote",
+            "get an inspirational quote",
+            "give inspirational quote",
+            "give an inspirational quote",
+            "give me an inspirational quote"
         ],
         "movie": {
             "default": [
-                "megadork random movie quote",
-                "megadork fetch movie quote",
-                "megadork fetch a movie quote",
-                "megadork fetch movie quote",
-                "megadork fetch a movie quote",
-                "megadork get movie quote",
-                "megadork get a movie quote",
-                "megadork give movie quote",
-                "megadork give a movie quote",
-                "megadork give me a movie quote"
+                "random movie quote",
+                "fetch movie quote",
+                "fetch a movie quote",
+                "fetch movie quote",
+                "fetch a movie quote",
+                "get movie quote",
+                "get a movie quote",
+                "give movie quote",
+                "give a movie quote",
+                "give me a movie quote"
             ]
         }
     },
     "dice_roll": [
-        "megadork roll",
-        "megadork roll dice",
-        "megadork roll a dice",
-        "megadork diceroll",
-        "megadork throw dice",
-        "megadork throw a dice"
+        "roll",
+        "roll dice",
+        "roll a dice",
+        "diceroll",
+        "throw dice",
+        "throw a dice"
     ],
     "lyric_fetch": {
         "default": [
-            "megadork fetch song lyrics from",
-            "megadork fetch song lyrics for",
-            "megadork fetch song lyrics of",
-            "megadork fetch get lyrics from",
-            "megadork fetch get lyrics for",
-            "megadork fetch get lyrics of",
-            "megadork fetch lyrics about",
-            "megadork fetch lyrics from",
-            "megadork fetch lyrics for",
-            "megadork fetch lyrics of",
-            "megadork fetch some lyrics",
-            "megadork fetch lyrics",
-            "megadork lyrics from"
+            "fetch song lyrics from",
+            "fetch song lyrics for",
+            "fetch song lyrics of",
+            "fetch get lyrics from",
+            "fetch get lyrics for",
+            "fetch get lyrics of",
+            "fetch lyrics about",
+            "fetch lyrics from",
+            "fetch lyrics for",
+            "fetch lyrics of",
+            "fetch some lyrics",
+            "fetch lyrics",
+            "lyrics from"
         ]
     },
     "lyric_sing": {
         "default": [
-            "megadork sing the song",
-            "megadork sing song",
-            "megadork sing",
-            "megadork rap the song",
-            "megadork rap song",
-            "megadork rap"
+            "sing the song",
+            "sing song",
+            "sing",
+            "rap the song",
+            "rap song",
+            "rap"
         ]
     },
     "translate": {

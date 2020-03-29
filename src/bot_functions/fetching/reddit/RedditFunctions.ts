@@ -18,10 +18,15 @@ export default class BotModuleReddit {
                 break
             }
         let post: any
-        if (query.includes('r/')) {
-            post = await this.fetchRandomSubmission(query.replace('r/', ''))
-        } else if (query.includes('u/')) {
-            post = await this.fetchRandomSubmissionFromUser(query.replace('u/', ""))
+
+        try {
+            if (query.includes('r/')) {
+                post = await this.fetchRandomSubmission(query.replace('r/', ''))
+            } else if (query.includes('u/')) {
+                post = await this.fetchRandomSubmissionFromUser(query.replace('u/', ""))
+            }
+        } catch (err) {
+            return bot.generateErrorMessage(`That does not exist within reddit. Check your request.`)
         }
 
         this.buildRedditSubmissionMessage(post).forEach(message => {
@@ -35,7 +40,13 @@ export default class BotModuleReddit {
 
         if (trigger) bot.preliminary(trigger, 'reddit copypasta fetch', true)
 
-        let pasta = await this.fetchRandomSubmission('copypasta', 'best')
+        let pasta: any
+
+        try {
+            pasta = await this.fetchRandomSubmission('copypasta', 'best')
+        } catch {
+            return bot.generateErrorMessage(`r/copypasta went missing? Try again later.`)
+        }
 
         let delivery = new Discord.MessageEmbed()
             .setTitle(`From r/${pasta.data.subreddit}`)
@@ -84,7 +95,7 @@ export default class BotModuleReddit {
             .catch((error: any) => {
                 bot.saveBugReport(error, this.fetchSubmissions.name, true)
             })
-        return submissions.data.children
+        return submissions.data?.children
     }
 
     static async fetchSubmissionsFromUser(
@@ -104,7 +115,10 @@ export default class BotModuleReddit {
         subreddit: string = 'funny', category: string = 'best') {
         let list = await this.fetchSubmissions(subreddit, category, 100)
 
-        return list[Math.floor(Math.random() * list.length)]
+        if (list)
+            return list[Math.floor(Math.random() * list.length)]
+        else
+            throw new ReferenceError(`Unable to fetch from ${subreddit}.`)
     }
 
     static async fetchRandomSubmissionFromUser(

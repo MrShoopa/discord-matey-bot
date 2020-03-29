@@ -25,15 +25,16 @@ export default class TranslationFunctions {
             else if (lingua == 'yoda')
                 YodaLanguageFunctions.generateYodaTranslationMessage(context.toString())
             else
-                this.replyUnknownLanguageMessage()
-        else {
-            this.replyUnknownLanguageMessage()
-        }
+                return this.replyUnknownLanguageMessage()
+        else
+            return this.replyUnknownLanguageMessage()
     }
 
     static replyUnknownLanguageMessage() {
         let bot: Bot = globalThis.bot
 
         bot.context.channel.send(`Which language? Type *megadork help translate* to see what I can translate.`)
+
+        return true
     }
 }

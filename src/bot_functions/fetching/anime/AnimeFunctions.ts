@@ -1,12 +1,13 @@
 import Discord from 'discord.js'
 import Bot from '../../../Bot'
+import JikanTS from 'jikants'
 
 export default class BotModuleAnime {
 
     static async fireAnimeInfoMessageOfName(trigger: string) {
         let bot: Bot = globalThis.bot
 
-        bot.context.channel.send(this.fetchBuiltMsgAnimeInfoMessageOfName(bot.context.toString(), trigger))
+        bot.context.channel.send(await this.fetchBuiltMsgAnimeInfoMessageOfName(bot.context.toString(), trigger))
     }
 
     static async fetchBuiltMsgAnimeInfoMessageOfName(query: string, trigger?: string):
@@ -17,14 +18,15 @@ export default class BotModuleAnime {
         query = query.toLowerCase()
 
         if (query.includes(trigger))
-            query = query.replace(trigger, '')
+            query = query.replace(trigger, '').trim()
 
         let anime = await BotModuleAnime.fetchAnimeOfName(query)
 
-        if (!anime)
-            return bot.generateErrorMessage(`I couldn't fetch swag info of your animoo at the moment.`)
+        if (anime === undefined)
+            return new Discord.Message(bot.user.client,
+                { content: "I couldn't fetch swag info of your animoo at the moment." }, bot.context.channel)
 
-        return bot.textChannel.send(BotModuleAnime.generateAnimeInfoMessage(anime))
+        return BotModuleAnime.generateAnimeInfoMessage(anime)
     }
 
     static generateAnimeInfoMessage(anime) {
@@ -45,24 +47,20 @@ export default class BotModuleAnime {
         return message
     }
 
-    static fetchAnimeOfName(name: string = 'Boku', multipleResults = false) {
-
-        return new Promise((resolve, reject) => {
-            import('jikants').then(JikanTS => {
-                JikanTS.default.Search.search(name, "anime")
-                    .catch(error => {
-                        let bot: Bot = globalThis.bot
-                        bot.saveBugReport(error, this.fetchAnimeOfName.name)
-                        reject(error)
-                    })
-                    .then(anime => {
-                        console.log(`Anime fetched for ${name}`)
-                        if (anime)
-                            multipleResults ?
-                                resolve(anime.results) : resolve(anime.results[1])
-                    })
+    static async fetchAnimeOfName(name: string = 'Boku', multipleResults = false) {
+        return await JikanTS.Search.search(name, "anime")
+            .catch(error => {
+                let bot: Bot = globalThis.bot
+                bot.saveBugReport(error, this.fetchAnimeOfName.name)
+                return null
             })
-        })
-
+            .then(anime => {
+                console.log(`Anime fetched for ${name}`)
+                if (anime)
+                    if (multipleResults)
+                        return anime.results
+                    else
+                        return anime.results[1]
+            })
     }
 }

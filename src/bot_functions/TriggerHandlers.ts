@@ -20,7 +20,8 @@ import BotModuleFun from './general/FunFunctions'
 import BotWordplay from './wordplay/WordplayFunctions'
 import BotModuleQuote from './fetching/quote/QuoteFunctions'
 import BotModuleLyric from './fetching/lyrics/LyricFunctions'
-import TranslationFunctions from './language/TranslationFunctions'
+import BotModuleTranslation from './language/TranslationFunctions'
+import BotModuleCovid from './fetching/info/current/CovidFunctions'
 
 
 export default class TriggerHandlers {
@@ -53,6 +54,7 @@ export default class TriggerHandlers {
         TriggerHandlers.checkForQuoteFetchRequest,
         TriggerHandlers.checkForLyricFetchRequest,
         TriggerHandlers.checkForLyricSingRequest,
+        TriggerHandlers.checkForCovidInfoRequest,
 
         TriggerHandlers.checkForRestrictedRoleAssignRequest,
         TriggerHandlers.checkForRestrictedRoleUnassignRequest,
@@ -215,7 +217,7 @@ export default class TriggerHandlers {
     private static checkForTranslationRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.translate.hotword_default)
             if (message.toString().toLowerCase().includes(trigger))
-                return TranslationFunctions.processTranslationRequest(TriggerHandlers.bot.context)
+                return BotModuleTranslation.processTranslationRequest(TriggerHandlers.bot.context)
         //  Find random image (from Google Images)
     }
 
@@ -268,6 +270,12 @@ export default class TriggerHandlers {
         for (const trigger of TRIGGERS.lyric_sing.default)
             if (message.toString().toLowerCase().includes(trigger))
                 return BotModuleLyric.singSongInChat(message.toString(), trigger)
+    }
+
+    private static checkForCovidInfoRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.covid.default)
+            if (message.toString().toLowerCase().includes(trigger))
+                return BotModuleCovid.fireCovidInfoMessage(trigger)
     }
 
     /*  ----    Server-Management   ---- */

@@ -6,7 +6,7 @@ import { main_trigger, translate } from '../../bot_knowledge/triggers/triggers.j
 import WarcraftLanguageFunctions from './WarcraftLangFunctions'
 import YodaLanguageFunctions from './YodaLangFunctions'
 
-export default class TranslationFunctions {
+export default class BotModuleTranslation {
 
     static processTranslationRequest(context: Discord.Message | Discord.PartialMessage, language?: string, trigger?: string) {
         let lingua

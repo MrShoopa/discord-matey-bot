@@ -911,5 +911,22 @@
             "yoda",
             "yoda speak"
         ]
+    },
+    "covid": {
+        "default": [
+            "fetch covid",
+            "fetch covid-19",
+            "fetch covid cases",
+            "fetch covid-19 cases",
+            "fetch coronavirus",
+            "fetch coronavirus cases"
+        ],
+        "country": [
+            "country"
+        ],
+        "state": [
+            "state",
+            "province"
+        ]
     }
 }

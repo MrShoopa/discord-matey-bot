@@ -39,6 +39,11 @@
         ],
         "translate": [
             "help translate"
+        ],
+        "covid": [
+            "help covid",
+            "help covid-19",
+            "help coronavirus"
         ]
     },
     "help_special": {
@@ -71,7 +76,8 @@
             "zandali",
             "eredun",
             "draconic",
-            "kalimag"
+            "kalimag",
+            "yoda"
         ]
     },
     "i": {
@@ -313,6 +319,25 @@
                     "title": "Translate to (basic keyword)",
                     "example": "megadork translate to"
                 }
+            }
+        },
+        "covid": {
+            "_title": "Coronavirus Info",
+            "_description": "Find case info on COVID-19 in a specific location or the world.",
+            "_footer": "🦠",
+            "_command_list": {
+                "default": {
+                    "title": "Fetch world cases",
+                    "example": "megadork fetch covid cases"
+                },
+                "country": {
+                    "title": "Fetch state cases",
+                    "example": "megadork fetch covid cases for country *name of country*"
+                },
+                "state": {
+                    "title": "Fetch country cases",
+                    "example": "megadork fetch covid cases for state *name of state*"
+                },
             }
         }
     }

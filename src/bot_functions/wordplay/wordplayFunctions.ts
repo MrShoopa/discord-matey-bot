@@ -129,6 +129,8 @@ class NonTargettedTriggers {
                 if (message.author.username == 'Jaygoo')
                     message.reply('ur dog gay')
 
+                BotWordplay.bot.commandSatisfied = true
+
                 return message.reply(
                     Bot.fetchRandomPhrase(PHRASES_CONVO.asked_death_threat))
             }

@@ -4,6 +4,7 @@ import Bot from '../../../../Bot'
 import { covid } from '../../../../bot_knowledge/triggers/triggers.json'
 
 import Covid from 'novelcovid'
+import { resolve } from 'dns'
 
 export default class BotModuleCovid {
     static async fireCovidInfoMessage(trigger: string) {
@@ -14,22 +15,23 @@ export default class BotModuleCovid {
         let query: string = bot.context.toString()
 
 
-        await covid.country.some(async (keyword: string) => {
+        for (const keyword of covid.state)
             if (bot.context.toString().includes(keyword)) {
-                query = query.substring(query.indexOf(keyword) + keyword.length)
+                query = query.substring(query.indexOf(keyword) + keyword.length).trim()
                 message = await BotModuleCovid.fetchBuiltCovidInfoMessage('United States', query) // Province?
-                return true
+                break
             }
-        })
-        await covid.state.some(async (keyword: string) => {
+        for (const keyword of covid.country)
             if (bot.context.toString().includes(keyword)) {
-                query = query.substring(query.indexOf(keyword) + keyword.length)
+                query = query.substring(query.indexOf(keyword) + keyword.length).trim()
                 message = await BotModuleCovid.fetchBuiltCovidInfoMessage(query)
-                return true
+                break
             }
-        })
-        if (!message)
-            message = await BotModuleCovid.fetchBuiltCovidInfoMessage()
+        for (const keyword of covid.default)
+            if (bot.context.toString().endsWith(keyword)) {
+                message = await BotModuleCovid.fetchBuiltCovidInfoMessage()
+                break
+            }
 
         bot.context.channel.send(message)
     }
@@ -40,17 +42,26 @@ export default class BotModuleCovid {
 
         let data: any
 
-        if (state) {
-            data = await Covid.getState({ state: state })
-            data.location = state
-        }
-        else if (country) {
-            data = await Covid.getCountry({ country: country })
-            data.location = country
-        }
-        else {
-            data = await Covid.getAll()
-            data.location = 'World'
+        try {
+
+            if (state) {
+                data = await Covid.getState({ state: state })
+                data.location = state
+            }
+            else if (country) {
+                data = await Covid.getCountry({ country: country })
+                data.location = country
+            }
+            else {
+                data = await Covid.getAll()
+                data.location = 'World'
+            }
+
+            if (data.message?.includes('not found'))
+                data = undefined
+        } catch (err) {
+            bot.saveBugReport(err, this.fetchBuiltCovidInfoMessage.name, true)
+            data = undefined
         }
 
         if (data === undefined)
@@ -68,11 +79,14 @@ export default class BotModuleCovid {
                 { name: 'Active Cases', value: `${data.active}`, inline: true },
                 { name: 'Recovered', value: `${data.active}`, inline: true },
                 { name: 'Total Cases', value: `${data.cases}`, inline: true },
-                { name: 'New Cases Today', value: `${data.todayCases}`, inline: true },
-                { name: 'Deaths', value: `${data.deaths}`, inline: true },
-                { name: 'New Deaths Today', value: `${data.todayDeaths}`, inline: true },
+                { name: 'Deaths', value: `${data.deaths}`, inline: true }
             )
             .setTimestamp(new Date(data.updated))
+
+        if (data.todayCases)
+            message.addFields(
+                { name: 'New Cases Today', value: `${data.todayCases}`, inline: true },
+                { name: 'New Deaths Today', value: `${data.todayDeaths}`, inline: true })
 
         return message
     }

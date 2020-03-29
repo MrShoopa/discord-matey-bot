@@ -224,7 +224,6 @@ export default class TriggerHandlers {
                     return BotModuleReddit.fireRedditSubmissionMessage(`${baseTrigger} ${trigger}`)
         //  Get copypasta post [from Reddit]
 
-
         for (const trigger of TRIGGERS.reddit_fetch.copypasta.default)
             if (message.toString().toLowerCase().includes(trigger))
                 return BotModuleReddit.fireCopypastaFetch(trigger)

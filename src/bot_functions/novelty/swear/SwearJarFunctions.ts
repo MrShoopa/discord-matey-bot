@@ -137,7 +137,7 @@ export default class BotModuleSwearJar {
 
             if (word === trigger)
                 return 1
-            else if (word.startsWith(trigger)) {
+            else if (word.startsWith(trigger) && word.length < trigger.length + 1) {
                 count++
 
                 let index = trigger.length

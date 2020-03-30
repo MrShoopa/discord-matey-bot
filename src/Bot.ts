@@ -49,7 +49,7 @@ export default class Bot extends Discord.Client {
     private _lastMessage: Discord.Message | Discord.PartialMessage
     private _lastWaker: Discord.User
 
-    commandSatisfied: boolean
+    commandSatisfied: boolean | string
     songState: SongState
     overrideContext: boolean
 

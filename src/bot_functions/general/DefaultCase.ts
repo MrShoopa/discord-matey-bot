@@ -7,14 +7,10 @@ import BotLoggerFunctions from '../general/LoggerFunctions'
 export default class BotDefaultResponder {
 
     static generateResponse(message = globalThis.bot.context) {
-        let a = TRIGGERS.main_trigger
-        for (let i = 0; a.length; i++)
-            if (message.toString() == a[i])
-                return this.noContextResponse(a[i])
-            else if (i === TRIGGERS.main_trigger.length - 1) {
-                return this.unknownCommandResponse()
-            }
-
+        if (message.toString().length === 0)
+            return this.noContextResponse(message)
+        else
+            return this.unknownCommandResponse()
     }
 
     static noContextResponse(trigger, bot: Bot = globalThis.bot) {

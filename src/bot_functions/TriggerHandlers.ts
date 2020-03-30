@@ -60,6 +60,7 @@ export default class TriggerHandlers {
         TriggerHandlers.checkForRestrictedRoleUnassignRequest,
 
         TriggerHandlers.checkForDiceRollRequest,
+        TriggerHandlers.checkFor8BallRequest,
 
         TriggerHandlers.checkForBotKillRequest,
 
@@ -72,6 +73,7 @@ export default class TriggerHandlers {
         this.bot.commandSatisfied = false
 
         this.message = message
+        let msgString = message.toString()
 
         if (this.preventUnnecessaryResponse()) return
 
@@ -85,8 +87,8 @@ export default class TriggerHandlers {
         this.requestCheck()
         this.chatterCheck()
 
-        if (!this.bot.commandSatisfied)
-            this.replyGeneralDefault()
+        if (this.bot.commandSatisfied === false)
+            this.replyGeneralDefault(msgString)
     }
 
     private static preventUnnecessaryResponse() {
@@ -306,6 +308,13 @@ export default class TriggerHandlers {
         //  Get anime recommendation [from My Anime List (JikanTS)]
     }
 
+    private static checkFor8BallRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.magic_ball)
+            if (message.toString().toLowerCase().includes(trigger))
+                return BotModuleFun.eightBall(null, trigger)
+        //  Get anime recommendation [from My Anime List (JikanTS)]
+    }
+
     /* ----  Admin-only functions --- */
     private static checkForBotKillRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.kill_trigger)
@@ -315,7 +324,9 @@ export default class TriggerHandlers {
     }
 
     //  All else comes around
-    private static replyGeneralDefault(message = TriggerHandlers.message) {
-        return BotDefaultResponder.generateResponse()
+    private static replyGeneralDefault(message: string) {
+        for (const trigger of TRIGGERS.main_trigger)
+            if (message.toString().toLowerCase().includes(trigger))
+                BotDefaultResponder.generateResponse()
     }
 }

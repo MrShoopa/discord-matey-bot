@@ -40,6 +40,12 @@
         "translate": [
             "help translate"
         ],
+        "magic_ball": [
+            "help magic ball"
+        ],
+        "dice": [
+            "help dice"
+        ],
         "covid": [
             "help covid",
             "help covid-19",
@@ -288,6 +294,17 @@
                 }
             }
         },
+        "magic ball": {
+            "_title": "Magic 8 Ball",
+            "_description": "Simple. RNG your wish.",
+            "_footer": "🎱",
+            "_command_list": {
+                "default": {
+                    "title": "Roll a magic ball",
+                    "example": "megadork magic ball"
+                }
+            }
+        },
         "lyric": {
             "_title": "Lyric Fetching",
             "_description": "Pull some lyrics from your favorite song or something you don't understand!",
@@ -337,7 +354,7 @@
                 "state": {
                     "title": "Fetch country cases",
                     "example": "megadork fetch covid cases for state *name of state*"
-                },
+                }
             }
         }
     }

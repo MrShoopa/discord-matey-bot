@@ -7,7 +7,7 @@
         "md",
         "!mega",
         ".m",
-        "<"
+        ";"
     ],
     "redo_trigger": [
         "redo",
@@ -927,5 +927,10 @@
             "state",
             "province"
         ]
-    }
+    },
+    "magic_ball": [
+        "magic ball",
+        "8ball",
+        "8 ball"
+    ]
 }

@@ -21,8 +21,10 @@ export default class BotModuleReddit {
 
         try {
             if (query.includes('r/')) {
+                query = query.substring(query.indexOf('r/'))
                 post = await this.fetchRandomSubmission(query.replace('r/', ''))
             } else if (query.includes('u/')) {
+                query = query.substring(query.indexOf('u/'))
                 post = await this.fetchRandomSubmissionFromUser(query.replace('u/', ""))
             }
         } catch (err) {

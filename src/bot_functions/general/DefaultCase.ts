@@ -12,7 +12,6 @@ export default class BotDefaultResponder {
             if (message.toString() == a[i])
                 return this.noContextResponse(a[i])
             else if (i === TRIGGERS.main_trigger.length - 1) {
-
                 return this.unknownCommandResponse()
             }
 

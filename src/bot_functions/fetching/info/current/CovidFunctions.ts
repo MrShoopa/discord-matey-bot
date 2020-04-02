@@ -77,7 +77,7 @@ export default class BotModuleCovid {
             .setTitle(`Coronavirus Cases for ${data.location}`)
             .addFields(
                 { name: 'Active Cases', value: `${data.active}`, inline: true },
-                { name: 'Recovered', value: `${data.active}`, inline: true },
+                { name: 'Recovered', value: `${data.recovered}`, inline: true },
                 { name: 'Total Cases', value: `${data.cases}`, inline: true },
                 { name: 'Deaths', value: `${data.deaths}`, inline: true }
             )

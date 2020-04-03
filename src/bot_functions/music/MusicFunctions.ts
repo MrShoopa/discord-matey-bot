@@ -1,6 +1,6 @@
 import Discord, { Message } from 'discord.js'
 import Bot, { SongState } from "../../Bot"
-import { Song, Stream } from "../../types"
+import { Audio, Stream } from "../../types"
 import QueueHandler from '../_state/QueueHandler'
 
 import TRIGGERS from '../../bot_knowledge/triggers/triggers.json'
@@ -115,7 +115,7 @@ export default class BotModuleMusic {
 
                         //  When song from local files is found
 
-                        let foundSong: Song.SongObject = song
+                        let foundSong: Audio.SongObject = song
 
                         songState = SongState.Playing
                         songState =
@@ -165,7 +165,7 @@ export default class BotModuleMusic {
         if (queueMode && songState == SongState.Finished) this.processNextSongRequest()
     }
 
-    static stopMusic(trigger?: string) {
+    static async stopMusic(trigger?: string) {
         let bot: Bot = globalThis.bot
 
         if (trigger) bot.preliminary(trigger, 'Singing Stop', true, true)
@@ -178,6 +178,7 @@ export default class BotModuleMusic {
                 })) "the bottom might annoy some"
                 //.bot.context.reply(`join my voice channel and repeat that action!`)
                 else {
+                    await bot.playSFX(bot.context.member.voice.connection, Audio.SFX.MusicLeave)
                     bot.context.member.voice.channel.leave()
 
                     bot.textChannel.send(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.active))

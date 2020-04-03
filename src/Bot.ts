@@ -131,7 +131,7 @@ export default class Bot extends Discord.Client {
             return null
     }
 
-    async playAudioFromFiles(song: Datypes.Song.SongObject | string, loop?: boolean, gapless?: boolean, trigger?: string)
+    async playAudioFromFiles(song: Datypes.Audio.SongObject | string, loop?: boolean, gapless?: boolean, trigger?: string)
         : Promise<SongState> {
         let dispatcher: Discord.StreamDispatcher
         let songInfo: Datypes.Stream.SongInfo
@@ -146,7 +146,10 @@ export default class Bot extends Discord.Client {
                 this.preliminary(trigger, 'Audio playback from files', true)
 
             try {
-                let connection = await this.voiceChannel.join().catch(e => { throw e })
+                let connection = await this.voiceChannel.join().catch(e => { throw e }).then(async c => {
+                    await this.playSFX(c, Datypes.Audio.SFX.MusicJoin)
+                    return c
+                })
                 console.groupEnd()
                 console.group()
                 console.log(`Local song playing...`)
@@ -176,7 +179,7 @@ export default class Bot extends Discord.Client {
             }
         }
 
-        async function playAudioFile(song: string | Datypes.Song.SongObject,
+        async function playAudioFile(song: string | Datypes.Audio.SongObject,
             connection: Discord.VoiceConnection, replaying?: boolean) {
             let bot: Bot = globalThis.bot
 
@@ -194,7 +197,7 @@ export default class Bot extends Discord.Client {
                         songInfo.name = songPath.pop()
                         songInfo.localFolder = songPath[songPath.length - 2]
 
-                    } else if (Datypes.Song.isSongObject(song)) {
+                    } else if (Datypes.Audio.isSongObject(song)) {
 
                         dispatcher = connection.play(song.file)
                         state = SongState.Playing
@@ -216,7 +219,7 @@ export default class Bot extends Discord.Client {
                         state = SongState.Playing
                         console.groupEnd()
                         console.group()
-                        if (Datypes.Song.isSongObject(song))
+                        if (Datypes.Audio.isSongObject(song))
                             console.log(`Now playing local and tagged file: ${songInfo.name} in ${songInfo.localFolder}.`)
                         else
                             console.log(`Now playing local file: ${song}`)
@@ -233,7 +236,7 @@ export default class Bot extends Discord.Client {
                         resolve(SongState.Stopped)
                     })
 
-                    dispatcher.on('finish', () => {
+                    dispatcher.on('finish', async () => {
                         if (loop) {
                             console.info('Looping song...')
                             playAudioFile(song, connection, true)
@@ -241,6 +244,7 @@ export default class Bot extends Discord.Client {
                             console.info('Song played successfully.')
 
                             bot.songState = SongState.Finished
+                            await bot.playSFX(connection, Datypes.Audio.SFX.MusicLeave)
                             if (!gapless) bot.voiceChannel.leave()
                         }
 
@@ -282,7 +286,10 @@ export default class Bot extends Discord.Client {
                 = { source: 'None' }
 
             try {
-                let connection = await this.voiceChannel.join().catch(e => { throw e })
+                let connection = await this.voiceChannel.join().catch(e => { throw e }).then(async c => {
+                    await this.playSFX(c, Datypes.Audio.SFX.MusicJoin)
+                    return c
+                })
                 console.groupEnd()
                 console.group()
                 console.info(
@@ -421,7 +428,7 @@ export default class Bot extends Discord.Client {
                         resolve(SongState.Stopped)
                     })
 
-                    dispatcher.on('finish', () => {
+                    dispatcher.on('finish', async () => {
                         if (loop) {
                             console.info('Looping song...')
                             return playAudioURL(connection, true)
@@ -436,6 +443,7 @@ export default class Bot extends Discord.Client {
                             })
 
                             bot.songState = SongState.Finished
+                            await bot.playSFX(connection, Datypes.Audio.SFX.MusicLeave)
                             if (!gapless) bot.voiceChannel.leave()
                         }
 
@@ -512,6 +520,21 @@ export default class Bot extends Discord.Client {
                     console.error(`Could not fetch image - ${error}`)
                     rej(error)
                 })
+        })
+    }
+
+    playSFX(connection: Discord.VoiceConnection, sfx: Datypes.Audio.SFX) {
+        return new Promise((res, rej) => {
+            let result = connection.play(sfx.filePath)
+
+            result.on('finish', () => {
+                res('completed')
+            })
+
+            result.on('error', err => {
+                this.saveBugReport(err, this.playSFX.name, true)
+                rej('failed')
+            })
         })
     }
 

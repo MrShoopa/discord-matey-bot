@@ -19,7 +19,8 @@ node_modules
 /built_dev
 
 # Any additional music (gotta save space lol)
-**/audio/*
+**/audio/meme-stash
+**/audio/music
 
 # Bot Crash Logs
 /crash_logs

@@ -7,6 +7,7 @@
     "main": "igniter.ts",
     "scripts": {
         "start": "ts-node src/igniter.ts",
+        "dev:debug": "nodemon --inspect src/igniter.ts",
         "test": "mocha -r ts-node/register tests/**/*.test.ts",
         "coverage": "nyc -r lcov -e .ts -x \"*.test.ts\" npm run test"
     },

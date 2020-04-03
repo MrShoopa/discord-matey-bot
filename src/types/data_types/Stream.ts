@@ -10,7 +10,6 @@ export module Stream {
         platform?: string
         length?: string
         thumbnailUrl?: string
-
         botPhrase?: string
     }
 }

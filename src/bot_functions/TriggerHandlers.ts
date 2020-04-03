@@ -1,7 +1,7 @@
 import Discord from 'discord.js'
 
 import Bot from '../Bot'
-import BotGeneralCommands from './general/GeneralCommands.js'
+import BotGeneralCommands from './general/GeneralCommands'
 import BotDefaultResponder from './general/DefaultCase'
 
 import TRIGGERS from '../bot_knowledge/triggers/triggers.json'

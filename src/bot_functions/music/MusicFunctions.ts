@@ -22,6 +22,7 @@ export default class BotModuleMusic {
         let bot: Bot = globalThis.bot
         let songState = SongState.Fetching
 
+        let connection = bot.context.member.voice.connection
         let context: string[] =
             bot.context.toString().substring(0, 100).split(' ')
 
@@ -162,7 +163,10 @@ export default class BotModuleMusic {
 
         // Finished
         bot.commandSatisfied = true
-        if (queueMode && songState == SongState.Finished) this.processNextSongRequest()
+        if (queueMode && songState == SongState.Finished) {
+            await bot.playSFX(connection, Audio.SFX.MusicTransition)
+            this.processNextSongRequest()
+        }
     }
 
     static async stopMusic(trigger?: string) {

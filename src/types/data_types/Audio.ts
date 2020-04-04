@@ -26,5 +26,9 @@ export module Audio {
             filePath: `src/bot_knowledge/audio/sfx/music_leave.mp3`,
             name: "music_leave"
         }
+        static MusicTransition: SFX = {
+            filePath: `src/bot_knowledge/audio/sfx/music_transition.mp3`,
+            name: "music_transition"
+        }
     }
 }

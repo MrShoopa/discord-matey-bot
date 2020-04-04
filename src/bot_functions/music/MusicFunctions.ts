@@ -13,7 +13,7 @@ import Soundcloud, { SoundCloudTrack } from "soundcloud.ts"
 
 export default class BotModuleMusic {
 
-    static musicQueue = new QueueHandler<Message>()
+    static queueStore = new Array<MusicQueue>()
 
     static scClient: Soundcloud =
         new Soundcloud(AUTH.soundcloud.client_id, AUTH.soundcloud.o_auth_token)
@@ -165,7 +165,7 @@ export default class BotModuleMusic {
         bot.commandSatisfied = true
         if (queueMode && songState == SongState.Finished) {
             await bot.playSFX(connection, Audio.SFX.MusicTransition)
-            this.processNextSongRequest()
+            return 'next'
         }
     }
 
@@ -324,7 +324,73 @@ export default class BotModuleMusic {
             })
     }
 
-    static addNewSongRequest(trigger?: string) {
+    static addNewSongRequest(trigger: string) {
+        let bot: Bot = globalThis.bot
+        if (bot.context.member.voice.channel) {
+            let queue = this.findQueue()
+
+            if (!queue?.addNewSongRequest(trigger))
+                this.createNewQueue().addNewSongRequest(trigger)
+        } else return bot.context.channel.send(`Join a channel first before adding to a music queue.`)
+    }
+    static processNextSongRequest(skip?: boolean, restart?: boolean, trigger?: string) {
+        let bot: Bot = globalThis.bot
+        if (bot.context.member.voice.channel) {
+            let queue = this.findQueue()
+
+            if (!queue?.processNextSongRequest(skip, restart, trigger))
+                this.createNewQueue().processNextSongRequest(skip, restart, trigger)
+        } else return bot.context.channel.send(`Join a channel first before managing a music queue.`)
+    }
+    static fireQueueNextUpMessage(trigger?: string) {
+        let bot: Bot = globalThis.bot
+        if (bot.context.member.voice.channel) {
+            let queue = this.findQueue()
+
+            if (!queue?.fireQueueNextUpMessage(trigger))
+                this.createNewQueue().fireQueueNextUpMessage(trigger)
+        } else return bot.context.channel.send(`Join a channel first before reading music queues.`)
+    }
+    static fireQueueListMessage(trigger?: string) {
+        let bot: Bot = globalThis.bot
+        if (bot.context.member.voice.channel) {
+            let queue = this.findQueue()
+
+            if (!queue?.fireQueueListMessage(trigger))
+                this.createNewQueue().fireQueueListMessage(trigger)
+        } else return bot.context.channel.send(`Join a channel first before reading music queues.`)
+    }
+
+    static findQueue(userVoice: Discord.VoiceChannel = globalThis.bot.context.member.voice.channel) {
+        let bot: Bot = globalThis.bot
+        let channel = bot.voice.connections.find(c => c.channel == userVoice).channel
+        let queue = this.queueStore.find(q => q.channel == channel)
+
+        return queue
+    }
+
+    static createNewQueue(channel: Discord.VoiceChannel = globalThis.bot.context.member.voice.channel) {
+        let newQueue = new MusicQueue(channel)
+        this.queueStore.push(newQueue)
+        return newQueue
+    }
+
+    static loadClients() {
+        BotModuleMusic.scClient
+    }
+}
+
+class MusicQueue {
+
+    queue: QueueHandler<Message>
+    channel: Discord.VoiceChannel
+
+    constructor(channel: Discord.VoiceChannel) {
+        this.channel = channel
+        this.queue = new QueueHandler<Message>()
+    }
+
+    addNewSongRequest(trigger?: string) {
         let bot: Bot = globalThis.bot
         if (trigger) {
             bot.preliminary(trigger, 'Song Request Enqueue', true)
@@ -335,7 +401,7 @@ export default class BotModuleMusic {
         try {
             bot.context.channel.send(`${bot.context.author.username}, queuing your request.`)
 
-            this.musicQueue.add(bot.context as Message)
+            this.queue.add(bot.context as Message)
         } catch (err) {
             bot.saveBugReport(err, this.addNewSongRequest.name, true)
         }
@@ -343,16 +409,15 @@ export default class BotModuleMusic {
         return true
     }
 
-    static processNextSongRequest(skip?: boolean, restart?: boolean, trigger?: string) {
-        let request = this.musicQueue.dequeue()
+    async processNextSongRequest(skip?: boolean, restart?: boolean, trigger?: string) {
+        let request = this.queue.dequeue()
         let bot: Bot = globalThis.bot
-        if (trigger) bot.preliminary(trigger, 'Song Request Process', true)
+        if (trigger) bot.preliminary(trigger, `Song Request Process for ${this.channel.guild.name}`, true)
 
         if (request === undefined) {
-            console.info(`Music queue list is now empty.`)
+            console.info(`Music queue list for ${this.channel.name} is now empty.`)
             bot.context.channel.send(`📻... *that's all folks*!`)
-            // if (bot.voice.connections.find(bot.context.author.))
-            // this.stopMusic()
+
             return true
         }
 
@@ -364,7 +429,9 @@ export default class BotModuleMusic {
                 bot.context = request
                 bot.voiceChannel = channel
 
-                this.playMusic(request.content.toString(), false, true)
+                if (await BotModuleMusic.playMusic(request.content.toString(), false, true)
+                    == 'next')
+                    this.processNextSongRequest()
             }
             else {
                 request.channel.send(`${request.author.username}'s request is being skipped.`)
@@ -376,11 +443,11 @@ export default class BotModuleMusic {
         return true
     }
 
-    static fireQueueListMessage(trigger?: string) {
+    fireQueueListMessage(trigger?: string) {
         let bot: Bot = globalThis.bot
-        if (trigger) bot.preliminary(trigger, 'Song Request List Inquiry', true)
+        if (trigger) bot.preliminary(trigger, `Song Request List Inquiry for ${this.channel.guild.name}`, true)
 
-        let currentList = this.musicQueue.peekAll()
+        let currentList = this.queue.peekAll()
 
         if (currentList.length === 0)
             return bot.context.channel.send(`The song queue is empty... 🍃`)
@@ -405,11 +472,11 @@ export default class BotModuleMusic {
     }
 
 
-    static fireQueueNextUpMessage(trigger?: string) {
+    fireQueueNextUpMessage(trigger?: string) {
         let bot: Bot = globalThis.bot
         if (trigger) bot.preliminary(trigger, 'Song Next Up Inquiry', true)
 
-        let next = this.musicQueue.peek()
+        let next = this.queue.peek()
 
         if (next === undefined)
             return bot.context.channel.send(`There's nothing next to play. 😶`)
@@ -421,15 +488,11 @@ export default class BotModuleMusic {
             .setTitle(`💿 Next up...`)
             .addFields({ name: next.author.username, value: refactoredRequest })
             .setColor('LUMINOUS_VIVID_PINK')
-            .setFooter(`${this.musicQueue.peekAll().length} request(s) to play...`)
+            .setFooter(`${this.queue.peekAll().length} request(s) to play...`)
 
         bot.context.channel.send(message)
 
         return true
 
-    }
-
-    static loadClients() {
-        BotModuleMusic.scClient
     }
 }

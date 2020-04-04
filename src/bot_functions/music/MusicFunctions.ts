@@ -188,9 +188,9 @@ export default class BotModuleMusic {
                     bot.textChannel.send(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.active))
                     console.log('Bot exited voice channel by user message.')
 
-                    if (this.musicQueue.peek() !== undefined) {
+                    if (this.findQueue().queue.peek()) {
                         bot.textChannel.send(`Jukebox is cleaned out too.`)
-                        this.musicQueue.empty()
+                        this.findQueue().queue.empty()
                     }
                 }
             } catch (error) {
@@ -361,11 +361,8 @@ export default class BotModuleMusic {
         } else return bot.context.channel.send(`Join a channel first before reading music queues.`)
     }
 
-    static findQueue(userVoice: Discord.VoiceChannel = globalThis.bot.context.member.voice.channel) {
-        let bot: Bot = globalThis.bot
-        let channel = bot.voice.connections.find(c => c.channel == userVoice).channel
-        let queue = this.queueStore.find(q => q.channel == channel)
-
+    static findQueue(channel: Discord.VoiceChannel = globalThis.bot.context.member.voice.channel) {
+        let queue = this.queueStore.find(q => q.channel.id == channel?.id)
         return queue
     }
 
@@ -453,7 +450,7 @@ class MusicQueue {
             return bot.context.channel.send(`The song queue is empty... 🍃`)
 
         let message = new Discord.MessageEmbed()
-            .setTitle(`Current Music Queue 💽`)
+            .setTitle(`Music Queue for ${this.channel.name} 💽`)
             .setColor('LUMINOUS_VIVID_PINK')
             .setFooter(`${currentList.length} request(s) to play...`)
 
@@ -485,7 +482,7 @@ class MusicQueue {
             next.content.replace("megadork play", "")
 
         let message = new Discord.MessageEmbed()
-            .setTitle(`💿 Next up...`)
+            .setTitle(`💿 Next up for ${this.channel.name}...`)
             .addFields({ name: next.author.username, value: refactoredRequest })
             .setColor('LUMINOUS_VIVID_PINK')
             .setFooter(`${this.queue.peekAll().length} request(s) to play...`)

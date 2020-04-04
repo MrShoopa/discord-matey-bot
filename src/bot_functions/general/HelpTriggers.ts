@@ -27,7 +27,7 @@ export default class HelpTriggers {
         //  General Help
         for (const category of Object.keys(help_special))
             for (const hotword of help_special[category])
-                if (message.toString().toLowerCase().includes(hotword))
+                if (message.toString().toLowerCase().startsWith(hotword))
                     switch (category) {
                         case 'general':
                             return HelpTriggers.replyForGeneralInfo(message)

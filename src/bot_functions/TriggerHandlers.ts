@@ -326,7 +326,7 @@ export default class TriggerHandlers {
     //  All else comes around
     private static replyGeneralDefault(message: string) {
         for (const trigger of TRIGGERS.main_trigger)
-            if (message.toString().toLowerCase().includes(trigger))
+            if (message.toString().toLowerCase().startsWith(trigger))
                 BotDefaultResponder.generateResponse()
     }
 }

@@ -17,10 +17,12 @@ export default class PostReadyFunctions {
 
         BotLoggerFunctions.instantiateLogFolder()
 
-        if (!globalThis.devMode)
+        if (!globalThis.devMode) {
+            globalThis.bot.user.setUsername("Megadork");
             BotDiscordActivity.updateRandomStatus()
-        else
-            BotDiscordActivity.useDevModeStatus()
+        } else {
+            this.applyDevMode()
+        }
 
         TimelyFunctions.timeContexual()
     }
@@ -43,5 +45,13 @@ export default class PostReadyFunctions {
                 return true
             }
         })
+    }
+
+    static applyDevMode() {
+        let bot: Bot = globalThis.bot
+
+        BotDiscordActivity.useDevModeStatus()
+
+        bot.user.setUsername("~B8tadork");
     }
 }

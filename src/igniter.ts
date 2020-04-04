@@ -44,8 +44,8 @@ bot.on('message', async (message) => {
 
 	try {
 		if (globalThis.devMode) {
-			if (message.toString().startsWith('^&')) {
-				message.content = message.content.substring(2)
+			if (message.toString().startsWith('`')) {
+				message.content = message.content.substring(1)
 				TriggerHandlers.validateMessage(message)
 			}
 		} else TriggerHandlers.validateMessage(message)

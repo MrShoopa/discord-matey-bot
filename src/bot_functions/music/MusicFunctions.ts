@@ -172,29 +172,30 @@ export default class BotModuleMusic {
     static async stopMusic(trigger?: string) {
         let bot: Bot = globalThis.bot
 
+        let connection = bot.voice.connections.find(c => c.channel.id == bot.context.member.voice?.channel.id)
+
         if (trigger) bot.preliminary(trigger, 'Singing Stop', true, true)
 
         if (bot.voiceChannel != null && bot.voice.connections.size !== 0) {
 
             try {
-                if (!bot.voice.connections.some(connection => {
-                    return connection.channel.id == bot.context.member.voice?.channel.id
-                })) "the bottom might annoy some"
+                if (!connection) // "the bottom might annoy some"
+                    return console.log(`Matching voice connection not found`)
                 //.bot.context.reply(`join my voice channel and repeat that action!`)
                 else {
-                    await bot.playSFX(bot.context.member.voice.connection, Audio.SFX.MusicLeave)
+                    await bot.playSFX(connection, Audio.SFX.MusicLeave)
                     bot.context.member.voice.channel.leave()
 
                     bot.textChannel.send(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.active))
                     console.log('Bot exited voice channel by user message.')
 
-                    if (this.findQueue().queue.peek()) {
+                    if (this.findQueue()?.queue.peek()) {
                         bot.textChannel.send(`Jukebox is cleaned out too.`)
                         this.findQueue().queue.empty()
                     }
                 }
             } catch (error) {
-                bot.saveBugReport(error, this.stopMusic.name)
+                bot.saveBugReport(error, this.stopMusic.name, true)
             }
         } else {
             bot.context.reply(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.null))
@@ -409,6 +410,7 @@ class MusicQueue {
     async processNextSongRequest(skip?: boolean, restart?: boolean, trigger?: string) {
         let request = this.queue.dequeue()
         let bot: Bot = globalThis.bot
+        let connection = bot.voice.connections.find(c => c.channel.id == bot.context.member.voice.channel.id)
         if (trigger) bot.preliminary(trigger, `Song Request Process for ${this.channel.guild.name}`, true)
 
         if (request === undefined) {
@@ -420,6 +422,13 @@ class MusicQueue {
 
         try {
             if (!skip) {
+                if (connection)
+                    await bot.playSFX(connection, Audio.SFX.MusicTransition)
+                else {
+                    connection = await bot.context.member.voice.channel.join()
+                    await bot.playSFX(connection, Audio.SFX.MusicJoin)
+                }
+
                 request.channel.send(`${request.author.username}'s song is up next!`)
 
                 let channel = bot.context.member.voice.channel

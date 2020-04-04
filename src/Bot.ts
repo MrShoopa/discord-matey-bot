@@ -147,7 +147,8 @@ export default class Bot extends Discord.Client {
 
             try {
                 let connection = await this.voiceChannel.join().catch(e => { throw e }).then(async c => {
-                    await this.playSFX(c, Datypes.Audio.SFX.MusicJoin)
+                    if (!gapless)
+                        await this.playSFX(c, Datypes.Audio.SFX.MusicJoin)
                     return c
                 })
                 console.groupEnd()

@@ -1,3 +1,4 @@
+import Discord from 'discord.js';
 import Bot from "../../../Bot"
 
 import PHRASES_SERVER_MOD from '../../../bot_knowledge/phrases/phrases_server_mod.json'
@@ -10,10 +11,15 @@ export default class BotModuleRestrictedRole {
         if (trigger) bot.preliminary(trigger, 'Set restricted role', true)
 
         bot.context.mentions.members.forEach(member => {
-            bot.context.reply(
-                `${Bot.fetchRandomPhrase(PHRASES_SERVER_MOD.restricted_role_set)},
-                ${member.displayName}`)
-            member.roles.add(bot.restrictedRoleIds[0])
+            let message = new Discord.MessageEmbed()
+                .setTitle(`${Bot.fetchRandomPhrase(PHRASES_SERVER_MOD.restricted_role_set)}`)
+                .setColor('BLACK')
+                .setDescription(`${bot.context.author.username} has banished ${member.displayName} for inexplicable reasons.`)
+                .setFooter(`Role Enforced: ${bot.restrictedRoleIds[0]}`)
+
+            bot.context.channel.send(message)
+
+            member.roles.set([bot.restrictedRoleIds[0]])
                 .then(() => {
                     console.log(
                         `Adding ${member.displayName} to the role: ${bot.restrictedRoleIds[0]}`)
@@ -32,8 +38,7 @@ export default class BotModuleRestrictedRole {
 
         bot.context.mentions.members.forEach(member => {
             bot.context.reply(
-                `${Bot.fetchRandomPhrase(PHRASES_SERVER_MOD.restricted_role_unset)},
-        ${member.displayName}`)
+                `${Bot.fetchRandomPhrase(PHRASES_SERVER_MOD.restricted_role_unset)} ${member.displayName}`)
             member.roles.remove(bot.restrictedRoleIds[0])
                 .then(() => {
                     console.log(

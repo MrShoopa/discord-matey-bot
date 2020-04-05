@@ -139,6 +139,7 @@
         },
         "queue": {
             "add": [
+                "song list add",
                 "jukebox add",
                 "add song",
                 "enqueue",
@@ -149,18 +150,21 @@
                 "add to music queue"
             ],
             "skip": [
+                "skip next",
                 "skip next song",
                 "avoid next song",
                 "omit next song",
                 "remove next song"
             ],
             "start": [
+                "juke start",
                 "start juke",
                 "start jukebox",
                 "jukebox start",
                 "begin jukebox",
                 "jukebox ignite",
                 "fire jukebox",
+                "fire juke",
                 "start music queue",
                 "music queue start",
                 "begin music queue",
@@ -187,6 +191,10 @@
                     "music queue next up"
                 ],
                 "list": [
+                    "jukebox",
+                    "music list",
+                    "juke",
+                    "juke list",
                     "get jukebox",
                     "get music list",
                     "get juke",
@@ -203,12 +211,16 @@
     "server_mod_triggers": {
         "set_restricted_role": [
             "banish",
-            "cage"
+            "cage",
+            "jail",
+            "unmeme",
+            "throw away"
         ],
         "unset_restricted_role": [
             "unbanish",
             "uncage",
-            "revive"
+            "revive",
+            "bailout"
         ],
         "get_roles": [
             "whats my role",
@@ -735,11 +747,15 @@
         },
         "copypasta": {
             "default": [
+                "copypasta",
+                "fresh copypasta",
+                "top new copypasta",
                 "fetch copypasta",
                 "fetch fresh copypasta",
                 "fetch top new copypasta"
             ],
             "top_of_week": [
+                "weekly copypasta",
                 "fetch this week's copypasta",
                 "get this week's copypasta"
             ]
@@ -816,6 +832,7 @@
         ],
         "OTD": {
             "default": [
+                "quote of the day",
                 "random quote of the day",
                 "fetch quote of the day",
                 "fetch a quote of the day",
@@ -837,6 +854,7 @@
             ]
         },
         "inspirational": [
+            "inspirational quote",
             "fetch inspirational quote",
             "fetch an inspirational quote",
             "get inspirational quote",
@@ -847,6 +865,7 @@
         ],
         "movie": {
             "default": [
+                "movie quote",
                 "random movie quote",
                 "fetch movie quote",
                 "fetch a movie quote",
@@ -873,9 +892,9 @@
             "fetch song lyrics from",
             "fetch song lyrics for",
             "fetch song lyrics of",
-            "fetch get lyrics from",
-            "fetch get lyrics for",
-            "fetch get lyrics of",
+            "get lyrics from",
+            "get lyrics for",
+            "get lyrics of",
             "fetch lyrics about",
             "fetch lyrics from",
             "fetch lyrics for",
@@ -927,7 +946,13 @@
             "fetch covid cases",
             "fetch covid-19 cases",
             "fetch coronavirus",
-            "fetch coronavirus cases"
+            "fetch coronavirus cases",
+            "covid",
+            "covid-19",
+            "covid cases",
+            "covid-19 cases",
+            "coronavirus",
+            "coronavirus cases"
         ],
         "country": [
             "country"

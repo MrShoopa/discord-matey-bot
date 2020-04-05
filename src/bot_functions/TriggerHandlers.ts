@@ -68,7 +68,7 @@ export default class TriggerHandlers {
 
     ]
 
-    public static validateMessage(message: Discord.Message | Discord.PartialMessage) {
+    public static async validateMessage(message: Discord.Message | Discord.PartialMessage) {
         this.bot = globalThis.bot
         this.bot.commandSatisfied = false
 
@@ -84,7 +84,7 @@ export default class TriggerHandlers {
         this.checkForRedoActionRequest()
 
         //  Actual processing
-        this.requestCheck()
+        await this.requestCheck()
         this.chatterCheck()
 
         if (this.bot.commandSatisfied === false)
@@ -112,12 +112,12 @@ export default class TriggerHandlers {
         this.checkForSwearWord()
     }
 
-    private static requestCheck(message = TriggerHandlers.message) {
+    private static async requestCheck(message = TriggerHandlers.message) {
         for (var hotword of TRIGGERS.main_trigger)
             if (message.toString().toLowerCase().startsWith(hotword)) {
                 message.content = message.content.replace(hotword, '').trim()
                 for (var check of this.functions)
-                    if (check()) return this.bot.commandSatisfied = true
+                    if (await check()) return this.bot.commandSatisfied = true
             }
     }
 
@@ -184,10 +184,10 @@ export default class TriggerHandlers {
             if (message.toString().substring(0).toLowerCase().includes(trigger))
                 return BotModuleMusic.processNextSongRequest(false, true, trigger)
     }
-    private static checkForMusicQueueSkipRequest(message = TriggerHandlers.message) {
+    private static async checkForMusicQueueSkipRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.singing_triggers.queue.play_next)
             if (message.toString().substring(0).toLowerCase().includes(trigger))
-                return BotModuleMusic.processNextSongRequest(false, false, trigger)
+                return await BotModuleMusic.processNextSongRequest(false, false, trigger)
     }
     private static checkForMusicQueueAvoidNextRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.singing_triggers.queue.skip)

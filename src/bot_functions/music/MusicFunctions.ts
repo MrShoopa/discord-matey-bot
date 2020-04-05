@@ -64,7 +64,7 @@ export default class BotModuleMusic {
 
             if (platform) {
 
-                requestedQuery = context.slice(index + 1).join(' ')
+                requestedQuery = context.slice(index).join(' ')
 
                 switch (platform) {
                     case 'yt':
@@ -331,7 +331,7 @@ export default class BotModuleMusic {
             let queue = this.findQueue()
 
             if (!queue?.addNewSongRequest(trigger))
-                this.createNewQueue().addNewSongRequest(trigger)
+                return this.createNewQueue().addNewSongRequest(trigger)
         } else return bot.context.channel.send(`Join a channel first before adding to a music queue.`)
     }
     static processNextSongRequest(skip?: boolean, restart?: boolean, trigger?: string) {
@@ -340,7 +340,7 @@ export default class BotModuleMusic {
             let queue = this.findQueue()
 
             if (!queue?.processNextSongRequest(skip, restart, trigger))
-                this.createNewQueue().processNextSongRequest(skip, restart, trigger)
+                return this.createNewQueue().processNextSongRequest(skip, restart, trigger)
         } else return bot.context.channel.send(`Join a channel first before managing a music queue.`)
     }
     static fireQueueNextUpMessage(trigger?: string) {
@@ -349,7 +349,7 @@ export default class BotModuleMusic {
             let queue = this.findQueue()
 
             if (!queue?.fireQueueNextUpMessage(trigger))
-                this.createNewQueue().fireQueueNextUpMessage(trigger)
+                return this.createNewQueue().fireQueueNextUpMessage(trigger)
         } else return bot.context.channel.send(`Join a channel first before reading music queues.`)
     }
     static fireQueueListMessage(trigger?: string) {
@@ -358,7 +358,7 @@ export default class BotModuleMusic {
             let queue = this.findQueue()
 
             if (!queue?.fireQueueListMessage(trigger))
-                this.createNewQueue().fireQueueListMessage(trigger)
+                return this.createNewQueue().fireQueueListMessage(trigger)
         } else return bot.context.channel.send(`Join a channel first before reading music queues.`)
     }
 

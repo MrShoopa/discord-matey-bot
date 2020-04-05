@@ -46,9 +46,9 @@ bot.on('message', async (message) => {
 		if (globalThis.devMode) {
 			if (message.toString().startsWith('`')) {
 				message.content = message.content.substring(1)
-				TriggerHandlers.validateMessage(message)
+				await TriggerHandlers.validateMessage(message)
 			}
-		} else TriggerHandlers.validateMessage(message)
+		} else await TriggerHandlers.validateMessage(message)
 	} catch (e) {
 		bot.saveBugReport(e, 'on message event', true)
 	}
@@ -75,3 +75,5 @@ bot.on('error', error => {
 	//  Re-login
 	bot = new Bot()
 })
+
+process.on('SIGINT', () => { console.log("Bye bye!"); process.exit(); });

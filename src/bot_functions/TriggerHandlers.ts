@@ -100,7 +100,8 @@ export default class TriggerHandlers {
                 return true
             else {
                 this.message =
-                    new Discord.Message(this.bot, { content: messageString.substring(7) }, this.bot.context.channel)
+                    new Discord.Message(this.bot, { content: messageString.substring(7) },
+                        this.bot.context.channel as Discord.TextChannel | Discord.DMChannel)
                 this.bot.waker = this.bot.lastWaker
                 return false
             }
@@ -126,9 +127,11 @@ export default class TriggerHandlers {
     }
 
     private static checkForRedoActionRequest(message = TriggerHandlers.message) {
-        for (const trigger of TRIGGERS.redo_trigger)
-            if (message.toString().toLowerCase().includes(trigger))
-                return BotGeneralCommands.redoLastAction(trigger)
+        for (const mainTrig of TRIGGERS.main_trigger)
+            if (message.toString().toLowerCase().startsWith(mainTrig))
+                for (const trigger of TRIGGERS.redo_trigger)
+                    if (message.toString().toLowerCase().includes(trigger))
+                        return BotGeneralCommands.redoLastAction(trigger)
         //  Redo last command
     }
 

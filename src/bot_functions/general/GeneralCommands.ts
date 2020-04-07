@@ -14,7 +14,7 @@ export default class BotGeneralCommands {
             bot.lastMessage =
                 new Discord.Message(bot,
                     { content: bot.lastMessage.toString().substring(8) },
-                    bot.context.channel)
+                    bot.context.channel as Discord.TextChannel | Discord.DMChannel)
         }
 
         return bot.context.channel.send('redoin, ' + bot.lastMessage.toString())

@@ -24,7 +24,8 @@ export default class BotModuleAnime {
 
         if (anime === undefined)
             return new Discord.Message(bot.user.client,
-                { content: "I couldn't fetch swag info of your animoo at the moment." }, bot.context.channel)
+                { content: "I couldn't fetch swag info of your animoo at the moment." },
+                bot.context.channel as Discord.TextChannel | Discord.DMChannel)
 
         return BotModuleAnime.generateAnimeInfoMessage(anime)
     }

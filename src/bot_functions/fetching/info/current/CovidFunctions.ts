@@ -33,7 +33,7 @@ export default class BotModuleCovid {
                 break
             }
 
-        bot.context.channel.send(message)
+        return bot.context.channel.send(message)
     }
 
     static async fetchBuiltCovidInfoMessage(country?: string, state?: string):
@@ -66,7 +66,8 @@ export default class BotModuleCovid {
 
         if (data === undefined)
             return new Discord.Message(bot.user.client,
-                { content: "Couldn't fetch cases for your location." }, bot.context.channel)
+                { content: "Couldn't fetch cases for your location." },
+                bot.context.channel as Discord.TextChannel | Discord.DMChannel)
 
         return BotModuleCovid.generateCovidInfoMessage(data)
     }

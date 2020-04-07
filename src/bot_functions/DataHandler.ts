@@ -23,7 +23,7 @@ const SAVE_DATA_FILE = `${SAVE_DATA}/user_data.json`
 /*  -----  */
 export default class BotData {
 
-	static get bot(): Bot { return globalThis.bot }
+	static bot: Bot = globalThis.bot
 
 	//  User Data
 	static getUserDataFile(log?: boolean) {
@@ -105,11 +105,11 @@ export default class BotData {
 	static createNewDataFile(fetch?: boolean, force?: boolean) {
 		let dataSkeleton: Data.UserSave = { _id: '42069', sampleData: "Mega!" }
 
-		if (!force &&
-			JSON.parse(FileSystem.readFileSync(SAVE_DATA_FILE).toString()))
-			return console.log('Data already exists.')
-
 		try {
+			if (!force &&
+				JSON.parse(FileSystem.readFileSync(SAVE_DATA_FILE)?.toString()))
+				return console.log('Data already exists.')
+
 			FileSystem.writeFileSync(SAVE_DATA_FILE, JSON.stringify(dataSkeleton))
 
 			if (fetch) return this.getUserDataFile()
@@ -117,10 +117,10 @@ export default class BotData {
 		} catch (err) {
 			//  If folder is missing
 			if (err.code === 'ENOENT') {
-				FileSystem.mkdirSync(SAVE_DATA_FILE, { recursive: true })
+				FileSystem.appendFileSync(SAVE_DATA_FILE, { recursive: true })
 			} else {
 				console.error('Error creating new save file.')
-				this.bot.saveBugReport(err)
+				// this.bot.saveBugReport(err)
 			}
 		}
 	}

@@ -52,7 +52,7 @@ export default class Bot extends Discord.Client {
     commandSatisfied: boolean | string
     songState: SongState
     overrideContext: boolean
-
+    
     get context() { return this._context }
     set context(value: Discord.Message | Discord.PartialMessage) {
         if (this.user.id !== value.author.id || this.overrideContext) {
@@ -65,7 +65,7 @@ export default class Bot extends Discord.Client {
         }
 
         this.waker = value.author
-        this.textChannel = value.channel
+        this.textChannel = value.channel as Discord.TextChannel | Discord.DMChannel
 
         if (this.voiceChannel === null &&
             this.waker.id === this.user.id)
@@ -556,7 +556,7 @@ export default class Bot extends Discord.Client {
         let built = new Discord.Message(this,
             {
                 content: "Unfortunately, I couldn't perform that action at the moment."
-            }, this.context.channel)
+            }, this.context.channel as Discord.TextChannel | Discord.DMChannel)
 
         if (message)
             built.content = message

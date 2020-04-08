@@ -23,7 +23,7 @@ const SAVE_DATA_FILE = `${SAVE_DATA}/user_data.json`
 /*  -----  */
 export default class BotData {
 
-	static bot: Bot = globalThis.bot
+	static get bot(): Bot { return globalThis.bot }
 
 	//  User Data
 	static getUserDataFile(log?: boolean) {
@@ -70,12 +70,13 @@ export default class BotData {
 			})
 		} catch (err) {
 			this.bot.saveBugReport(err)
-			throw new ReferenceError(`Couldn't attempt to find user's data.`)
+			console.log(`Couldn't find user ${id}'s data.`)
+			userData === undefined
 		}
 
 		if (userData === undefined) {
-			console.log(`User data for ${id} not found.`)
 			if (createIfMissing) return this.createUserData(id)
+			else return null
 		} else {
 			console.log(`User data for ${id} accessed!`)
 			return userData
@@ -117,7 +118,7 @@ export default class BotData {
 			}
 
 		try {
-			FileSystem.writeFileSync(SAVE_DATA_FILE, JSON.stringify(dataSkeleton))
+			FileSystem.writeFileSync(SAVE_DATA_FILE, `[${JSON.stringify(dataSkeleton)}]`)
 
 			if (fetch) return this.getUserDataFile()
 			console.log(`New User Data save file created.\n`)
@@ -145,9 +146,7 @@ export default class BotData {
 		var data = this.getUserDataFile()
 
 		//  Find user...
-		let userData: Data.UserSave = data.find((matchedUser: {
-			_id: string
-		}) => {
+		let userData: Data.UserSave = data.find((matchedUser: any) => {
 			return matchedUser._id == id
 		})
 

@@ -105,6 +105,14 @@ export default class BotData {
 	static createNewDataFile(fetch?: boolean, force?: boolean) {
 		let dataSkeleton: Data.UserSave = { _id: '42069', sampleData: "Mega!" }
 
+		if (!force)
+			try {
+				JSON.parse(FileSystem.readFileSync(SAVE_DATA_FILE).toString())
+				return console.log('Data already exists.')
+			} catch (error) {
+				console.log('Creating new user data...')
+			}
+
 		try {
 			if (!force &&
 				JSON.parse(FileSystem.readFileSync(SAVE_DATA_FILE)?.toString()))
@@ -120,7 +128,7 @@ export default class BotData {
 				FileSystem.appendFileSync(SAVE_DATA_FILE, { recursive: true })
 			} else {
 				console.error('Error creating new save file.')
-				// this.bot.saveBugReport(err)
+				console.error(err)
 			}
 		}
 	}

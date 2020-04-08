@@ -30,7 +30,7 @@ export default class BotTimeKeeper {
         } catch (err) {
             let bot: Bot = globalThis.bot
             if (err.code === 'ENOENT') {
-                console.info('Time keeping file is missing. Creating new one...')
+                console.info('Time keeping file is missing! Creating new one...')
                 try {
                     return this.createNewDataFile(true, true)
                 } catch (err) {

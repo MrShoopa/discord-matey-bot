@@ -83,7 +83,7 @@ export default class BotLoggerFunctions {
                     if (folderError)
                         console.error(`Error creating log folder: \n\t ${folderError}`)
                     else
-                        console.error(`Created log folder for first time.`)
+                        console.error(`Logs folder is missing! Created new folder.`)
                 })
         })
     }

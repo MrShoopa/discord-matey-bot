@@ -1,13 +1,13 @@
 {
     "name": "discord-matey-bot",
-    "version": "0.6.0",
+    "version": "0.9.0",
     "description": "MrShoopa's Lil' Discord Bot",
     "author": "MrShoopa",
     "license": "ISC",
     "main": "igniter.ts",
     "scripts": {
-        "start": "ts-node src/igniter.ts",
-        "dev:debug": "nodemon --inspect src/igniter.ts",
+        "start": "ts-node ./src/igniter.ts",
+        "dev:debug": "nodemon --inspect=6976 ./src/igniter.ts",
         "test": "mocha -r ts-node/register tests/**/*.test.ts",
         "coverage": "nyc -r lcov -e .ts -x \"*.test.ts\" npm run test"
     },
@@ -20,7 +20,7 @@
     "dependencies": {
         "@discordjs/opus": "^0.1.0",
         "@types/google-images": "^2.1.0",
-        "@types/node": "^13.9.1",
+        "@types/node": "^13.11.0",
         "@types/node-fetch": "^2.5.5",
         "@types/request": "^2.48.4",
         "@types/snekfetch": "^4.0.2",
@@ -29,7 +29,7 @@
         "erwar-yoda": "^1.0.10",
         "eslint": "^6.8.0",
         "ffmpeg": "0.0.4",
-        "fs-extra": "^8.1.0",
+        "fs-extra": "^9.0.0",
         "genius-lyrics": "^1.0.9",
         "google-images": "^2.1.0",
         "horoscope": "^2.0.1",
@@ -43,22 +43,25 @@
         "parse-time": "^0.1.4",
         "request": "^2.88.2",
         "snekfetch": "^4.0.4",
-        "soundcloud.ts": "0.1.8",
+        "soundcloud.ts": "0.2.1",
+        "ts-node": "8.8.2",
         "twitter": "^1.7.1",
+        "typescript": "^3.8.3",
         "winston": "^3.2.1",
-        "wow-lexicon": "0.0.1",
+        "wow-lexicon": "0.0.3",
         "youtube-api": "^2.0.10",
         "youtube-search": "^1.1.4",
-        "ytdl-core": "^2.0.0"
+        "ytdl-core": "^2.0.1"
     },
     "devDependencies": {
         "@types/chai": "^4.2.11",
         "@types/fs-extra": "^8.1.0",
         "@types/mocha": "^7.0.2",
         "chai": "^4.2.0",
-        "mocha": "^7.1.0",
-        "nyc": "^15.0.0",
-        "ts-node": "^8.6.2",
+        "mocha": "^7.1.1",
+        "nyc": "^15.0.1",
+        "ts-node": "8.8.2",
+        "tsc-watch": "^4.2.3",
         "ttypescript": "^1.5.10",
         "typescript": "^3.8.3"
     }

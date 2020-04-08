@@ -2,6 +2,8 @@ import Discord from 'discord.js'
 import Bot from "../../Bot"
 
 import AUTH from '../../user_creds.json'
+
+import { redo_trigger } from '../../bot_knowledge/triggers/triggers.json'
 export default class BotGeneralCommands {
 
     static redoLastAction(trigger: string) {
@@ -10,11 +12,15 @@ export default class BotGeneralCommands {
 
         if (bot.lastMessage === null)
             return bot.context.channel.send(`I haven't done anything yet though!`)
-        else if (bot.lastMessage.toString().startsWith('redoin, ')) {
+        else if (bot.lastMessage.toString().startsWith('redoin,')) {
             bot.lastMessage =
                 new Discord.Message(bot,
                     { content: bot.lastMessage.toString().substring(8) },
                     bot.context.channel as Discord.TextChannel | Discord.DMChannel)
+        } else {
+            for (const trig of redo_trigger)
+                if (bot.lastMessage.content.substring(1).includes(trig))
+                    return bot.context.channel.send(`I can't redo a redo 🥴`)
         }
 
         return bot.context.channel.send('redoin, ' + bot.lastMessage.toString())

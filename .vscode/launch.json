@@ -11,14 +11,17 @@
 			"outFiles": [
 				"${workspaceFolder}/built/**/*.js"
 			],
-		}, {
+		},
+		{
 			"type": "node",
 			"request": "launch",
 			"name": "Build and Run - DEV MODE",
+			"timeout": 30000,
+			"preLaunchTask": "Build - Dev (Watch)",
+			"runtimeExecutable": "nodemon",
 			"program": "${workspaceFolder}\\src\\igniter.ts",
-			"preLaunchTask": "Build - Dev",
 			"showAsyncStacks": true,
-			"args": ["dev-mode"],
+			"restart": true,
 			"outFiles": [
 				"${workspaceFolder}/built_dev/**/*.js"
 			],
@@ -46,13 +49,6 @@
 			],
 			"console": "integratedTerminal",
 			"sourceMaps": true,
-		}, {
-			"type": "node",
-			"request": "attach",
-			"name": "Node: Nodemon",
-			"processId": "${command:PickProcess}",
-			"restart": true,
-			"protocol": "inspector"
 		}
 	]
 }

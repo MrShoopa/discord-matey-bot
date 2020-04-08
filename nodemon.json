@@ -1,7 +1,13 @@
 {
-    "watch": [
-        "src"
+    "ignore": [
+        "**/*.test.ts",
+        "**/*.spec.ts",
+        ".git",
+        "node_modules"
     ],
-    "ext": "ts",
-    "exec": "ts-node ./src/igniter.ts"
+    "watch": [
+        "./src"
+    ],
+    "exec": "npm start",
+    "ext": "ts"
 }

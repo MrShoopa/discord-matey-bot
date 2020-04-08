@@ -343,8 +343,10 @@ export default class Bot extends Discord.Client {
                     return stream
                 } catch (error) {
                     let bot: Bot = globalThis.bot
-                    if (error.message.includes('Video id'))
+                    if (error.message.includes('video id'))
                         bot.context.reply(`this YouTube link isn't valid...`)
+                    else if (error.message.includes('No'))
+                        bot.context.reply(`unfortunately this YouTube video is unavailable to play. Damn copyrights.`)
                     else if (error.message.includes('unavailable'))
                         bot.context.reply(`unfortunately this YouTube video is unavailable to play. Damn copyrights.`)
                     else
@@ -403,7 +405,7 @@ export default class Bot extends Discord.Client {
             let bot: Bot = globalThis.bot
 
             stream = await createStreamObject()
-            if (!stream) return null
+            if (!stream) return SongState.Unknown
 
             try {
 

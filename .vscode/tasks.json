@@ -10,16 +10,29 @@
             "problemMatcher": [
                 "$tsc"
             ],
-            "group": "build",
+            "group": "build"
         },
         {
-            "label": "Build - Dev",
+            "label": "Build - Dev (Watch)",
             "detail": "Create a new build of the project as is, with a stricter hotword for testing.",
             "type": "shell",
-            "command": "tsc --outDir ./built_dev",
-            "problemMatcher": [
-                "$tsc"
-            ],
+            "isBackground": true,
+            "command": "tsc-watch --outDir ./built_dev",
+            "problemMatcher": [{
+                "owner": "typescript",
+                "fileLocation": "relative",
+                "pattern": [{
+                    "regexp": ".",
+                    "file": 1,
+                    "location": 2,
+                    "message": 3
+                }],
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "Starting incremental compilation...",
+                    "endsPattern": "Watching for file changes.",
+                }
+            }],
             "group": "build"
         },
         {
@@ -27,7 +40,23 @@
             "detail": "Duplicate the current built bot project into a fallback folder",
             "type": "shell",
             "command": "Copy-item -Force -Recurse \"${workspaceFolder}\\built\\*\" -Destination \"${workspaceFolder}\\built_fallback\"",
-            "args": [],
+            "args": []
+        },
+        {
+            "label": "Create Deployable Build",
+            "detail": "Create a deployable build",
+            "type": "shell",
+            "command": "Copy-item -Force -Path (Get-Item -Path \"${workspaceFolder}\\*\" -Exclude ('.vscode','built', 'built_dev', 'cache', 'logs', 'node_modules', 'save_data', '~deploy')).FullName -Destination \"${workspaceFolder}\\~deploy\\app\\ -Container -Recurse",
+            "args": []
+        },
+        {
+            "type": "typescript",
+            "tsconfig": "tsconfig.json",
+            "option": "watch",
+            "problemMatcher": [
+                "$tsc-watch"
+            ],
+            "group": "build"
         }
     ]
 }

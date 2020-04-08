@@ -76,18 +76,14 @@ export default class BotModuleCovid {
         let message = new Discord.MessageEmbed()
             .setColor('RED')
             .setTitle(`Coronavirus Cases for ${data.location}`)
-            .addFields(
-                { name: 'Active Cases', value: `${data.active}`, inline: true },
-                { name: 'Recovered', value: `${data.recovered}`, inline: true },
-                { name: 'Total Cases', value: `${data.cases}`, inline: true },
-                { name: 'Deaths', value: `${data.deaths}`, inline: true }
-            )
             .setTimestamp(new Date(data.updated))
 
-        if (data.todayCases)
-            message.addFields(
-                { name: 'New Cases Today', value: `${data.todayCases}`, inline: true },
-                { name: 'New Deaths Today', value: `${data.todayDeaths}`, inline: true })
+        if (data.active) message.addFields({ name: 'Active Cases', value: `${data.active}`, inline: true })
+        if (data.recovered) message.addFields({ name: 'Recovered', value: `${data.recovered}`, inline: true })
+        if (data.cases) message.addFields({ name: 'Total Cases', value: `${data.cases}`, inline: true })
+        if (data.deaths) message.addFields({ name: 'Deaths', value: `${data.deaths}`, inline: true })
+        if (data.todayCases) message.addFields({ name: 'New Cases Today', value: `${data.todayCases}`, inline: true })
+        if (data.todayDeaths) message.addFields({ name: 'New Deaths Today', value: `${data.todayDeaths}`, inline: true })
 
         return message
     }

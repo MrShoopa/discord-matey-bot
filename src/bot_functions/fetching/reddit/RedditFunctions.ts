@@ -69,7 +69,7 @@ export default class BotModuleReddit {
 
                 delivery.setDescription(text)
 
-                text = pasta.match(/(?!&amp#x200B)[\s\S]{1,2000}/g)
+                text = text.match(/(?!&amp#x200B)[\s\S]{1,2000}/g)
 
                 text.forEach((chunk: any) => {
                     bot.textChannel.send(chunk)

@@ -100,7 +100,7 @@ export default class TriggerHandlers {
                 return true
             else {
                 this.message =
-                    new Discord.Message(this.bot, { content: messageString.substring(7) },
+                    new Discord.Message(this.bot, { content: messageString.substring(7).trim() },
                         this.bot.context.channel as Discord.TextChannel | Discord.DMChannel)
                 this.bot.waker = this.bot.lastWaker
                 return false
@@ -148,14 +148,14 @@ export default class TriggerHandlers {
 
     private static checkForBirthdayAppendRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.remember.birthday.self)
-            if (message.toString().toLowerCase().includes(trigger))
+            if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleBirthday.assignBirthdaySelf(trigger)
         //  Add birthday reminder!
     }
 
     private static checkForBirthdayInquiryRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.remember.birthday.inquire)
-            if (message.toString().toLowerCase().includes(trigger))
+            if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleBirthday.inquireBirthdaySelf()
     }
 
@@ -163,7 +163,7 @@ export default class TriggerHandlers {
 
     private static checkForMusicPlaybackRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.singing_triggers.play)
-            if (message.toString().substring(0, 15).toLowerCase().includes(trigger))
+            if (message.toString().substring(0, 15).toLowerCase().startsWith(trigger))
                 return BotModuleMusic.playMusic(trigger)
         //  Attempt to play song based on given info
     }
@@ -171,7 +171,7 @@ export default class TriggerHandlers {
     private static checkForMusicStopRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.singing_triggers.stop)
             if (!TriggerHandlers.bot.commandSatisfied) {
-                if (message.toString().substring(0, 25).toLowerCase().includes(trigger)) {
+                if (message.toString().substring(0, 25).toLowerCase().startsWith(trigger)) {
                     return BotModuleMusic.stopMusic(trigger)
                 }
             } else return
@@ -179,32 +179,32 @@ export default class TriggerHandlers {
 
     private static checkForMusicQueueAddRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.singing_triggers.queue.add)
-            if (message.toString().substring(0).toLowerCase().includes(trigger))
+            if (message.toString().substring(0).toLowerCase().startsWith(trigger))
                 return BotModuleMusic.addNewSongRequest(trigger)
     }
     private static checkForMusicQueueStartRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.singing_triggers.queue.start)
-            if (message.toString().substring(0).toLowerCase().includes(trigger))
+            if (message.toString().substring(0).toLowerCase().startsWith(trigger))
                 return BotModuleMusic.processNextSongRequest(false, true, trigger)
     }
     private static async checkForMusicQueueSkipRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.singing_triggers.queue.play_next)
-            if (message.toString().substring(0).toLowerCase().includes(trigger))
+            if (message.toString().substring(0).toLowerCase().startsWith(trigger))
                 return await BotModuleMusic.processNextSongRequest(false, false, trigger)
     }
     private static checkForMusicQueueAvoidNextRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.singing_triggers.queue.skip)
-            if (message.toString().substring(0).toLowerCase().includes(trigger))
+            if (message.toString().substring(0).toLowerCase().startsWith(trigger))
                 return BotModuleMusic.processNextSongRequest(true, false, trigger)
     }
     private static checkForMusicQueueInquireNextRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.singing_triggers.queue.inquire.next)
-            if (message.toString().substring(0).toLowerCase().includes(trigger))
+            if (message.toString().substring(0).toLowerCase().startsWith(trigger))
                 return BotModuleMusic.fireQueueNextUpMessage(trigger)
     }
     private static checkForMusicQueueInquireListRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.singing_triggers.queue.inquire.list)
-            if (message.toString().substring(0).toLowerCase().includes(trigger))
+            if (message.toString().substring(0).toLowerCase().startsWith(trigger))
                 return BotModuleMusic.fireQueueListMessage(trigger)
     }
 
@@ -213,7 +213,7 @@ export default class TriggerHandlers {
 
     private static checkForImageFetchRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.image_search_triggers.random_image)
-            if (message.toString().toLowerCase().includes(trigger))
+            if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleGoogleImage.fireImageMessageFromGoogle(trigger)
     }
 
@@ -221,7 +221,7 @@ export default class TriggerHandlers {
 
     private static checkForTranslationRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.translate.hotword_default)
-            if (message.toString().toLowerCase().includes(trigger))
+            if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleTranslation.processTranslationRequest(TriggerHandlers.bot.context)
         //  Find random image (from Google Images)
     }
@@ -231,55 +231,55 @@ export default class TriggerHandlers {
     private static checkForRedditFetchRequest(message = TriggerHandlers.message) {
         for (const baseTrigger of TRIGGERS.reddit_fetch.default)
             for (const trigger of TRIGGERS.reddit_fetch.query_type.post)
-                if (message.toString().toLowerCase().includes(`${baseTrigger} ${trigger}`))
+                if (message.toString().toLowerCase().startsWith(`${baseTrigger} ${trigger}`))
                     return BotModuleReddit.fireRedditSubmissionMessage(`${baseTrigger} ${trigger}`)
         //  Get copypasta post [from Reddit]
 
         for (const trigger of TRIGGERS.reddit_fetch.copypasta.default)
-            if (message.toString().toLowerCase().includes(trigger))
+            if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleReddit.fireCopypastaFetch(trigger)
         //  Get copypasta post [from Reddit]
     }
 
     private static checkForTwitterFetchRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.twitter_fetch.tweet.query)
-            if (message.toString().toLowerCase().includes(trigger))
+            if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleTwitter.fireTweetMessageOfQuery(message.toString(), trigger)
         //  Get latest Tweet with specific query [from Twitter]
 
         for (const trigger of TRIGGERS.twitter_fetch.tweet.user_latest)
-            if (message.toString().toLowerCase().includes(trigger))
+            if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleTwitter.fireTweetMessageFromUser(message.toString(), trigger)
         //  Get latest Tweet from specific user
     }
 
     private static checkForMALFetchRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.anime_fetch.default)
-            if (message.toString().toLowerCase().includes(trigger))
+            if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleAnime.fireAnimeInfoMessageOfName(trigger)
         //  Get anime recommendation [from My Anime List (JikanTS)]
     }
 
     private static checkForQuoteFetchRequest(message = TriggerHandlers.message) {
-        if (message.toString().toLowerCase().includes('quote'))
+        if (message.toString().toLowerCase().startsWith('quote'))
             return BotModuleQuote.fireQuoteMessage()
     }
 
     private static checkForLyricFetchRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.lyric_fetch.default)
-            if (message.toString().toLowerCase().includes(trigger))
+            if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleLyric.fireLyricMatchMessage(trigger)
     }
 
     private static checkForLyricSingRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.lyric_sing.default)
-            if (message.toString().toLowerCase().includes(trigger))
+            if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleLyric.singSongInChat(message.toString(), trigger)
     }
 
     private static checkForCovidInfoRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.covid.default)
-            if (message.toString().toLowerCase().includes(trigger))
+            if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleCovid.fireCovidInfoMessage(trigger)
     }
 
@@ -287,14 +287,14 @@ export default class TriggerHandlers {
 
     private static checkForRestrictedRoleAssignRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.server_mod_triggers.set_restricted_role)
-            if (message.toString().toLowerCase().includes(trigger))
+            if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleRestrictedRole.assignToRestrictedRole(trigger)
         //  Set Restricted Role        
     }
 
     private static checkForRestrictedRoleUnassignRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.server_mod_triggers.unset_restricted_role)
-            if (message.toString().toLowerCase().includes(trigger))
+            if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleRestrictedRole.unassignFromRestrictedRole(trigger)
         //  Unset Restricted Role
     }
@@ -303,7 +303,7 @@ export default class TriggerHandlers {
 
     private static checkForDiceRollRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.dice_roll)
-            if (message.toString().toLowerCase().includes(trigger))
+            if (message.toString().toLowerCase().startsWith(trigger))
                 if (/\d/.test(message.toString())) {
                     let number = parseInt((message.toString().match(/\d+/g)).pop())
                     return BotModuleFun.rollDice(number, trigger)
@@ -313,7 +313,7 @@ export default class TriggerHandlers {
 
     private static checkFor8BallRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.magic_ball)
-            if (message.toString().toLowerCase().includes(trigger))
+            if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleFun.eightBall(null, trigger)
         //  Get anime recommendation [from My Anime List (JikanTS)]
     }
@@ -321,7 +321,7 @@ export default class TriggerHandlers {
     /* ----  Admin-only functions --- */
     private static checkForBotKillRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.kill_trigger)
-            if (message.toString().toLowerCase().includes(trigger))
+            if (message.toString().toLowerCase().startsWith(trigger))
                 return BotGeneralCommands.killBot(true, trigger)
         //  Redo last command
     }

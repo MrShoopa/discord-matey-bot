@@ -80,7 +80,7 @@ export default class BotModuleGoogleSearch {
         //  Random generated (from defaults list) query if user doesn't specify specific item
         if (userQuery == '') {
             console.log(`Performing generic image search.`)
-            userQuery = DEFAULTS_GOOGLE.random_query[Math.floor(Math.random() * DEFAULTS_GOOGLE.random_query.length)]
+            //TODO userQuery = DEFAULTS_GOOGLE.random_query[Math.floor(Math.random() * DEFAULTS_GOOGLE.random_query.length)]
         }
 
         console.log(`Performing image search for ${userQuery}.`)
@@ -98,7 +98,7 @@ export default class BotModuleGoogleSearch {
                 }
             }).catch(error => {
                 //  The other cases
-                bot.saveBugReport(error, this.fetchImageFromGoogle.name, true)
+                //TODO bot.saveBugReport(error, this.fetchImageFromGoogle.name, true)
 
                 bot.textChannel.send(
                     'Couldn\'t find image! Let Joe know to find the error.')

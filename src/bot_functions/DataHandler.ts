@@ -37,7 +37,10 @@ export default class BotData {
 				try {
 					return this.createNewDataFile(true, true)
 				} catch (err) {
-					this.bot.saveBugReport(err, this.getUserDataFile.name, true)
+					if (this.bot)
+						this.bot.saveBugReport(err, this.getUserDataFile.name, true)
+					else
+						console.error(err)
 				}
 				return null
 			}
@@ -114,10 +117,6 @@ export default class BotData {
 			}
 
 		try {
-			if (!force &&
-				JSON.parse(FileSystem.readFileSync(SAVE_DATA_FILE)?.toString()))
-				return console.log('Data already exists.')
-
 			FileSystem.writeFileSync(SAVE_DATA_FILE, JSON.stringify(dataSkeleton))
 
 			if (fetch) return this.getUserDataFile()
@@ -125,6 +124,7 @@ export default class BotData {
 		} catch (err) {
 			//  If folder is missing
 			if (err.code === 'ENOENT') {
+				FileSystem.mkdirSync(SAVE_DATA, { recursive: true })
 				FileSystem.appendFileSync(SAVE_DATA_FILE, { recursive: true })
 			} else {
 				console.error('Error creating new save file.')

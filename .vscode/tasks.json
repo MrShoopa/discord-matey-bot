@@ -10,7 +10,7 @@
             "problemMatcher": [
                 "$tsc"
             ],
-            "group": "build"
+            "group": "build",
         },
         {
             "label": "Build - Dev (Watch)",
@@ -44,10 +44,14 @@
         },
         {
             "label": "Create Deployable Build",
-            "detail": "Create a deployable build",
+            "detail": "Compile JavaScript code for deployment.",
             "type": "shell",
-            "command": "Copy-item -Force -Path (Get-Item -Path \"${workspaceFolder}\\*\" -Exclude ('.vscode','built', 'built_dev', 'cache', 'logs', 'node_modules', 'save_data', '~deploy')).FullName -Destination \"${workspaceFolder}\\~deploy\\app\\ -Container -Recurse",
-            "args": []
+            "command": "tsc-watch --outDir ./~deploy/app",
+            "args": [],
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "group": "build"
         },
         {
             "type": "typescript",

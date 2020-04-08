@@ -73,7 +73,7 @@ export default class BotTimeKeeper {
         } catch (err) {
             //  If folder is missing
             if (err.code === 'ENOENT') {
-                FileSystem.mkdirSync(TIME_DATA_FILE, { recursive: true })
+                FileSystem.mkdirSync(SAVE_DATA, { recursive: true })
             } else {
                 let bot: Bot = globalThis.bot
 

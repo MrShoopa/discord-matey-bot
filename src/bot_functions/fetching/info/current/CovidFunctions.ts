@@ -3,8 +3,9 @@ import Bot from '../../../../Bot'
 
 import { covid } from '../../../../bot_knowledge/triggers/triggers.json'
 
-import Covid from 'novelcovid'
-import { resolve } from 'dns'
+import { NovelCovid, State } from 'novelcovid'
+
+let Covid = new NovelCovid()
 
 export default class BotModuleCovid {
     static async fireCovidInfoMessage(trigger: string) {
@@ -45,19 +46,22 @@ export default class BotModuleCovid {
         try {
 
             if (state) {
-                data = await Covid.getState({ state: state })
-                data.location = state
+                state = state.charAt(0).toUpperCase() + state.slice(1);
+                data = await Covid.states()
+                data = data.find(x => x.state.toLowerCase() == state.toLowerCase())
+                if (data) data.location = state
             }
             else if (country) {
-                data = await Covid.getCountry({ country: country })
+                country = country.charAt(0).toUpperCase() + country.slice(1);
+                data = await Covid.countries(country.toLowerCase())
                 data.location = country
             }
             else {
-                data = await Covid.getAll()
+                data = await Covid.all()
                 data.location = 'World'
             }
 
-            if (data.message?.includes('not found'))
+            if (data?.message?.includes('not found'))
                 data = undefined
         } catch (err) {
             bot.saveBugReport(err, this.fetchBuiltCovidInfoMessage.name, true)
@@ -82,8 +86,8 @@ export default class BotModuleCovid {
         if (data.recovered) message.addFields({ name: 'Recovered', value: `${data.recovered}`, inline: true })
         if (data.cases) message.addFields({ name: 'Total Cases', value: `${data.cases}`, inline: true })
         if (data.deaths) message.addFields({ name: 'Deaths', value: `${data.deaths}`, inline: true })
-        if (data.todayCases) message.addFields({ name: 'New Cases Today', value: `${data.todayCases}`, inline: true })
-        if (data.todayDeaths) message.addFields({ name: 'New Deaths Today', value: `${data.todayDeaths}`, inline: true })
+        if (data.todayCases !== undefined) message.addFields({ name: 'New Cases Today', value: `${data.todayCases}`, inline: true })
+        if (data.todayDeaths !== undefined) message.addFields({ name: 'New Deaths Today', value: `${data.todayDeaths}`, inline: true })
 
         return message
     }

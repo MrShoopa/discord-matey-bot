@@ -3,7 +3,7 @@ import Bot from './../../Bot'
 
 import { translate } from '../../bot_knowledge/triggers/triggers.json'
 
-import * as Yoda from 'erwar-yoda'
+import { erwarYoda } from 'erwar-yoda'
 
 export default class YodaLanguageFunctions {
 
@@ -35,7 +35,7 @@ export default class YodaLanguageFunctions {
 
     static getYodaTranslation(text: string, language: string) {
         try {
-            return Yoda(text);
+            return erwarYoda(text);
         } catch (err) {
             let bot: Bot = globalThis.bot
             bot.saveBugReport(err, this.getYodaTranslation.name, true)

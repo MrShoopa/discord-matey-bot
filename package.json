@@ -38,7 +38,7 @@
         "lodash": "^4.17.15",
         "m3u8stream": "^0.6.5",
         "node-fetch": "^2.6.0",
-        "novelcovid": "^1.0.7-b3",
+        "novelcovid": "^1.1.4",
         "opus": "0.0.0",
         "parse-time": "^0.1.4",
         "request": "^2.88.2",

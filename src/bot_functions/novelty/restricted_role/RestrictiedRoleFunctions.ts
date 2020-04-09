@@ -10,25 +10,27 @@ export default class BotModuleRestrictedRole {
 
         if (trigger) bot.preliminary(trigger, 'Set restricted role', true)
 
-        bot.context.mentions.members.forEach(member => {
-            let message = new Discord.MessageEmbed()
-                .setTitle(`${Bot.fetchRandomPhrase(PHRASES_SERVER_MOD.restricted_role_set)}`)
-                .setColor('BLACK')
-                .setDescription(`${bot.context.author.username} has banished ${member.displayName} for inexplicable reasons.`)
-                .setFooter(`Role Enforced: ${bot.restrictedRoleIds[0]}`)
+        if (bot.context.member.hasPermission(['ADMINISTRATOR']))
+            bot.context.mentions.members.forEach(member => {
+                let message = new Discord.MessageEmbed()
+                    .setTitle(`${Bot.fetchRandomPhrase(PHRASES_SERVER_MOD.restricted_role_set)}`)
+                    .setColor('BLACK')
+                    .setDescription(`${bot.context.author.username} has banished ${member.displayName} for inexplicable reasons.`)
+                    .setFooter(`Role Enforced: ${bot.restrictedRoleIds[0]}`)
 
-            bot.context.channel.send(message)
+                bot.context.channel.send(message)
 
-            member.roles.set([bot.restrictedRoleIds[0]])
-                .then(() => {
-                    console.log(
-                        `Adding ${member.displayName} to the role: ${bot.restrictedRoleIds[0]}`)
-                })
-                .catch((error) => {
-                    console.error(`Failed to add ${member.displayName} to the role: ${bot.restrictedRoleIds[0]}`)
-                    bot.saveBugReport(error, this.assignToRestrictedRole.name)
-                })
-        })
+                member.roles.set([bot.restrictedRoleIds[0]])
+                    .then(() => {
+                        console.log(
+                            `Adding ${member.displayName} to the role: ${bot.restrictedRoleIds[0]}`)
+                    })
+                    .catch((error) => {
+                        console.error(`Failed to add ${member.displayName} to the role: ${bot.restrictedRoleIds[0]}`)
+                        bot.saveBugReport(error, this.assignToRestrictedRole.name)
+                    })
+            })
+        else return bot.context.channel.send(`You cannot harness this power without admin plox`)
     }
 
     static unassignFromRestrictedRole(trigger: string) {

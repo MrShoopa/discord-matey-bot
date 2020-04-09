@@ -18,21 +18,7 @@
             "type": "shell",
             "isBackground": true,
             "command": "tsc-watch --outDir ./built_dev",
-            "problemMatcher": [{
-                "owner": "typescript",
-                "fileLocation": "relative",
-                "pattern": [{
-                    "regexp": ".",
-                    "file": 1,
-                    "location": 2,
-                    "message": 3
-                }],
-                "background": {
-                    "activeOnStart": true,
-                    "beginsPattern": "Starting incremental compilation...",
-                    "endsPattern": "Watching for file changes.",
-                }
-            }],
+            "problemMatcher": ["$tsc", "$tsc-watch"],
             "group": "build"
         },
         {

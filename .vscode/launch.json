@@ -16,12 +16,12 @@
 			"type": "node",
 			"request": "launch",
 			"name": "Build and Run - DEV MODE",
-			"timeout": 30000,
 			"preLaunchTask": "Build - Dev (Watch)",
-			"runtimeExecutable": "nodemon",
+			//"runtimeExecutable": "nodemon",
+			"args": ["dev-mode"],
 			"program": "${workspaceFolder}\\src\\igniter.ts",
-			"showAsyncStacks": true,
 			"restart": true,
+			"showAsyncStacks": true,
 			"outFiles": [
 				"${workspaceFolder}/built_dev/**/*.js"
 			],

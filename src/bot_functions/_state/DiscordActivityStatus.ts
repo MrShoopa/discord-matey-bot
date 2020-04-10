@@ -33,12 +33,14 @@ export default class BotDiscordActivity {
     ]
 
     dynamicStatuses: Array<ActivityOptions> = [
-        { name: `NSA watch with ${globalThis.bot.guilds.holds.length} servers`, type: 'PLAYING' },
+        { name: `NSA watch with ${globalThis.bot.guilds.cache.size} servers`, type: 'PLAYING' },
         { name: `shoutouts to ${globalThis.bot?.context?.author?.username}`, type: 'PLAYING' },
-        { name: `${globalThis.bot.guilds.holds.length} copies of Bad Rats`, type: 'PLAYING' },
-        { name: `crippling ${globalThis.bot.guilds.holds.length} servers`, type: "STREAMING" },
-        { name: `pattycake with ${globalThis.bot.guilds.holds.length} servers`, type: 'PLAYING' },
-        { name: `${globalThis.bot.guilds.holds.length} zooms`, type: 'LISTENING' }
+        { name: `WINNER: ${globalThis.bot?.context?.author?.username}! PRIZE: NOTHING!`, type: 'PLAYING' },
+        { name: `${globalThis.bot.guilds.cache.size} copies of Bad Rats`, type: 'PLAYING' },
+        { name: `dj hero on ${globalThis.bot.voice.connections.size} channels`, type: "PLAYING" },
+        { name: `crippling ${globalThis.bot.guilds.cache.size} servers`, type: "STREAMING" },
+        { name: `pattycake with ${globalThis.bot.guilds.cache.size} servers`, type: 'PLAYING' },
+        { name: `${globalThis.bot.guilds.cache.size} zooms`, type: 'LISTENING' }
     ]
 
     static getRandomStatus(): ActivityOptions {
@@ -54,6 +56,8 @@ export default class BotDiscordActivity {
 
     static updateRandomStatus() {
         let bot: Bot = globalThis.bot
+
+        bot.voice.connections.size
 
         bot.user.setUsername("Megadork");
 

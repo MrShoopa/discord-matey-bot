@@ -52,7 +52,7 @@ export default class Bot extends Discord.Client {
     commandSatisfied: boolean | string
     songState: SongState
     overrideContext: boolean
-    
+
     get context() { return this._context }
     set context(value: Discord.Message | Discord.PartialMessage) {
         if (this.user.id !== value.author.id || this.overrideContext) {
@@ -530,7 +530,8 @@ export default class Bot extends Discord.Client {
 
     playSFX(connection: Discord.VoiceConnection, sfx: Datypes.Audio.SFX) {
         return new Promise((res, rej) => {
-            let result = connection.play(sfx.filePath)
+            let path = __dirname + sfx.filePath
+            let result = connection.play(path)
 
             result.on('finish', () => {
                 res('completed')

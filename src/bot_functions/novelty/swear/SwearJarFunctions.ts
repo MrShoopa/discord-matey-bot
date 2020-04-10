@@ -95,7 +95,7 @@ export default class BotModuleSwearJar {
 
             const att =
                 new Discord.MessageAttachment(__dirname +
-                    '../../../../bot_knowledge/images/dedede-christian.jpg',
+                    '..\\..\\..\\..\\bot_knowledge\\images\\dedede-christian.jpg',
                     'dedede-christian.jpg')
 
             let swearStatsMessage = new Discord.MessageEmbed()

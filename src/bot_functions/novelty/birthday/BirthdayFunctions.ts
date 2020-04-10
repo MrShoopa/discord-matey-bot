@@ -123,7 +123,7 @@ export default class BotModuleBirthday {
 
 				const att =
 					new Discord.MessageAttachment(__dirname +
-						'../../../../bot_knowledge/images/birthday-stock-image.jpg',
+						'..\\..\\..\\bot_knowledge\\images\\birthday-stock-image.jpg',
 						'birthday-stock.jpg')
 
 				let birthdayMesssage = new Discord.MessageEmbed()

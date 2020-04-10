@@ -19,15 +19,15 @@ export module Audio {
 
     export class SFX {
         static MusicJoin: SFX = {
-            filePath: `src/bot_knowledge/audio/sfx/music_join.mp3`,
+            filePath: `\\bot_knowledge\\audio\\sfx\\music_join.mp3`,
             name: "music_join"
         }
         static MusicLeave: SFX = {
-            filePath: `src/bot_knowledge/audio/sfx/music_leave.mp3`,
+            filePath: `\\bot_knowledge\\audio\\sfx\\music_leave.mp3`,
             name: "music_leave"
         }
         static MusicTransition: SFX = {
-            filePath: `src/bot_knowledge/audio/sfx/music_transition.mp3`,
+            filePath: `\\bot_knowledge\\audio\\sfx\\music_transition.mp3`,
             name: "music_transition"
         }
     }

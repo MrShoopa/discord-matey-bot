@@ -237,6 +237,8 @@
     },
     "image_search_triggers": {
         "random_image": [
+            "search image",
+            "image search",
             "random image",
             "random photo",
             "random picture",
@@ -995,5 +997,29 @@
         "magic ball",
         "8ball",
         "8 ball"
-    ]
+    ],
+    "google_search_triggers": {
+        "base_request": [
+            "google",
+            "bing",
+            "search",
+            "search result",
+            "get search",
+            "get search result",
+            "random search",
+            "fetch search",
+            "find search"
+        ],
+        "lucky": [
+            "lucky search",
+            "feeling lucky",
+            "feelin' lucky",
+            "feelin lucky"
+        ],
+        "safe_off": [
+            "unsafe search",
+            "nsfw search",
+            "search safesearch off"
+        ]
+    }
 }

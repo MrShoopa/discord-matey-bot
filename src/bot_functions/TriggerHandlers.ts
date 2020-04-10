@@ -11,17 +11,18 @@ import BotModuleMusic from './music/MusicFunctions'
 import BotModuleSwearJar from './novelty/swear/SwearJarFunctions'
 import BotModuleRestrictedRole from './novelty/restricted_role/RestrictiedRoleFunctions'
 import BotModuleTwitter from './fetching/twitter/TwitterFunctions'
+import BotModuleGoogleSearch from './fetching/google/GoogleSearchCommands'
 import BotModuleGoogleImage from './fetching/google/GoogleImageCommands'
 import BotModuleReddit from './fetching/reddit/RedditFunctions'
 import BotModuleBirthday from './novelty/birthday/BirthdayFunctions'
 import BotModuleAnime from './fetching/anime/AnimeFunctions'
-import BotModuleFun from './general/FunFunctions'
-
-import BotWordplay from './wordplay/WordplayFunctions'
 import BotModuleQuote from './fetching/quote/QuoteFunctions'
 import BotModuleLyric from './fetching/lyrics/LyricFunctions'
 import BotModuleTranslation from './language/TranslationFunctions'
 import BotModuleCovid from './fetching/info/current/CovidFunctions'
+
+import BotModuleFun from './general/FunFunctions'
+import BotWordplay from './wordplay/WordplayFunctions'
 
 
 export default class TriggerHandlers {
@@ -43,6 +44,7 @@ export default class TriggerHandlers {
         TriggerHandlers.checkForMusicQueueInquireNextRequest,
         TriggerHandlers.checkForMusicQueueInquireListRequest,
 
+        TriggerHandlers.checkForSearchEngineRequest,
         TriggerHandlers.checkForImageFetchRequest,
 
         TriggerHandlers.checkForTranslationRequest,
@@ -208,6 +210,14 @@ export default class TriggerHandlers {
                 return BotModuleMusic.fireQueueListMessage(trigger)
     }
 
+
+    /*  ----    Search-Engine-Fetching (Google Search API)  ----    */
+
+    private static checkForSearchEngineRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.google_search_triggers.base_request)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotModuleGoogleSearch.fireSearchMessageFromGoogle(trigger)
+    }
 
     /*  ----    Image-Fetching (Google JS API)  ----    */
 

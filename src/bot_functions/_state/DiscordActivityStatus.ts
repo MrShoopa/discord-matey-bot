@@ -55,6 +55,8 @@ export default class BotDiscordActivity {
     static updateRandomStatus() {
         let bot: Bot = globalThis.bot
 
+        bot.user.setUsername("Megadork");
+
         bot.user.setActivity(BotDiscordActivity.getRandomStatus())
     }
 

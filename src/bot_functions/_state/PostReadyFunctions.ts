@@ -52,6 +52,6 @@ export default class PostReadyFunctions {
 
         BotDiscordActivity.useDevModeStatus()
 
-        bot.user.setUsername("~B8tadork");
+        bot.user.setUsername("`B8tadork");
     }
 }

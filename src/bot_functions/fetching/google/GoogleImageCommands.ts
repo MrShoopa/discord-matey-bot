@@ -74,7 +74,7 @@ export default class BotModuleGoogleImage {
         //  Modules   
         const GOOGLE_IMAGER =
             new GoogleImages(
-                AUTH.google.search.CSE_ID, AUTH.google.search.API_KEY)
+                AUTH.google.search.CSE_ID_IMAGE, AUTH.google.search.API_KEY)
 
         userQuery = userQuery.toLowerCase()
 

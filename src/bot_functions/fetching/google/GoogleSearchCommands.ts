@@ -1,4 +1,4 @@
-import GoogleImages from 'google-images'
+import Google from 'google-search-results-nodejs'
 import Discord from 'discord.js'
 import Bot from '../../../Bot'
 
@@ -59,10 +59,10 @@ export default class BotModuleGoogleSearch {
         //  Generates reply with random search and response
         if (userQuery !== '') {
             message.setDescription(
-                `${Bot.fetchRandomPhrase(PHRASES_GOOGLE_SEARCH.image_search_fetch_response.image_search_with_context)}${userQuery}.`)
+                `${Bot.fetchRandomPhrase(PHRASES_GOOGLE_SEARCH.google_search_fetch_response.google_search_with_context)}${userQuery}.`)
         } else {
             message.setDescription(
-                `${Bot.fetchRandomPhrase(PHRASES_GOOGLE_SEARCH.image_search_fetch_response.image_search_random)}`)
+                `${Bot.fetchRandomPhrase(PHRASES_GOOGLE_SEARCH.google_search_fetch_response.google_search_random)}`)
         }
 
         return message
@@ -71,9 +71,8 @@ export default class BotModuleGoogleSearch {
     static async fetchSearchFromGoogle(userQuery = '', urlOnly?: boolean, bot: Bot = globalThis.bot):
         Promise<string | any> {
         //  Modules   
-        const GOOGLE =
-            new GoogleImages(
-                AUTH.google.search.CSE_ID, AUTH.google.search.API_KEY)
+        let GOOGLE
+        //TODO  = asdjnasdj(probably add at top though)
 
         userQuery = userQuery.toLowerCase()
 

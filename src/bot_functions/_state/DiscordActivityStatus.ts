@@ -30,14 +30,26 @@ export default class BotDiscordActivity {
         { name: `EoE 👁👁👁👁👁`, type: 'WATCHING' },
         { name: `Sonic '06, The Greatest Game in the Universe`, type: 'PLAYING' },
         { name: `with coronavirus test kits`, type: 'PLAYING' },
+    ]
 
+    dynamicStatuses: Array<ActivityOptions> = [
+        { name: `NSA watch with ${globalThis.bot.guilds.holds.length} servers`, type: 'PLAYING' },
+        { name: `shoutouts to ${globalThis.bot?.context?.author?.username}`, type: 'PLAYING' },
+        { name: `${globalThis.bot.guilds.holds.length} copies of Bad Rats`, type: 'PLAYING' },
+        { name: `crippling ${globalThis.bot.guilds.holds.length} servers`, type: "STREAMING" },
+        { name: `pattycake with ${globalThis.bot.guilds.holds.length} servers`, type: 'PLAYING' },
+        { name: `${globalThis.bot.guilds.holds.length} zooms`, type: 'LISTENING' }
     ]
 
     static getRandomStatus(): ActivityOptions {
-        let dice =
-            Math.floor(Math.random() * this.customStatuses.length)
+        let looklist = this.customStatuses
 
-        return this.customStatuses[dice]
+        if (globalThis.bot)
+            looklist = this.customStatuses.concat(new BotDiscordActivity().dynamicStatuses)
+
+        let dice = Math.floor(Math.random() * looklist.length)
+
+        return looklist[dice]
     }
 
     static updateRandomStatus() {

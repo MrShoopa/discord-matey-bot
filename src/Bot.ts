@@ -16,6 +16,7 @@ import { main_trigger } from './bot_knowledge/triggers/triggers.json'
 import BotLoggerFunctions from './bot_functions/general/LoggerFunctions'
 
 import BotModuleMusic from './bot_functions/music/MusicFunctions'
+import { read, readFileSync } from 'fs'
 
 export enum SongState {
     Unknown = 'unknown',
@@ -245,8 +246,10 @@ export default class Bot extends Discord.Client {
                             console.info('Song played successfully.')
 
                             bot.songState = SongState.Finished
-                            await bot.playSFX(connection, Datypes.Audio.SFX.MusicLeave)
-                            if (!gapless) bot.voiceChannel.leave()
+                            if (!gapless) {
+                                await bot.playSFX(connection, Datypes.Audio.SFX.MusicLeave)
+                                bot.voiceChannel.leave()
+                            }
                         }
 
                         console.groupEnd()
@@ -448,8 +451,10 @@ export default class Bot extends Discord.Client {
                             })
 
                             bot.songState = SongState.Finished
-                            await bot.playSFX(connection, Datypes.Audio.SFX.MusicLeave)
-                            if (!gapless) bot.voiceChannel.leave()
+                            if (!gapless) {
+                                await bot.playSFX(connection, Datypes.Audio.SFX.MusicLeave)
+                                bot.voiceChannel.leave()
+                            }
                         }
 
                         console.groupEnd()

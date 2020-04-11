@@ -22,7 +22,6 @@ export default class BotModuleMusic {
         let bot: Bot = globalThis.bot
         let songState = SongState.Fetching
 
-        let connection = bot.context.member.voice.connection
         let context: string[] =
             bot.context.toString().substring(0, 100).split(' ')
 
@@ -164,7 +163,6 @@ export default class BotModuleMusic {
         // Finished
         bot.commandSatisfied = true
         if (queueMode && songState == SongState.Finished) {
-            await bot.playSFX(connection, Audio.SFX.MusicTransition)
             return 'next'
         }
     }
@@ -416,6 +414,11 @@ class MusicQueue {
         if (request === undefined) {
             console.info(`Music queue list for ${this.channel.name} is now empty.`)
             bot.context.channel.send(`📻... *that's all folks*!`)
+
+            if (connection) {
+                await bot.playSFX(connection, Audio.SFX.MusicLeave)
+                return connection.voice.channel.leave()
+            }
 
             return true
         }

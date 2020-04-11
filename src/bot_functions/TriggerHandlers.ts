@@ -184,6 +184,11 @@ export default class TriggerHandlers {
             if (message.toString().substring(0).toLowerCase().startsWith(trigger))
                 return BotModuleMusic.addNewSongRequest(trigger)
     }
+    private static checkForMusicQueueInquireListRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.singing_triggers.queue.inquire.list)
+            if (message.toString().substring(0).toLowerCase().startsWith(trigger))
+                return BotModuleMusic.fireQueueListMessage(trigger)
+    }
     private static checkForMusicQueueStartRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.singing_triggers.queue.start)
             if (message.toString().substring(0).toLowerCase().startsWith(trigger))
@@ -203,11 +208,6 @@ export default class TriggerHandlers {
         for (const trigger of TRIGGERS.singing_triggers.queue.inquire.next)
             if (message.toString().substring(0).toLowerCase().startsWith(trigger))
                 return BotModuleMusic.fireQueueNextUpMessage(trigger)
-    }
-    private static checkForMusicQueueInquireListRequest(message = TriggerHandlers.message) {
-        for (const trigger of TRIGGERS.singing_triggers.queue.inquire.list)
-            if (message.toString().substring(0).toLowerCase().startsWith(trigger))
-                return BotModuleMusic.fireQueueListMessage(trigger)
     }
 
 

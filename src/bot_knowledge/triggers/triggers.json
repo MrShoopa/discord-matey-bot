@@ -986,7 +986,9 @@
             "coronavirus cases"
         ],
         "country": [
-            "country"
+            "country",
+            "region",
+            "nation"
         ],
         "state": [
             "state",

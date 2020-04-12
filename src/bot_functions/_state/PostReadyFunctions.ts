@@ -5,6 +5,7 @@ import TimelyFunctions from "./TimelyFunctions"
 import BotLoggerFunctions from '../general/LoggerFunctions'
 
 import BotModuleMusic from "../music/MusicFunctions"
+import BotData from '../DataHandler'
 
 export default class PostReadyFunctions {
     static run() {
@@ -13,11 +14,13 @@ export default class PostReadyFunctions {
 
         this.postBotConnectDataFetch()
 
-        globalThis.devMode = this.checkDevMode()
-
         BotLoggerFunctions.instantiateLogFolder()
 
-        if (!globalThis.devMode) {
+        if (this.checkProdMode) {
+
+        }
+
+        if (this.checkDevMode()) {
             globalThis.bot.user.setUsername("Megadork");
             BotDiscordActivity.updateRandomStatus()
         } else {
@@ -28,6 +31,10 @@ export default class PostReadyFunctions {
     }
 
     static loadClients() {
+        if (this.checkProdMode()) {
+            BotData.initS3()
+        }
+
         BotModuleMusic.loadClients()
     }
 
@@ -38,13 +45,19 @@ export default class PostReadyFunctions {
     }
 
     static checkDevMode() {
-        var myArgs = process.argv.slice(2);
-        return myArgs.some(arg => {
-            if (arg === 'dev-mode') {
-                console.log('~~~~~~~~~~~Dev mode enabled.~~~~~~~~~~\n')
-                return true
-            }
-        })
+        if (globalThis.dev_mode) {
+            console.log('~~~~~~~~~~~Dev mode enabled.~~~~~~~~~~\n')
+
+            return true
+        }
+    }
+
+    static checkProdMode() {
+        if (globalThis.prod_mode) {
+            console.log('~~~~~~~~~~~!!!!!  PROD ENABLED !!!!!~~~~~~~~~~\n')
+
+            return true
+        }
     }
 
     static applyDevMode() {

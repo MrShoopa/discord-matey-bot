@@ -16,17 +16,18 @@ import { Data } from './../../types/data_types/Data'
 import Bot from '../../Bot'
 
 /*  Locations  */
-const SAVE_DATA = __dirname + '/../../../save_data'
-const TIME_DATA_FILE = `${SAVE_DATA}/time_data.json`
 
 /*  -----  */
 export default class BotTimeKeeper {
+    static SAVE_DATA = __dirname + '/../../../save_data'
+    static TIME_DATA_FILE = `${BotTimeKeeper.SAVE_DATA}/megadorkbot_data_time.json`
+    static S3_SAVE_NAME = 'save_data/megadorkbot_data_time.json'
 
     //  User Data
     static getTimeData(): Data.TimeSave {
         try {
             var data: Data.TimeSave =
-                JSON.parse(FileSystem.readFileSync(TIME_DATA_FILE).toString())
+                JSON.parse(FileSystem.readFileSync(BotTimeKeeper.TIME_DATA_FILE).toString())
         } catch (err) {
             let bot: Bot = globalThis.bot
             if (err.code === 'ENOENT') {
@@ -52,7 +53,7 @@ export default class BotTimeKeeper {
 	 */
     static createNewDataFile(fetch?: boolean, force?: boolean) {
         if (!force &&
-            JSON.parse(FileSystem.readFileSync(TIME_DATA_FILE).toString())) {
+            JSON.parse(FileSystem.readFileSync(BotTimeKeeper.TIME_DATA_FILE).toString())) {
             console.log('Data already exists.')
             return null
         }
@@ -66,14 +67,14 @@ export default class BotTimeKeeper {
         }
 
         try {
-            FileSystem.writeFileSync(TIME_DATA_FILE, JSON.stringify(dataSkeleton))
+            FileSystem.writeFileSync(BotTimeKeeper.TIME_DATA_FILE, JSON.stringify(dataSkeleton))
 
             if (fetch) return this.getTimeData()
             console.log(`New Time Data save file created.\n`)
         } catch (err) {
             //  If folder is missing
             if (err.code === 'ENOENT') {
-                FileSystem.mkdirSync(SAVE_DATA, { recursive: true })
+                FileSystem.mkdirSync(BotTimeKeeper.SAVE_DATA, { recursive: true })
             } else {
                 let bot: Bot = globalThis.bot
 
@@ -120,7 +121,7 @@ export default class BotTimeKeeper {
 
         if (typeof data === 'object')
             try {
-                FileSystem.writeFileSync(TIME_DATA_FILE, JSON.stringify(data))
+                FileSystem.writeFileSync(BotTimeKeeper.TIME_DATA_FILE, JSON.stringify(data))
             } catch (err) {
                 let bot: Bot = globalThis.bot
 

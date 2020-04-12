@@ -15,15 +15,30 @@ import * as FileSystem from 'fs'
 import { Data } from '../types/index'
 
 import Bot from '../Bot'
+import AUTH from '../user_creds.json'
+
+import aws from 'aws-sdk'
+import BotTimeKeeper from './_state/TimeKeeper'
 
 /*  Locations  */
 const SAVE_DATA = __dirname + '/../../save_data'
-const SAVE_DATA_FILE = `${SAVE_DATA}/user_data.json`
+const SAVE_DATA_FILE = `${SAVE_DATA}/megadorkbot_data_user.json`
+const S3_SAVE_NAME = `save_data/megadorkbot_data_user.json`
 
 /*  -----  */
 export default class BotData {
 
 	static get bot(): Bot { return globalThis.bot }
+
+	static S3: aws.S3
+
+	static s3Params = {
+		Bucket: AUTH.aws.s3.bucket,
+		Key: "FILL_OUT",
+		Expires: 60,
+		ContentType: "FILL_OUT",
+		ACL: 'public-read'
+	};
 
 	//  User Data
 	static getUserDataFile(log?: boolean) {
@@ -225,5 +240,64 @@ export default class BotData {
 					process.exit(404)
 				} else throw err
 			}
+	}
+
+	static async getS3Object(name: string) {
+		if (!this.S3) this.initS3()
+
+		return await this.S3.getObject({ Bucket: AUTH.aws.s3.bucket, Key: name })
+			.promise().then(obj => {
+				console.log(`Obtained S3 Object from ${AUTH.aws.s3.bucket}: ${name}`)
+				return obj
+			}).catch(err => {
+				if (err.message.contains('does not exist'))
+					console.error(`S3 Object does not exist in ${AUTH.aws.s3.bucket}: ${name}`)
+				else
+					console.error(`Failed getting S3 Object in ${AUTH.aws.s3.bucket}: ${name}`, err)
+				return null
+			})
+	}
+
+	static async updateS3Object(file: Buffer = FileSystem.readFileSync(SAVE_DATA_FILE),
+		name: string = S3_SAVE_NAME) {
+		if (!this.S3) this.initS3()
+
+		return await this.S3.putObject({ Body: file, Bucket: AUTH.aws.s3.bucket, Key: name })
+			.promise().then(obj => {
+				console.log(`Updated S3 Object in ${AUTH.aws.s3.bucket}: ${name}`)
+				return obj
+			}).catch(err => {
+				console.error(`Failed updating S3 Object in ${AUTH.aws.s3.bucket}: ${name}`, err)
+				return null
+			})
+	}
+
+	static async initS3() {
+		process.env.AWS_ACCESS_KEY_ID = AUTH.aws.auth.accessKeyId
+		process.env.AWS_SECRET_ACCESS_KEY = AUTH.aws.auth.secretAccessKey
+
+		this.S3 = new aws.S3();
+
+		// User Data
+		let userFile: aws.S3.GetObjectOutput = await this.getS3Object(S3_SAVE_NAME)
+		if (!userFile) await this.updateS3Object()
+		FileSystem.writeFileSync((SAVE_DATA_FILE), userFile.Body)
+
+		// Time Data
+		let timeFile: aws.S3.GetObjectOutput = await this.getS3Object(BotTimeKeeper.S3_SAVE_NAME)
+		if (!timeFile) await this.updateS3Object(FileSystem.readFileSync(BotTimeKeeper.TIME_DATA_FILE), BotTimeKeeper.S3_SAVE_NAME)
+		FileSystem.writeFileSync((BotTimeKeeper.TIME_DATA_FILE), timeFile.Body)
+
+	}
+	/**
+	 * Updates the S3 bucket with the following objects.
+	 * @see AUTH.aws.s3.bucket for bucket name
+	 */
+	static async updateS3() {
+		// User Data
+		await this.updateS3Object(FileSystem.readFileSync(SAVE_DATA_FILE), S3_SAVE_NAME)
+
+		//Time Data
+		await this.updateS3Object(FileSystem.readFileSync(BotTimeKeeper.TIME_DATA_FILE), BotTimeKeeper.S3_SAVE_NAME)
 	}
 }

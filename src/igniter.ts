@@ -16,6 +16,9 @@ import PostReadyFunctions from './bot_functions/_state/PostReadyFunctions'
 import su from './tools/ConsoleFunctions' // Keep here for console.
 globalThis.su = new su()
 
+globalThis.prod_mode = (() => { return process.argv.includes('prod') })()
+globalThis.dev_mode = (() => { return process.argv.includes('dev-mode') })()
+
 //  Initialize Discord Bot
 console.log('Initializing...')
 

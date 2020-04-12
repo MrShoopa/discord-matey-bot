@@ -3,6 +3,7 @@ import BotTimeKeeper from '../_state/TimeKeeper'
 import BotDiscordActivity from './DiscordActivityStatus'
 import BotModuleSwearJar from "../novelty/swear/SwearJarFunctions"
 import BotModuleBirthday from "../novelty/birthday/BirthdayFunctions"
+import BotData from '../DataHandler'
 
 export default class TimelyFunctions {
     static get timeSave() {
@@ -48,7 +49,9 @@ export default class TimelyFunctions {
 
         if (!this.doneForHour) {
             BotDiscordActivity.updateRandomStatus()
-
+            if (globalThis.prod_mode) {
+                BotData.updateS3()
+            }
             this.doneForHour = true
         }
 

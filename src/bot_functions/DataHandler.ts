@@ -245,6 +245,9 @@ export default class BotData {
 	static getUserProperty(id: number | string, property: string) {
 		let data = this.getUserData(id, true)
 
+		if (!data._toggles)
+			data._toggles = {}
+
 		if (data._toggles[property])
 			return data._toggles[property]
 		else
@@ -254,6 +257,9 @@ export default class BotData {
 	static toggleUserProperty(id: number | string, property: string, forceBoolean?: boolean) {
 		let data = this.getUserData(id, true)
 		let boolChoice: boolean
+
+		if (!data._toggles)
+			data._toggles = {}
 
 		if (data._toggles[property]) {
 			boolChoice = forceBoolean ? forceBoolean : !data._toggles[property]

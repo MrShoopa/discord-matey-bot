@@ -95,7 +95,7 @@ export default class BotModuleBirthday {
 	static checkBirthdaysToday(announce?: boolean) {
 		let birthdayList: [{ userId: string, date: Date }?] = []
 
-		BotData.getUserDataFile().forEach((user: { birthday: string | number | Date; _id: any }) => {
+		BotData.getUserDataFile().forEach((user: Data.UserSave) => {
 			let birthday = new Date(user?.birthday)
 			if (birthday?.getDate() === new Date().getDate()
 				&& birthday?.getMonth() === new Date().getMonth()) {

@@ -3,6 +3,7 @@ import Discord from 'discord.js'
 import Bot from '../Bot'
 import BotData from './DataHandler'
 import BotGeneralCommands from './general/GeneralCommands'
+import BotLoggerFunctions from './general/LoggerFunctions'
 import BotDefaultResponder from './general/DefaultCase'
 
 import TRIGGERS from '../bot_knowledge/triggers/triggers.json'
@@ -73,6 +74,9 @@ export default class TriggerHandlers {
 
         // Bot Sudo Requests
         TriggerHandlers.checkForBotKillRequest,
+
+        // Dev-Com Requests
+        TriggerHandlers.checkForUserSuggestionRequest,
 
         HelpTriggers.checkForHelpInfoRequest
     ]
@@ -154,9 +158,11 @@ export default class TriggerHandlers {
     }
 
     private static checkForSwearWord(message = TriggerHandlers.message) {
+        let bool = BotData.getUserProperty(message.author.id, 'swear_jar_disable')
+
         for (const trigger of TRIGGERS.swear_jar_triggers.bad_words)
             if (message.toString().toLowerCase().includes(trigger))
-                if (BotData.getUserProperty(message.author.id, 'swear_jar_disable'))
+                if (!BotData.getUserProperty(message.author.id, 'swear_jar_disable'))
                     return BotModuleSwearJar.dingUser(trigger)
     }
 
@@ -348,6 +354,14 @@ export default class TriggerHandlers {
             if (message.toString().toLowerCase().startsWith(trigger))
                 return BotGeneralCommands.killBot(true, trigger)
         //  Redo last command
+    }
+
+    /* ----  Feedback/Dev-Com functions --- */
+    private static checkForUserSuggestionRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.user_suggestion.default)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotLoggerFunctions.saveUserSuggestion(message, true, trigger)
+        //  Send user suggestion as email to dev
     }
 
     //  All else comes around

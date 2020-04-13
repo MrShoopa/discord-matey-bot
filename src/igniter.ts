@@ -43,14 +43,16 @@ bot.on('message', async (message) => {
 	bot.context = message
 
 	//  Logging message
-	console.log(`\nOn ${new Date().toString()}, a user said:\n	"${(message.content).toString()}"`)
 
 	try {
-		if (globalThis.devMode) {
+		if (globalThis.dev_mode) {
+			console.log(`\nOn ${new Date().toString()}, a user said:\n	"${(message.content).toString()}"`)
+
 			if (message.toString().startsWith('`')) {
 				message.content = message.content.substring(1)
 				await TriggerHandlers.validateMessage(message)
 			}
+
 		} else await TriggerHandlers.validateMessage(message)
 	} catch (e) {
 		bot.saveBugReport(e, 'on message event', true)

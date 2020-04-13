@@ -286,9 +286,10 @@ export default class BotModuleMusic {
         return result[0]
     }
 
-    static async processYouTubeSearch(query: string, resultCount = 10)
+    static async processYouTubeSearch(query: string, resultCount = 10, type = 'video')
         : Promise<Array<YouTube.YouTubeSearchResults>> {
         var opts: YouTube.YouTubeSearchOptions = {
+            type: type,
             maxResults: resultCount,
             key: AUTH.youtube.api_key
         };

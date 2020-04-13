@@ -1037,5 +1037,15 @@
             "nsfw search",
             "search safesearch off"
         ]
+    },
+    "user_suggestion": {
+        "default": [
+            "suggest",
+            "suggestion",
+            "suggest to dev",
+            "suggestion to dev",
+            "suggest to developer",
+            "suggestion to developer"
+        ]
     }
 }

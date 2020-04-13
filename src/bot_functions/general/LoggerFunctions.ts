@@ -1,7 +1,11 @@
 import * as FileSystem from 'fs'
 import * as Path from 'path'
+import Mailer from 'nodemailer'
+
 import Discord from 'discord.js';
 import Bot from '../../Bot';
+
+import AUTH from '../../user_creds.json'
 
 export default class BotLoggerFunctions {
 
@@ -25,6 +29,41 @@ export default class BotLoggerFunctions {
                 .setDescription`Log submitted to Joe.`)
     }
 
+    static async saveUserSuggestion(message: Discord.Message | Discord.PartialMessage, reply?: boolean, trigger?: string) {
+        let bot: Bot = globalThis.bot
+        if (trigger) bot.preliminary(trigger, 'User Suggestion', true)
+
+        message.content = message.toString().replace(trigger, '').trim()
+
+        const transport = Mailer.createTransport({
+            host: AUTH.smtp.host,
+            port: AUTH.smtp.port,
+            auth: {
+                user: AUTH.smtp.auth.user,
+                pass: AUTH.smtp.auth.pass
+            }
+        })
+
+        const email = {
+            from: AUTH.smtp.email_from,
+            to: AUTH.smtp.email_to,
+            subject: `${message.author.username} Has a Suggestion for Megadork!`,
+            text: `Something something... \n Suggestion: ${message.toString()} \n\n Guild: ${message.guild.name} \n\n Url: ${message.url}`
+        }
+
+        try {
+            const result = await transport.sendMail(email);
+            console.log(`Successfully sent Suggestion Email to ${AUTH.smtp.email_to}.`, result);
+            if (reply)
+                message.reply(`I have submitted your suggestion to my creator!`);
+        }
+        catch (err) {
+            console.error(`Failed to send Suggestion Email to ${AUTH.smtp.email_to}`, err);
+            if (reply)
+                message.reply(`I couldn't send your suggestion for some reason. Try again later?`);
+        }
+    }
+
     static saveUnknownCommand(message: Discord.Message | Discord.PartialMessage,
         logInConsole?: boolean, reply?: boolean) {
         let bot: Bot = globalThis.bot
@@ -43,8 +82,8 @@ export default class BotLoggerFunctions {
     }
 
     private static writeTextToFile(text: String,
-        filename = `botText-${Date.now.toString()}`,
-        path = this.logPathName + `/general`,
+        filename = `botText - ${Date.now.toString()} `,
+        path = this.logPathName + `/ general`,
         logInConsole?: boolean, reply?: boolean) {
 
         let bot: Bot = globalThis.bot
@@ -53,9 +92,9 @@ export default class BotLoggerFunctions {
             if (!exists)
                 FileSystem.mkdir(path, folderError => {
                     if (folderError)
-                        console.error(`Error creating folder (${path}): \t${folderError}`)
+                        console.error(`Error creating folder(${path}): \t${folderError} `)
                     else
-                        console.info(`Folder created: ${[path]}`)
+                        console.info(`Folder created: ${[path]} `)
                 })
             path = Path.join(path)
 
@@ -63,12 +102,12 @@ export default class BotLoggerFunctions {
             FileSystem.appendFile(filename, text
                 , callback => {
                     if (callback as Error)
-                        console.error(`Error writing text file: ${callback}`)
+                        console.error(`Error writing text file: ${callback} `)
                 })
         })
 
         if (logInConsole)
-            console.info(`Wrote on "${path}": ${new Date().toString()}:\n\t ${text}`)
+            console.info(`Wrote on "${path}": ${new Date().toString()}: \n\t ${text} `)
 
         if (reply && bot.lastWaker)
             bot.lastWaker.lastMessage.channel.send(new Discord.MessageEmbed()
@@ -81,7 +120,7 @@ export default class BotLoggerFunctions {
             if (!exists)
                 FileSystem.mkdir(this.logPathName, folderError => {
                     if (folderError)
-                        console.error(`Error creating log folder: \n\t ${folderError}`)
+                        console.error(`Error creating log folder: \n\t ${folderError} `)
                     else
                         console.error(`Logs folder is missing! Created new folder.`)
                 })
@@ -92,8 +131,8 @@ export default class BotLoggerFunctions {
 // These classes below are for formulating templates for the types of logging.
 
 class ErrorLog {
-    static reportPath: string = BotLoggerFunctions.logPathName + `/error_logs`
-    static filename: string = ErrorLog.reportPath + `/` + `crash_log_` +
+    static reportPath: string = BotLoggerFunctions.logPathName + `/ error_logs`
+    static filename: string = ErrorLog.reportPath + `/ ` + `crash_log_` +
         (new Date().getMonth() + 1) + `_` +
         new Date().getDate() + `_` +
         new Date().getFullYear().toString() +
@@ -101,27 +140,29 @@ class ErrorLog {
 
     static generateText(error: Error, bot: Bot) {
         return `
-        Error encountered during bot runtime! -> ${new Date().toLocaleTimeString()}
-        ---------
-        ${error.stack}
-        ---------
-        ${bot.waker.username} on ${bot.context?.guild.name}` +
+Error encountered during bot runtime! -> ${ new Date().toLocaleTimeString()}
+---------
+    ${ error.stack}
+---------
+    ${ bot.waker.username} on ${bot.context?.guild.name} ` +
             // Add extra details where necessary            
-            `${(() => {
+            `${
+            (() => {
                 if (bot.textChannel instanceof Discord.TextChannel) {
                     return `'s channel '${bot.textChannel.name}'`
                 }
-            })()}`
+            })()
+            } `
             // Finish adding details
             + ` said:
-            "${bot.context.toString()}"
-            `
+"${bot.context.toString()}"
+    `
     }
 }
 
 class UnknownCommandLog {
-    static reportPath: string = BotLoggerFunctions.logPathName + `/unknown_commands`
-    static filename: string = UnknownCommandLog.reportPath + `/` + `unknown_commands_` +
+    static reportPath: string = BotLoggerFunctions.logPathName + `/ unknown_commands`
+    static filename: string = UnknownCommandLog.reportPath + `/ ` + `unknown_commands_` +
         (new Date().getMonth() + 1) + `_` +
         new Date().getDate() + `_` +
         new Date().getFullYear().toString() +
@@ -130,11 +171,11 @@ class UnknownCommandLog {
     static generateText(message: Discord.Message | Discord.PartialMessage,
         bot: Bot) {
         return `
-        Unknown command attempted on ${new Date().toLocaleTimeString()}:
-        ---------
-        \t"${message}"
-        \t\tfrom user: ${message.author.username}
-        ---------
-        `
+Unknown command attempted on ${ new Date().toLocaleTimeString()}:
+---------
+\t"${message}"
+\t\tfrom user: ${ message.author.username}
+---------
+    `
     }
 }

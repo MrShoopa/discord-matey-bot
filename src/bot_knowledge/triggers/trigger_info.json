@@ -55,6 +55,10 @@
             "help swear",
             "help swear jar",
             "help swear counter"
+        ],
+        "suggest": [
+            "help suggest",
+            "help suggestion"
         ]
     },
     "help_special": {
@@ -370,6 +374,17 @@
                 "toggle": {
                     "title": "Toggle your Swear Jar",
                     "example": "megadork toggle swear jar"
+                }
+            }
+        },
+        "suggest": {
+            "_title": "Suggestion",
+            "_description": "Something missing or just wanna bug the developer?",
+            "_footer": "📧",
+            "_command_list": {
+                "default": {
+                    "title": "Send general mailed suggestion",
+                    "example": "megadork suggest *X*"
                 }
             }
         }

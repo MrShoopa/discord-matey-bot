@@ -16,7 +16,7 @@ import PHRASES_SING from '../../bot_knowledge/phrases/phrases_sing.json'
 
 export default class HelpTriggers {
     static helpAuthor = help_author
-    static lastUpdated = new Date(`2020-03-15T08:21:45.919Z`)
+    static lastUpdated = new Date(`2020-04-13T08:21:45.919Z`)
 
     static checkForHelpInfoRequest(message = TriggerHandlers.message) {
         for (const category of Object.keys(help_functions))
@@ -53,7 +53,8 @@ export default class HelpTriggers {
 
         message.channel.send(listedMessage)
 
-        for (const x of Object.keys(PHRASES_FRONT)) {
+        // ? Fix up later? (Noise?)
+        /* for (const x of Object.keys(PHRASES_FRONT)) {
             if (x.includes('help_secret'))
                 message.channel.send(PHRASES_FRONT.help_secret.main + '\n' + PHRASES_FRONT.help_secret.egg)
             else if (x.includes('help_conversation'))
@@ -61,7 +62,7 @@ export default class HelpTriggers {
                     PHRASES_FRONT.help_conversation.example.threat) +
                     '\n    ' +
                     PHRASES_FRONT.help_conversation.example.send_nudes)
-        }
+        } */
     }
 
     static replyForMusicInfo(message = TriggerHandlers.message) {

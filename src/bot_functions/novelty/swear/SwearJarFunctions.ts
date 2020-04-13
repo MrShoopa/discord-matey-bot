@@ -152,4 +152,20 @@ export default class BotModuleSwearJar {
 
         return count
     }
+
+    static toggleUserJar(message: Discord.Message | Discord.PartialMessage, trigger?: string) {
+        if (trigger) {
+            let bot: Bot = globalThis.bot
+            bot.preliminary(trigger, 'Toggle User Swear Jar', true)
+        }
+
+        let newBoolean = BotData.toggleUserProperty(message.author.id, 'swear_jar_disable')
+
+        if (newBoolean)
+            message.reply(Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.enable))
+        else
+            message.reply(Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.disable))
+
+        return true
+    }
 }

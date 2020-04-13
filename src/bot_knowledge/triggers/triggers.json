@@ -287,6 +287,20 @@
         ]
     },
     "swear_jar_triggers": {
+        "toggle": [
+            "tick swear",
+            "toggle swear",
+            "switch swear",
+            "flip swear",
+            "tick swear jar",
+            "toggle swear jar",
+            "switch swear jar",
+            "flip swear jar",
+            "tick swear game",
+            "toggle swear game",
+            "switch swear game",
+            "flip swear game"
+        ],
         "bad_words": [
             "4r5e",
             "5h1t",

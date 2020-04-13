@@ -50,6 +50,11 @@
             "help covid",
             "help covid-19",
             "help coronavirus"
+        ],
+        "swear": [
+            "help swear",
+            "help swear jar",
+            "help swear counter"
         ]
     },
     "help_special": {
@@ -354,6 +359,17 @@
                 "state": {
                     "title": "Fetch country cases",
                     "example": "megadork fetch covid cases for state *name of state*"
+                }
+            }
+        },
+        "swear": {
+            "_title": "Swear Jar",
+            "_description": "By default I come included with a bad word counter. I don't know why, but it's there.",
+            "_footer": "⁉",
+            "_command_list": {
+                "toggle": {
+                    "title": "Toggle your Swear Jar",
+                    "example": "megadork toggle swear jar"
                 }
             }
         }

@@ -1,6 +1,7 @@
 import Discord from 'discord.js'
 
 import Bot from '../Bot'
+import BotData from './DataHandler'
 import BotGeneralCommands from './general/GeneralCommands'
 import BotDefaultResponder from './general/DefaultCase'
 
@@ -32,6 +33,10 @@ export default class TriggerHandlers {
     static audioLocation = __dirname + '/bot_knowledge/audio'
 
     private static functions: any[] = [
+        // Toggles
+        TriggerHandlers.checkForSwearToggleRequest,
+
+        // Functional Requests
         TriggerHandlers.checkForBirthdayAppendRequest,
         TriggerHandlers.checkForBirthdayInquiryRequest,
 
@@ -49,7 +54,7 @@ export default class TriggerHandlers {
 
         TriggerHandlers.checkForTranslationRequest,
 
-        //  Third-Party APIs
+        // External Data Requests
         TriggerHandlers.checkForRedditFetchRequest,
         TriggerHandlers.checkForTwitterFetchRequest,
         TriggerHandlers.checkForMALFetchRequest,
@@ -58,16 +63,18 @@ export default class TriggerHandlers {
         TriggerHandlers.checkForLyricSingRequest,
         TriggerHandlers.checkForCovidInfoRequest,
 
+        // Management Requests
         TriggerHandlers.checkForRestrictedRoleAssignRequest,
         TriggerHandlers.checkForRestrictedRoleUnassignRequest,
 
+        // Minigame Requests
         TriggerHandlers.checkForDiceRollRequest,
         TriggerHandlers.checkFor8BallRequest,
 
+        // Bot Sudo Requests
         TriggerHandlers.checkForBotKillRequest,
 
         HelpTriggers.checkForHelpInfoRequest
-
     ]
 
     public static async validateMessage(message: Discord.Message | Discord.PartialMessage) {
@@ -140,10 +147,17 @@ export default class TriggerHandlers {
 
     /*  ---- Swear Jar Functionality ----  */
 
+    private static checkForSwearToggleRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.swear_jar_triggers.toggle)
+            if (message.toString().toLowerCase().includes(trigger))
+                return BotModuleSwearJar.toggleUserJar(message, trigger)
+    }
+
     private static checkForSwearWord(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.swear_jar_triggers.bad_words)
             if (message.toString().toLowerCase().includes(trigger))
-                return BotModuleSwearJar.dingUser(trigger)
+                if (BotData.getUserProperty(message.author.id, 'swear_jar_disable'))
+                    return BotModuleSwearJar.dingUser(trigger)
     }
 
     /*  ---- Birthday Functionality ----  */

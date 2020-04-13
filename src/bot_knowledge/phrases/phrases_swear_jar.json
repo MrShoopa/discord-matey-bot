@@ -38,6 +38,21 @@
         ]
     },
     "new_user": [
-        "i'm starting a jar for you, good luck"
-    ]
+        "i'm starting a jar for you, good luck",
+        "i'm watching your words BOI",
+        "CENSORSHIP INBOUND",
+        "counting them swear words"
+    ],
+    "disable": [
+        "I have disabled your swear jar.",
+        "I'll stop spamming ya threats on swearin'.",
+        "I have taken off your bad word censorship",
+        "China mode deactivated"
+    ],
+    "enable": [
+        "I have enabled your swear jar?",
+        "I'll start watching ya dirty mouth again.",
+        "BAD WORD POLICE ON WATCH AGAIN",
+        "China mode reactivated"
+    ],
 }

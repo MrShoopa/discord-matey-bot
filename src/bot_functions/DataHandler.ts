@@ -122,7 +122,7 @@ export default class BotData {
 	 * @param  {boolean} force? Erases the existing datastore if it already exists.
 	 */
 	static createNewDataFile(fetch?: boolean, force?: boolean) {
-		let dataSkeleton: Data.UserSave = { _id: '42069', sampleData: "Mega!" }
+		let dataSkeleton: Data.UserSave = { _id: '42069', _toggles: {}, sampleData: "Mega!" }
 
 		if (!force)
 			try {
@@ -168,7 +168,7 @@ export default class BotData {
 		if (userData === undefined || force) {
 			// ...if not found, create new data.
 			let newSave: Data.UserSave = {
-				_id: id
+				_id: id, _toggles: {}
 			}
 
 			data.push(newSave)
@@ -240,6 +240,36 @@ export default class BotData {
 					process.exit(404)
 				} else throw err
 			}
+	}
+
+	static getUserProperty(id: number | string, property: string) {
+		let data = this.getUserData(id, true)
+
+		if (data._toggles[property])
+			return data._toggles[property]
+		else
+			return this.toggleUserProperty(id, property, false)
+	}
+
+	static toggleUserProperty(id: number | string, property: string, forceBoolean?: boolean) {
+		let data = this.getUserData(id, true)
+		let boolChoice: boolean
+
+		if (data._toggles[property]) {
+			boolChoice = forceBoolean ? forceBoolean : !data._toggles[property]
+
+			data._toggles[property] = boolChoice
+		} else {
+			data._toggles[property] = forceBoolean ? forceBoolean : true
+
+			boolChoice = data._toggles[property]
+		}
+
+		console.log(`Toggled user preference '${property}' to ${boolChoice}.`)
+
+		this.updateUserData(id, data)
+
+		return boolChoice
 	}
 
 	static async getS3Object(name: string) {

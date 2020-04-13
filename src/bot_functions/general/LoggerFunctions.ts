@@ -36,8 +36,7 @@ export default class BotLoggerFunctions {
         message.content = message.toString().replace(trigger, '').trim()
 
         const transport = Mailer.createTransport({
-            host: AUTH.smtp.host,
-            port: AUTH.smtp.port,
+            service: AUTH.smtp.service,
             auth: {
                 user: AUTH.smtp.auth.user,
                 pass: AUTH.smtp.auth.pass
@@ -48,7 +47,11 @@ export default class BotLoggerFunctions {
             from: AUTH.smtp.email_from,
             to: AUTH.smtp.email_to,
             subject: `${message.author.username} Has a Suggestion for Megadork!`,
-            text: `Something something... \n Suggestion: ${message.toString()} \n\n Guild: ${message.guild.name} \n\n Url: ${message.url}`
+            text: `Something something was sent at ${message.createdAt.toLocaleDateString()} ${message.createdAt.toLocaleTimeString()}... \n\n` +
+                `Suggestion: "${message.toString()}" \n` +
+                `Guild: ${message.guild.name} (Joined: ${message.guild.joinedAt.toLocaleDateString()}) -> ID ${message.guild.id}\n`
+                + `Url: ${message.url}\n\n\n\n\n`
+                + `Visit Papertrail for logs: https://my.papertrailapp.com/systems/megadork/events`
         }
 
         try {

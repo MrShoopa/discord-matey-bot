@@ -21,10 +21,10 @@ export default class PostReadyFunctions {
         }
 
         if (this.checkDevMode()) {
+            this.applyDevMode()
+        } else {
             globalThis.bot.user.setUsername("Megadork");
             BotDiscordActivity.updateRandomStatus()
-        } else {
-            this.applyDevMode()
         }
 
         TimelyFunctions.timeContexual()
@@ -63,8 +63,8 @@ export default class PostReadyFunctions {
     static applyDevMode() {
         let bot: Bot = globalThis.bot
 
-        BotDiscordActivity.useDevModeStatus()
+        //BotDiscordActivity.useDevModeStatus()
 
-        bot.user.setUsername("`B8tadork");
+        //bot.user.setUsername("`B8tadork");
     }
 }

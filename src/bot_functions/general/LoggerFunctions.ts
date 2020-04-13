@@ -34,7 +34,7 @@ export default class BotLoggerFunctions {
             UnknownCommandLog.filename, UnknownCommandLog.reportPath)
 
         if (logInConsole)
-            console.info(`Unknown command logged on: ${new Date().toString()}:\n\t ${message.toString()}`)
+            console.info(`Unknown command logged on ${new Date().toString()}: '${message.toString()}'`)
 
         if (reply && bot.lastWaker)
             bot.lastWaker.lastMessage.channel.send(new Discord.MessageEmbed()

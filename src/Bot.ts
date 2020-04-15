@@ -16,7 +16,6 @@ import { main_trigger } from './bot_knowledge/triggers/triggers.json'
 import BotLoggerFunctions from './bot_functions/general/LoggerFunctions'
 
 import BotModuleMusic from './bot_functions/music/MusicFunctions'
-import { read, readFileSync } from 'fs'
 
 export enum SongState {
     Unknown = 'unknown',
@@ -162,7 +161,10 @@ export default class Bot extends Discord.Client {
                     this.context.channel.send('This track is... loop-de-looped! 💫🤹‍♀️')
 
                 try {
-                    let result = await playAudioFile(song, connection).catch(e => { throw e })
+                    let result = await playAudioFile(song, connection).catch(e => {
+                        this.context.channel.send(`I couldn't play that right now. Try again later.`)
+                        throw e
+                    })
 
                     return new Promise(resolve => {
                         resolve(result)
@@ -305,7 +307,10 @@ export default class Bot extends Discord.Client {
                     this.context.channel.send(`Looks like I'm looping this one! 💫🤹‍♀️`)
 
                 try {
-                    let result = await playAudioURL(connection).catch(e => { throw e })
+                    let result = await playAudioURL(connection).catch(e => {
+                        this.context.channel.send(`I couldn't play that right now. Try again later.`)
+                        throw e
+                    })
                     if (result == SongState.Unknown)
                         this.context.channel.send(`I couldn't play that source. Did you type in your URL correctly?`)
 
@@ -421,7 +426,6 @@ export default class Bot extends Discord.Client {
                         console.groupEnd()
                         console.group()
                         console.log(`Now playing song from ${url}.`)
-                        console.log(dispatcher.paused)
 
                         if (!replaying)
                             bot.textChannel

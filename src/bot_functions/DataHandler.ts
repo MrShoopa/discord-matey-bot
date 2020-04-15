@@ -72,7 +72,7 @@ export default class BotData {
 	 * @param  {number|string} id User's Discord ID
 	 * @param  {boolean} log? If true, logs extra info to console.
 	 */
-	static getUserData(id: number | string, createIfMissing?: boolean):
+	static getUserData(id: number | string, createIfMissing?: boolean, skipLog?: boolean):
 		Data.UserSave {
 		if (typeof id === 'number') id = id.toString()
 
@@ -93,7 +93,7 @@ export default class BotData {
 			if (createIfMissing) return this.createUserData(id)
 			else return null
 		} else {
-			console.log(`User data for ${id} accessed!`)
+			if (skipLog) console.log(`User data for ${id} accessed!`)
 			return userData
 		}
 	}
@@ -243,7 +243,7 @@ export default class BotData {
 	}
 
 	static getUserProperty(id: number | string, property: string) {
-		let data = this.getUserData(id, true)
+		let data = this.getUserData(id, true, true)
 
 		if (!data._toggles)
 			data._toggles = {}

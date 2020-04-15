@@ -21,8 +21,8 @@
         "@discordjs/opus": "^0.1.0",
         "@types/aws-sdk": "^2.7.0",
         "@types/google-images": "^2.1.0",
-        "@types/node": "^13.11.0",
-        "@types/node-fetch": "^2.5.5",
+        "@types/node": "^13.11.1",
+        "@types/node-fetch": "^2.5.6",
         "@types/request": "^2.48.4",
         "@types/snekfetch": "^4.0.2",
         "@types/twitter": "^1.7.0",
@@ -32,7 +32,7 @@
         "eslint": "^6.8.0",
         "ffmpeg": "0.0.4",
         "fs-extra": "^9.0.0",
-        "genius-lyrics": "^1.0.9",
+        "genius-lyrics": "^2.0.0",
         "give-me-a-joke": "^0.2.5",
         "google-images": "^2.1.0",
         "google-it": "^1.5.0",
@@ -57,7 +57,7 @@
         "wow-lexicon": "0.0.3",
         "youtube-api": "^2.0.10",
         "youtube-search": "^1.1.4",
-        "ytdl-core": "^2.0.1"
+        "ytdl-core": "^2.1.0"
     },
     "devDependencies": {
         "@types/chai": "^4.2.11",

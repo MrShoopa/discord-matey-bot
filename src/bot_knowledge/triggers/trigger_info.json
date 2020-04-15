@@ -59,6 +59,10 @@
         "suggest": [
             "help suggest",
             "help suggestion"
+        ],
+        "joke": [
+            "help joke",
+            "help jokes"
         ]
     },
     "help_special": {
@@ -385,6 +389,39 @@
                 "default": {
                     "title": "Send general mailed suggestion",
                     "example": "megadork suggest *X*"
+                }
+            }
+        },
+        "joke": {
+            "_title": "Jokes",
+            "_description": "Need a quick laugh? I got jokes! Credits to icanhazjoke, Chuck Norris API, and Jokes API for providing these fun phrases.",
+            "_footer": "📧",
+            "_command_list": {
+                "default": {
+                    "title": "Get a joke",
+                    "example": "megadork get joke"
+                },
+                "OTD": {
+                    "default": {
+                        "title": "Fetch joke of the day",
+                        "example": "megadork get joke of the day (*optional topic*)"
+                    },
+                    "topics": {
+                        "title": "*Topic Keywords*",
+                        "example": "animal, knock, blonde"
+                    }
+                },
+                "chuck": {
+                    "title": "Fetch Chuck Norris joke",
+                    "example": "megadork get joke chuck"
+                },
+                "dad": {
+                    "title": "Fetch a dad joke!",
+                    "example": "megadork get joke dad"
+                },
+                "custom": {
+                    "title": "Fetch a customized name joke!",
+                    "example": "megadork get custom joke name *X* *X*"
                 }
             }
         }

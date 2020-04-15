@@ -22,6 +22,7 @@ import BotModuleQuote from './fetching/quote/QuoteFunctions'
 import BotModuleLyric from './fetching/lyrics/LyricFunctions'
 import BotModuleTranslation from './language/TranslationFunctions'
 import BotModuleCovid from './fetching/info/current/CovidFunctions'
+import BotModuleJoke from './fetching/joke/JokeFunctions'
 
 import BotModuleFun from './general/FunFunctions'
 import BotWordplay from './wordplay/WordplayFunctions'
@@ -62,6 +63,7 @@ export default class TriggerHandlers {
         TriggerHandlers.checkForQuoteFetchRequest,
         TriggerHandlers.checkForLyricFetchRequest,
         TriggerHandlers.checkForLyricSingRequest,
+        TriggerHandlers.checkForJokeRequest,
         TriggerHandlers.checkForCovidInfoRequest,
 
         // Management Requests
@@ -305,6 +307,12 @@ export default class TriggerHandlers {
         for (const trigger of TRIGGERS.lyric_sing.default)
             if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleLyric.singSongInChat(message.toString(), trigger)
+    }
+
+    private static checkForJokeRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.joke.default)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotModuleJoke.fireJokeMessage(trigger)
     }
 
     private static checkForCovidInfoRequest(message = TriggerHandlers.message) {

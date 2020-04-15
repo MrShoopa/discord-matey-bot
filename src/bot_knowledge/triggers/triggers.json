@@ -1047,5 +1047,44 @@
             "suggest to developer",
             "suggestion to developer"
         ]
+    },
+    "joke": {
+        "default": [
+            "joke",
+            "get joke",
+            "fetch joke",
+            "joke me"
+        ],
+        "of_the_day": {
+            "base": [
+                "of day",
+                "of the day",
+                "of today",
+                "today"
+            ],
+            "blonde": [
+                "blonde",
+                "white"
+            ],
+            "knock": [
+                "knock"
+            ],
+            "animal": [
+                "animal"
+            ]
+        },
+        "chuck": [
+            "chuck",
+            "norris"
+        ],
+        "custom": [
+            "custom",
+            "custom for",
+            "custom with name"
+        ],
+        "dad": [
+            "dad",
+            "cringe"
+        ]
     }
 }

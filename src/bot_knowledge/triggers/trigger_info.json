@@ -367,6 +367,10 @@
                 "state": {
                     "title": "Fetch country cases",
                     "example": "megadork fetch covid cases for state *name of state*"
+                },
+                "continent": {
+                    "title": "Fetch continent cases",
+                    "example": "megadork fetch covid cases for continent *name of state*"
                 }
             }
         },

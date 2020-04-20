@@ -1,13 +1,11 @@
 import Discord, { Guild } from 'discord.js'
 import Bot from "../../../Bot"
 import BotData from "../../DataHandler"
-
 import { Audio } from '../../../types/index'
-
 import { you } from '../../../user_creds.json'
-import { swear_jar_triggers } from '../../../bot_knowledge/triggers/triggers.json'
 
 import PHRASES_SWEAR_JAR from '../../../bot_knowledge/phrases/phrases_swear_jar.json'
+import { swear_jar_triggers } from '../../../bot_knowledge/triggers/triggers.json'
 import BotModuleSwearWhitelist from './WhitelistFunctions'
 import BotModuleSwearBlacklist from './BlacklistFunctions'
 
@@ -19,6 +17,9 @@ export default class BotModuleSwearJar {
         let wordMatches: number = 0
 
         bot.preliminary(trigger, 'Swear Jar')
+
+        for (const word of words)
+            this.checkForSoundReply(word, bot.context)
 
         for (const word of words)
             if (BotModuleSwearBlacklist.banUserIfInBlacklist(word, bot.context.member))
@@ -35,6 +36,7 @@ export default class BotModuleSwearJar {
         }
 
         if (wordMatches !== 0) {
+
             let userData = BotData.getUserData(bot.context.author.id, true)
 
             if (userData === undefined)
@@ -177,7 +179,13 @@ export default class BotModuleSwearJar {
         for (let key of Object.keys(list))
             for (let cand of list[key])
                 if (word === cand) {
-                    this.replyWithSound(message, Audio.SFX.)
+                    let bot: Bot = globalThis.bot
+                    console.log(`Swear Jar: Playing SFX for matched word '${word}' towards '${message.author.username}'`)
+                    try {
+                        bot.playAudioFromURL(key, false, false, null, true)
+                    } catch (err) {
+                        console.log(`Swear Jar: Failed to play SFX on this key '${key}'`)
+                    }
                 }
     }
 

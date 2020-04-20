@@ -131,7 +131,8 @@ export default class Bot extends Discord.Client {
             return null
     }
 
-    async playAudioFromFiles(song: Datypes.Audio.SongObject | string, loop?: boolean, gapless?: boolean, trigger?: string)
+    async playAudioFromFiles(song: Datypes.Audio.SongObject | string, loop?: boolean, gapless?: boolean,
+        trigger?: string, skipLog?: boolean)
         : Promise<SongState> {
         let dispatcher: Discord.StreamDispatcher
         let songInfo: Datypes.Stream.SongInfo
@@ -228,7 +229,7 @@ export default class Bot extends Discord.Client {
                         else
                             console.log(`Now playing local file: ${song}`)
 
-                        if (!replaying)
+                        if (!replaying && !skipLog)
                             bot.textChannel
                                 .send(BotModuleMusic.generatePlaybackMessage(songInfo))
                     })
@@ -270,7 +271,8 @@ export default class Bot extends Discord.Client {
         }
     }
 
-    async playAudioFromURL(url: string, loop?: boolean, gapless?: boolean, trigger?: string)
+    async playAudioFromURL(url: string, loop?: boolean, gapless?: boolean, trigger?: string,
+        skipLog?: boolean)
         : Promise<SongState> {
         var dispatcher: Discord.StreamDispatcher
         var stream: Stream.Readable | FileSystem.ReadStream
@@ -427,7 +429,7 @@ export default class Bot extends Discord.Client {
                         console.group()
                         console.log(`Now playing song from ${url}.`)
 
-                        if (!replaying)
+                        if (!replaying && !skipLog)
                             bot.textChannel
                                 .send(BotModuleMusic.generatePlaybackMessage(songInfo))
 

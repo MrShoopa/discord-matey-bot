@@ -93,7 +93,7 @@ export default class BotData {
 			if (createIfMissing) return this.createUserData(id)
 			else return null
 		} else {
-			if (skipLog) console.log(`User data for ${id} accessed!`)
+			if (!skipLog) console.log(`User data for ${id} accessed!`)
 			return userData
 		}
 	}
@@ -248,7 +248,7 @@ export default class BotData {
 		if (!data._toggles)
 			data._toggles = {}
 
-		if (data._toggles[property])
+		if (data._toggles[property] !== undefined)
 			return data._toggles[property]
 		else
 			return this.toggleUserProperty(id, property, false)
@@ -261,7 +261,7 @@ export default class BotData {
 		if (!data._toggles)
 			data._toggles = {}
 
-		if (data._toggles[property]) {
+		if (data._toggles[property] !== undefined) {
 			boolChoice = forceBoolean ? forceBoolean : !data._toggles[property]
 
 			data._toggles[property] = boolChoice

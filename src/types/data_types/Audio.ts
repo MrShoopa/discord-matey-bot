@@ -30,5 +30,7 @@ export module Audio {
             filePath: `\\bot_knowledge\\audio\\sfx\\music_transition.mp3`,
             name: "music_transition"
         }
+
+        static fanSFX: 
     }
 }

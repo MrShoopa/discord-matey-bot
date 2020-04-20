@@ -2,6 +2,9 @@ import Discord, { Guild } from 'discord.js'
 import Bot from "../../../Bot"
 import BotData from "../../DataHandler"
 
+import { Audio } from '../../../types/index'
+
+import { you } from '../../../user_creds.json'
 import { swear_jar_triggers } from '../../../bot_knowledge/triggers/triggers.json'
 
 import PHRASES_SWEAR_JAR from '../../../bot_knowledge/phrases/phrases_swear_jar.json'
@@ -153,6 +156,31 @@ export default class BotModuleSwearJar {
         return count
     }
 
+    static async replyWithSound(message: Discord.Message | Discord.PartialMessage, sound: Audio.SFX) {
+        let bot: Bot = globalThis.bot
+
+        let userVC = message.member.voice.channel
+
+        if (userVC) {
+            let connection = await userVC.join()
+
+            console.log(`Swear Jar: Playing ${sound.name} -for-> ${message.author.username}`)
+            bot.playSFX(connection, sound)
+        } else {
+            console.log(`Swear Jar: Skipped playing ${sound.name} -for-> ${message.author.username}. No voice connection.`)
+        }
+    }
+
+    static checkForSoundReply(word: string, message: Discord.Message | Discord.PartialMessage) {
+        const list = you.word_list.sound_reply
+
+        for (let key of Object.keys(list))
+            for (let cand of list[key])
+                if (word === cand) {
+                    this.replyWithSound(message, Audio.SFX.)
+                }
+    }
+
     static toggleUserJar(message: Discord.Message | Discord.PartialMessage, trigger?: string) {
         if (trigger) {
             let bot: Bot = globalThis.bot
@@ -168,4 +196,5 @@ export default class BotModuleSwearJar {
 
         return true
     }
+
 }

@@ -195,7 +195,7 @@ export default class BotModuleSwearJar {
             bot.preliminary(trigger, 'Toggle User Swear Jar', true)
         }
 
-        let newBoolean = BotData.toggleUserProperty(message.author.id, 'swear_jar_disable')
+        let newBoolean = BotData.toggleUserProperty(message.author.id, 'swear_jar')
 
         if (newBoolean)
             message.reply(Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.enable))

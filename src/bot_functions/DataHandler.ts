@@ -242,7 +242,7 @@ export default class BotData {
 			}
 	}
 
-	static getUserProperty(id: number | string, property: string) {
+	static getUserProperty(id: number | string, property: string, enableIfNone?: boolean) {
 		let data = this.getUserData(id, true, true)
 
 		if (!data._toggles)
@@ -251,7 +251,7 @@ export default class BotData {
 		if (data._toggles[property] !== undefined)
 			return data._toggles[property]
 		else
-			return this.toggleUserProperty(id, property, false)
+			return this.toggleUserProperty(id, property, enableIfNone)
 	}
 
 	static toggleUserProperty(id: number | string, property: string, forceBoolean?: boolean) {

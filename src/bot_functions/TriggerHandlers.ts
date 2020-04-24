@@ -160,11 +160,9 @@ export default class TriggerHandlers {
     }
 
     private static checkForSwearWord(message = TriggerHandlers.message) {
-        let bool = BotData.getUserProperty(message.author.id, 'swear_jar_disable')
-
         for (const trigger of TRIGGERS.swear_jar_triggers.bad_words)
             if (message.toString().toLowerCase().includes(trigger))
-                if (!BotData.getUserProperty(message.author.id, 'swear_jar_disable'))
+                if (BotData.getUserProperty(message.author.id, 'swear_jar', true))
                     return BotModuleSwearJar.dingUser(trigger)
     }
 

@@ -1,8 +1,11 @@
 import Discord from 'discord.js'
 import Bot from '../../../Bot'
-import JikanTS from 'jikants'
+
+import { JikanApiClient, JikanApiType } from '@thorbens/jikan-api'
 
 export default class BotModuleAnime {
+
+    static MAL = new JikanApiClient()
 
     static async fireAnimeInfoMessageOfName(trigger: string) {
         let bot: Bot = globalThis.bot
@@ -10,10 +13,16 @@ export default class BotModuleAnime {
         bot.context.channel.send(await this.fetchBuiltMsgAnimeInfoMessageOfName(bot.context.toString(), trigger))
     }
 
+    static async fireMangaInfoMessageOfName(trigger: string) {
+        let bot: Bot = globalThis.bot
+
+        bot.context.channel.send(await this.fetchBuiltMsgMangaInfoMessageOfName(bot.context.toString(), trigger))
+    }
+
     static async fetchBuiltMsgAnimeInfoMessageOfName(query: string, trigger?: string):
         Promise<Discord.Message | Discord.MessageEmbed> {
         let bot: Bot = globalThis.bot
-        bot.preliminary(trigger, 'jikanTS anime fetch', true)
+        bot.preliminary(trigger, 'MyAnimeList anime fetch', true)
 
         query = query.toLowerCase()
 
@@ -27,21 +36,51 @@ export default class BotModuleAnime {
                 { content: "I couldn't fetch swag info of your animoo at the moment." },
                 bot.context.channel as Discord.TextChannel | Discord.DMChannel)
 
-        return BotModuleAnime.generateAnimeInfoMessage(anime)
+        return BotModuleAnime.generateInfoMessage(anime)
     }
 
-    static generateAnimeInfoMessage(anime) {
+    static async fetchBuiltMsgMangaInfoMessageOfName(query: string, trigger?: string):
+        Promise<Discord.Message | Discord.MessageEmbed> {
+        let bot: Bot = globalThis.bot
+        bot.preliminary(trigger, 'MyAnimeList manga fetch', true)
+
+        query = query.toLowerCase()
+
+        if (query.includes(trigger))
+            query = query.replace(trigger, '').trim()
+
+        let anime = await BotModuleAnime.fetchMangaOfName(query)
+
+        if (anime === undefined)
+            return new Discord.Message(bot.user.client,
+                { content: "I couldn't fetch swag info of your mango at the moment." },
+                bot.context.channel as Discord.TextChannel | Discord.DMChannel)
+
+        return BotModuleAnime.generateInfoMessage(anime)
+    }
+
+    static generateInfoMessage(anime) {
         let message = new Discord.MessageEmbed()
             .setColor('#0099ff')
             .setTitle(`Sup weeb! Check out **${anime.title}**:\n`)
             .setAuthor('Megaweeb Finds')
             .setImage(anime.image_url)
             .setURL(anime.url)
-            .addFields(
-                { name: 'MAL Score', value: `${anime.score}`, inline: true },
-                { name: 'Rated', value: `${anime.rated}`, inline: true },
-                { name: 'Synopsis', value: `${anime.synopsis}` }
-            )
+        if (anime.synopsis)
+            message.setDescription(`${anime.synopsis}`)
+
+        if (anime.type)
+            message.addFields({ name: 'Type', value: `${anime.type}`, inline: true })
+        if (anime.score)
+            message.addFields({ name: 'MAL Score', value: `${anime.score}`, inline: true })
+        if (anime.start_date)
+            message.setTimestamp(anime.start_date)
+        if (anime.rated)
+            message.addFields({ name: 'Rated', value: `${anime.rated}`, inline: true })
+
+        if (anime.volumes)
+            message.addFields({ name: 'Volumes', value: `${anime.volumes}`, inline: true })
+
         if (anime.airing)
             message.setFooter('This show is currently airing!')
 
@@ -49,14 +88,31 @@ export default class BotModuleAnime {
     }
 
     static async fetchAnimeOfName(name: string = 'Boku', multipleResults = false) {
-        return await JikanTS.Search.search(name, "anime")
+        return await this.MAL.search(name, JikanApiType.ANIME)
             .catch(error => {
                 let bot: Bot = globalThis.bot
                 bot.saveBugReport(error, this.fetchAnimeOfName.name)
                 return null
             })
             .then(anime => {
-                console.log(`Anime fetched for ${name}`)
+                console.log(`Anime fetched for '${name}' via MAL`)
+                if (anime)
+                    if (multipleResults)
+                        return anime.results
+                    else
+                        return anime.results[0]
+            })
+    }
+
+    static async fetchMangaOfName(name: string = 'Boku', multipleResults = false) {
+        return await this.MAL.search(name, JikanApiType.MANGA)
+            .catch(error => {
+                let bot: Bot = globalThis.bot
+                bot.saveBugReport(error, this.fetchMangaOfName.name)
+                return null
+            })
+            .then(anime => {
+                console.log(`Manga fetched for '${name}' via MAL`)
                 if (anime)
                     if (multipleResults)
                         return anime.results

@@ -19,6 +19,7 @@
     },
     "dependencies": {
         "@discordjs/opus": "^0.1.0",
+        "@thorbens/jikan-api": "^2.0.0-alpha.11",
         "@types/aws-sdk": "^2.7.0",
         "@types/google-images": "^2.1.0",
         "@types/node": "^13.11.1",
@@ -39,7 +40,6 @@
         "googleapis": "^48.0.0",
         "horoscope": "^2.0.1",
         "inspirational-quotes": "^1.0.8",
-        "jikants": "^1.2.13",
         "lodash": "^4.17.15",
         "m3u8stream": "^0.6.5",
         "node-fetch": "^2.6.0",

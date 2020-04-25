@@ -59,7 +59,8 @@ export default class TriggerHandlers {
         // External Data Requests
         TriggerHandlers.checkForRedditFetchRequest,
         TriggerHandlers.checkForTwitterFetchRequest,
-        TriggerHandlers.checkForMALFetchRequest,
+        TriggerHandlers.checkForMALAnimeFetchRequest,
+        TriggerHandlers.checkForMALMangaFetchRequest,
         TriggerHandlers.checkForQuoteFetchRequest,
         TriggerHandlers.checkForLyricFetchRequest,
         TriggerHandlers.checkForLyricSingRequest,
@@ -283,11 +284,18 @@ export default class TriggerHandlers {
         //  Get latest Tweet from specific user
     }
 
-    private static checkForMALFetchRequest(message = TriggerHandlers.message) {
+    private static checkForMALAnimeFetchRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.anime_fetch.default)
             if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleAnime.fireAnimeInfoMessageOfName(trigger)
-        //  Get anime recommendation [from My Anime List (JikanTS)]
+        //  Get anime recommendation [from My Anime List (Jikan API)]
+    }
+
+    private static checkForMALMangaFetchRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.manga_fetch.default)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotModuleAnime.fireMangaInfoMessageOfName(trigger)
+        //  Get manga recommendation [from My Anime List (Jikan API)]
     }
 
     private static checkForQuoteFetchRequest(message = TriggerHandlers.message) {

@@ -861,6 +861,18 @@
             "get a new anime"
         ]
     },
+    "manga_fetch": {
+        "default": [
+            "fetch manga",
+            "get manga",
+            "get an manga"
+        ],
+        "new": [
+            "fetch new manga",
+            "get new manga",
+            "get a new manga"
+        ]
+    },
     "quote_fetch": {
         "default": [
             "quote",

@@ -934,6 +934,21 @@
                 "give a movie quote",
                 "give me a movie quote"
             ]
+        },
+        "star_wars": {
+            "default": [
+                "star wars quote",
+                "random star quote",
+                "fetch star wars quote",
+                "fetch a star wars quote",
+                "fetch star wars quote",
+                "fetch a star wars quote",
+                "get star wars quote",
+                "get a star wars quote",
+                "give star wars quote",
+                "give a star wars quote",
+                "give me a star wars quote"
+            ]
         }
     },
     "dice_roll": [
@@ -1100,6 +1115,25 @@
         "dad": [
             "dad",
             "cringe"
+        ]
+    },
+    "name_change": {
+        "default": [
+            "give me random name",
+            "change my name",
+            "random name change"
+        ],
+        "funky": [
+            "give me random funky name",
+            "change my name to a funky one",
+            "funky random name change",
+            "random funky random name change"
+        ],
+        "star_wars": [
+            "give me random star wars name",
+            "change my name to a star wars one",
+            "star wars name change",
+            "random star wars name change"
         ]
     }
 }

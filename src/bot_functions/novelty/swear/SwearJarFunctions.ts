@@ -1,13 +1,14 @@
 import Discord, { Guild } from 'discord.js'
 import Bot from "../../../Bot"
 import BotData from "../../DataHandler"
-import { Audio } from '../../../types/index'
+import { Audio, Data } from '../../../types/index'
 import { you } from '../../../user_creds.json'
 
 import PHRASES_SWEAR_JAR from '../../../bot_knowledge/phrases/phrases_swear_jar.json'
 import { swear_jar_triggers } from '../../../bot_knowledge/triggers/triggers.json'
 import BotModuleSwearWhitelist from './WhitelistFunctions'
 import BotModuleSwearBlacklist from './BlacklistFunctions'
+import BotModuleNameGenerator from '../name/RandomNameFunctions'
 
 export default class BotModuleSwearJar {
     static dingUser(trigger: string) {
@@ -81,6 +82,8 @@ export default class BotModuleSwearJar {
                     name: `Watch out, ${bot.context.member.displayName}!`,
                     value: `Your swear score has been updated to ${userData.swear_score}`
                 })
+
+            this.thresholdCheck(userData)
 
             return bot.context.channel.send(swearDetectedMessage)
         }
@@ -187,6 +190,26 @@ export default class BotModuleSwearJar {
                         console.log(`Swear Jar: Failed to play SFX on this key '${key}'`)
                     }
                 }
+    }
+
+    static thresholdCheck(userData: Data.UserSave) {
+        let score = userData.swear_score
+        let message: Discord.Message = globalThis.bot.context
+        console.log(`Swear Jar: Doing treshold check...`)
+
+        if ((score / 100) == 0) {
+            console.log(`Swear Jar: Giving the user a random meme.`)
+            //TODO
+        } else if ((score / 1000) == 0) {
+            console.log(`Swear Jar: Giving the user a random name.`)
+
+            BotModuleNameGenerator.giveUserRandomName(message.member, 'funky', true)
+        } else {
+            console.log(`Swear Jar: ...no checkpoint reached.`)
+            return
+        }
+
+        console.log(`Swear Jar: ... checkpoint matched! Something happened to the user!`)
     }
 
     static toggleUserJar(message: Discord.Message | Discord.PartialMessage, trigger?: string) {

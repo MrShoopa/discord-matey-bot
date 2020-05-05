@@ -63,6 +63,10 @@
         "joke": [
             "help joke",
             "help jokes"
+        ],
+        "name": [
+            "help name",
+            "help name change"
         ]
     },
     "help_special": {
@@ -428,6 +432,25 @@
                     "example": "megadork get custom joke name *X* *X*"
                 }
             }
-        }
+        },
+        "name": {
+            "_title": "Names",
+            "_description": "Need a new name? (Megadork must be of a higher role than you to change your name!)",
+            "_footer": "🆔",
+            "_command_list": {
+                "random_name_change": {
+                    "title": "Change to random name",
+                    "example": "megadork random name change"
+                },
+                "random_name_change_funky": {
+                    "title": "Change to random funky name",
+                    "example": "megadork random funky name change"
+                },
+                "random_name_change_starwars": {
+                    "title": "Change to random Star Wars name",
+                    "example": "megadork random star wars name change"
+                },
+            }
+        },
     }
 }

@@ -13,14 +13,19 @@ export default class BotModuleQuote {
                 return bot.textChannel.send(await this.fetchQuoteOfTheDay(trigger))
 
         //! API Depricated?  Movie quote [from MovieQuoter]
-        if (bot.containsRightTextContext('quote of the day', true))
-            return bot.textChannel.send(await this.fetchQuoteOfTheDay())
-
+        for (const trigger of TRIGGERS.quote_fetch.movie.default)
+            if (bot.context.toString().toLowerCase().includes(trigger))
+                return bot.textChannel.send(await this.fetchMovieQuote(trigger))
 
         //  Inspirational quote [from inspirational-quotes]
         for (const trigger of TRIGGERS.quote_fetch.inspirational)
             if (bot.context.toString().toLowerCase().includes(trigger))
                 return bot.textChannel.send(await this.fetchInspirationalQuote(trigger))
+
+        //  Star Wars quote [from star-wars-quotes]
+        for (const trigger of TRIGGERS.quote_fetch.star_wars.default)
+            if (bot.context.toString().toLowerCase().includes(trigger))
+                return bot.textChannel.send(await this.fetchStarWarsQuote(trigger))
     }
 
     static async fetchQuoteOfTheDay(trigger?: string, bot: Bot = globalThis.bot) {
@@ -110,6 +115,29 @@ export default class BotModuleQuote {
         return new Discord.MessageEmbed()
             .setTitle(quoteObject.text)
             .setAuthor(quoteObject.author)
+            .setFooter('Megadorky Quotter 💬🌟')
+    }
+
+    static async fetchStarWarsQuote(trigger?: string, bot: Bot = globalThis.bot) {
+        if (trigger) bot.preliminary(trigger, 'quote fetch - star wars', true)
+
+        let quoteObject: { text: any; starWarsQuote: any; }
+
+        await import('starwars').then(quoteMaster => {
+            try {
+                quoteObject = quoteMaster.default()
+            } catch (e) {
+                bot.saveBugReport(e, this.fetchInspirationalQuote.name)
+                return "Looks like I can't fetch quotes right now..."
+            }
+        })
+
+        console.log("Quote Object Returned from star-wars-quotes: ",
+            quoteObject)
+
+        return new Discord.MessageEmbed()
+            .setTitle(quoteObject)
+            .setAuthor(`From a galaxy far far away...`)
             .setFooter('Megadorky Quotter 💬🌟')
     }
 }

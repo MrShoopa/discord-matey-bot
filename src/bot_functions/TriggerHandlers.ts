@@ -23,6 +23,7 @@ import BotModuleLyric from './fetching/lyrics/LyricFunctions'
 import BotModuleTranslation from './language/TranslationFunctions'
 import BotModuleCovid from './fetching/info/current/CovidFunctions'
 import BotModuleJoke from './fetching/joke/JokeFunctions'
+import BotModuleNameGenerator from './novelty/name/RandomNameFunctions'
 
 import BotModuleFun from './general/FunFunctions'
 import BotWordplay from './wordplay/WordplayFunctions'
@@ -68,6 +69,7 @@ export default class TriggerHandlers {
         TriggerHandlers.checkForCovidInfoRequest,
 
         // Management Requests
+        TriggerHandlers.checkForNameChangeRequest,
         TriggerHandlers.checkForRestrictedRoleAssignRequest,
         TriggerHandlers.checkForRestrictedRoleUnassignRequest,
 
@@ -299,7 +301,7 @@ export default class TriggerHandlers {
     }
 
     private static checkForQuoteFetchRequest(message = TriggerHandlers.message) {
-        if (message.toString().toLowerCase().startsWith('quote'))
+        if (message.toString().toLowerCase().includes('quote'))
             return BotModuleQuote.fireQuoteMessage()
     }
 
@@ -328,6 +330,12 @@ export default class TriggerHandlers {
     }
 
     /*  ----    Server-Management   ---- */
+
+    private static checkForNameChangeRequest(message = TriggerHandlers.message) {
+        if (message.toString().toLowerCase().includes('name'))
+            return BotModuleNameGenerator.processRandomNameRequest()
+        //  Set Random Name   
+    }
 
     private static checkForRestrictedRoleAssignRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.server_mod_triggers.set_restricted_role)

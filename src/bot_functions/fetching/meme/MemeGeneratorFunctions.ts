@@ -64,11 +64,11 @@ export default class BotModuleMeme {
 
             image = await this.ImgFlip.meme(templateId, {
                 captions: params,
-                path: `../save_data/meme_generations/${topic}.png`
+                path: `../${topic}.png`
             })
         } else {
             image = await this.ImgFlip.meme(templateId, {
-                path: `../save_data/meme_generations/${topic}.png`
+                path: `../${topic}.png`
             })
         }
 

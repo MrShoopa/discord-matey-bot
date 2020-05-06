@@ -24,6 +24,7 @@ import BotModuleTranslation from './language/TranslationFunctions'
 import BotModuleCovid from './fetching/info/current/CovidFunctions'
 import BotModuleJoke from './fetching/joke/JokeFunctions'
 import BotModuleNameGenerator from './novelty/name/RandomNameFunctions'
+import BotModuleMeme from './fetching/meme/MemeGeneratorFunctions'
 
 import BotModuleFun from './general/FunFunctions'
 import BotWordplay from './wordplay/WordplayFunctions'
@@ -67,6 +68,7 @@ export default class TriggerHandlers {
         TriggerHandlers.checkForLyricSingRequest,
         TriggerHandlers.checkForJokeRequest,
         TriggerHandlers.checkForCovidInfoRequest,
+        TriggerHandlers.checkForMemeRequest,
 
         // Management Requests
         TriggerHandlers.checkForNameChangeRequest,
@@ -327,6 +329,12 @@ export default class TriggerHandlers {
         for (const trigger of TRIGGERS.covid.default)
             if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleCovid.fireCovidInfoMessage(trigger)
+    }
+
+    private static checkForMemeRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.meme_triggers.base)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotModuleMeme.fireMemeRequest()
     }
 
     /*  ----    Server-Management   ---- */

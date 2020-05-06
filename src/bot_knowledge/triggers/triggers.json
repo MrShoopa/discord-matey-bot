@@ -1135,5 +1135,26 @@
             "star wars name change",
             "random star wars name change"
         ]
+    },
+    "meme_triggers": {
+        "base": [
+            "fetch meme",
+            "get meme",
+            "custom meme",
+            "meme",
+            "meme photo"
+        ],
+        "categories": [
+            "doge",
+            "bling",
+            "brain",
+            "spongebob",
+            "trump signing",
+            "uno cards",
+            "handshake",
+            "monkey puppet",
+            "bernie",
+            "more of that"
+        ]
     }
 }

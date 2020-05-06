@@ -67,6 +67,10 @@
         "name": [
             "help name",
             "help name change"
+        ],
+        "meme": [
+            "help meme",
+            "help meme generator"
         ]
     },
     "help_special": {
@@ -450,6 +454,29 @@
                     "title": "Change to random Star Wars name",
                     "example": "megadork random star wars name change"
                 },
+            }
+        },
+        "meme": {
+            "_title": "Memes 😂👌",
+            "_description": "Need to fetch a special meme? Customized? Check it out!",
+            "_footer": "😜",
+            "_command_list": {
+                "base_request": {
+                    "title": "Basic meme request",
+                    "example": "megadork fetch meme"
+                },
+                "fetch_specific_meme": {
+                    "title": "Get meme for a specific topic",
+                    "example": "megadork fetch meme ***topic***"
+                },
+                "fetch_custom_meme": {
+                    "title": "Generate meme with text",
+                    "example": "megadork fetch meme ***topic*  \"text1\" \"text2\"** (depending on your meme, 1-3 texts are supported.)"
+                },
+                "meme_list": {
+                    "title": "Topics available:",
+                    "example": "doge, bling, spongebob, uno cards, trump signing, brain, handshake, monkey puppet, bernie, more of that"
+                }
             }
         },
     }

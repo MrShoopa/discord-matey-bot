@@ -2,6 +2,7 @@ import Discord from 'discord.js'
 import TriggerHandlers from '../TriggerHandlers'
 
 import { help_author, help_functions, help_special, help_reference, i } from '../../bot_knowledge/triggers/trigger_info.json'
+import { memes } from '../../bot_knowledge/references/imgflip.json'
 
 import PHRASES_FRONT from '../../bot_knowledge/phrases/phrases_front.json'
 import PHRASES_SING from '../../bot_knowledge/phrases/phrases_sing.json'
@@ -29,12 +30,14 @@ export default class HelpTriggers {
             for (const hotword of help_special[category])
                 if (message.toString().toLowerCase().startsWith(hotword))
                     switch (category) {
-                        case 'general':
-                            return HelpTriggers.replyForGeneralInfo(message)
                         case 'music':
                             return HelpTriggers.replyForMusicInfo(message)
                         case 'translate':
                             return HelpTriggers.replyForTranslateInfo(message)
+                        case 'meme':
+                            return HelpTriggers.replyForMemeInfo(message)
+                        case 'general':
+                            return HelpTriggers.replyForGeneralInfo(message)
                     }
     }
 
@@ -108,6 +111,25 @@ export default class HelpTriggers {
         })
 
         listedMessage.setDescription(languageList)
+
+        return message.channel.send(listedMessage)
+    }
+
+    static replyForMemeInfo(message = TriggerHandlers.message) {
+        TriggerHandlers.bot.preliminary(message.toString(), 'Help with Memes', true)
+        var memeList = ''
+
+        let listedMessage = new Discord.MessageEmbed()
+            .setTitle("MEME list 🤡🤡🤡")
+            .setDescription('For use with the command *megadork meme **name***!')
+            .setAuthor(this.helpAuthor)
+            .setColor('LUMINOUS_VIVID_PINK')
+
+        memes.forEach((meme) => {
+            memeList += meme.name + '\n'
+        })
+
+        listedMessage.setDescription(memeList)
 
         return message.channel.send(listedMessage)
     }

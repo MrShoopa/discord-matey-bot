@@ -1,13 +1,15 @@
 import Discord from 'discord.js'
 
-import { meme_triggers } from '../../../bot_knowledge/triggers/triggers.json'
+import { memes } from '../../../bot_knowledge/references/imgflip.json'
+
+import { img_flip } from '../../../user_creds.json'
 
 import Flipper from 'imgflip'
 
 export default class BotModuleMeme {
     static ImgFlip = new Flipper({
-        username: 'mrshoopa',
-        password: 'memecreator69'
+        username: img_flip.user,
+        password: img_flip.password
     })
 
     static async fireMemeRequest(context: Discord.Message = globalThis.bot.context) {
@@ -16,13 +18,23 @@ export default class BotModuleMeme {
         let response
         let stringed = context.toString()
 
-        for (const category of meme_triggers.categories)
-            if (context.toString().toLowerCase().includes(category))
-                response = await this.fetchCustomMeme(stringed.substring(stringed.indexOf(category) + category.length).trim(), category)
+        try {
+            for (const meme of memes)
+                if (context.toString().toLowerCase().includes(meme.name))
+                    response = await this.fetchCustomMeme(stringed.substring(stringed.indexOf(meme.name) + meme.name.length).trim(), meme.name)
+        } catch (err) {
+            if (err.statusCode == 404) {
+                response = `Meme not found.`
+            } else if (err.statusCode == 403 || err.statusCode == 401) {
+                response = 'Nag my master to get this working again. :)'
+            } else if (err.statusCode == 500) {
+                response = `Can't get meme. Something happened out of my control.`
+            }
+        }
 
         // TODO fetch a compeltely random meme
         if (!response)
-            response = `Couldn't find your meme. Type Megadork Help Meme for list of memes you can send.`
+            response = `Couldn't find your meme. Type *megadork meme list** for list of memes you can get.`
 
         return context.channel.send(response)
     }
@@ -30,46 +42,35 @@ export default class BotModuleMeme {
     static async fetchCustomMeme(params, topic: string) {
         let templateId: string
 
-        if (topic == 'bling')
-            templateId = '181913649'
-        else if (topic == 'doge')
-            templateId = '8072285'
-        else if (topic == 'spongebob')
-            templateId = '102156234'
-        else if (topic == 'brain')
-            templateId = '93895088'
-        else if (topic == 'uno cards')
-            templateId = '217743513'
-        else if (topic == 'trump signing')
-            templateId = '91545132'
-        else if (topic == 'handshake')
-            templateId = '135256802'
-        else if (topic == 'monkey puppet')
-            templateId = '148909805'
-        else if (topic == 'bernie')
-            templateId = '222403160'
-        else if (topic == 'more of that')
-            templateId = '124055727'
-        else
+        for (const meme of memes)
+            if (topic == meme.name) {
+                templateId = meme.id
+                break
+            }
+        if (!templateId)
             return null
 
         let image: any
 
-        if (params.length !== 0 && !params.match(/".+?"/g)) {
-            return 'invalid'
-        } else if (params.match(/".+?"/g)) {
-            params = params.match(/".+?"/g).map((a: string) => {
-                return a.replace(/"/g, '')
-            })
+        try {
+            if (params.length !== 0 && !params.match(/".+?"/g)) {
+                return 'invalid'
+            } else if (params.match(/".+?"/g)) {
+                params = params.match(/".+?"/g).map((a: string) => {
+                    return a.replace(/"/g, '')
+                })
 
-            image = await this.ImgFlip.meme(templateId, {
-                captions: params,
-                path: `../${topic}.png`
-            })
-        } else {
-            image = await this.ImgFlip.meme(templateId, {
-                path: `../${topic}.png`
-            })
+                image = await this.ImgFlip.meme(templateId, {
+                    captions: params,
+                    //? path: `${topic}.png`
+                })
+            } else {
+                image = await this.ImgFlip.meme(templateId, {
+                    //? path: `${topic}.png`
+                })
+            }
+        } catch (err) {
+            throw new err
         }
 
         return this.buildMemeMessage(image, topic)

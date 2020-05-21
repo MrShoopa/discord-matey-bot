@@ -3,9 +3,7 @@ import Bot from '../../../../Bot'
 
 import { covid } from '../../../../bot_knowledge/triggers/triggers.json'
 
-import { NovelCovid } from 'novelcovid'
-
-let Covid = new NovelCovid()
+import * as NovelCovid from 'novelcovid'
 
 export default class BotModuleCovid {
     static async fireCovidInfoMessage(trigger: string) {
@@ -55,21 +53,31 @@ export default class BotModuleCovid {
 
             if (state) {
                 state = state.charAt(0).toUpperCase() + state.slice(1);
-                data = await Covid.states()
+                data = await NovelCovid.states()
                 data = data.find(x => x.state.toLowerCase() == state.toLowerCase())
                 if (data) data.location = data.state
             }
             else if (country) {
                 country = country.charAt(0).toUpperCase() + country.slice(1);
-                data = await Covid.countries(country.toLowerCase())
+                data = await NovelCovid.countries({
+                    country: country.toLowerCase(),
+                    allowNull: true,
+                    sort: "cases",
+                    strict: false
+                })
                 data.location = data.country
             } else if (continent) {
                 continent = continent.charAt(0).toUpperCase() + continent.slice(1);
-                data = await Covid.continents(continent.toLowerCase())
+                data = await NovelCovid.continents({
+                    continent: continent.toLowerCase(),
+                    allowNull: true,
+                    sort: "cases",
+                    strict: false
+                })
                 data.location = data.continent
             }
             else {
-                data = await Covid.all()
+                data = await NovelCovid.all()
                 data.location = 'World'
             }
 

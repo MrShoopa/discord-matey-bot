@@ -141,7 +141,7 @@ export default class BotData {
 			//  If folder is missing
 			if (err.code === 'ENOENT') {
 				FileSystem.mkdirSync(SAVE_DATA, { recursive: true })
-				FileSystem.appendFileSync(SAVE_DATA_FILE, { recursive: true })
+				FileSystem.appendFileSync(SAVE_DATA_FILE, "")
 			} else {
 				console.error('Error creating new save file.')
 				console.error(err)
@@ -317,12 +317,12 @@ export default class BotData {
 		// User Data
 		let userFile: aws.S3.GetObjectOutput = await this.getS3Object(S3_SAVE_NAME)
 		if (!userFile) await this.updateS3Object()
-		FileSystem.writeFileSync((SAVE_DATA_FILE), userFile.Body)
+		FileSystem.writeFileSync((SAVE_DATA_FILE), userFile.Body.toString())
 
 		// Time Data
 		let timeFile: aws.S3.GetObjectOutput = await this.getS3Object(BotTimeKeeper.S3_SAVE_NAME)
 		if (!timeFile) await this.updateS3Object(FileSystem.readFileSync(BotTimeKeeper.TIME_DATA_FILE), BotTimeKeeper.S3_SAVE_NAME)
-		FileSystem.writeFileSync((BotTimeKeeper.TIME_DATA_FILE), timeFile.Body)
+		FileSystem.writeFileSync((BotTimeKeeper.TIME_DATA_FILE), timeFile.Body.toString())
 
 	}
 	/**

@@ -461,7 +461,7 @@
                 "random_name_change_starwars": {
                     "title": "Change to random Star Wars name",
                     "example": "megadork random star wars name change"
-                },
+                }
             }
         },
         "meme": {

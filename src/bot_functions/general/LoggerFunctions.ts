@@ -84,7 +84,7 @@ export default class BotLoggerFunctions {
                 .setDescription`I don't know that command so I've pinged Joe to look at it later.`)
     }
 
-    private static writeTextToFile(text: String,
+    private static writeTextToFile(text: string,
         filename = `botText - ${Date.now.toString()} `,
         path = this.logPathName + `/ general`,
         logInConsole?: boolean, reply?: boolean) {

@@ -19,7 +19,7 @@ describe('Birthdays found in user save data', function () {
     })
 })
 
-describe('annouce birthdays today', () => {
+xdescribe('annouce birthdays today', () => {
     it('find', done => {
         setTimeout(function () {
             try {

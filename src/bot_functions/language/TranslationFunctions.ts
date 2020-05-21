@@ -1,7 +1,7 @@
 import Discord from 'discord.js'
 import Bot from './../../Bot'
 
-import { main_trigger, translate } from '../../bot_knowledge/triggers/triggers.json'
+import { translate } from '../../bot_knowledge/triggers/triggers.json'
 
 import WarcraftLanguageFunctions from './WarcraftLangFunctions'
 import YodaLanguageFunctions from './YodaLangFunctions'
@@ -9,7 +9,7 @@ import YodaLanguageFunctions from './YodaLangFunctions'
 export default class BotModuleTranslation {
 
     static processTranslationRequest(context: Discord.Message | Discord.PartialMessage, language?: string, trigger?: string) {
-        let lingua
+        let lingua: string
 
         if (translate.hotword_to.some(hotword => {
             if (context.toString().includes(hotword))

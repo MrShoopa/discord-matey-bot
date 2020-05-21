@@ -18,7 +18,7 @@ describe(`Bot connects and populates info`, () => {
             } catch (e) {
                 done(e)
             }
-        }, 2000)
+        }, 5000)
     })
 })
 

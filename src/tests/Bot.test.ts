@@ -11,7 +11,7 @@ import BotDiscordActivity from '../bot_functions/_state/DiscordActivityStatus'
 let bot = new Bot()
 globalThis.bot = bot
 
-let timeout: number = 2000
+let timeout: number = 5000
 
 describe('calculate', function () {
     it('done and done lmao', function () {

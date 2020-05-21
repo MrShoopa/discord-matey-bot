@@ -90,11 +90,11 @@ export default class BotModuleLyric {
     static async fetchLyricsInfoOfSong(song: string) {
         try {
             const search: any[] | any =
-                await this.geniusClient.findTrack(song)
+                await this.geniusClient.tracks.search(song)
             if (search.error)
                 throw new Error(search.error)
 
-            return await this.geniusClient.getAll(search)
+            return await search[0]
         } catch (e) {
             let bot: Bot = globalThis.bot
             console.error(`Error fetching song lyrics through Genius API!`)

@@ -5,6 +5,7 @@ import { translate } from '../../bot_knowledge/triggers/triggers.json'
 
 import WarcraftLanguageFunctions from './WarcraftLangFunctions'
 import YodaLanguageFunctions from './YodaLangFunctions'
+import BinaryCoderFunctions from './BinaryFunctions'
 
 export default class BotModuleTranslation {
 
@@ -17,6 +18,8 @@ export default class BotModuleTranslation {
                     return lingua = 'warcraft'
                 else if (translate.yoda.some(h => context.toString().includes(h)))
                     return lingua = 'yoda'
+                else if (translate.binary.some(h => context.toString().includes(h)))
+                    return lingua = 'binary'
                 else
                     return lingua = '!'
         }))
@@ -24,6 +27,8 @@ export default class BotModuleTranslation {
                 WarcraftLanguageFunctions.generateWarcraftTranslationMessage(context.toString())
             else if (lingua == 'yoda')
                 YodaLanguageFunctions.generateYodaTranslationMessage(context.toString())
+            else if (lingua == 'binary')
+                BinaryCoderFunctions.generateBinaryTranslationMessage(context.toString())
             else
                 return this.replyUnknownLanguageMessage()
         else

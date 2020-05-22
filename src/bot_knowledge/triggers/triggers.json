@@ -1009,6 +1009,12 @@
         "yoda": [
             "yoda",
             "yoda speak"
+        ],
+        "binary": [
+            "binary",
+            "binary text",
+            "hackerspeak",
+            "text from binary"
         ]
     },
     "covid": {

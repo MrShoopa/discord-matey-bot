@@ -86,7 +86,7 @@
             "song list"
         ],
         "translate": [
-            "translate list",
+            "translation list",
             "translation languages"
         ],
         "meme": [
@@ -312,7 +312,7 @@
                 }
             }
         },
-        "dice_roll": {
+        "dice": {
             "_title": "Dice Roll",
             "_description": "Throw a dice. You can pick the size too!",
             "_footer": "🎲",
@@ -323,7 +323,7 @@
                 }
             }
         },
-        "magic ball": {
+        "magic_ball": {
             "_title": "Magic 8 Ball",
             "_description": "Simple. RNG your wish.",
             "_footer": "🎱",

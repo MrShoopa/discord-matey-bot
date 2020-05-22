@@ -50,18 +50,18 @@ export default class BotModuleLyric {
             return null
         }
 
-        let prettifiedLyrics =
-            songInfo.lyrics.replace(/\[(.*?)\]/g, '').match(/.{1,2040}/gs)
+        let prettifiedLyrics = await songInfo.lyrics()
+        prettifiedLyrics = prettifiedLyrics.replace(/\[(.*?)\]/g, '').match(/.{1,2040}/gs)
 
         let built: Discord.MessageEmbed | Discord.MessageEmbed[]
 
         built = new Discord.MessageEmbed()
             .setURL(songInfo.url)
             .setTitle(songInfo.title)
-            .setAuthor(songInfo.primary_artist.name)
+            .setAuthor(songInfo.artist.name)
             .setColor('#ffff64')
             .setDescription(prettifiedLyrics[0])
-            .setThumbnail(songInfo.header_image_thumbnail_url)
+            .setThumbnail(songInfo.thumbnail)
             .setFooter('Megalyrics - Powered by Genius © 2020',
                 'https://cdn.apk4all.com/wp-content/uploads/apps/Genius-%E2%80%94-Song-Lyrics-More/KEzNV79C2uSJnYjJxImKUt_dIAnXjBiB3aahKHeMOsMAxZJlBvZ6gviOKaReUNBi5v7N.png')
 
@@ -73,7 +73,7 @@ export default class BotModuleLyric {
                     .setURL(songInfo.url)
                     .setTitle(songInfo.title + ' continued...')
                     .setColor('#ffff64')
-                    .setThumbnail(songInfo.header_image_thumbnail_url)
+                    .setThumbnail(songInfo.thumbnail)
                     .setDescription(prettifiedLyrics[i])
                     .setFooter('Megalyrics - Powered by Genius © 2020',
                         'https://cdn.apk4all.com/wp-content/uploads/apps/Genius-%E2%80%94-Song-Lyrics-More/KEzNV79C2uSJnYjJxImKUt_dIAnXjBiB3aahKHeMOsMAxZJlBvZ6gviOKaReUNBi5v7N.png')
@@ -89,20 +89,17 @@ export default class BotModuleLyric {
 
     static async fetchLyricsInfoOfSong(song: string) {
         try {
-            const search: any[] | any =
+            const search =
                 await this.geniusClient.tracks.search(song)
-            if (search.error)
-                throw new Error(search.error)
 
             return await search[0]
         } catch (e) {
-            let bot: Bot = globalThis.bot
             console.error(`Error fetching song lyrics through Genius API!`)
 
             if (e.message === 'invalid_token')
                 console.info(`Please update your Genius API token.`)
 
-
+            let bot: Bot = globalThis.bot
             bot.saveBugReport(e, this.fetchLyricsInfoOfSong.name, true)
             return null
         }

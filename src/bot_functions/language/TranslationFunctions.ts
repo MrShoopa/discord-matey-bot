@@ -33,7 +33,7 @@ export default class BotModuleTranslation {
     static replyUnknownLanguageMessage() {
         let bot: Bot = globalThis.bot
 
-        bot.context.channel.send(`Which language? Type *megadork help translate* to see what I can translate.`)
+        bot.context.channel.send(`Which language? Type *megadork translation list* to see what I can translate.`)
 
         return true
     }

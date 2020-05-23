@@ -1,4 +1,4 @@
-import Discord, { Guild } from 'discord.js'
+import Discord, { Guild, MessageEmbed, MessageAttachment } from 'discord.js'
 import Bot from "../../../Bot"
 import BotData from "../../DataHandler"
 import { Audio, Data } from '../../../types/index'
@@ -9,6 +9,7 @@ import { swear_jar_triggers } from '../../../bot_knowledge/triggers/triggers.jso
 import BotModuleSwearWhitelist from './WhitelistFunctions'
 import BotModuleSwearBlacklist from './BlacklistFunctions'
 import BotModuleNameGenerator from '../name/RandomNameFunctions'
+import BotModuleReddit from '../../fetching/reddit/RedditFunctions'
 
 export default class BotModuleSwearJar {
     static dingUser(trigger: string) {
@@ -192,14 +193,22 @@ export default class BotModuleSwearJar {
                 }
     }
 
-    static thresholdCheck(userData: Data.UserSave) {
+    static async thresholdCheck(userData: Data.UserSave) {
         let score = userData.swear_score
         let message: Discord.Message = globalThis.bot.context
         console.log(`Swear Jar: Doing treshold check...`)
 
         if ((score / 100) == 0) {
             console.log(`Swear Jar: Giving the user a random meme.`)
-            //TODO
+            let url = await BotModuleReddit.fetchImageFromSubmission(await BotModuleReddit.fetchRandomSubmission('r/5050pics'))
+
+            message.reply(`You reached a hundered new points! Here's a 50/50 image! Proceed with caution!`)
+            message.channel.send({
+                files: [{
+                    attachment: url,
+                    name: 'SPOILER_NAME.jpg'
+                }]
+            })
         } else if ((score / 1000) == 0) {
             console.log(`Swear Jar: Giving the user a random name.`)
 

@@ -27,11 +27,11 @@ export default class BotModuleJoke {
     // this is what happens if your api doesn't use promises or typescript
     static async fetchJoke(query?: string) {
         for (let category of joke.of_the_day.base)
-            //TODO: Expand using Jokes API Usage
+            //TODO: Fix JokeofDay
             if (query.includes(category)) {
                 for (let category of joke.of_the_day.animal)
                     if (query.includes(category))
-                        return await new Promise((res, rej) => { Joker.getRandomJokeOfTheDay('animal', j => { res(j) }) })
+                        return await new Promise((res, rej) => { Joker.getRandomJokeOfTheDay('animal', j => res(j)) })
                 for (let category of joke.of_the_day.blonde)
                     if (query.includes(category))
                         return await new Promise((res, rej) => { Joker.getRandomJokeOfTheDay('blonde', j => { res(j) }) })

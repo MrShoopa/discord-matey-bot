@@ -1,4 +1,7 @@
 import Discord from 'discord.js'
+import Bot from '../../../Bot'
+
+import BotModuleReddit from '../reddit/RedditFunctions'
 
 import { memes } from '../../../bot_knowledge/references/imgflip.json'
 
@@ -22,6 +25,9 @@ export default class BotModuleMeme {
             for (const meme of memes)
                 if (context.toString().toLowerCase().includes(meme.name))
                     response = await this.fetchCustomMeme(stringed.substring(stringed.indexOf(meme.name) + meme.name.length).trim(), meme.name)
+            if (context.toString().length == 4) {
+                response = await this.fetchRandomMeme()
+            }
         } catch (err) {
             if (err.statusCode == 404) {
                 response = `Meme not found.`
@@ -32,11 +38,17 @@ export default class BotModuleMeme {
             }
         }
 
-        // TODO fetch a compeltely random meme
         if (!response)
-            response = `Couldn't find your meme. Type *megadork meme list** for list of memes you can get.`
+            response = `Couldn't find your meme. Type *megadork meme list* for list of memes you can get.`
 
         return context.channel.send(response)
+    }
+
+    static async fetchRandomMeme() {
+        let object = await BotModuleReddit.fetchRandomSubmission('meme')
+        let message = this.buildMemeMessage(object.data.url, 'Random r/meme meme')
+
+        return message
     }
 
     static async fetchCustomMeme(params, topic: string) {

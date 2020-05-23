@@ -107,14 +107,14 @@ export default class BotModuleCovid {
 
         let recPercentage = `${((data.active / data.cases) * 100).toFixed(2)}%`
 
-        if (data.active) message.addFields({ name: 'Active Cases', value: `${data.active}`, inline: true })
-        if (data.recovered) message.addFields({ name: 'Recovered', value: `${data.recovered}`, inline: true })
-        if (data.cases) message.addFields({ name: 'Total Cases', value: `${data.cases}`, inline: true })
-        if (data.deaths) message.addFields({ name: 'Deaths', value: `${data.deaths}`, inline: true })
-        if (data.tests) message.addFields({ name: 'Total Tests', value: `${data.tests}`, inline: true })
-        if (data.affectedCountries) message.addFields({ name: 'Affected Countries', value: `${data.affectedCountries}`, inline: true })
-        if (data.todayCases) message.addFields({ name: 'New Cases Today', value: `+${data.todayCases}`, inline: true })
-        if (data.todayDeaths) message.addFields({ name: 'New Deaths Today', value: `+${data.todayDeaths}`, inline: true })
+        if (data.active) message.addFields({ name: 'Active', value: `${data.active.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
+        if (data.recovered) message.addFields({ name: 'Recoveries', value: `${data.recovered.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
+        if (data.deaths) message.addFields({ name: 'Deaths', value: `${data.deaths.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
+        if (data.cases) message.addFields({ name: 'Total Cases', value: `${data.cases.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
+        if (data.tests) message.addFields({ name: 'Total Tests', value: `${data.tests.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
+        if (data.affectedCountries) message.addFields({ name: 'Affected Countries', value: `${data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
+        if (data.todayCases) message.addFields({ name: `Today's Cases`, value: `+${data.todayCases.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
+        if (data.todayDeaths) message.addFields({ name: `Today's Deaths`, value: `+${data.todayDeaths.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
         if (recPercentage) message.addFields({ name: 'Active/Total %', value: `${recPercentage}`, inline: true })
 
         return message

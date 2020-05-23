@@ -10,7 +10,7 @@ export default class BinaryCoderFunctions {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'Binary to Text conversion', true)
 
-        let conversion: string
+        let conversion
 
         if (!text) {
             text = bot.context.toString()
@@ -28,12 +28,31 @@ export default class BinaryCoderFunctions {
         else
             conversion = this.autoConvert(text, true)
 
+        conversion = conversion.replace(/\[(.*?)\]/g, '').match(/.{1,2040}/gs)
+
+        let built = new Array<Discord.MessageEmbed>()
+
         let message = new Discord.MessageEmbed()
             .setDescription(conversion)
             .setColor('GOLD')
             .setFooter('Binary <-> Text')
 
-        bot.context.channel.send(message)
+        built.push(message)
+
+        if (conversion.length > 1) {
+            for (let i = 1; i < conversion.length; i++) {
+                let add = new Discord.MessageEmbed()
+                    .setDescription(conversion)
+                    .setColor('GOLD')
+                    .setFooter('Binary <-> Text')
+
+                built.push(add)
+            }
+        }
+
+        built.forEach(part => {
+            bot.context.channel.send(part)
+        });
     }
 
     static convertToBinary(text: string) {

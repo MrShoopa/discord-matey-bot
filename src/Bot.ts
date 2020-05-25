@@ -339,9 +339,13 @@ export default class Bot extends Discord.Client {
                 songInfo = { source: url, platform: 'YouTube' }
 
                 try {
+                    let timeStart = "0s"
+                    if (url.includes('?t='))
+                        timeStart = url.substring(url.indexOf('?t=') + 3) + "s"
                     stream = YTDL(url.toString(), {
                         filter: 'audioonly',
                         highWaterMark: 1 << 25,
+                        begin: timeStart
                     })
 
                     await YTDL.getInfo(url.toString()).then(video => {

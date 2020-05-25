@@ -58,6 +58,7 @@
         "winston": "^3.2.1",
         "wow-lexicon": "0.0.3",
         "youtube-api": "^2.0.10",
+        "youtube-playlist": "^1.0.3",
         "youtube-search": "^1.1.4",
         "ytdl-core": "2.1.3"
     },

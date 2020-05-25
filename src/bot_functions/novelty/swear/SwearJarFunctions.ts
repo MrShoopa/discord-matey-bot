@@ -90,6 +90,20 @@ export default class BotModuleSwearJar {
         }
     }
 
+    static fireSwearCountInquiryMessage(user: Discord.User, trigger?: string) {
+        let bot: Bot = globalThis.bot
+        if (trigger) bot.preliminary(trigger, 'Swear Jar Check')
+
+        let data = BotData.getUserData(user.id)
+
+        if (data.swear_score)
+            bot.context.reply(`you have sworn ${data.swear_score} times.`)
+        else
+            bot.context.reply(`oh wow, you're clean! 👀`)
+
+        return true
+    }
+
     static generateSwearStatsMessage(guild: Guild) {
 
         console.log('Swear stats of the month!')

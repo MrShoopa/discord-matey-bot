@@ -44,6 +44,8 @@ export default class TriggerHandlers {
         TriggerHandlers.checkForBirthdayAppendRequest,
         TriggerHandlers.checkForBirthdayInquiryRequest,
 
+        TriggerHandlers.checkForSwearCountRequest,
+
         TriggerHandlers.checkForMusicPlaybackRequest,
         TriggerHandlers.checkForMusicStopRequest,
         TriggerHandlers.checkForMusicQueueAddRequest,
@@ -162,6 +164,12 @@ export default class TriggerHandlers {
         for (const trigger of TRIGGERS.swear_jar_triggers.toggle)
             if (message.toString().toLowerCase().includes(trigger))
                 return BotModuleSwearJar.toggleUserJar(message, trigger)
+    }
+
+    private static checkForSwearCountRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.swear_jar_triggers.count)
+            if (message.toString().toLowerCase().includes(trigger))
+                return BotModuleSwearJar.fireSwearCountInquiryMessage(message.member.user, trigger)
     }
 
     private static checkForSwearWord(message = TriggerHandlers.message) {

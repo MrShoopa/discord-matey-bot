@@ -301,6 +301,14 @@
             "switch swear game",
             "flip swear game"
         ],
+        "count": [
+            "swear count",
+            "swear jar count",
+            "swear times",
+            "bad word count",
+            "cuss count",
+            "how many times did i swear"
+        ],
         "bad_words": [
             "4r5e",
             "5h1t",

@@ -1176,5 +1176,17 @@
             "sad pablo",
             "look at me"
         ]
+    },
+    "blizzard": {
+        "warcraft": {
+            "character_profile": [
+                "wow character",
+                "warcraft character",
+                "get wow character",
+                "get warcraft character",
+                "fetch wow character",
+                "fetch warcraft character"
+            ]
+        }
     }
 }

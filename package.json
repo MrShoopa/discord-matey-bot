@@ -28,6 +28,7 @@
         "@types/snekfetch": "^4.0.2",
         "@types/twitter": "^1.7.0",
         "aws-sdk": "^2.681.0",
+        "blizzapi": "^1.1.7",
         "decode-encode-binary": "^1.4.9",
         "discord.js": "github:discordjs/discord.js",
         "erwar-yoda": "^1.0.10",

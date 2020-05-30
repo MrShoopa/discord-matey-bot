@@ -2,7 +2,7 @@ import BlizzardAPI from 'blizzapi'
 import Discord from 'discord.js'
 import Bot from '../../../../Bot'
 
-import AUTH from '../../../user_creds.json'
+import AUTH from '../../../../user_creds.json'
 
 import TRIGGERS from '../../../bot_knowledge/triggers/triggers.json'
 

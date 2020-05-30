@@ -28,6 +28,7 @@ import BotModuleMeme from './fetching/meme/MemeGeneratorFunctions'
 
 import BotModuleFun from './general/FunFunctions'
 import BotWordplay from './wordplay/WordplayFunctions'
+import BotModuleWarcraft from './fetching/game/blizzard/WarcraftDataFunctions'
 
 
 export default class TriggerHandlers {
@@ -71,6 +72,7 @@ export default class TriggerHandlers {
         TriggerHandlers.checkForJokeRequest,
         TriggerHandlers.checkForCovidInfoRequest,
         TriggerHandlers.checkForMemeRequest,
+        TriggerHandlers.checkForWarcraftProfileRequest,
 
         // Management Requests
         TriggerHandlers.checkForNameChangeRequest,
@@ -343,6 +345,12 @@ export default class TriggerHandlers {
         for (const trigger of TRIGGERS.meme_triggers.base)
             if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleMeme.fireMemeRequest()
+    }
+
+    private static checkForWarcraftProfileRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.blizzard.warcraft.character_profile)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotModuleWarcraft.fireWarcraftProfileMessage(message, trigger)
     }
 
     /*  ----    Server-Management   ---- */

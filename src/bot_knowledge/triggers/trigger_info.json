@@ -71,6 +71,9 @@
         "meme": [
             "help meme",
             "help meme generator"
+        ],
+        "blizzard": [
+            "help blizzard"
         ]
     },
     "help_special": {
@@ -481,6 +484,17 @@
                 "fetch_custom_meme": {
                     "title": "Generate meme with text",
                     "example": "megadork fetch meme ***topic*  \"text1\" \"text2\"** (depending on your meme, 1-3 texts are supported.)"
+                }
+            }
+        },
+        "blizzard": {
+            "_title": "Blizzard Info",
+            "_description": "Get information on a Blizzard game such as a character profile or item.",
+            "_footer": "🅱",
+            "_command_list": {
+                "wow_character": {
+                    "title": "World of Warcraft character profile",
+                    "example": "megadork fetch wow character *character* of *realm*"
                 }
             }
         }

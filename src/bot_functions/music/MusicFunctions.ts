@@ -104,8 +104,8 @@ export default class BotModuleMusic {
                 && songState == SongState.Fetching) {
                 //  When song from URL is found
 
-                var url_string: any = bot.context.toString().split(' ')
-                url_string = url_string[url_string.length - 1]
+                var url_string: any = bot.context.toString().match(urlRegex)
+                url_string = url_string[0]
 
                 if (await this.checkIfUrlSpecialFormat(url_string)) return true
 
@@ -220,7 +220,7 @@ export default class BotModuleMusic {
         if (songInfo.name && songInfo.author)
             playbackMessage
                 .addFields({ name: songInfo.author, value: songInfo.name })
-        else if (songInfo.name && songInfo.source && songInfo.url)
+        else if (songInfo.name && songInfo.source)
             playbackMessage
                 .addFields({ name: songInfo.source, value: songInfo.name })
         else if (songInfo.name)
@@ -287,19 +287,45 @@ export default class BotModuleMusic {
     }
 
     static async checkIfUrlSpecialFormat(url: string) {
-        let playlistUrls
-        if (url.includes('youtu'))
+        function checkForShuffle() {
+            let bot: Bot = globalThis.bot
+            let context: string[] = bot.context.toString().substring(0, 1000).split(' ')
+            return TRIGGERS.singing_triggers.args.shuffle.some((trigger) => {
+                return context.some(word => {
+                    if (word === trigger) return true
+                })
+            })
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array
+        }
+
+        let playlistUrls: any[]
+        if (url.includes('youtu') && url.includes('playlist?') && !url.includes('watch?'))
             playlistUrls = await this.checkIfYouTubePlaylist(url)
 
         if (playlistUrls) {
             let bot: Bot = globalThis.bot
+            let messageReply: string
+            if (checkForShuffle()) {
+                playlistUrls = shuffleArray(playlistUrls)
+                messageReply = `🎶📃▶ **Playing ${bot.context.author.username}'s *shuffled* playlist!** `
+            } else {
+                messageReply = `🎶📃▶ **Playing ${bot.context.author.username}'s playlist!** `
+            }
+
             let queue = this.createNewQueue(bot.context.member.voice?.channel)
 
             playlistUrls.forEach((url: string) => {
                 queue.addNewSongRequest('', url)
             })
 
-            bot.context.channel.send(`🎶📃▶ **Playing ${bot.context.author.username}'s playlist!** `)
+            bot.context.channel.send(messageReply)
             await queue.processNextSongRequest()
 
             return true

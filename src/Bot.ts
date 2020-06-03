@@ -352,7 +352,7 @@ export default class Bot extends Discord.Client {
                         songInfo.name = video.title
                         songInfo.thumbnailUrl = video.thumbnail_url
                         songInfo.author = video.author.name
-                        songInfo.url = url
+                        songInfo.url = video.video_url
                     }).catch(e => { throw e })
                     return stream
                 } catch (error) {

@@ -74,6 +74,10 @@
         ],
         "blizzard": [
             "help blizzard"
+        ],
+        "gif": [
+            "help gif",
+            "help giphy"
         ]
     },
     "help_special": {
@@ -495,6 +499,17 @@
                 "wow_character": {
                     "title": "World of Warcraft character profile",
                     "example": "megadork fetch wow character *character* of *realm*"
+                }
+            }
+        },
+        "gif": {
+            "_title": "GIF Fetch",
+            "_description": "Get a random GIF or a specific GIF based on a request (Uses GIPHY)",
+            "_footer": "😎",
+            "_command_list": {
+                "random_gif": {
+                    "title": "Fetch random GIF from GIPHY",
+                    "example": "megadork fetch random gif"
                 }
             }
         }

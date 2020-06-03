@@ -29,6 +29,7 @@ import BotModuleMeme from './fetching/meme/MemeGeneratorFunctions'
 import BotModuleFun from './general/FunFunctions'
 import BotWordplay from './wordplay/WordplayFunctions'
 import BotModuleWarcraft from './fetching/game/blizzard/WarcraftDataFunctions'
+import BotModuleGiphy from './fetching/gif/GiphyFunctions'
 
 
 export default class TriggerHandlers {
@@ -73,6 +74,7 @@ export default class TriggerHandlers {
         TriggerHandlers.checkForCovidInfoRequest,
         TriggerHandlers.checkForMemeRequest,
         TriggerHandlers.checkForWarcraftProfileRequest,
+        TriggerHandlers.checkForGIPHYRandomRequest,
 
         // Management Requests
         TriggerHandlers.checkForNameChangeRequest,
@@ -351,6 +353,12 @@ export default class TriggerHandlers {
         for (const trigger of TRIGGERS.blizzard.warcraft.character_profile)
             if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleWarcraft.fireWarcraftProfileMessage(message, trigger)
+    }
+
+    private static checkForGIPHYRandomRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.giphy.random_gif)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotModuleGiphy.fireGIFMessage(trigger)
     }
 
     /*  ----    Server-Management   ---- */

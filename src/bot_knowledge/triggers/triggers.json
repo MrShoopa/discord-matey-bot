@@ -125,6 +125,12 @@
                 "repeat",
                 "repeated"
             ],
+            "shuffle": [
+                "shuffle",
+                "shuffled",
+                "randomized",
+                "scattered"
+            ],
             "platform": {
                 "yt": [
                     "yt",
@@ -1188,5 +1194,13 @@
                 "fetch warcraft character"
             ]
         }
+    },
+    "giphy": {
+        "random_gif": [
+            "random gif",
+            "fetch random gif",
+            "get random gif",
+            "give me a random gif"
+        ]
     }
 }

@@ -339,7 +339,9 @@ export default class BotModuleMusic {
         try {
             result = await YouTubePlaylister(url, 'url').then((res: any) => {
                 console.log('Extracted YouTube URL links from YouTube playlist.');
-                return res.data.playlist
+                if (res.data.playlist?.length != 0)
+                    return res.data.playlist
+                else return null
             })
         } catch (err) {
             if (err.message.includes(`Cannot read property 'split' of undefined`))

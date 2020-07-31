@@ -12,7 +12,7 @@ import YouTube from 'youtube-search'
 import YouTubeDownloader from 'ytdl-core'
 import YouTubePlaylister from 'youtube-playlist'
 
-import Soundcloud, { SoundCloudTrack } from "soundcloud.ts"
+import Soundcloud, { SoundcloudTrack } from "soundcloud.ts"
 
 export default class BotModuleMusic {
 
@@ -359,7 +359,7 @@ export default class BotModuleMusic {
     }
 
     static async fetchSingleSoundCloudSearchResult(query: string)
-        : Promise<SoundCloudTrack> {
+        : Promise<SoundcloudTrack> {
         let result = await this.processSoundCloudSearch(query, 1)
         return result[0]
     }
@@ -386,7 +386,7 @@ export default class BotModuleMusic {
     }
 
     static async processSoundCloudSearch(query: string, resultCount = 10)
-        : Promise<Array<SoundCloudTrack>> {
+        : Promise<Array<SoundcloudTrack>> {
 
         return await this.scClient.tracks.search({ q: query })
             .then(res => {

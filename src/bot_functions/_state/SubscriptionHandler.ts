@@ -1,10 +1,14 @@
-import BotTimeKeeper from '../_state/TimeKeeper'
+import { Subscriptions } from './../../types/index';
 
-import BotDiscordActivity from './DiscordActivityStatus'
-import BotModuleSwearJar from "../novelty/swear/SwearJarFunctions"
-import BotModuleBirthday from "../novelty/birthday/BirthdayFunctions"
-import BotData from '../DataHandler'
+export default class SubscriptionHandler {
+    static RunTask(subscription: Subscriptions.Subscription) {
 
-export default class TimelyFunctions {
 
+        if (subscription instanceof Subscriptions.ChannelSubscription)
+            SubscriptionHandler.RunChannelTask(subscription as Subscriptions.ChannelSubscription)
+    }
+
+    static RunChannelTask(subscription: Subscriptions.ChannelSubscription) {
+
+    }
 }

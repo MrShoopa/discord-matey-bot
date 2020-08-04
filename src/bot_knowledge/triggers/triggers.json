@@ -1202,5 +1202,10 @@
             "get random gif",
             "give me a random gif"
         ]
+    },
+    "ping_pong": {
+        "default": [
+            "ping"
+        ]
     }
 }

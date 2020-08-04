@@ -84,6 +84,7 @@ export default class TriggerHandlers {
         // Minigame Requests
         TriggerHandlers.checkForDiceRollRequest,
         TriggerHandlers.checkFor8BallRequest,
+        TriggerHandlers.checkForPingPongRequest,
 
         // Bot Sudo Requests
         TriggerHandlers.checkForBotKillRequest,
@@ -399,6 +400,13 @@ export default class TriggerHandlers {
         for (const trigger of TRIGGERS.magic_ball)
             if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleFun.eightBall(null, trigger)
+        //  Get anime recommendation [from My Anime List (JikanTS)]
+    }
+
+    private static checkForPingPongRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.ping_pong.default)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotGeneralCommands.firePingPongMessage(message.channel as Discord.TextChannel, trigger)
         //  Get anime recommendation [from My Anime List (JikanTS)]
     }
 

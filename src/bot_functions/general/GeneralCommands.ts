@@ -26,6 +26,15 @@ export default class BotGeneralCommands {
         return bot.context.channel.send('redoin, ' + bot.lastMessage.toString())
     }
 
+    static firePingPongMessage(channel: Discord.TextChannel, trigger?: string) {
+        let bot: Bot = globalThis.bot
+        if (trigger) bot.preliminary(trigger, 'Ping pong', true)
+
+        let message = new Discord.Message(bot, { content: '...pong!' }, channel)
+        channel = (bot.channels.cache.get(channel.id) as Discord.TextChannel)
+        return channel.send(message)
+    }
+
     static async killBot(adminOnly = true, trigger: string) {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'Bot kill', true)

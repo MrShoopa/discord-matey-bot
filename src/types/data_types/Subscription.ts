@@ -51,6 +51,6 @@ export module Subscriptions {
         }
     }
 
-    export type SubscriptionFeature = 'Ping' | 'DayCounter' | 'QuoteFetch' | 'RedditPost'
+    export type SubscriptionFeature = 'Nothing' | 'Ping' | 'DayCounter' | 'QuoteFetch' | 'RedditPost'
 
 }

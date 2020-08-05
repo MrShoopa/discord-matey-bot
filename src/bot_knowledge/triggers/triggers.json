@@ -1029,7 +1029,22 @@
             "binary text",
             "hackerspeak",
             "text from binary"
-        ]
+        ],
+        "morse": {
+            "default": [
+                "morse",
+                "morse speak",
+                "beepspeak"
+            ],
+            "to": [
+                "to morse",
+                "to morse speak"
+            ],
+            "from": [
+                "to text from morse",
+                "to text from morse speak"
+            ]
+        }
     },
     "covid": {
         "default": [

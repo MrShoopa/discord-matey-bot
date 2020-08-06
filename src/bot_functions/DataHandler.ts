@@ -162,8 +162,8 @@ export default class BotData {
 		var data = this.getUserDataFile()
 
 		//  Find user...
-		let userData: Data.UserSave = data.find((matchedUser: any) => {
-			return matchedUser._id == id
+		let userData: Data.UserSave = data.find((user: any) => {
+			return user._id == id
 		})
 
 		if (userData === undefined || force) {
@@ -339,5 +339,8 @@ export default class BotData {
 
 		//Time Data
 		await this.updateS3Object(FileSystem.readFileSync(BotTimeKeeper.TIME_DATA_FILE), BotTimeKeeper.S3_SAVE_NAME)
+
+		//Subscription Data
+		await this.updateS3Object(FileSystem.readFileSync(BotSubscriptionHandler.SUBSCRIPTION_DATA_FILE), BotSubscriptionHandler.S3_SAVE_NAME)
 	}
 }

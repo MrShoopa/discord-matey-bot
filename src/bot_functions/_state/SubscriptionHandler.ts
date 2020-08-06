@@ -43,7 +43,7 @@ export default class BotSubscriptionHandler {
     }
 
     /**
-	 * Creates a new datastore file for the server's instance.
+	 * Creates a new subscription datastore file for the server's instance.
 	 * 
 	 * @param  {boolean} fetch? Returns the new data file.
 	 * @param  {boolean} force? Erases the existing datastore if it already exists.
@@ -75,14 +75,14 @@ export default class BotSubscriptionHandler {
             } else {
                 let bot: Bot = globalThis.bot
 
-                console.error('Error creating new timekeeping file.')
+                console.error('Error creating new subscription data file.')
                 bot.saveBugReport(err)
             }
         }
     }
 
     /**
-	 * Updates an existing user's data with given new data.
+	 * Updates an existing subscription's data with any given as an subobject.
 	 * 
 	 * @param  {number|string} id User's Discord ID
 	 * @param  {object} newData New data to overwrite existing data with.
@@ -109,7 +109,8 @@ export default class BotSubscriptionHandler {
     }
 
 	/**
-	 * Overwrites the current datastore file with any given data.
+	 * Overwrites the current subscription datastore file with any given
+     * complete subscription data object.
 	 * 
 	 * @param  {any} data
 	 */
@@ -126,6 +127,121 @@ export default class BotSubscriptionHandler {
                     process.exit(404)
                 } else throw err
             }
+    }
+
+    /**
+	 * Creates a new Datype.SubscriptionSave object based off a message channel's ID
+     * and saves it to the datastore file.
+	 * 
+	 * @param  {number|string} id Message Channel Discord ID
+	 * @param  {boolean} log? If true, logs extra info to console.
+	 */
+    static createUserData(id: number | string, force?: boolean): Data.SubscriptionSave {
+        if (typeof id === 'number') id = id.toString()
+
+        var data = this.getSubscriptionData()
+
+        //  Find user...
+        let subscription: Data.SubscriptionSave = data.find((givenChannel: any) => {
+            return givenChannel._id == id
+        })
+
+        if (subscription === undefined || force) {
+            // ...if not found, create new data.
+            let newSave: Data.SubscriptionSave = {
+                _type: 'test',
+                frequencyMilli: 0,
+                featureCode: 'Nothing',
+                sampleData: { sampleArg: 'Yuh' }
+            }
+
+            data.push(newSave)
+
+            this.writeSubscriptionDataFile(data)
+            console.log(`Data created for message channel ${id}.`)
+            if (force) console.warn(`YOU HAVE REWRITTEN A SUBSCRIPTION BY FORCE!`)
+
+            return data
+        } else {
+            //  ,if found, do nothing.
+            console.log(`Data already exists for message channel ${id}.`)
+        }
+
+    }
+
+	/**
+	 * Updates an existing user's data with given new data.
+	 * 
+	 * @param  {number|string} id User's Discord ID
+	 * @param  {object} newData New data to overwrite existing data with.
+	 */
+    static updateUserData(id: string, newData: Data.SubscriptionSave) {
+        console.group(`Updating data for Subscription ${id}:`)
+
+        //  Pointer to local user data
+        var data = this.getSubscriptionData()
+
+        //  Pointer to single user's data through above variable
+        let subscription: Data.SubscriptionSave = data.find((givenChannel: any) => {
+            return givenChannel._id == id
+        })
+
+        if (!subscription) {
+            console.log(`Data for User ${id} is missing. Creating new data subset.`)
+            this.createUserData(id)
+        }
+
+        console.log(`Old Data:`)
+        console.info(subscription)
+        console.log(`New Data:`)
+        console.info(newData)
+
+        Object.keys(newData).forEach(key => subscription[key] = newData[key])
+
+        this.writeSubscriptionDataFile(data)
+
+        console.log(`\nUpdate completed.`)
+        console.groupEnd()
+    }
+
+    static getUserProperty(id: number | string, property: string, enableIfNone?: boolean) {
+        let data = this.getUserData(id, true, true)
+
+        if (!data._toggles)
+            data._toggles = {}
+
+        if (data._toggles[property] !== undefined)
+            return data._toggles[property]
+        else
+            return this.toggleUserProperty(id, property, enableIfNone)
+    }
+
+    static toggleUserProperty(id: number | string, property: string, forceBoolean?: boolean) {
+        let data = this.getUserData(id, true)
+        let boolChoice: boolean
+
+        if (!data._toggles)
+            data._toggles = {}
+
+        if (data._toggles[property] !== undefined) {
+            boolChoice = forceBoolean ? forceBoolean : !data._toggles[property]
+
+            data._toggles[property] = boolChoice
+        } else {
+            data._toggles[property] = forceBoolean ? forceBoolean : true
+
+            boolChoice = data._toggles[property]
+        }
+
+        console.log(`Toggled user preference '${property}' to ${boolChoice}.`)
+
+        this.updateUserData(id, data)
+
+        return boolChoice
+    }
+
+    static deleteSubscrription(id: string) {
+
     }
 
     static runTask(subscription: Subscriptions.Subscription) {

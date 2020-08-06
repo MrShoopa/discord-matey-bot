@@ -17,6 +17,7 @@ export module Data {
         _type: string,
         featureCode: Subscriptions.SubscriptionFeature,
         frequencyMilli: Number,
+        name: string,
         durationMilli?: Number,
         endDate?: Date,
         channelId?: string

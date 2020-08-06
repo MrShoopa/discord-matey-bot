@@ -2,6 +2,7 @@ import Discord from 'discord.js'
 
 export module Subscriptions {
     export interface Subscription extends Object {
+        name: string,
         featureCode: SubscriptionFeature,
         frequencyMilli: Number,
         durationMilli?: Number,
@@ -9,10 +10,11 @@ export module Subscriptions {
         [args: string]: any
     }
     export class ChannelSubscription implements Subscription {
-        frequencyMilli: Number
+        name: string
         channelId: string
         authorId: string
         featureCode: SubscriptionFeature
+        frequencyMilli: Number
         [arg: string]: any
 
         constructor(callingUser: Discord.GuildMember, featureCode: SubscriptionFeature, frequencyMilli: Number, args?: any) {
@@ -24,6 +26,7 @@ export module Subscriptions {
     }
 
     export class UserSubscription implements Subscription {
+        name: string
         userId: string
         featureCode: SubscriptionFeature
         frequencyMilli: Number
@@ -37,12 +40,11 @@ export module Subscriptions {
     }
 
     export class DMSubscription implements Subscription {
-        [args: string]: any
+        name: string
         dmChannelId: string
         featureCode: SubscriptionFeature
         frequencyMilli: Number
-        durationMilli?: Number
-        endDate?: Date
+        [args: string]: any
 
         constructor(callingDM: Discord.DMChannel, featureCode: SubscriptionFeature, args?: any) {
             this.dmChannelId = callingDM.id

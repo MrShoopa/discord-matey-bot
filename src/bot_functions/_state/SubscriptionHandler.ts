@@ -23,7 +23,7 @@ export default class BotSubscriptionHandler {
     static SUBSCRIPTION_DATA_FILE = `${BotSubscriptionHandler.SAVE_DATA}/megadorkbot_subscription_collection.json`
     static S3_SAVE_NAME = 'save_data/megadorkbot_subscription_collection.json'
 
-    static getSubscriptionData() {
+    static getSubscriptionDatastore() {
         try {
             var data: Data.SubscriptionSave =
                 JSON.parse(FileSystem.readFileSync(this.SUBSCRIPTION_DATA_FILE).toString())
@@ -34,7 +34,7 @@ export default class BotSubscriptionHandler {
                 try {
                     return this.instantiateSubscriptionData(true, true)
                 } catch (err) {
-                    bot.saveBugReport(err, this.getSubscriptionData.name, true)
+                    bot.saveBugReport(err, this.getSubscriptionDatastore.name, true)
                 }
                 return null
             } else bot.saveBugReport(err)
@@ -66,7 +66,7 @@ export default class BotSubscriptionHandler {
         try {
             FileSystem.writeFileSync(this.SUBSCRIPTION_DATA_FILE, JSON.stringify(dataSkeleton))
 
-            if (fetch) return this.getSubscriptionData()
+            if (fetch) return this.getSubscriptionDatastore()
             console.log(`New Subscription Data save file created.\n`)
         } catch (err) {
             //  If folder is missing
@@ -88,7 +88,7 @@ export default class BotSubscriptionHandler {
 	 * @param  {object} newData New data to overwrite existing data with.
 	 */
     static updateSubscriptionData(newData: Data.SubscriptionSave, log?: boolean) {
-        var data = this.getSubscriptionData()
+        var data = this.getSubscriptionDatastore()
 
         if (log) {
             console.log(`Updating time data...`)
@@ -139,7 +139,7 @@ export default class BotSubscriptionHandler {
     static createUserData(id: number | string, force?: boolean): Data.SubscriptionSave {
         if (typeof id === 'number') id = id.toString()
 
-        var data = this.getSubscriptionData()
+        var data = this.getSubscriptionDatastore()
 
         //  Find user...
         let subscription: Data.SubscriptionSave = data.find((givenChannel: any) => {
@@ -172,22 +172,24 @@ export default class BotSubscriptionHandler {
 	/**
 	 * Updates an existing user's data with given new data.
 	 * 
-	 * @param  {number|string} id User's Discord ID
+	 * @param  {number|string} id Message Channel id
 	 * @param  {object} newData New data to overwrite existing data with.
 	 */
-    static updateUserData(id: string, newData: Data.SubscriptionSave) {
+    static updateSubscription(id: string, name: string, newData: Data.SubscriptionSave) {
         console.group(`Updating data for Subscription ${id}:`)
 
         //  Pointer to local user data
-        var data = this.getSubscriptionData()
+        var data = this.getSubscriptionDatastore()
 
         //  Pointer to single user's data through above variable
-        let subscription: Data.SubscriptionSave = data.find((givenChannel: any) => {
-            return givenChannel._id == id
+        let subscription: Data.SubscriptionSave = data.find((givenSub: Data.SubscriptionSave) => {
+            if (givenSub.channelId == id || givenSub.dmChannel == id || givenSub.userId == id)
+                if (givenSub.name === name)
+                    return true
         })
 
         if (!subscription) {
-            console.log(`Data for User ${id} is missing. Creating new data subset.`)
+            console.log(`Data for channel ${id} is missing. Creating new data subset.`)
             this.createUserData(id)
         }
 
@@ -196,7 +198,10 @@ export default class BotSubscriptionHandler {
         console.log(`New Data:`)
         console.info(newData)
 
-        Object.keys(newData).forEach(key => subscription[key] = newData[key])
+        if (newData === null)
+            Object.keys(newData).forEach(key => subscription[key] = {})
+        else
+            Object.keys(newData).forEach(key => subscription[key] = newData[key])
 
         this.writeSubscriptionDataFile(data)
 
@@ -204,44 +209,45 @@ export default class BotSubscriptionHandler {
         console.groupEnd()
     }
 
-    static getUserProperty(id: number | string, property: string, enableIfNone?: boolean) {
-        let data = this.getUserData(id, true, true)
+    static getSubscription(id: string, name: string, enableIfNone?: boolean) {
+        let data = this.getSubscriptionDatastore()
 
         if (!data._toggles)
             data._toggles = {}
 
-        if (data._toggles[property] !== undefined)
-            return data._toggles[property]
+        if (data._toggles[name] !== undefined)
+            return data._toggles[name]
         else
-            return this.toggleUserProperty(id, property, enableIfNone)
+            return this.toggleSubscription(id, name, enableIfNone)
     }
 
-    static toggleUserProperty(id: number | string, property: string, forceBoolean?: boolean) {
-        let data = this.getUserData(id, true)
+    static toggleSubscription(id: string, name: string, forceBoolean?: boolean) {
+        let data = this.getSubscriptionDatastore()
         let boolChoice: boolean
 
         if (!data._toggles)
             data._toggles = {}
 
-        if (data._toggles[property] !== undefined) {
-            boolChoice = forceBoolean ? forceBoolean : !data._toggles[property]
+        if (data._toggles[name] !== undefined) {
+            boolChoice = forceBoolean ? forceBoolean : !data._toggles[name]
 
-            data._toggles[property] = boolChoice
+            data._toggles[name] = boolChoice
         } else {
-            data._toggles[property] = forceBoolean ? forceBoolean : true
+            data._toggles[name] = forceBoolean ? forceBoolean : true
 
-            boolChoice = data._toggles[property]
+            boolChoice = data._toggles[name]
         }
 
-        console.log(`Toggled user preference '${property}' to ${boolChoice}.`)
+        console.log(`Toggled channel id ${id} subscription '${name}' to ${boolChoice}.`)
 
-        this.updateUserData(id, data)
+        this.updateSubscription(id, name, data)
 
         return boolChoice
     }
 
-    static deleteSubscrription(id: string) {
-
+    static deleteSubscription(id: string, name: string) {
+        console.log(`Deleting subscription for ${id}...`)
+        this.updateSubscription(id, name, null)
     }
 
     static runTask(subscription: Subscriptions.Subscription) {

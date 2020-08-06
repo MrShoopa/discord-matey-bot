@@ -30,6 +30,7 @@ import BotModuleFun from './general/FunFunctions'
 import BotWordplay from './wordplay/WordplayFunctions'
 import BotModuleWarcraft from './fetching/game/blizzard/WarcraftDataFunctions'
 import BotModuleGiphy from './fetching/gif/GiphyFunctions'
+import BotSubscriptionCommands from './general/SubscriptionCommands'
 
 
 export default class TriggerHandlers {
@@ -80,6 +81,10 @@ export default class TriggerHandlers {
         TriggerHandlers.checkForNameChangeRequest,
         TriggerHandlers.checkForRestrictedRoleAssignRequest,
         TriggerHandlers.checkForRestrictedRoleUnassignRequest,
+
+        TriggerHandlers.checkForSubscriptionCreateRequest,
+        TriggerHandlers.checkForSubscriptionDeleteRequest,
+        TriggerHandlers.checkForSubscriptionListRequest,
 
         // Minigame Requests
         TriggerHandlers.checkForDiceRollRequest,
@@ -381,6 +386,27 @@ export default class TriggerHandlers {
         for (const trigger of TRIGGERS.server_mod_triggers.unset_restricted_role)
             if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleRestrictedRole.unassignFromRestrictedRole(trigger)
+        //  Unset Restricted Role
+    }
+
+    private static checkForSubscriptionCreateRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.subscription.create_general)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotSubscriptionCommands.createSubscription(message)
+        //  Unset Restricted Role
+    }
+
+    private static checkForSubscriptionDeleteRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.subscription.delete_general)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotSubscriptionCommands.deleteSubscription(message)
+        //  Unset Restricted Role
+    }
+
+    private static checkForSubscriptionListRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.subscription.list_general)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotSubscriptionCommands.listSubscriptionsInChannel(message)
         //  Unset Restricted Role
     }
 

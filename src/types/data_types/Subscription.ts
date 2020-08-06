@@ -3,6 +3,7 @@ import Discord from 'discord.js'
 export module Subscriptions {
     export interface Subscription extends Object {
         name: string,
+        _enabled: boolean,
         featureCode: SubscriptionFeature,
         frequencyMilli: Number,
         durationMilli?: Number,
@@ -11,6 +12,7 @@ export module Subscriptions {
     }
     export class ChannelSubscription implements Subscription {
         name: string
+        _enabled: boolean
         channelId: string
         authorId: string
         featureCode: SubscriptionFeature
@@ -22,11 +24,15 @@ export module Subscriptions {
             this.channelId = callingUser.lastMessageChannelID
             this.featureCode = featureCode
             this.frequencyMilli = frequencyMilli
+
+            this._enabled = true
         }
     }
 
     export class UserSubscription implements Subscription {
         name: string
+        _enabled: boolean
+
         userId: string
         featureCode: SubscriptionFeature
         frequencyMilli: Number
@@ -36,11 +42,15 @@ export module Subscriptions {
             this.userId = callingUser.id
             this.featureCode = featureCode
             this.frequencyMilli
+
+            this._enabled = true
         }
     }
 
     export class DMSubscription implements Subscription {
         name: string
+        _enabled: boolean
+
         dmChannelId: string
         featureCode: SubscriptionFeature
         frequencyMilli: Number
@@ -50,6 +60,8 @@ export module Subscriptions {
             this.dmChannelId = callingDM.id
             this.featureCode = featureCode
             this.frequencyMilli = this.frequencyMilli
+
+            this._enabled = true
         }
     }
 

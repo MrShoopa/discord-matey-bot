@@ -1,0 +1,53 @@
+import { Subscription } from './../../types/data_types/Subscription';
+import Discord from 'discord.js'
+import Bot from "../../Bot"
+import BotSubscriptionHandler from '../_state/SubscriptionHandler';
+import { SubscriptionType } from 'aws-sdk/clients/budgets';
+
+export default class BotSubscriptionCommands {
+
+    static createSubscription(message: Discord.Message, trigger: string) {
+        let bot: Bot = globalThis.bot
+        bot.preliminary(trigger, 'Function subscription management - Creation', true)
+
+        let ctx: string =
+            message.content.substr(message.content.indexOf(trigger) + trigger.length).trim()
+
+        let name: string =
+            ctx.substr(ctx.indexOf('name') + 4, ctx.indexOf('for')).trim()
+
+        let funcName: string =
+            ctx.substr(ctx.indexOf('for') + 3).trim()
+
+        let subscription = BotSubscriptionHandler.createSubscription(message.channel.id, name)
+
+        if (message.channel instanceof Discord.TextChannel)
+            subscription.channelId = message.channel.id
+        if (message.channel instanceof Discord.DMChannel)
+            subscription.dmChannelId = message.channel.id
+
+        //TODO
+        subscription.featureCode = (funcName as SubscriptionType)
+    }
+
+    static deleteSubscription(message: Discord.Message, trigger: string) {
+        let bot: Bot = globalThis.bot
+        bot.preliminary(trigger, 'Function subscription management - Deletion', true)
+
+        //TODO
+    }
+
+    static getSubscription(message: Discord.Message, trigger: string) {
+        let bot: Bot = globalThis.bot
+        bot.preliminary(trigger, 'Function subscription management - Subscription Inquiry', true)
+
+        //TODO
+    }
+
+    static listSubscriptionsForId(message: Discord.Message, trigger: string) {
+        let bot: Bot = globalThis.bot
+        bot.preliminary(trigger, 'Function subscription management - Listing', true)
+
+        //TODO
+    }
+}

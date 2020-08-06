@@ -58,6 +58,7 @@ export default class BotSubscriptionHandler {
         let dataSkeleton: Data.SubscriptionSave =
         {
             _type: 'test',
+            name: "a test",
             frequencyMilli: 0,
             featureCode: 'Nothing',
             sampleData: { sampleArg: 'Yuh' }
@@ -136,26 +137,35 @@ export default class BotSubscriptionHandler {
 	 * @param  {number|string} id Message Channel Discord ID
 	 * @param  {boolean} log? If true, logs extra info to console.
 	 */
-    static createUserData(id: number | string, force?: boolean): Data.SubscriptionSave {
-        if (typeof id === 'number') id = id.toString()
-
+    static createSubscription(id: string, name: string, newSub: Data.SubscriptionSave, caller?: Discord.Message, force?: boolean): Data.SubscriptionSave {
         var data = this.getSubscriptionDatastore()
 
-        //  Find user...
-        let subscription: Data.SubscriptionSave = data.find((givenChannel: any) => {
-            return givenChannel._id == id
+        //  Find subscription...
+        let subscription: Data.SubscriptionSave = data.find((givenSub: Data.SubscriptionSave) => {
+            if (givenSub.channelId == id) id = givenSub.channelId
+            else if (givenSub.dmChannel == id) id = givenSub.dmChannel
+            else if (givenSub.userId == id) id = givenSub.userId
+            else return null
+
+            if (givenSub.name === name && id)
+                return true
         })
 
-        if (subscription === undefined || force) {
-            // ...if not found, create new data.
-            let newSave: Data.SubscriptionSave = {
-                _type: 'test',
-                frequencyMilli: 0,
-                featureCode: 'Nothing',
-                sampleData: { sampleArg: 'Yuh' }
-            }
+        if (caller?.channel instanceof Discord.TextChannel) {
+            newSub._type = 'GuildChannel'
+            newSub.channelId = caller.channel.id
+        }
+        else if (caller?.channel instanceof Discord.PartialGroupDMChannel) {
+            newSub._type = 'PartialGroup'
+            newSub.dmChannelId = caller.channel.id //TODO SPecial Partials
+        }
+        else if (caller?.channel instanceof Discord.DMChannel) {
+            newSub._type = 'DM'
+            newSub.dmChannelId = caller.channel.id
+        } else newSub.channelId = id
 
-            data.push(newSave)
+        if (subscription === undefined || force) {
+            data.push(newSub)
 
             this.writeSubscriptionDataFile(data)
             console.log(`Data created for message channel ${id}.`)
@@ -164,7 +174,7 @@ export default class BotSubscriptionHandler {
             return data
         } else {
             //  ,if found, do nothing.
-            console.log(`Data already exists for message channel ${id}.`)
+            console.log(`A subscription named ${newSub.name} already exists for channel id ${id}.`)
         }
 
     }
@@ -190,7 +200,7 @@ export default class BotSubscriptionHandler {
 
         if (!subscription) {
             console.log(`Data for channel ${id} is missing. Creating new data subset.`)
-            this.createUserData(id)
+            this.createSubscription(id, name, newData)
         }
 
         console.log(`Old Data:`)

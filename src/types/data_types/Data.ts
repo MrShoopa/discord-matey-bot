@@ -14,7 +14,7 @@ export module Data {
     }
 
     export interface SubscriptionSave extends Object {
-        _type: string,
+        _type: Subscriptions.ChannelType,
         featureCode: Subscriptions.SubscriptionFeature,
         frequencyMilli: Number,
         name: string,

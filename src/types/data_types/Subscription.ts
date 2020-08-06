@@ -55,4 +55,6 @@ export module Subscriptions {
 
     export type SubscriptionFeature = 'Nothing' | 'Ping' | 'DayCounter' | 'QuoteFetch' | 'RedditPost'
 
+    export type ChannelType = 'test' | 'DM' | 'PartialGroup' | 'GuildChannel'
+
 }

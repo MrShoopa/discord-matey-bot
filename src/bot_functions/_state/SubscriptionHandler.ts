@@ -18,6 +18,16 @@ import { Data } from './../../types/data_types/Data'
 import { Subscriptions } from './../../types/index';
 import BotGeneralCommands from './../general/GeneralCommands'
 
+let dataSkeleton: Data.SubscriptionSave =
+{
+    _type: 'test',
+    _enabled: false,
+    name: 'butt',
+    frequencyMilli: 0,
+    featureCode: 'Nothing',
+    sampleData: { sampleArg: 'Yuh' }
+}
+
 export default class BotSubscriptionHandler {
     static SAVE_DATA = __dirname + '/../../../save_data'
     static SUBSCRIPTION_DATA_FILE = `${BotSubscriptionHandler.SAVE_DATA}/megadorkbot_subscription_collection.json`
@@ -51,17 +61,8 @@ export default class BotSubscriptionHandler {
     static instantiateSubscriptionData(fetch?: boolean, force?: boolean) {
         if (!force &&
             JSON.parse(FileSystem.readFileSync(this.SUBSCRIPTION_DATA_FILE).toString())) {
-            console.log('Data already exists.')
+            console.log('Subscription Data already exists.')
             return null
-        }
-
-        let dataSkeleton: Data.SubscriptionSave =
-        {
-            _type: 'test',
-            name: "a test",
-            frequencyMilli: 0,
-            featureCode: 'Nothing',
-            sampleData: { sampleArg: 'Yuh' }
         }
 
         try {
@@ -79,33 +80,6 @@ export default class BotSubscriptionHandler {
                 console.error('Error creating new subscription data file.')
                 bot.saveBugReport(err)
             }
-        }
-    }
-
-    /**
-	 * Updates an existing subscription's data with any given as an subobject.
-	 * 
-	 * @param  {number|string} id User's Discord ID
-	 * @param  {object} newData New data to overwrite existing data with.
-	 */
-    static updateSubscriptionData(newData: Data.SubscriptionSave, log?: boolean) {
-        var data = this.getSubscriptionDatastore()
-
-        if (log) {
-            console.log(`Updating time data...`)
-            console.group()
-
-            console.log(`Old Data:`)
-            console.info(data)
-            console.log(`New Data:`)
-            console.info(newData)
-        }
-
-        this.writeSubscriptionDataFile(newData)
-
-        if (log) {
-            console.log(`\Subscription data updated. 📰🌩`)
-            console.groupEnd()
         }
     }
 
@@ -137,7 +111,9 @@ export default class BotSubscriptionHandler {
 	 * @param  {number|string} id Message Channel Discord ID
 	 * @param  {boolean} log? If true, logs extra info to console.
 	 */
-    static createSubscription(id: string, name: string, newSub: Data.SubscriptionSave, caller?: Discord.Message, force?: boolean): Data.SubscriptionSave {
+    static createSubscription(id: number | string, name: string, caller?: Discord.Message, force?: boolean): Data.SubscriptionSave {
+        if (typeof id === 'number') id = id.toString()
+
         var data = this.getSubscriptionDatastore()
 
         //  Find subscription...
@@ -151,30 +127,34 @@ export default class BotSubscriptionHandler {
                 return true
         })
 
-        if (caller?.channel instanceof Discord.TextChannel) {
-            newSub._type = 'GuildChannel'
-            newSub.channelId = caller.channel.id
-        }
-        else if (caller?.channel instanceof Discord.PartialGroupDMChannel) {
-            newSub._type = 'PartialGroup'
-            newSub.dmChannelId = caller.channel.id //TODO SPecial Partials
-        }
-        else if (caller?.channel instanceof Discord.DMChannel) {
-            newSub._type = 'DM'
-            newSub.dmChannelId = caller.channel.id
-        } else newSub.channelId = id
-
         if (subscription === undefined || force) {
+            // ...if not found, create new data.
+            let newSub = Object.create(dataSkeleton)
+            newSub.name = name
+
+            if (caller?.channel instanceof Discord.TextChannel) {
+                newSub._type = 'GuildChannel'
+                newSub.channelId = caller.channel.id
+            }
+            else if (caller?.channel instanceof Discord.PartialGroupDMChannel) {
+                newSub._type = 'PartialGroup'
+                newSub.dmChannelId = caller.channel.id //TODO SPecial Partials
+            }
+            else if (caller?.channel instanceof Discord.DMChannel) {
+                newSub._type = 'DM'
+                newSub.dmChannelId = caller.channel.id
+            } else newSub.channelId = id
+
             data.push(newSub)
 
             this.writeSubscriptionDataFile(data)
-            console.log(`Data created for message channel ${id}.`)
+            console.log(`Data created for message channel ${id} named ${name}.`)
             if (force) console.warn(`YOU HAVE REWRITTEN A SUBSCRIPTION BY FORCE!`)
 
             return data
         } else {
             //  ,if found, do nothing.
-            console.log(`A subscription named ${newSub.name} already exists for channel id ${id}.`)
+            console.log(`A subscription named ${name} already exists for channel id ${id}.`)
         }
 
     }
@@ -185,10 +165,9 @@ export default class BotSubscriptionHandler {
 	 * @param  {number|string} id Message Channel id
 	 * @param  {object} newData New data to overwrite existing data with.
 	 */
-    static updateSubscription(id: string, name: string, newData: Data.SubscriptionSave) {
-        console.group(`Updating data for Subscription ${id}:`)
+    static updateSubscription(id: string, name: string, newData: Data.SubscriptionSave, caller?: Discord.Message) {
+        console.group(`Updating data for channel ${id}'s subscription with name '${name}'`)
 
-        //  Pointer to local user data
         var data = this.getSubscriptionDatastore()
 
         //  Pointer to single user's data through above variable
@@ -199,8 +178,8 @@ export default class BotSubscriptionHandler {
         })
 
         if (!subscription) {
-            console.log(`Data for channel ${id} is missing. Creating new data subset.`)
-            this.createSubscription(id, name, newData)
+            console.log(`Subscription not found. Creating.`)
+            subscription = this.createSubscription(id, name, caller)
         }
 
         console.log(`Old Data:`)
@@ -209,7 +188,7 @@ export default class BotSubscriptionHandler {
         console.info(newData)
 
         if (newData === null)
-            Object.keys(newData).forEach(key => subscription[key] = {})
+            subscription = null
         else
             Object.keys(newData).forEach(key => subscription[key] = newData[key])
 
@@ -222,41 +201,30 @@ export default class BotSubscriptionHandler {
     static getSubscription(id: string, name: string, enableIfNone?: boolean) {
         let data = this.getSubscriptionDatastore()
 
-        if (!data._toggles)
-            data._toggles = {}
+        //  Pointer to single user's data through above variable
+        let subscription: Data.SubscriptionSave = data.find((givenSub: Data.SubscriptionSave) => {
+            if (givenSub.channelId == id || givenSub.dmChannel == id || givenSub.userId == id)
+                if (givenSub.name === name)
+                    return true
+        })
 
-        if (data._toggles[name] !== undefined)
-            return data._toggles[name]
-        else
-            return this.toggleSubscription(id, name, enableIfNone)
+        if (!subscription && enableIfNone) subscription = this.createSubscription(id, name)
+
+        return subscription
     }
 
     static toggleSubscription(id: string, name: string, forceBoolean?: boolean) {
-        let data = this.getSubscriptionDatastore()
-        let boolChoice: boolean
+        let subscription: Data.SubscriptionSave = this.getSubscription(id, name)
 
-        if (!data._toggles)
-            data._toggles = {}
+        subscription._enabled = forceBoolean ? forceBoolean : !subscription._enabled
+        this.updateSubscription(id, name, subscription)
+        console.log(`Toggled channel id ${id} subscription '${name}' to ${subscription._enabled}.`)
 
-        if (data._toggles[name] !== undefined) {
-            boolChoice = forceBoolean ? forceBoolean : !data._toggles[name]
-
-            data._toggles[name] = boolChoice
-        } else {
-            data._toggles[name] = forceBoolean ? forceBoolean : true
-
-            boolChoice = data._toggles[name]
-        }
-
-        console.log(`Toggled channel id ${id} subscription '${name}' to ${boolChoice}.`)
-
-        this.updateSubscription(id, name, data)
-
-        return boolChoice
+        return subscription._enabled
     }
 
     static deleteSubscription(id: string, name: string) {
-        console.log(`Deleting subscription for ${id}...`)
+        console.log(`Deleting subscription for ${id} named ${name}...`)
         this.updateSubscription(id, name, null)
     }
 

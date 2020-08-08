@@ -59,8 +59,9 @@ export default class BotData {
 						console.error(err)
 				}
 				return null
+			} else if (err.message.includes('Unexpected end')) {
+				console.error('The Subscription collection JSON is malformed. Please fix.')
 			}
-
 		}
 		if (log) console.log(data)
 
@@ -325,6 +326,7 @@ export default class BotData {
 		if (!timeFile) await this.updateS3Object(FileSystem.readFileSync(BotTimeKeeper.TIME_DATA_FILE), BotTimeKeeper.S3_SAVE_NAME)
 		FileSystem.writeFileSync((BotTimeKeeper.TIME_DATA_FILE), timeFile.Body.toString())
 
+		// Subscription Data
 		let subscriptionFile: aws.S3.GetObjectOutput = await this.getS3Object(BotSubscriptionHandler.S3_SAVE_NAME)
 		if (!subscriptionFile) await this.updateS3Object(FileSystem.readFileSync(BotSubscriptionHandler.SUBSCRIPTION_DATA_FILE), BotSubscriptionHandler.S3_SAVE_NAME)
 		FileSystem.writeFileSync((BotSubscriptionHandler.SUBSCRIPTION_DATA_FILE), subscriptionFile.Body.toString())

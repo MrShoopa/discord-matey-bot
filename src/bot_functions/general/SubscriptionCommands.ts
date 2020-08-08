@@ -18,7 +18,13 @@ export default class BotSubscriptionCommands {
         let funcName: string =
             ctx.substr(ctx.indexOf('for') + 3).trim().toUpperCase()
 
-        let subscription = BotSubscriptionHandler.createSubscription(message.channel.id, name, message)
+        let subscription
+        try {
+            subscription = BotSubscriptionHandler.createSubscription(message.channel.id, name, message)
+        } catch (err) {
+            if (err.message.includes('already exists'))
+                return message.channel.send(bot.generateErrorMessage(`A subscription named *${name}* already exists for this channel.`))
+        }
 
         if (message.channel instanceof Discord.TextChannel)
             subscription.channelId = message.channel.id
@@ -31,14 +37,30 @@ export default class BotSubscriptionCommands {
             subscription.frequencyMilli = 86400000 // 1 Day
             subscription._enabled = true
             subscription.args = args
+
+            BotSubscriptionHandler.updateSubscription(message.id, name, subscription, message)
         } catch (error) {
             bot.saveBugReport(error, this.createSubscription.name, true)
 
             if (error instanceof TypeError && error.message.includes('featureCode'))
-                bot.generateErrorMessage(`There is no subscription feature for that function or it does not exist...`)
+                return message.channel.send(bot.generateErrorMessage(`There is no subscription feature for that function or it does not exist...`))
             else
-                bot.generateErrorMessage()
+                return message.channel.send(bot.generateErrorMessage())
         }
+
+        let response = new Discord.MessageEmbed()
+            .setColor('GREEN')
+            .setDescription(
+                `Function: ${funcName}\n` +
+                `Interval: ${this.msToTimeMessage(subscription.frequencyMilli)}\n`
+            )
+
+        if (message.channel instanceof Discord.TextChannel)
+            response.setTitle(`Subscription created for ${message.channel.name}!`)
+        if (message.channel instanceof Discord.DMChannel)
+            response.setTitle(`Subscription created!`)
+
+        return message.channel.send(response)
     }
 
     static deleteSubscription(message: Discord.Message, trigger: string) {
@@ -60,5 +82,30 @@ export default class BotSubscriptionCommands {
         bot.preliminary(trigger, 'Function subscription management - Listing', true)
 
         //TODO
+    }
+
+    static msToTimeMessage(duration: number): string {
+        var milliseconds = (duration % 1000) / 100,
+            seconds = Math.floor((duration / 1000) % 60),
+            minutes = Math.floor((duration / (1000 * 60)) % 60),
+            hours = Math.floor((duration / (1000 * 60 * 60)) % 24),
+            days = Math.floor((duration / (1000 * 60 * 60 * 24)))
+
+        let message: string
+
+        if (days > 0)
+            message += `${days} day(s), `
+        if (hours > 0)
+            message += `${hours} hour(s), `
+        if (minutes > 0)
+            message += `${minutes} minutes(s), `
+        if (seconds > 0)
+            message += `${seconds} seconds(s), `
+        if (milliseconds > 0)
+            message += `${seconds} millseconds(s),`
+
+        message = message.trimRight().substr(0, message.length)
+
+        return message
     }
 }

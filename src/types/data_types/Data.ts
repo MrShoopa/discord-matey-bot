@@ -17,7 +17,7 @@ export module Data {
         _type: Subscriptions.ChannelType,
         _enabled: boolean
         featureCode: Subscriptions.SubscriptionFeature,
-        frequencyMilli: Number,
+        frequencyMilli: number,
         name: string,
         durationMilli?: Number,
         endDate?: Date,

@@ -25,7 +25,7 @@ let dataSkeleton: Data.SubscriptionSave =
     name: 'butt',
     frequencyMilli: 0,
     featureCode: 'NOTHING',
-    sampleData: { sampleArg: 'Yuh' }
+    //sampleData: { sampleArg: 'Yuh' }
 }
 
 export default class BotSubscriptionHandler {
@@ -37,9 +37,11 @@ export default class BotSubscriptionHandler {
         try {
             var data: Data.SubscriptionSave =
                 JSON.parse(FileSystem.readFileSync(this.SUBSCRIPTION_DATA_FILE).toString())
+            if (data == undefined)
+                throw new Error('Blank Object')
         } catch (err) {
             let bot: Bot = globalThis.bot
-            if (err.code === 'ENOENT') {
+            if (err.code === 'ENOENT' || err.message.includes('Blank')) {
                 console.info('Subscription data file is missing! Creating new collection...')
                 try {
                     return this.instantiateSubscriptionData(true, true)
@@ -47,7 +49,10 @@ export default class BotSubscriptionHandler {
                     bot.saveBugReport(err, this.getSubscriptionDatastore.name, true)
                 }
                 return null
-            } else bot.saveBugReport(err)
+            } else if (err.message.includes('Unexpected end')) {
+                console.error('The Subscription collection JSON is malformed. Please fix.')
+            }
+            else bot.saveBugReport(err)
         }
         return data
     }
@@ -66,7 +71,7 @@ export default class BotSubscriptionHandler {
         }
 
         try {
-            FileSystem.writeFileSync(this.SUBSCRIPTION_DATA_FILE, JSON.stringify(dataSkeleton))
+            FileSystem.writeFileSync(this.SUBSCRIPTION_DATA_FILE, `[${JSON.stringify(dataSkeleton)}]`)
 
             if (fetch) return this.getSubscriptionDatastore()
             console.log(`New Subscription Data save file created.\n`)
@@ -129,7 +134,7 @@ export default class BotSubscriptionHandler {
 
         if (subscription === undefined || force) {
             // ...if not found, create new data.
-            let newSub = Object.create(dataSkeleton)
+            let newSub = dataSkeleton
             newSub.name = name
 
             if (caller?.channel instanceof Discord.TextChannel) {
@@ -138,7 +143,7 @@ export default class BotSubscriptionHandler {
             }
             else if (caller?.channel instanceof Discord.PartialGroupDMChannel) {
                 newSub._type = 'PartialGroup'
-                newSub.dmChannelId = caller.channel.id //TODO SPecial Partials
+                newSub.dmChannelId = caller.channel.id //TODO Special Partials
             }
             else if (caller?.channel instanceof Discord.DMChannel) {
                 newSub._type = 'DM'
@@ -155,6 +160,7 @@ export default class BotSubscriptionHandler {
         } else {
             //  ,if found, do nothing.
             console.log(`A subscription named ${name} already exists for channel id ${id}.`)
+            throw new Error(`Subscription already exists for ${name}`)
         }
 
     }

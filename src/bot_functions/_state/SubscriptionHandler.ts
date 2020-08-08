@@ -24,7 +24,7 @@ let dataSkeleton: Data.SubscriptionSave =
     _enabled: false,
     name: 'butt',
     frequencyMilli: 0,
-    featureCode: 'Nothing',
+    featureCode: 'NOTHING',
     sampleData: { sampleArg: 'Yuh' }
 }
 
@@ -244,16 +244,16 @@ export default class BotSubscriptionHandler {
         // Make sure your function can handle sending to a channel id.
         let channel: Discord.TextChannel = bot.channels.cache.get(subscribedChannelId) as Discord.TextChannel
         switch (subscription.featureCode) {
-            case 'Ping':
+            case 'PING':
                 BotGeneralCommands.firePingPongMessage(channel)
                 break;
-            case 'DayCounter':
+            case 'DAYCOUNTER':
                 //TODO
                 break;
-            case 'QuoteFetch':
+            case 'QUOTEFETCH':
                 //TODO
                 break;
-            case 'RedditPost':
+            case 'REDDITPOST':
                 //TODO
                 break;
             default:

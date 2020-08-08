@@ -392,21 +392,21 @@ export default class TriggerHandlers {
     private static checkForSubscriptionCreateRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.subscription.create_general)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotSubscriptionCommands.createSubscription(message)
+                return BotSubscriptionCommands.createSubscription(message as Discord.Message, trigger)
         //  Unset Restricted Role
     }
 
     private static checkForSubscriptionDeleteRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.subscription.delete_general)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotSubscriptionCommands.deleteSubscription(message)
+                return BotSubscriptionCommands.deleteSubscription(message as Discord.Message, trigger)
         //  Unset Restricted Role
     }
 
     private static checkForSubscriptionListRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.subscription.list_general)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotSubscriptionCommands.listSubscriptionsInChannel(message)
+                return BotSubscriptionCommands.listSubscriptionsForChannel(message as Discord.Message, trigger)
         //  Unset Restricted Role
     }
 

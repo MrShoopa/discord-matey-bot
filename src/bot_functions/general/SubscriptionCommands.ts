@@ -5,7 +5,7 @@ import BotSubscriptionHandler from '../_state/SubscriptionHandler';
 
 export default class BotSubscriptionCommands {
 
-    static createSubscription(message: Discord.Message, trigger: string) {
+    static createSubscription(message: Discord.Message, trigger: string, args?: any) {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'Function subscription management - Creation', true)
 
@@ -13,12 +13,12 @@ export default class BotSubscriptionCommands {
             message.content.substr(message.content.indexOf(trigger) + trigger.length).trim()
 
         let name: string =
-            ctx.substr(ctx.indexOf('name') + 4, ctx.indexOf('for')).trim()
+            ctx.substr(ctx.indexOf('name') + 4, ctx.indexOf('for') - 4).trim()
 
         let funcName: string =
-            ctx.substr(ctx.indexOf('for') + 3).trim()
+            ctx.substr(ctx.indexOf('for') + 3).trim().toUpperCase()
 
-        let subscription = BotSubscriptionHandler.createSubscription(message.channel.id, name)
+        let subscription = BotSubscriptionHandler.createSubscription(message.channel.id, name, message)
 
         if (message.channel instanceof Discord.TextChannel)
             subscription.channelId = message.channel.id
@@ -26,7 +26,19 @@ export default class BotSubscriptionCommands {
             subscription.dmChannelId = message.channel.id
 
         //TODO
-        subscription.featureCode = (funcName as Subscriptions.SubscriptionFeature)
+        try {
+            subscription.featureCode = (funcName as Subscriptions.SubscriptionFeature)
+            subscription.frequencyMilli = 86400000 // 1 Day
+            subscription._enabled = true
+            subscription.args = args
+        } catch (error) {
+            bot.saveBugReport(error, this.createSubscription.name, true)
+
+            if (error instanceof TypeError && error.message.includes('featureCode'))
+                bot.generateErrorMessage(`There is no subscription feature for that function or it does not exist...`)
+            else
+                bot.generateErrorMessage()
+        }
     }
 
     static deleteSubscription(message: Discord.Message, trigger: string) {
@@ -43,7 +55,7 @@ export default class BotSubscriptionCommands {
         //TODO
     }
 
-    static listSubscriptionsForId(message: Discord.Message, trigger: string) {
+    static listSubscriptionsForChannel(message: Discord.Message, trigger: string) {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'Function subscription management - Listing', true)
 

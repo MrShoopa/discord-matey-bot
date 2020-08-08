@@ -1222,5 +1222,28 @@
         "default": [
             "ping"
         ]
+    },
+    "subscription": {
+        "create_general": [
+            "create subscription",
+            "make subscription"
+        ],
+        "delete_general": [
+            "delete subscription"
+        ],
+        "update_general": [
+            "update subscription",
+            "change subscription"
+        ],
+        "get_general": [
+            "get subscription",
+            "find subscription",
+            "fetch subscription"
+        ],
+        "list_general": [
+            "list subscriptions",
+            "get subscriptions",
+            "fetch subscriptions"
+        ]
     }
 }

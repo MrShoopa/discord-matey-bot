@@ -33,9 +33,9 @@ export default class BotSubscriptionHandler {
     static SUBSCRIPTION_DATA_FILE = `${BotSubscriptionHandler.SAVE_DATA}/megadorkbot_subscription_collection.json`
     static S3_SAVE_NAME = 'save_data/megadorkbot_subscription_collection.json'
 
-    static getSubscriptionDatastore() {
+    static getSubscriptionDatastore(): Data.SubscriptionSave[] {
         try {
-            var data: Data.SubscriptionSave =
+            var data: Data.SubscriptionSave[] =
                 JSON.parse(FileSystem.readFileSync(this.SUBSCRIPTION_DATA_FILE).toString())
             if (data == undefined)
                 throw new Error('Blank Object')
@@ -64,8 +64,7 @@ export default class BotSubscriptionHandler {
 	 * @param  {boolean} force? Erases the existing datastore if it already exists.
 	 */
     static instantiateSubscriptionData(fetch?: boolean, force?: boolean) {
-        if (!force &&
-            JSON.parse(FileSystem.readFileSync(this.SUBSCRIPTION_DATA_FILE).toString())) {
+        if (!force && JSON.parse(FileSystem.readFileSync(this.SUBSCRIPTION_DATA_FILE).toString())) {
             console.log('Subscription Data already exists.')
             return null
         }
@@ -156,7 +155,7 @@ export default class BotSubscriptionHandler {
             console.log(`Data created for message channel ${id} named ${name}.`)
             if (force) console.warn(`YOU HAVE REWRITTEN A SUBSCRIPTION BY FORCE!`)
 
-            return data
+            return newSub
         } else {
             //  ,if found, do nothing.
             console.log(`A subscription named ${name} already exists for channel id ${id}.`)
@@ -184,6 +183,10 @@ export default class BotSubscriptionHandler {
         })
 
         if (!subscription) {
+            if (newData === null) {
+                console.groupEnd()
+                return null
+            }
             console.log(`Subscription not found. Creating.`)
             subscription = this.createSubscription(id, name, caller)
         }
@@ -194,7 +197,7 @@ export default class BotSubscriptionHandler {
         console.info(newData)
 
         if (newData === null)
-            subscription = null
+            data = data.filter((sub) => sub.channelId != id && sub.userId != id && sub.dmChannelId != id)
         else
             Object.keys(newData).forEach(key => subscription[key] = newData[key])
 
@@ -202,6 +205,7 @@ export default class BotSubscriptionHandler {
 
         console.log(`\nUpdate completed.`)
         console.groupEnd()
+        return true
     }
 
     static getSubscription(id: string, name: string, enableIfNone?: boolean) {
@@ -231,7 +235,13 @@ export default class BotSubscriptionHandler {
 
     static deleteSubscription(id: string, name: string) {
         console.log(`Deleting subscription for ${id} named ${name}...`)
-        this.updateSubscription(id, name, null)
+        if (this.updateSubscription(id, name, null) == null) {
+            console.log('...wait this subscription did not exist in the first place!')
+            return null
+        } else {
+            console.log('...successfully deleted!')
+            return true
+        }
     }
 
     static runTask(subscription: Subscriptions.Subscription) {

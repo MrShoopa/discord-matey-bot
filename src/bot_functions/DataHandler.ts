@@ -60,7 +60,7 @@ export default class BotData {
 				}
 				return null
 			} else if (err.message.includes('Unexpected end')) {
-				console.error('The Subscription collection JSON is malformed. Please fix.')
+				console.error('The user data collection JSON is malformed. Please fix.')
 			}
 		}
 		if (log) console.log(data)

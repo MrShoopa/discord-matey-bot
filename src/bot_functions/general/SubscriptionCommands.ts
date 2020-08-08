@@ -1,5 +1,6 @@
 import Discord from 'discord.js'
 import Bot from "../../Bot"
+import { Data } from './../../types/data_types/Data';
 import { Subscriptions } from './../../types/data_types/Subscription';
 import BotSubscriptionHandler from '../_state/SubscriptionHandler';
 
@@ -13,12 +14,12 @@ export default class BotSubscriptionCommands {
             message.content.substr(message.content.indexOf(trigger) + trigger.length).trim()
 
         let name: string =
-            ctx.substr(ctx.indexOf('name') + 4, ctx.indexOf('for') - 4).trim()
+            ctx.substr(ctx.indexOf('named') + 5, ctx.indexOf('for') - 5).trim()
 
         let funcName: string =
             ctx.substr(ctx.indexOf('for') + 3).trim().toUpperCase()
 
-        let subscription
+        let subscription: Data.SubscriptionSave
         try {
             subscription = BotSubscriptionHandler.createSubscription(message.channel.id, name, message)
         } catch (err) {
@@ -31,7 +32,6 @@ export default class BotSubscriptionCommands {
         if (message.channel instanceof Discord.DMChannel)
             subscription.dmChannelId = message.channel.id
 
-        //TODO
         try {
             subscription.featureCode = (funcName as Subscriptions.SubscriptionFeature)
             subscription.frequencyMilli = 86400000 // 1 Day
@@ -50,15 +50,18 @@ export default class BotSubscriptionCommands {
 
         let response = new Discord.MessageEmbed()
             .setColor('GREEN')
-            .setDescription(
-                `Function: ${funcName}\n` +
-                `Interval: ${this.msToTimeMessage(subscription.frequencyMilli)}\n`
-            )
+            .setDescription('todo') //TODO
 
         if (message.channel instanceof Discord.TextChannel)
-            response.setTitle(`Subscription created for ${message.channel.name}!`)
+            response.setTitle(`Subscription named *${name}* created for channel ${message.channel.name}!`)
         if (message.channel instanceof Discord.DMChannel)
-            response.setTitle(`Subscription created!`)
+            response.setTitle(`Subscription *${name} created!`)
+
+        response.addField('Function', `${funcName}`)
+        response.addField('Interval', `${this.msToTimeMessage(subscription.frequencyMilli)}`)
+
+        if (subscription.authorId)
+            response.addField('Created by', `${message.author.username}`)
 
         return message.channel.send(response)
     }
@@ -67,7 +70,19 @@ export default class BotSubscriptionCommands {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'Function subscription management - Deletion', true)
 
-        //TODO
+        let subName: string =
+            message.content.substr(message.content.indexOf(trigger) + trigger.length).trim()
+
+        let result = BotSubscriptionHandler.deleteSubscription(message.channel.id, subName)
+
+        if (result == null)
+            message.channel.send(`Subscription *${subName}* doesn't exist already!`)
+        else if (result === false)
+            message.channel.send(`Did not delete *${subName}* due to an underlying error.`)
+        else if (result === true)
+            message.channel.send(`Successfully deleted subscription *${subName}*.`)
+
+        return true
     }
 
     static getSubscription(message: Discord.Message, trigger: string) {
@@ -91,7 +106,7 @@ export default class BotSubscriptionCommands {
             hours = Math.floor((duration / (1000 * 60 * 60)) % 24),
             days = Math.floor((duration / (1000 * 60 * 60 * 24)))
 
-        let message: string
+        let message: string = ''
 
         if (days > 0)
             message += `${days} day(s), `
@@ -102,9 +117,9 @@ export default class BotSubscriptionCommands {
         if (seconds > 0)
             message += `${seconds} seconds(s), `
         if (milliseconds > 0)
-            message += `${seconds} millseconds(s),`
+            message += `${seconds} millseconds(s), `
 
-        message = message.trimRight().substr(0, message.length)
+        message = message.trimRight().substr(0, message.length - 2)
 
         return message
     }

@@ -22,6 +22,7 @@ let dataSkeleton: Data.SubscriptionSave =
 {
     _type: 'test',
     _enabled: false,
+    _lastRun: new Date(),
     name: 'butt',
     frequencyMilli: 0,
     featureCode: 'NOTHING',
@@ -289,5 +290,17 @@ export default class BotSubscriptionHandler {
 
     }
 
+    static RunSubscribedTasks() {
+        let subscriptions = BotSubscriptionHandler.getSubscriptionDatastore()
 
+        subscriptions.forEach(sub => {
+            let currentTime = Date.now()
+
+            // Checks if this ran before the next interval
+            if ((sub._lastRun.getMilliseconds() - currentTime) < sub.frequencyMilli)
+                this.runTask(sub)
+        })
+
+        console.log('AUTOMATION - Finished running all subscribed tasks for channels!')
+    }
 }

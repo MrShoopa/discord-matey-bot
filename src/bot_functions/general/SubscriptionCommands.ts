@@ -50,7 +50,7 @@ export default class BotSubscriptionCommands {
 
         let response = new Discord.MessageEmbed()
             .setColor('GREEN')
-            .setDescription('todo') //TODO
+            .setDescription('todo')  //TODO: Subscription's function's description?
 
         if (message.channel instanceof Discord.TextChannel)
             response.setTitle(`Subscription named *${name}* created for channel ${message.channel.name}!`)

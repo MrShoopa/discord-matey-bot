@@ -189,7 +189,7 @@ export default class BotSubscriptionHandler {
                 return null
             }
             console.log(`Subscription not found. Creating.`)
-            subscription = this.createSubscription(id, name, caller)
+            return this.updateSubscription(id, name, this.createSubscription(id, name, caller)) //! TODO yeah idk fix this
         }
 
         console.log(`Old Data:`)
@@ -296,9 +296,12 @@ export default class BotSubscriptionHandler {
         subscriptions.forEach(sub => {
             let currentTime = Date.now()
 
-            // Checks if this ran before the next interval
-            if ((sub._lastRun.getMilliseconds() - currentTime) < sub.frequencyMilli)
-                this.runTask(sub)
+            if (sub.featureCode = 'NOTHING')
+
+                // Checks if this ran before the next interval
+                if ((sub.featureCode !== 'NOTHING'
+                    && (sub._lastRun?.getMilliseconds() - currentTime) < sub.frequencyMilli))
+                    this.runTask(sub)
         })
 
         console.log('AUTOMATION - Finished running all subscribed tasks for channels!')

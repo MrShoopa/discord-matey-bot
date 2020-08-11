@@ -4,6 +4,8 @@ import { Data } from './../../types/data_types/Data';
 import { Subscriptions } from './../../types/data_types/Subscription';
 import BotSubscriptionHandler from '../_state/SubscriptionHandler';
 
+import TRIGGERS from '../../bot_knowledge/triggers/triggers.json'
+
 export default class BotSubscriptionCommands {
 
     static createSubscription(message: Discord.Message, trigger: string, args?: any) {
@@ -85,18 +87,59 @@ export default class BotSubscriptionCommands {
         return true
     }
 
+    static updateSubscription(message: Discord.Message, trigger: string) {
+        // Filter like 'edit/change subscription [time/name/function] to [x]
+        let bot: Bot = globalThis.bot
+        bot.preliminary(trigger, 'Function subscription management - Subscription Edit', true)
+
+        let ctx: string =
+            message.content.substr(message.content.indexOf(trigger) + trigger.length).trim()
+        let subName: string =
+            ctx.substr(ctx.indexOf(`'`) + 1, ctx.lastIndexOf(`'`) - 1).trim() //? Improve
+        let subscription =
+            BotSubscriptionHandler.getSubscription(message.channel.id, name)
+
+        if (!subscription)
+            return message.channel.send(`Subscription named ${subName} not found.`)
+
+        //TODO Priority 1
+        for (const param of TRIGGERS.subscription.update.params.time)
+            if (ctx.toLowerCase().startsWith(param)) {
+                //thing
+                return
+            }
+        for (const param of TRIGGERS.subscription.update.params.name)
+            if (ctx.toLowerCase().startsWith(param)) {
+                //thing
+                return
+            }
+        for (const param of TRIGGERS.subscription.update.params.function)
+            if (ctx.toLowerCase().startsWith(param)) {
+                //thing
+                return
+            }
+        for (const param of TRIGGERS.subscription.update.params.toggle)
+            if (ctx.toLowerCase().startsWith(param)) {
+                //thing
+                return
+            }
+
+        // All else fails
+        return message.channel.send(`Invalid parameter or data. *;help subscriptions* for more info.`)
+    }
+
     static getSubscription(message: Discord.Message, trigger: string) {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'Function subscription management - Subscription Inquiry', true)
 
-        //TODO
+        //TODO Priority 2
     }
 
     static listSubscriptionsForChannel(message: Discord.Message, trigger: string) {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'Function subscription management - Listing', true)
 
-        //TODO
+        //TODO Priority 2
     }
 
     static msToTimeMessage(duration: number): string {

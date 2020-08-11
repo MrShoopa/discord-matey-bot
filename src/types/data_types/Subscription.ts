@@ -13,6 +13,7 @@ export module Subscriptions {
     export class ChannelSubscription implements Subscription {
         name: string
         _enabled: boolean
+
         channelId: string
         authorId: string
         featureCode: SubscriptionFeature
@@ -24,6 +25,23 @@ export module Subscriptions {
             this.channelId = callingUser.lastMessageChannelID
             this.featureCode = featureCode
             this.frequencyMilli = frequencyMilli
+
+            this._enabled = true
+        }
+    }
+    export class DMSubscription implements Subscription {
+        name: string
+        _enabled: boolean
+
+        dmChannelId: string
+        featureCode: SubscriptionFeature
+        frequencyMilli: Number
+        [args: string]: any
+
+        constructor(callingDM: Discord.DMChannel, featureCode: SubscriptionFeature, args?: any) {
+            this.dmChannelId = callingDM.id
+            this.featureCode = featureCode
+            this.frequencyMilli = this.frequencyMilli
 
             this._enabled = true
         }
@@ -47,23 +65,6 @@ export module Subscriptions {
         }
     }
 
-    export class DMSubscription implements Subscription {
-        name: string
-        _enabled: boolean
-
-        dmChannelId: string
-        featureCode: SubscriptionFeature
-        frequencyMilli: Number
-        [args: string]: any
-
-        constructor(callingDM: Discord.DMChannel, featureCode: SubscriptionFeature, args?: any) {
-            this.dmChannelId = callingDM.id
-            this.featureCode = featureCode
-            this.frequencyMilli = this.frequencyMilli
-
-            this._enabled = true
-        }
-    }
 
     export type SubscriptionFeature = 'NOTHING' | 'PING' | 'DAYCOUNTER' | 'QUOTEFETCH' | 'REDDITPOST'
 

@@ -1244,6 +1244,14 @@
             "list subscriptions",
             "get subscriptions",
             "fetch subscriptions"
-        ]
+        ],
+        "update": {
+            "params": {
+                "name": [],
+                "time": [],
+                "function": [],
+                "toggle": []
+            }
+        }
     }
 }

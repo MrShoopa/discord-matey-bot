@@ -189,7 +189,7 @@ export default class BotSubscriptionHandler {
                 return null
             }
             console.log(`Subscription not found. Creating.`)
-            return this.updateSubscription(id, name, this.createSubscription(id, name, caller)) //! TODO yeah idk fix this
+            return this.createSubscription(id, name, caller) //! TODO yeah idk fix this
         }
 
         console.log(`Old Data:`)
@@ -245,17 +245,13 @@ export default class BotSubscriptionHandler {
         }
     }
 
-    static runTask(subscription: Subscriptions.Subscription) {
-        let bot: Bot = globalThis.Bot
+    static runTask(subscription: Subscriptions.ChannelSubscription | Subscriptions.DMSubscription) {
+        let bot: Bot = globalThis.bot
 
         let subscribedChannelId: string
 
-        if (subscription instanceof Subscriptions.ChannelSubscription)
-            subscribedChannelId = subscription.channelId
-        else if (subscription instanceof Subscriptions.DMSubscription)
-            subscribedChannelId = subscription.dmChannelId
-        else if (subscription instanceof Subscriptions.UserSubscription)
-            subscribedChannelId = subscription.userId
+        if (subscription.channelId) subscribedChannelId = subscription.channelId
+        if (subscription.dmChannelId) subscribedChannelId = subscription.dmChannelId
 
         // List of functions to process based on calling function code (@see ChannelSubscription)
         // Make sure your function can handle sending to a channel id.
@@ -290,20 +286,34 @@ export default class BotSubscriptionHandler {
 
     }
 
-    static RunSubscribedTasks() {
+    static RunSubscribedTasks(log?: boolean) {
+        let bot: Bot = globalThis.bot
         let subscriptions = BotSubscriptionHandler.getSubscriptionDatastore()
+
+        if (log) console.group('SUBSCRIPTIONS - Starting intervaled subscription run')
 
         subscriptions.forEach(sub => {
             let currentTime = Date.now()
+            let lastTime = new Date(sub._lastRun)
 
-            if (sub.featureCode = 'NOTHING')
-
-                // Checks if this ran before the next interval
-                if ((sub.featureCode !== 'NOTHING'
-                    && (sub._lastRun?.getMilliseconds() - currentTime) < sub.frequencyMilli))
+            // Checks if this ran before the next interval
+            if ((sub.featureCode !== 'NOTHING'
+                && (lastTime?.getMilliseconds() - currentTime) < sub.frequencyMilli)) {
+                if (log) {
+                    console.group(`Performing subscription ${sub.name}'s task for ${sub.channelId}${sub.dmChannelId}.`)
+                    console.log(`The current time has passed this subscription's last run interval.`)
+                }
+                try {
                     this.runTask(sub)
+                    if (log) console.log('Ran succesfully!')
+                } catch (err) {
+                    console.error('Subscription Error!')
+                    bot.saveBugReport(err, sub.featureCode, true)
+                }
+            }
         })
 
-        console.log('AUTOMATION - Finished running all subscribed tasks for channels!')
+        if (log) console.log('SUBSCRIPTIONS - Finished running all subscribed tasks for channels!')
+        console.groupEnd()
     }
 }

@@ -37,6 +37,7 @@ export default class BotSubscriptionCommands {
         try {
             subscription.featureCode = (funcName as Subscriptions.SubscriptionFeature)
             subscription.frequencyMilli = 86400000 // 1 Day
+            subscription.authorId = message.author.id
             subscription._enabled = true
             subscription.args = args
 
@@ -151,7 +152,7 @@ export default class BotSubscriptionCommands {
 
         let response = new Discord.MessageEmbed()
             .setColor('GREEN')
-            .setDescription('todo')  //TODO: Subscription's function's description?
+            .setDescription(BotSubscriptionHandler.getFunctionTypeDescription(subscription.featureCode))
 
         response.setTitle(`*${name}*`)
 
@@ -168,7 +169,21 @@ export default class BotSubscriptionCommands {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'Function subscription management - Listing', true)
 
-        //TODO Priority 2
+        let subscriptions: Data.SubscriptionSave[] = BotSubscriptionHandler.getSubscriptionDatastore().filter(sub => {
+            return sub.channelId === message.channel.id || sub.dmChannelId === message.channel.id
+        })
+
+        let response = new Discord.MessageEmbed()
+            .setColor('GREEN')
+
+        if (message.channel instanceof Discord.TextChannel)
+            response.setTitle(`Subscriptions for *${message.channel.name}*`)
+        if (message.channel instanceof Discord.DMChannel)
+            response.setTitle(`Subscriptions for this DM`)
+
+        subscriptions.forEach(sub => {
+            response.addField(sub.name, `${sub.featureCode} every ${this.msToTimeMessage(sub.frequencyMilli)}- Creator: ${bot.users.cache.get(sub.authorId)}`)
+        })
     }
 
     static msToTimeMessage(duration: number): string {

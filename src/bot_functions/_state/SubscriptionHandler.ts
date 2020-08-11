@@ -18,6 +18,8 @@ import { Data } from './../../types/data_types/Data'
 import { Subscriptions } from './../../types/index';
 import BotGeneralCommands from './../general/GeneralCommands'
 
+import SUBREFS from '../../bot_knowledge/references/subscriptions.json'
+
 let dataSkeleton: Data.SubscriptionSave =
 {
     _type: 'test',
@@ -143,7 +145,7 @@ export default class BotSubscriptionHandler {
             }
             else if (caller?.channel instanceof Discord.PartialGroupDMChannel) {
                 newSub._type = 'PartialGroup'
-                newSub.dmChannelId = caller.channel.id //TODO Special Partials
+                newSub.dmChannelId = caller.channel.id
             }
             else if (caller?.channel instanceof Discord.DMChannel) {
                 newSub._type = 'DM'
@@ -243,6 +245,10 @@ export default class BotSubscriptionHandler {
             console.log('...successfully deleted!')
             return true
         }
+    }
+
+    static getFunctionTypeDescription(featureCode: string): any {
+        return SUBREFS.type_descriptions[featureCode]
     }
 
     static runTask(subscription: Subscriptions.ChannelSubscription | Subscriptions.DMSubscription | Data.SubscriptionSave) {

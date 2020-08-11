@@ -83,6 +83,7 @@ export default class TriggerHandlers {
         TriggerHandlers.checkForRestrictedRoleUnassignRequest,
 
         TriggerHandlers.checkForSubscriptionCreateRequest,
+        TriggerHandlers.checkForSubscriptionEditRequest,
         TriggerHandlers.checkForSubscriptionDeleteRequest,
         TriggerHandlers.checkForSubscriptionListRequest,
 
@@ -393,6 +394,13 @@ export default class TriggerHandlers {
         for (const trigger of TRIGGERS.subscription.create_general)
             if (message.toString().toLowerCase().startsWith(trigger))
                 return BotSubscriptionCommands.createSubscription(message as Discord.Message, trigger)
+        //  Unset Restricted Role
+    }
+
+    private static checkForSubscriptionEditRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.subscription.update_general)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotSubscriptionCommands.updateSubscription(message as Discord.Message, trigger)
         //  Unset Restricted Role
     }
 

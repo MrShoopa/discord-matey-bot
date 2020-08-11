@@ -96,43 +96,72 @@ export default class BotSubscriptionCommands {
             message.content.substr(message.content.indexOf(trigger) + trigger.length).trim()
         let subName: string =
             ctx.substr(ctx.indexOf(`'`) + 1, ctx.lastIndexOf(`'`) - 1).trim() //? Improve
+        let command: string =
+            ctx.substr(ctx.indexOf(subName) + subName.length + 2).trim()
         let subscription =
-            BotSubscriptionHandler.getSubscription(message.channel.id, name)
+            BotSubscriptionHandler.getSubscription(message.channel.id, subName)
+
+        if (subName === '')
+            return message.channel.send(`Did you add -> '*quotation marks*' to your subscription name in your request?`)
 
         if (!subscription)
             return message.channel.send(`Subscription named ${subName} not found.`)
 
-        //TODO Priority 1
         for (const param of TRIGGERS.subscription.update.params.time)
-            if (ctx.toLowerCase().startsWith(param)) {
-                //thing
-                return
+            if (command.toLowerCase().startsWith(param)) {
+                subscription.durationMilli = this.convertToMilliseconds(command.substr(command.indexOf('to') + 2).trim())
+                message.channel.send(`Updated the time interval for '${subName}' to *${command.substr(command.indexOf('to') + 2).trim()}*!`)
+                break
             }
         for (const param of TRIGGERS.subscription.update.params.name)
-            if (ctx.toLowerCase().startsWith(param)) {
-                //thing
-                return
+            if (command.toLowerCase().startsWith(param)) {
+                subscription.name = command.substring(command.indexOf('to') + 2).trim()
+                message.channel.send(`Updated the name for '${subName}' to *${subscription.name}*!`)
+                break
             }
         for (const param of TRIGGERS.subscription.update.params.function)
-            if (ctx.toLowerCase().startsWith(param)) {
-                //thing
-                return
+            if (command.toLowerCase().startsWith(param)) {
+                subscription.featureCode = command.substring(command.indexOf('to') + 2).toUpperCase().trim() as Subscriptions.SubscriptionFeature
+                message.channel.send(`Updated the function for '${subName}' to *${subscription.featureCode}*!`)
+                break
             }
         for (const param of TRIGGERS.subscription.update.params.toggle)
-            if (ctx.toLowerCase().startsWith(param)) {
-                //thing
-                return
+            if (command.toLowerCase().startsWith(param)) {
+                subscription._enabled = !subscription._enabled
+                message.channel.send(`Run '${subName}'? Now *${subscription._enabled}*!`)
+                break
             }
 
-        // All else fails
-        return message.channel.send(`Invalid parameter or data. *;help subscriptions* for more info.`)
+        if (!BotSubscriptionHandler.updateSubscription(message.channel.id, subName, subscription))
+            // All else fails
+            return message.channel.send(`Invalid parameter or data. *;help subscriptions* for more info.`)
+        else return true
     }
 
     static getSubscription(message: Discord.Message, trigger: string) {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'Function subscription management - Subscription Inquiry', true)
 
-        //TODO Priority 2
+        let subName: string = message.content.substr(trigger.length)
+
+        let subscription = BotSubscriptionHandler.getSubscription(message.channel.id, subName)
+
+        if (!subscription)
+            return message.channel.send(`Subscription ${subName} not found.`)
+
+        let response = new Discord.MessageEmbed()
+            .setColor('GREEN')
+            .setDescription('todo')  //TODO: Subscription's function's description?
+
+        response.setTitle(`*${name}*`)
+
+        response.addField('Function', `${subscription.featureCode}`)
+        response.addField('Interval', `${this.msToTimeMessage(subscription.frequencyMilli)}`)
+
+        if (subscription.authorId)
+            response.addField('Created by', `${message.author.username}`)
+
+        return message.channel.send(response)
     }
 
     static listSubscriptionsForChannel(message: Discord.Message, trigger: string) {
@@ -165,5 +194,20 @@ export default class BotSubscriptionCommands {
         message = message.trimRight().substr(0, message.length - 2)
 
         return message
+    }
+
+    static convertToMilliseconds(timeString: string): number {
+        let query = timeString.toLocaleLowerCase().split(' '), extractedNumber: number
+
+        if (query.includes('weeks') || query.includes('week'))
+            extractedNumber = Math.floor((Number.parseFloat(query[0]) * 86400000 * 7))
+        else if (query.includes('days') || query.includes('day'))
+            extractedNumber = Math.floor((Number.parseFloat(query[0]) * 86400000))
+        else if (query.includes('hours') || query.includes('hour'))
+            extractedNumber = Math.floor((Number.parseFloat(query[0]) * 3600000))
+        else if (query.includes('minutes') || query.includes('minute'))
+            extractedNumber = Math.floor((Number.parseFloat(query[0]) * 60000))
+
+        return extractedNumber
     }
 }

@@ -245,7 +245,7 @@ export default class BotSubscriptionHandler {
         }
     }
 
-    static runTask(subscription: Subscriptions.ChannelSubscription | Subscriptions.DMSubscription) {
+    static runTask(subscription: Subscriptions.ChannelSubscription | Subscriptions.DMSubscription | Data.SubscriptionSave) {
         let bot: Bot = globalThis.bot
 
         let subscribedChannelId: string

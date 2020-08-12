@@ -85,6 +85,7 @@ export default class TriggerHandlers {
         TriggerHandlers.checkForSubscriptionCreateRequest,
         TriggerHandlers.checkForSubscriptionEditRequest,
         TriggerHandlers.checkForSubscriptionDeleteRequest,
+        TriggerHandlers.checkForSubscriptionGetRequest,
         TriggerHandlers.checkForSubscriptionListRequest,
 
         // Minigame Requests
@@ -394,28 +395,30 @@ export default class TriggerHandlers {
         for (const trigger of TRIGGERS.subscription.create_general)
             if (message.toString().toLowerCase().startsWith(trigger))
                 return BotSubscriptionCommands.createSubscription(message as Discord.Message, trigger)
-        //  Unset Restricted Role
     }
 
     private static checkForSubscriptionEditRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.subscription.update_general)
             if (message.toString().toLowerCase().startsWith(trigger))
                 return BotSubscriptionCommands.updateSubscription(message as Discord.Message, trigger)
-        //  Unset Restricted Role
     }
 
     private static checkForSubscriptionDeleteRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.subscription.delete_general)
             if (message.toString().toLowerCase().startsWith(trigger))
                 return BotSubscriptionCommands.deleteSubscription(message as Discord.Message, trigger)
-        //  Unset Restricted Role
+    }
+
+    private static checkForSubscriptionGetRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.subscription.get_general)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotSubscriptionCommands.getSubscription(message as Discord.Message, trigger)
     }
 
     private static checkForSubscriptionListRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.subscription.list_general)
             if (message.toString().toLowerCase().startsWith(trigger))
                 return BotSubscriptionCommands.listSubscriptionsForChannel(message as Discord.Message, trigger)
-        //  Unset Restricted Role
     }
 
     /*  ----    Fun Functions   ---- */

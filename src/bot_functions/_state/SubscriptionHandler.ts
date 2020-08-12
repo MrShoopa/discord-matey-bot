@@ -276,7 +276,7 @@ export default class BotSubscriptionHandler {
                 //TODO
                 break;
             case 'SHITPOSTTIME':
-                //TODO
+                //! TODO hell yeah
                 break;
             default:
                 break;

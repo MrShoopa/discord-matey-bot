@@ -110,7 +110,7 @@ export default class BotSubscriptionCommands {
 
         for (const param of TRIGGERS.subscription.update.params.time)
             if (command.toLowerCase().startsWith(param)) {
-                subscription.durationMilli = this.convertToMilliseconds(command.substr(command.indexOf('to') + 2).trim())
+                subscription.frequencyMilli = this.convertToMilliseconds(command.substr(command.indexOf('to') + 2).trim())
                 message.channel.send(`Updated the time interval for '${subName}' to *${command.substr(command.indexOf('to') + 2).trim()}*!`)
                 break
             }
@@ -173,6 +173,9 @@ export default class BotSubscriptionCommands {
             return sub.channelId === message.channel.id || sub.dmChannelId === message.channel.id
         })
 
+        if (!subscriptions)
+            return message.channel.send(`This channel has no subscriptions...`)
+
         let response = new Discord.MessageEmbed()
             .setColor('GREEN')
 
@@ -184,6 +187,8 @@ export default class BotSubscriptionCommands {
         subscriptions.forEach(sub => {
             response.addField(sub.name, `${sub.featureCode} every ${this.msToTimeMessage(sub.frequencyMilli)}- Creator: ${bot.users.cache.get(sub.authorId)}`)
         })
+
+        return message.channel.send(response)
     }
 
     static msToTimeMessage(duration: number): string {

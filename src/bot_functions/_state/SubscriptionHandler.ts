@@ -275,11 +275,15 @@ export default class BotSubscriptionHandler {
             case 'REDDITPOST':
                 //TODO
                 break;
+            case 'SHITPOSTTIME':
+                //TODO
+                break;
             default:
                 break;
         }
 
-
+        subscription._lastRun = Date.now()
+        this.updateSubscription(subscribedChannelId, subscription.name, subscription as Data.SubscriptionSave)
     }
 
     static RunChannelTask(subscription: Subscriptions.ChannelSubscription) {
@@ -304,7 +308,7 @@ export default class BotSubscriptionHandler {
 
             // Checks if this ran before the next interval
             if ((sub.featureCode !== 'NOTHING'
-                && (lastTime?.getMilliseconds() - currentTime) < sub.frequencyMilli)) {
+                && (lastTime?.getMilliseconds() - currentTime) > sub.frequencyMilli)) {
                 if (log) {
                     console.group(`Performing subscription ${sub.name}'s task for ${sub.channelId}${sub.dmChannelId}.`)
                     console.log(`The current time has passed this subscription's last run interval.`)

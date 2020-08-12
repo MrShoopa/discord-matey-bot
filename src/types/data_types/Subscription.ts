@@ -6,7 +6,6 @@ export module Subscriptions {
         _enabled: boolean,
         featureCode: SubscriptionFeature,
         frequencyMilli: Number,
-        durationMilli?: Number,
         endDate?: Date,
         [args: string]: any
     }
@@ -66,7 +65,7 @@ export module Subscriptions {
     }
 
 
-    export type SubscriptionFeature = 'NOTHING' | 'PING' | 'DAYCOUNTER' | 'QUOTEFETCH' | 'REDDITPOST'
+    export type SubscriptionFeature = 'NOTHING' | 'PING' | 'DAYCOUNTER' | 'QUOTEFETCH' | 'REDDITPOST' | 'SHITPOSTTIME'
 
     export type ChannelType = 'test' | 'DM' | 'PartialGroup' | 'GuildChannel'
 

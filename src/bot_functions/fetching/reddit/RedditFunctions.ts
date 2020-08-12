@@ -6,9 +6,16 @@ import TRIGGERS from '../../../bot_knowledge/triggers/triggers.json'
 
 export default class BotModuleReddit {
 
-    static async fireRedditSubmissionMessage(trigger?: string) {
+    static async fireRedditSubmissionMessage(trigger?: string, channel?: Discord.TextChannel | Discord.DMChannel) {
         let bot: Bot = globalThis.bot
         if (trigger) bot.preliminary(trigger, 'reddit post fetch', true)
+
+        if (!channel) {
+            if (bot.context?.channel instanceof Discord.TextChannel)
+                channel = channel ? channel : bot.context.channel as Discord.TextChannel
+            if (bot.context?.channel instanceof Discord.DMChannel)
+                channel = channel ? channel : bot.context.channel as Discord.DMChannel
+        }
 
         let query = bot.context.toString().toLowerCase()
 
@@ -32,13 +39,14 @@ export default class BotModuleReddit {
         }
 
         this.buildRedditSubmissionMessage(post).forEach(message => {
-            bot.context.channel.send(message)
+            channel.send(message)
         })
         return true
     }
 
-    static async fireCopypastaFetch(trigger?: string) {
+    static async fireCopypastaFetch(channel?: Discord.TextChannel | Discord.DMChannel, trigger?: string) {
         let bot: Bot = globalThis.bot
+        channel = channel ? channel : bot.textChannel
 
         if (trigger) bot.preliminary(trigger, 'reddit copypasta fetch', true)
 
@@ -72,12 +80,12 @@ export default class BotModuleReddit {
                 text = text.match(/(?!&amp#x200B)[\s\S]{1,2000}/g)
 
                 text.forEach((chunk: any) => {
-                    bot.textChannel.send(chunk)
+                    channel.send(chunk)
                 })
             } else delivery.setDescription(pasta.data.selftext)
 
         }
-        bot.textChannel.send(delivery)
+        channel.send(delivery)
     }
 
     static async fireSubmissionImageMessage(redditObject: any) {

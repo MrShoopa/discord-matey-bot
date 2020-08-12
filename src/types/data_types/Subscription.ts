@@ -65,7 +65,7 @@ export module Subscriptions {
     }
 
 
-    export type SubscriptionFeature = 'NOTHING' | 'PING' | 'DAYCOUNTER' | 'QUOTEFETCH' | 'REDDITPOST' | 'SHITPOSTTIME'
+    export type SubscriptionFeature = 'NOTHING' | 'PING' | 'DAYCOUNTER' | 'QUOTEFETCH' | 'REDDITPOST' | 'SHITPOSTTIME' | 'COPYPASTATIME'
 
     export type ChannelType = 'test' | 'DM' | 'PartialGroup' | 'GuildChannel'
 

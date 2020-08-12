@@ -19,6 +19,7 @@ import { Subscriptions } from './../../types/index';
 import BotGeneralCommands from './../general/GeneralCommands'
 
 import SUBREFS from '../../bot_knowledge/references/subscriptions.json'
+import BotModuleReddit from '../fetching/reddit/RedditFunctions';
 
 let dataSkeleton: Data.SubscriptionSave =
 {
@@ -275,8 +276,12 @@ export default class BotSubscriptionHandler {
             case 'REDDITPOST':
                 //TODO
                 break;
+            case 'COPYPASTATIME':
+                BotModuleReddit.fireCopypastaFetch(channel)
+                break;
             case 'SHITPOSTTIME':
-                //! TODO hell yeah
+                //! TODO Reroute the message to the function instead of just Context
+                BotModuleReddit.fireRedditSubmissionMessage('r/shitpostingdfsadfasd', 'best', channel)
                 break;
             default:
                 break;

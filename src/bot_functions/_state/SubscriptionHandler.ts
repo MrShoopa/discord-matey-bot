@@ -174,8 +174,8 @@ export default class BotSubscriptionHandler {
 	 * @param  {number|string} id Message Channel id
 	 * @param  {object} newData New data to overwrite existing data with.
 	 */
-    static updateSubscription(id: string, name: string, newData: Data.SubscriptionSave, caller?: Discord.Message) {
-        console.group(`Updating data for channel ${id}'s subscription with name '${name}'`)
+    static updateSubscription(id: string, name: string, newData: Data.SubscriptionSave, caller?: Discord.Message, log: boolean = true) {
+        if (log) console.group(`Updating data for channel ${id}'s subscription with name '${name}'`)
 
         var data = this.getSubscriptionDatastore()
 
@@ -195,10 +195,12 @@ export default class BotSubscriptionHandler {
             return this.createSubscription(id, name, caller) //! TODO yeah idk fix this
         }
 
-        console.log(`Old Data:`)
-        console.info(subscription)
-        console.log(`New Data:`)
-        console.info(newData)
+        if (log) {
+            console.log(`Old Data:`)
+            console.info(subscription)
+            console.log(`New Data:`)
+            console.info(newData)
+        }
 
         if (newData === null)
             data = data.filter((sub) => sub.channelId != id && sub.userId != id && sub.dmChannelId != id)
@@ -207,7 +209,7 @@ export default class BotSubscriptionHandler {
 
         this.writeSubscriptionDataFile(data)
 
-        console.log(`\nUpdate completed.`)
+        if (log) console.log(`\nUpdate completed.`)
         console.groupEnd()
         return true
     }
@@ -280,14 +282,14 @@ export default class BotSubscriptionHandler {
                 BotModuleReddit.fireCopypastaFetch(channel)
                 break;
             case 'SHITPOSTTIME':
-                BotModuleReddit.fireRedditSubmissionMessage(channel, 'r/shitpostingdfsadfasd')
+                BotModuleReddit.fireRedditSubmissionMessage(channel, 'r/shitposting')
                 break;
             default:
                 break;
         }
 
-        subscription._lastRun = Date.now()
-        this.updateSubscription(subscribedChannelId, subscription.name, subscription as Data.SubscriptionSave)
+        subscription._lastRun = new Date()
+        this.updateSubscription(subscribedChannelId, subscription.name, subscription as Data.SubscriptionSave, null, false)
     }
 
     static RunChannelTask(subscription: Subscriptions.ChannelSubscription) {
@@ -307,12 +309,11 @@ export default class BotSubscriptionHandler {
         if (log) console.group('SUBSCRIPTIONS - Starting intervaled subscription run')
 
         subscriptions.forEach(sub => {
-            let currentTime = Date.now()
-            let lastTime = new Date(sub._lastRun)
+            let currentTime = new Date(), lastTime = new Date(sub._lastRun)
+            let timeSince = currentTime.getMilliseconds() - lastTime.getMilliseconds()
 
             // Checks if this ran before the next interval
-            if ((sub.featureCode !== 'NOTHING' && sub._enabled
-                && (currentTime - lastTime?.getMilliseconds()) > sub.frequencyMilli)) {
+            if (sub.featureCode !== 'NOTHING' && sub._enabled && timeSince > sub.frequencyMilli) {
                 if (log) {
                     console.group(`Performing subscription ${sub.name}'s task for ${sub.channelId}${sub.dmChannelId}.`)
                     console.log(`The current time has passed this subscription's last run interval.`)

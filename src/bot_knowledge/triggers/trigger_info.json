@@ -103,6 +103,11 @@
             "meme list",
             "meme store",
             "meme topics"
+        ],
+        "subscription": [
+            "list subscription types",
+            "list subscription functions",
+            "list subscription abilities"
         ]
     },
     "help_reference": {
@@ -367,7 +372,7 @@
         },
         "translate": {
             "_title": "Translating",
-            "_description": "Send text to Megadork to translate to a known language. *megadork translate list* for a list of languages.",
+            "_description": "Send text to Megadork to translate to a known language. *megadork translation list* for a list of languages.",
             "_footer": "💬",
             "_command_list": {
                 "default": {
@@ -511,6 +516,33 @@
                 "random_gif": {
                     "title": "Fetch random GIF from GIPHY",
                     "example": "megadork fetch random gif"
+                }
+            }
+        },
+        "subscriptions": {
+            "_title": "Subscriptions",
+            "_description": "Subscription management for automating functions to your channel! Type ;list subscription types for available functions.",
+            "_footer": "⚡",
+            "_command_list": {
+                "create_subscription": {
+                    "title": "Create subscription",
+                    "example": "megadork create subscription ***name*** for ***function code***"
+                },
+                "get_subscription": {
+                    "title": "Get subscription's info",
+                    "example": "megadork get subscription ***name***"
+                },
+                "get_all_subscriptions": {
+                    "title": "Get a channel's available subscriptions",
+                    "example": "megadork get subscriptions"
+                },
+                "change_subscription": {
+                    "title": "Edit subscription",
+                    "example": "megadork change subscription '***name***' ***attribute*** to ***x*** (Attributes: time, name, toggle, functiontype)"
+                },
+                "delete_subscription": {
+                    "title": "Delete subscription",
+                    "example": "megadork delete subscription ***name***"
                 }
             }
         }

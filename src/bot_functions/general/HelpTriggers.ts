@@ -3,6 +3,7 @@ import TriggerHandlers from '../TriggerHandlers'
 
 import { help_author, help_functions, help_special, help_reference, i } from '../../bot_knowledge/triggers/trigger_info.json'
 import { memes } from '../../bot_knowledge/references/imgflip.json'
+import subscription_reference from '../../bot_knowledge/references/subscriptions.json'
 
 import PHRASES_FRONT from '../../bot_knowledge/phrases/phrases_front.json'
 import PHRASES_SING from '../../bot_knowledge/phrases/phrases_sing.json'
@@ -36,6 +37,8 @@ export default class HelpTriggers {
                             return HelpTriggers.replyForTranslateInfo(message)
                         case 'meme':
                             return HelpTriggers.replyForMemeInfo(message)
+                        case 'subscription':
+                            return HelpTriggers.replyForSubscriptionTypeInfo(message)
                         case 'general':
                             return HelpTriggers.replyForGeneralInfo(message)
                     }
@@ -111,6 +114,20 @@ export default class HelpTriggers {
         })
 
         listedMessage.setDescription(languageList)
+
+        return message.channel.send(listedMessage)
+    }
+
+    static replyForSubscriptionTypeInfo(message = TriggerHandlers.message) {
+        TriggerHandlers.bot.preliminary(message.toString(), 'Help with Subscriptions', true)
+
+        let listedMessage = new Discord.MessageEmbed()
+            .setTitle("Subscription Type List ⚡")
+            .setAuthor(this.helpAuthor)
+            .setColor('GREEN')
+
+        for (const [key, value] of Object.entries(subscription_reference.type_descriptions))
+            listedMessage.addField(key, value)
 
         return message.channel.send(listedMessage)
     }

@@ -53,7 +53,7 @@ export default class BotSubscriptionCommands {
 
         let response = new Discord.MessageEmbed()
             .setColor('GREEN')
-            .setDescription(BotSubscriptionHandler.getFunctionTypeDescription(subscription.featureCode))  //TODO: Subscription's function's description?
+            .setDescription(BotSubscriptionHandler.getFunctionTypeDescription(subscription.featureCode))
 
         if (message.channel instanceof Discord.TextChannel)
             response.setTitle(`Subscription named *${name}* created for channel ${message.channel.name}!`)
@@ -174,7 +174,7 @@ export default class BotSubscriptionCommands {
             else return false
         })
 
-        if (!subscriptions)
+        if (subscriptions.length <= 0)
             return message.channel.send(`This channel has no subscriptions...`)
 
         let response = new Discord.MessageEmbed()

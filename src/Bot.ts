@@ -487,8 +487,7 @@ export default class Bot extends Discord.Client {
     }
 
     fetchJSONFromURL(url: string, announce?: boolean, log?: boolean): any {
-        console.group()
-        console.log(`Fetching JSON from ${url}...`)
+        console.group(`Fetching JSON from ${url}...`)
         if (announce) this.textChannel.send(`Fetching from ${url}...`)
 
         // Asyncrhonous fetching

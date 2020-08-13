@@ -4,5 +4,6 @@
 export * from './data_types/Data'
 export * from './data_types/Audio'
 export * from './data_types/Stream'
+export * from './data_types/Subscription'
 
 export * from './data_types/Bean'

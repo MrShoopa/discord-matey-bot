@@ -30,6 +30,7 @@ import BotModuleFun from './general/FunFunctions'
 import BotWordplay from './wordplay/WordplayFunctions'
 import BotModuleWarcraft from './fetching/game/blizzard/WarcraftDataFunctions'
 import BotModuleGiphy from './fetching/gif/GiphyFunctions'
+import BotSubscriptionCommands from './general/SubscriptionCommands'
 
 
 export default class TriggerHandlers {
@@ -81,9 +82,16 @@ export default class TriggerHandlers {
         TriggerHandlers.checkForRestrictedRoleAssignRequest,
         TriggerHandlers.checkForRestrictedRoleUnassignRequest,
 
+        TriggerHandlers.checkForSubscriptionCreateRequest,
+        TriggerHandlers.checkForSubscriptionEditRequest,
+        TriggerHandlers.checkForSubscriptionDeleteRequest,
+        TriggerHandlers.checkForSubscriptionGetRequest,
+        TriggerHandlers.checkForSubscriptionListRequest,
+
         // Minigame Requests
         TriggerHandlers.checkForDiceRollRequest,
         TriggerHandlers.checkFor8BallRequest,
+        TriggerHandlers.checkForPingPongRequest,
 
         // Bot Sudo Requests
         TriggerHandlers.checkForBotKillRequest,
@@ -279,12 +287,12 @@ export default class TriggerHandlers {
         for (const baseTrigger of TRIGGERS.reddit_fetch.default)
             for (const trigger of TRIGGERS.reddit_fetch.query_type.post)
                 if (message.toString().toLowerCase().startsWith(`${baseTrigger} ${trigger}`))
-                    return BotModuleReddit.fireRedditSubmissionMessage(`${baseTrigger} ${trigger}`)
+                    return BotModuleReddit.fireRedditSubmissionMessage(null, `${baseTrigger} ${trigger}`)
         //  Get copypasta post [from Reddit]
 
         for (const trigger of TRIGGERS.reddit_fetch.copypasta.default)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleReddit.fireCopypastaFetch(trigger)
+                return BotModuleReddit.fireCopypastaFetch(null, trigger)
         //  Get copypasta post [from Reddit]
     }
 
@@ -383,6 +391,36 @@ export default class TriggerHandlers {
         //  Unset Restricted Role
     }
 
+    private static checkForSubscriptionCreateRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.subscription.create_general)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotSubscriptionCommands.createSubscription(message as Discord.Message, trigger)
+    }
+
+    private static checkForSubscriptionEditRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.subscription.update_general)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotSubscriptionCommands.updateSubscription(message as Discord.Message, trigger)
+    }
+
+    private static checkForSubscriptionDeleteRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.subscription.delete_general)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotSubscriptionCommands.deleteSubscription(message as Discord.Message, trigger)
+    }
+
+    private static checkForSubscriptionGetRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.subscription.get_general)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotSubscriptionCommands.getSubscription(message as Discord.Message, trigger)
+    }
+
+    private static checkForSubscriptionListRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.subscription.list_general)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotSubscriptionCommands.listSubscriptionsForChannel(message as Discord.Message, trigger)
+    }
+
     /*  ----    Fun Functions   ---- */
 
     private static checkForDiceRollRequest(message = TriggerHandlers.message) {
@@ -399,6 +437,13 @@ export default class TriggerHandlers {
         for (const trigger of TRIGGERS.magic_ball)
             if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleFun.eightBall(null, trigger)
+        //  Get anime recommendation [from My Anime List (JikanTS)]
+    }
+
+    private static checkForPingPongRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.ping_pong.default)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotGeneralCommands.firePingPongMessage(message.channel as Discord.TextChannel, trigger)
         //  Get anime recommendation [from My Anime List (JikanTS)]
     }
 

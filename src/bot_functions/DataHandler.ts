@@ -19,6 +19,7 @@ import AUTH from '../user_creds.json'
 
 import aws from 'aws-sdk'
 import BotTimeKeeper from './_state/TimeKeeper'
+import BotSubscriptionHandler from './_state/SubscriptionHandler'
 
 /*  Locations  */
 const SAVE_DATA = __dirname + '/../../save_data'
@@ -58,8 +59,9 @@ export default class BotData {
 						console.error(err)
 				}
 				return null
+			} else if (err.message.includes('Unexpected end')) {
+				console.error('The user data collection JSON is malformed. Please fix.')
 			}
-
 		}
 		if (log) console.log(data)
 
@@ -161,8 +163,8 @@ export default class BotData {
 		var data = this.getUserDataFile()
 
 		//  Find user...
-		let userData: Data.UserSave = data.find((matchedUser: any) => {
-			return matchedUser._id == id
+		let userData: Data.UserSave = data.find((user: any) => {
+			return user._id == id
 		})
 
 		if (userData === undefined || force) {
@@ -324,6 +326,10 @@ export default class BotData {
 		if (!timeFile) await this.updateS3Object(FileSystem.readFileSync(BotTimeKeeper.TIME_DATA_FILE), BotTimeKeeper.S3_SAVE_NAME)
 		FileSystem.writeFileSync((BotTimeKeeper.TIME_DATA_FILE), timeFile.Body.toString())
 
+		// Subscription Data
+		let subscriptionFile: aws.S3.GetObjectOutput = await this.getS3Object(BotSubscriptionHandler.S3_SAVE_NAME)
+		if (!subscriptionFile) await this.updateS3Object(FileSystem.readFileSync(BotSubscriptionHandler.SUBSCRIPTION_DATA_FILE), BotSubscriptionHandler.S3_SAVE_NAME)
+		FileSystem.writeFileSync((BotSubscriptionHandler.SUBSCRIPTION_DATA_FILE), subscriptionFile.Body.toString())
 	}
 	/**
 	 * Updates the S3 bucket with the following objects.
@@ -335,5 +341,8 @@ export default class BotData {
 
 		//Time Data
 		await this.updateS3Object(FileSystem.readFileSync(BotTimeKeeper.TIME_DATA_FILE), BotTimeKeeper.S3_SAVE_NAME)
+
+		//Subscription Data
+		await this.updateS3Object(FileSystem.readFileSync(BotSubscriptionHandler.SUBSCRIPTION_DATA_FILE), BotSubscriptionHandler.S3_SAVE_NAME)
 	}
 }

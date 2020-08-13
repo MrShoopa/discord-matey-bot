@@ -4,6 +4,7 @@ import BotDiscordActivity from './DiscordActivityStatus'
 import BotModuleSwearJar from "../novelty/swear/SwearJarFunctions"
 import BotModuleBirthday from "../novelty/birthday/BirthdayFunctions"
 import BotData from '../DataHandler'
+import BotSubscriptionHandler from './SubscriptionHandler'
 
 export default class TimelyFunctions {
     static get timeSave() {
@@ -36,6 +37,8 @@ export default class TimelyFunctions {
 
     static runTimeSensitive(log?: boolean) {
         this.checkLastRun()
+
+        BotSubscriptionHandler.RunSubscribedTasks()
 
         if (!this.doneForDateMonth) {
 
@@ -84,4 +87,5 @@ export default class TimelyFunctions {
 
         this.timeSave = timeObject
     }
+
 }

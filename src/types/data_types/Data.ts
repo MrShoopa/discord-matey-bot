@@ -1,3 +1,5 @@
+import { Subscriptions } from './Subscription';
+
 export module Data {
     export interface UserSave extends Object {
         _id: string
@@ -9,5 +11,20 @@ export module Data {
         last_initiliazed: string
         last_ran_functions: { [key: string]: string }
         [x: string]: any
+    }
+
+    export interface SubscriptionSave extends Object {
+        _type: Subscriptions.ChannelType,
+        _enabled: boolean
+        _lastRun: Date
+        featureCode: Subscriptions.SubscriptionFeature,
+        frequencyMilli: number,
+        name: string,
+        endDate?: Date,
+        channelId?: string
+        authorId?: string,
+        userId?: string,
+        dmChannelId?: string,
+        [args: string]: any
     }
 }

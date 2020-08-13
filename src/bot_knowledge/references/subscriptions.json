@@ -1,0 +1,10 @@
+{
+    "type_descriptions": {
+        "PING": "Returns a pong message. Nothing else much?",
+        "DAYCOUNTER": "Reminds you how many days it has been since a set time.",
+        "REDDITFETCH": "Get the top post of a subreddit at the moment.",
+        "QUOTEFETCH": "Gets a quote from a specific category.",
+        "SHITPOSTTIME": "Gets a shitpost from r/shitposting",
+        "COPYPASTATIME": "Gets that sweet sweet copypasta from r/copypasta"
+    }
+}

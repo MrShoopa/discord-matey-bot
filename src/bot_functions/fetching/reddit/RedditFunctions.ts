@@ -6,7 +6,7 @@ import TRIGGERS from '../../../bot_knowledge/triggers/triggers.json'
 
 export default class BotModuleReddit {
 
-    static async fireRedditSubmissionMessage(trigger?: string, channel?: Discord.TextChannel | Discord.DMChannel) {
+    static async fireRedditSubmissionMessage(channel?: Discord.TextChannel | Discord.DMChannel, query?: string, trigger?: string) {
         let bot: Bot = globalThis.bot
         if (trigger) bot.preliminary(trigger, 'reddit post fetch', true)
 
@@ -17,7 +17,8 @@ export default class BotModuleReddit {
                 channel = channel ? channel : bot.context.channel as Discord.DMChannel
         }
 
-        let query = bot.context.toString().toLowerCase()
+        if (!query)
+            query = bot.context.toString().toLowerCase()
 
         for (const keyword of TRIGGERS.context_prefix)
             if (query.includes(keyword)) {

@@ -280,8 +280,7 @@ export default class BotSubscriptionHandler {
                 BotModuleReddit.fireCopypastaFetch(channel)
                 break;
             case 'SHITPOSTTIME':
-                //! TODO Reroute the message to the function instead of just Context
-                BotModuleReddit.fireRedditSubmissionMessage('r/shitpostingdfsadfasd', 'best', channel)
+                BotModuleReddit.fireRedditSubmissionMessage(channel, 'r/shitpostingdfsadfasd')
                 break;
             default:
                 break;
@@ -312,8 +311,8 @@ export default class BotSubscriptionHandler {
             let lastTime = new Date(sub._lastRun)
 
             // Checks if this ran before the next interval
-            if ((sub.featureCode !== 'NOTHING'
-                && (lastTime?.getMilliseconds() - currentTime) > sub.frequencyMilli)) {
+            if ((sub.featureCode !== 'NOTHING' && sub._enabled
+                && (currentTime - lastTime?.getMilliseconds()) > sub.frequencyMilli)) {
                 if (log) {
                     console.group(`Performing subscription ${sub.name}'s task for ${sub.channelId}${sub.dmChannelId}.`)
                     console.log(`The current time has passed this subscription's last run interval.`)

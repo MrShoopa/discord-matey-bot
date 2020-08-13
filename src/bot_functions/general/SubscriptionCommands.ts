@@ -53,7 +53,7 @@ export default class BotSubscriptionCommands {
 
         let response = new Discord.MessageEmbed()
             .setColor('GREEN')
-            .setDescription('todo')  //TODO: Subscription's function's description?
+            .setDescription(BotSubscriptionHandler.getFunctionTypeDescription(subscription.featureCode))  //TODO: Subscription's function's description?
 
         if (message.channel instanceof Discord.TextChannel)
             response.setTitle(`Subscription named *${name}* created for channel ${message.channel.name}!`)
@@ -170,7 +170,8 @@ export default class BotSubscriptionCommands {
         bot.preliminary(trigger, 'Function subscription management - Listing', true)
 
         let subscriptions: Data.SubscriptionSave[] = BotSubscriptionHandler.getSubscriptionDatastore().filter(sub => {
-            return sub.channelId === message.channel.id || sub.dmChannelId === message.channel.id
+            if (sub.channelId === message.channel.id || sub.dmChannelId === message.channel.id) return true
+            else return false
         })
 
         if (!subscriptions)
@@ -185,7 +186,7 @@ export default class BotSubscriptionCommands {
             response.setTitle(`Subscriptions for this DM`)
 
         subscriptions.forEach(sub => {
-            response.addField(sub.name, `${sub.featureCode} every ${this.msToTimeMessage(sub.frequencyMilli)}- Creator: ${bot.users.cache.get(sub.authorId)}`)
+            response.addField(sub.name, `${sub.featureCode} every ${this.msToTimeMessage(sub.frequencyMilli)} - Creator: ${bot.users.cache.get(sub.authorId)}`)
         })
 
         return message.channel.send(response)

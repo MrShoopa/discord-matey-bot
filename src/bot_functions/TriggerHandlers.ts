@@ -287,12 +287,12 @@ export default class TriggerHandlers {
         for (const baseTrigger of TRIGGERS.reddit_fetch.default)
             for (const trigger of TRIGGERS.reddit_fetch.query_type.post)
                 if (message.toString().toLowerCase().startsWith(`${baseTrigger} ${trigger}`))
-                    return BotModuleReddit.fireRedditSubmissionMessage(`${baseTrigger} ${trigger}`)
+                    return BotModuleReddit.fireRedditSubmissionMessage(null, `${baseTrigger} ${trigger}`)
         //  Get copypasta post [from Reddit]
 
         for (const trigger of TRIGGERS.reddit_fetch.copypasta.default)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleReddit.fireCopypastaFetch(trigger)
+                return BotModuleReddit.fireCopypastaFetch(null, trigger)
         //  Get copypasta post [from Reddit]
     }
 

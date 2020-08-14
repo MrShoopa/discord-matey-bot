@@ -20,7 +20,7 @@ export default class BotModuleBirthday {
 		CALENDAR.months.some(month => {
 			if (context.toLowerCase().includes(month)) {
 
-				let dateNumber: number = parseInt(context.match(/([0-9])\w+/g)[0].toString())
+				let dateNumber: number = parseInt(context.match(/[0-9]{1,2}/)[0].toString())
 				let monthNumber: number = CALENDAR.months.findIndex((item, i) => {
 					return item === month
 				})

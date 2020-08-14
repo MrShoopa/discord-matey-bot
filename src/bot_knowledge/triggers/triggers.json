@@ -1252,9 +1252,15 @@
                     "title"
                 ],
                 "time": [
-                    "time",
+                    "time start",
+                    "time beginning",
+                    "checkpoint"
+                ],
+                "interval": [
                     "frequency",
-                    "interval"
+                    "interval",
+                    "time frequency",
+                    "time interval"
                 ],
                 "function": [
                     "function"

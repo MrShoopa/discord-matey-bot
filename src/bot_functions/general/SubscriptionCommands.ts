@@ -110,6 +110,12 @@ export default class BotSubscriptionCommands {
 
         for (const param of TRIGGERS.subscription.update.params.time)
             if (command.toLowerCase().startsWith(param)) {
+                subscription._lastRun = this.processDateString(command.substr(command.indexOf('to') + 2).trim())
+                message.channel.send(`Updated the time start for '${subName}' to *${command.substr(command.indexOf('to') + 2).trim()}*!`)
+                break
+            }
+        for (const param of TRIGGERS.subscription.update.params.interval)
+            if (command.toLowerCase().startsWith(param)) {
                 subscription.frequencyMilli = this.convertToMilliseconds(command.substr(command.indexOf('to') + 2).trim())
                 message.channel.send(`Updated the time interval for '${subName}' to *${command.substr(command.indexOf('to') + 2).trim()}*!`)
                 break
@@ -230,5 +236,39 @@ export default class BotSubscriptionCommands {
             extractedNumber = Math.floor((Number.parseFloat(query[0]) * 60000))
 
         return extractedNumber
+    }
+
+    static processDateString(dateString: string): Date {
+        let date: Date
+        dateString = dateString.toLowerCase().trim()
+        //TODO
+        if (dateString.includes('jan'))
+            date.setMonth(0)
+        else if (dateString.includes('feb'))
+            date.setMonth(1)
+        else if (dateString.includes('mar'))
+            date.setMonth(2)
+        else if (dateString.includes('apr'))
+            date.setMonth(3)
+        else if (dateString.includes('may'))
+            date.setMonth(4)
+        else if (dateString.includes('jun'))
+            date.setMonth(5)
+        else if (dateString.includes('jul'))
+            date.setMonth(6)
+        else if (dateString.includes('aug'))
+            date.setMonth(7)
+        else if (dateString.includes('sep'))
+            date.setMonth(8)
+        else if (dateString.includes('oct'))
+            date.setMonth(9)
+        else if (dateString.includes('nov'))
+            date.setMonth(10)
+        else if (dateString.includes('dec'))
+            date.setMonth(11)
+
+        //if (dateString.match(/^[0-5]?[0-9]$/)[])
+
+        return date
     }
 }

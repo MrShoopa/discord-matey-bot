@@ -268,7 +268,7 @@ export default class BotData {
 
 			data._toggles[property] = boolChoice
 		} else {
-			data._toggles[property] = forceBoolean ? forceBoolean : true
+			data._toggles[property] = forceBoolean
 
 			boolChoice = data._toggles[property]
 		}

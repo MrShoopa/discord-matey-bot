@@ -85,7 +85,7 @@ bot.on('error', error => {
 import Express from 'express'
 import Path from 'path'
 let webapp = new Express()
-let port = 3669
+var port = process.env.PORT || 3669;
 webapp.get("/", (request, response) => {
 	response.sendFile(Path.join(__dirname + '/index.html'));
 })

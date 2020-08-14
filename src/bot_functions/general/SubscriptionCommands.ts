@@ -41,7 +41,7 @@ export default class BotSubscriptionCommands {
             subscription._enabled = true
             subscription.args = args
 
-            BotSubscriptionHandler.updateSubscription(message.id, name, subscription, message)
+            BotSubscriptionHandler.updateSubscription(message.channel.id, name, subscription, message)
         } catch (error) {
             bot.saveBugReport(error, this.createSubscription.name, true)
 

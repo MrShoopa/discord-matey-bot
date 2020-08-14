@@ -192,7 +192,7 @@ export default class BotSubscriptionHandler {
                 return null
             }
             console.log(`Subscription not found. Creating.`)
-            return this.createSubscription(id, name, caller) //! TODO yeah idk fix this
+            subscription = this.createSubscription(id, name, caller) //! TODO yeah idk fix this
         }
 
         if (log) {

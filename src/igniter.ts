@@ -81,4 +81,17 @@ bot.on('error', error => {
 	bot = new Bot()
 })
 
+// Web Page redirect
+import Express from 'express'
+import Path from 'path'
+let webapp = new Express()
+let port = 3669
+webapp.get("/", (request, response) => {
+	response.sendFile(Path.join(__dirname + '/index.html'));
+})
+webapp.listen(port, () => {
+	console.log(`Webpage listening at http://localhost:${port}`)
+})
+
+// System Signal Listeners
 process.on('SIGINT', () => { console.log("Bye bye!"); process.exit(); });

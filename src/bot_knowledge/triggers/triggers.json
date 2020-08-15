@@ -284,7 +284,8 @@
             "throw me a random picture"
         ],
         "dank_meme": [
-            "meme",
+            "dank meme",
+            "send dank meme",
             "throw me a meme",
             "send me a meme",
             "meme me",
@@ -1176,7 +1177,6 @@
             "fetch meme",
             "get meme",
             "custom meme",
-            "meme",
             "meme photo"
         ],
         "categories": [

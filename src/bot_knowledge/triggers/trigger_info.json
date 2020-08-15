@@ -480,7 +480,7 @@
         },
         "meme": {
             "_title": "Memes 😂👌",
-            "_description": "Need to fetch a special meme? Customized? Check this out! (type **help meme list** to see what meme topics are available.",
+            "_description": "Need to fetch a special meme? Customized? Check this out! (type **;meme list** to see what meme topics are available.)",
             "_footer": "😜",
             "_command_list": {
                 "base_request": {

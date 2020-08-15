@@ -31,6 +31,7 @@ import BotWordplay from './wordplay/WordplayFunctions'
 import BotModuleWarcraft from './fetching/game/blizzard/WarcraftDataFunctions'
 import BotModuleGiphy from './fetching/gif/GiphyFunctions'
 import BotSubscriptionCommands from './general/SubscriptionCommands'
+import BotModuleStockMarket from './fetching/finance/BotStockMarketFunctions'
 
 
 export default class TriggerHandlers {
@@ -76,6 +77,7 @@ export default class TriggerHandlers {
         TriggerHandlers.checkForMemeRequest,
         TriggerHandlers.checkForWarcraftProfileRequest,
         TriggerHandlers.checkForGIPHYRandomRequest,
+        TriggerHandlers.checkForStockTickerDailyRequest,
 
         // Management Requests
         TriggerHandlers.checkForNameChangeRequest,
@@ -367,6 +369,12 @@ export default class TriggerHandlers {
         for (const trigger of TRIGGERS.giphy.random_gif)
             if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleGiphy.fireGIFMessage(trigger)
+    }
+
+    private static checkForStockTickerDailyRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.stock_market.default)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotModuleStockMarket.fireTickerInfoDailyMessage(message as Discord.Message, '', trigger)
     }
 
     /*  ----    Server-Management   ---- */

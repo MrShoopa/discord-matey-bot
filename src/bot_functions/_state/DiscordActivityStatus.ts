@@ -38,7 +38,7 @@ export default class BotDiscordActivity {
         },
         {
             name: `🌟 grinding poptart cat 🌟`, type: 'STREAMING',
-            url: "http://www.nyan.cat/"
+            url: "https://www.nyan.cat/"
         },
     ]
 

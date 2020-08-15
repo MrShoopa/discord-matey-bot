@@ -212,21 +212,21 @@ export default class BotModuleSwearJar {
         let message: Discord.Message = globalThis.bot.context
         console.log(`Swear Jar: Doing treshold check...`)
 
-        if ((score / 100) == 0) {
+        if ((score % 1000) == 0) {
+            console.log(`Swear Jar: Giving the user a random name.`)
+
+            BotModuleNameGenerator.giveUserRandomName(message.member, 'funky', true)
+        } else if ((score % 100) == 0) {
             console.log(`Swear Jar: Giving the user a random meme.`)
             let url = await BotModuleReddit.fetchImageFromSubmission(await BotModuleReddit.fetchRandomSubmission('r/5050pics'))
 
-            message.reply(`You reached a hundered new points! Here's a 50/50 image! Proceed with caution!`)
+            message.reply(`You reached a hundred new points! Here's a 50/50 image! Proceed with caution!`)
             message.channel.send({
                 files: [{
                     attachment: url,
                     name: 'SPOILER_NAME.jpg'
                 }]
             })
-        } else if ((score / 1000) == 0) {
-            console.log(`Swear Jar: Giving the user a random name.`)
-
-            BotModuleNameGenerator.giveUserRandomName(message.member, 'funky', true)
         } else {
             console.log(`Swear Jar: ...no checkpoint reached.`)
             return

@@ -30,15 +30,26 @@ export default class BotDiscordActivity {
         { name: `EoE 👁👁👁👁👁`, type: 'WATCHING' },
         { name: `Sonic '06, The Greatest Game in the Universe`, type: 'PLAYING' },
         { name: `with coronavirus test kits`, type: 'PLAYING' },
+        { name: `SimpMaster 69420™`, type: 'PLAYING' },
+        { name: `the collapse of America`, type: 'WATCHING' },
+        {
+            name: `切腹`, type: 'STREAMING',
+            url: "https://www.youtube.com/watch?v=zvq9r6R6QAY"
+        },
+        {
+            name: `🌟 grinding poptart cat 🌟`, type: 'STREAMING',
+            url: "http://www.nyan.cat/"
+        },
     ]
 
     dynamicStatuses: Array<ActivityOptions> = [
         { name: `NSA watch with ${globalThis.bot.guilds.cache.size} servers`, type: 'PLAYING' },
         { name: `shoutouts to ${globalThis.bot?.context?.author?.username}`, type: 'PLAYING' },
-        { name: `WINNER: ${globalThis.bot?.context?.author?.username}! PRIZE: NOTHING!`, type: 'PLAYING' },
+        { name: `WINNER: ${globalThis.bot.users.cache.random()}! PRIZE: NOTHING!`, type: 'PLAYING' },
         { name: `${globalThis.bot.guilds.cache.size} copies of Bad Rats`, type: 'PLAYING' },
         { name: `dj hero on ${globalThis.bot.voice.connections.size} channels`, type: "PLAYING" },
         { name: `crippling ${globalThis.bot.guilds.cache.size} servers`, type: "STREAMING" },
+        { name: `loves his ${globalThis.bot.users.cache.size} peeps`, type: "STREAMING" },
         { name: `pattycake with ${globalThis.bot.guilds.cache.size} servers`, type: 'PLAYING' },
         { name: `${globalThis.bot.guilds.cache.size} zooms`, type: 'LISTENING' }
     ]

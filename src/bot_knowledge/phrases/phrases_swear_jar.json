@@ -46,13 +46,11 @@
     "disable": [
         "I have disabled your swear jar.",
         "I'll stop spamming ya threats on swearin'.",
-        "I have taken off your bad word censorship",
-        "China mode deactivated"
+        "I have taken off your bad word censorship"
     ],
     "enable": [
         "I have enabled your swear jar?",
         "I'll start watching ya dirty mouth again.",
-        "BAD WORD POLICE ON WATCH AGAIN",
-        "China mode reactivated"
+        "BAD WORD POLICE ON WATCH AGAIN"
     ]
 }

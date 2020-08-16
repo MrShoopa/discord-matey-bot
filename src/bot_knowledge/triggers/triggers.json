@@ -1274,10 +1274,18 @@
             }
         }
     },
-    "stock_market": {
-        "default": [
-            "fetch stock",
-            "fetch ticker"
-        ]
+    "finance": {
+        "stock_market": {
+            "default": [
+                "fetch stock",
+                "fetch ticker"
+            ]
+        },
+        "crypto": {
+            "default": [
+                "fetch crypto",
+                "fetch ecurrency"
+            ]
+        }
     }
 }

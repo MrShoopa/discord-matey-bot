@@ -78,6 +78,7 @@ export default class TriggerHandlers {
         TriggerHandlers.checkForWarcraftProfileRequest,
         TriggerHandlers.checkForGIPHYRandomRequest,
         TriggerHandlers.checkForStockTickerDailyRequest,
+        TriggerHandlers.checkForCryptoTickerDailyRequest,
 
         // Management Requests
         TriggerHandlers.checkForNameChangeRequest,
@@ -372,9 +373,15 @@ export default class TriggerHandlers {
     }
 
     private static checkForStockTickerDailyRequest(message = TriggerHandlers.message) {
-        for (const trigger of TRIGGERS.stock_market.default)
+        for (const trigger of TRIGGERS.finance.stock_market.default)
             if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleStockMarket.fireTickerInfoDailyMessage(message as Discord.Message, '', trigger)
+    }
+
+    private static checkForCryptoTickerDailyRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.finance.crypto.default)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotModuleStockMarket.fireCryptoInfoDailyMessage(message as Discord.Message, '', trigger)
     }
 
     /*  ----    Server-Management   ---- */

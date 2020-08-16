@@ -40,7 +40,7 @@ export default class BotModuleStockMarket {
 
         let crypto = query.match(/[$][A-Za-z]{1,5}[\S]/)[0].substr(1).trim()
 
-        if (!crypto) return message.channel.send("Invalid request for finding ticker's info. *;help stocks*")
+        if (!crypto) return message.channel.send("Invalid request for finding crypto info. *;help stocks*")
 
         let data: CryptoInfo
 
@@ -58,32 +58,34 @@ export default class BotModuleStockMarket {
 
         daysAgo = daysAgo ? daysAgo : 0
 
-        if (tickerDailyData instanceof StockInfo) {
+        if (!tickerDailyData["Meta Data"]["1. Information"].includes('Digital')) {
 
             let metadata = tickerDailyData["Meta Data"], todayInfoArray = tickerDailyData["Time Series (Daily)"]
             let todayInfo = todayInfoArray[Object.keys(todayInfoArray)[daysAgo]]
 
-            post.setTitle(`$${metadata["2. Symbol"].toUpperCase()} on ${Object.keys(todayInfoArray)[daysAgo]}`)
-            post.addField("Open", todayInfo["1. open"])
-            post.addField("Low", todayInfo["3. low"], true)
-            post.addField("High", todayInfo["2. high"], true)
-            post.addField("Close", todayInfo["4. close"])
-            post.addField("Volume", todayInfo["5. volume"])
+            post.setTitle(`$${metadata["2. Symbol"].toUpperCase()} on ${this.parseDateString(Object.keys(todayInfoArray)[daysAgo])}`)
+            post.addField("Open", Number.parseFloat(todayInfo["1. open"]).toFixed(2), true)
+            post.addField("Low", Number.parseFloat(todayInfo["3. low"]).toFixed(2), true)
+            post.addField("Volume", Number.parseFloat(todayInfo["5. volume"]).toFixed(2), true)
+            post.addField("Close", Number.parseFloat(todayInfo["4. close"]).toFixed(2), true)
+            post.addField("High", Number.parseFloat(todayInfo["2. high"]).toFixed(2), true)
 
             if (Number.parseFloat(todayInfo["1. open"]) < Number.parseFloat(todayInfo["4. close"]))
                 post.setColor('GREEN')
             else
                 post.setColor('RED')
-        } else if (tickerDailyData instanceof CryptoInfo) {
-            let metadata = tickerDailyData["Meta Data"], todayInfoArray = tickerDailyData["Time Series (Daily)"]
+        } else if (tickerDailyData["Meta Data"]["1. Information"].includes('Digital')) {
+            let metadata = tickerDailyData["Meta Data"], todayInfoArray = tickerDailyData["Time Series (Digital Currency Daily)"]
             let todayInfo = todayInfoArray[Object.keys(todayInfoArray)[daysAgo]]
+            let irlCurrency = metadata["4. Market Code"]
 
-            post.setTitle(`$${metadata["2. Symbol"].toUpperCase()} on ${Object.keys(todayInfoArray)[daysAgo]}`)
-            post.addField("Open", todayInfo["1. open"])
-            post.addField("Low", todayInfo["3. low"], true)
-            post.addField("High", todayInfo["2. high"], true)
-            post.addField("Close", todayInfo["4. close"])
-            post.addField("Volume", todayInfo["5. volume"])
+            post.setTitle(`${metadata["3. Digital Currency Name"]} (to ${irlCurrency}) on ${this.parseDateString(Object.keys(todayInfoArray)[daysAgo])}`)
+            post.addField("Open", Number.parseFloat(todayInfo[`1a. open (${irlCurrency})`]).toFixed(2), true)
+            post.addField("Low", Number.parseFloat(todayInfo[`3a. low (${irlCurrency})`]).toFixed(2), true)
+            post.addField("Volume", Number.parseFloat(todayInfo[`5. volume`]).toFixed(2), true)
+            post.addField("Close", Number.parseFloat(todayInfo[`4a. close (${irlCurrency})`]).toFixed(2), true)
+            post.addField("High", Number.parseFloat(todayInfo[`2a. high (${irlCurrency})`]).toFixed(2), true)
+            post.addField("Market Cap", Number.parseFloat(todayInfo[`6. market cap (${irlCurrency})`]).toFixed(2), true)
 
             if (Number.parseFloat(todayInfo["1. open"]) < Number.parseFloat(todayInfo["4. close"]))
                 post.setColor('GREEN')
@@ -126,6 +128,11 @@ export default class BotModuleStockMarket {
             console.groupEnd()
             throw err
         })
+    }
+
+    static parseDateString(dateString: string) {
+        let date = new Date(dateString)
+        return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
     }
 }
 

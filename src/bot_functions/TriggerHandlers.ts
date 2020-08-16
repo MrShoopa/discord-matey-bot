@@ -31,7 +31,7 @@ import BotWordplay from './wordplay/WordplayFunctions'
 import BotModuleWarcraft from './fetching/game/blizzard/WarcraftDataFunctions'
 import BotModuleGiphy from './fetching/gif/GiphyFunctions'
 import BotSubscriptionCommands from './general/SubscriptionCommands'
-import BotModuleStockMarket from './fetching/finance/BotStockMarketFunctions'
+import BotModuleStockMarket from './fetching/finance/StockMarketFunctions'
 
 
 export default class TriggerHandlers {

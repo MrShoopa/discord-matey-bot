@@ -6,11 +6,15 @@ import PHRASES_FRONT from '../../bot_knowledge/phrases/phrases_front.json'
 import PHRASES_CONVO from '../../bot_knowledge/phrases/phrases_conversational.json'
 
 import BotModuleBraindead from '../novelty/QuiteSpecificFunctions'
+import { Message } from 'discord.js'
 
 export default class BotWordplay {
     static bot: Bot
+    static wholeMessage: string
 
-    static runWordplayCheck(message = this.bot.context) {
+    static runWordplayCheck(message: Message, wholeMessage: string) {
+        this.wholeMessage = wholeMessage
+
         this.checkForSelfSuicdeWordplay(message)
         this.checkForSADWordplay(message)
         this.checkForOnlyBeansWordplay(message)
@@ -101,8 +105,9 @@ export default class BotWordplay {
         let context: string = message.toString()
 
         TRIGGERS.main_trigger.some(trigger => {
-            if (context.toLowerCase().includes(trigger, 1)) {
+            if (this.wholeMessage.toLowerCase().startsWith(trigger, 0)) {
                 NonTargettedTriggers.checkForDeathThreatWordPlay(message)
+                NonTargettedTriggers.checkForHowAreYouWordPlay(message)
             }
         })
     }
@@ -110,26 +115,35 @@ export default class BotWordplay {
 
 class NonTargettedTriggers {
     static checkForDeathThreatWordPlay(message = BotWordplay.bot.context) {
-        let context: string = message.toString()
+        BotWordplay.wholeMessage = message.toString()
 
         //  Death threats
         TRIGGERS.threat.kill_self.some(trigger => {
-            if (context.toLowerCase().includes(trigger)) {
-                BotWordplay.bot.preliminary(trigger, 'Retaliating')
+            if (BotWordplay.wholeMessage.toLowerCase().includes(trigger)) {
+                globalThis.bot.preliminary(trigger, 'Retaliating')
 
                 //  FRIEND SPECIFIC :)
-                if (message.author.username == 'MrShoopa')
-                    message.reply('joe you a hoe')
-                if (message.author.username == 'The King of Bling')
+                if (message.author.username == 'Joe')
+                    message.reply('joe you a stink hoe 💩')
+                else if (message.author.username == 'The King of Bling')
                     message.reply('nick ya dick')
-                if (message.author.username == 'Vitalion')
+                else if (message.author.username == 'Vitalion')
                     message.reply('mitch ya snitch')
-                if (message.author.username == 'Jaygoo')
+                else if (message.author.username == 'Jaygoo')
                     message.reply('ur dog gay')
-                if (message.author.username == 'Matt')
-                    message.reply('matt ur a brat')
+                else if (message.author.username == 'Matt')
+                    message.reply('matt ur a brat, ba-da **B O N K** 🔨💨')
+                else if (message.author.username == 'Emily')
+                    message.reply(`emily you're a lil' smelly 🌿`)
+                else if (message.author.username == 'Noob')
+                    message.reply(`noob you're such a boob 👁👅👁`)
+                else if (message.author.username == 'Jayden')
+                    message.reply(`jayden i'd rather drop you at gamestop as a trade-in 🎮😎`)
+                /* else
+                    return message.reply(
+                        Bot.fetchRandomPhrase(PHRASES_CONVO.asked_death_threat)) */
 
-                BotWordplay.bot.commandSatisfied = true
+                globalThis.bot.commandSatisfied = true
 
                 return message.reply(
                     Bot.fetchRandomPhrase(PHRASES_CONVO.asked_death_threat))
@@ -138,11 +152,11 @@ class NonTargettedTriggers {
     }
 
     static checkForHowAreYouWordPlay(message = BotWordplay.bot.context) {
-        let context: string = message.toString()
+        BotWordplay.wholeMessage = message.toString()
 
         TRIGGERS.how_is_bot.some(trigger => {
-            if (context.toLowerCase().includes(trigger)) {
-                BotWordplay.bot.preliminary(trigger, 'How is bot', true)
+            if (BotWordplay.wholeMessage.toLowerCase().includes(trigger)) {
+                globalThis.bot.preliminary(trigger, 'How is bot', true)
 
                 return message.reply(
                     Bot.fetchRandomPhrase(PHRASES_CONVO.asked_how_are_you))

@@ -110,6 +110,7 @@ export default class TriggerHandlers {
         this.bot.commandSatisfied = false
 
         this.message = message
+        let unmodifiedMessage = message.content.toString()
         let msgString = message.toString()
 
         if (this.preventUnnecessaryResponse()) return
@@ -122,7 +123,7 @@ export default class TriggerHandlers {
 
         //  Actual processing
         await this.requestCheck()
-        this.chatterCheck()
+        this.chatterCheck(message, unmodifiedMessage)
 
         if (this.bot.commandSatisfied === false)
             this.replyGeneralDefault(msgString)
@@ -159,8 +160,8 @@ export default class TriggerHandlers {
             }
     }
 
-    private static chatterCheck() {
-        BotWordplay.runWordplayCheck(TriggerHandlers.message)
+    private static chatterCheck(message: Discord.Message | Discord.PartialMessage, unmodifiedMessage: string) {
+        BotWordplay.runWordplayCheck(message as Discord.Message, unmodifiedMessage)
     }
 
     private static checkForRedoActionRequest(message = TriggerHandlers.message) {
@@ -290,7 +291,7 @@ export default class TriggerHandlers {
         for (const baseTrigger of TRIGGERS.reddit_fetch.default)
             for (const trigger of TRIGGERS.reddit_fetch.query_type.post)
                 if (message.toString().toLowerCase().startsWith(`${baseTrigger} ${trigger}`))
-                    return BotModuleReddit.fireRedditSubmissionMessage(null, `${baseTrigger} ${trigger}`)
+                    return BotModuleReddit.fireRedditSubmissionMessage((message as Discord.Message).channel as Discord.TextChannel)
         //  Get copypasta post [from Reddit]
 
         for (const trigger of TRIGGERS.reddit_fetch.copypasta.default)

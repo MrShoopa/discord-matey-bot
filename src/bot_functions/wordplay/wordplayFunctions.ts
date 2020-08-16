@@ -126,6 +126,8 @@ class NonTargettedTriggers {
                     message.reply('mitch ya snitch')
                 if (message.author.username == 'Jaygoo')
                     message.reply('ur dog gay')
+                if (message.author.username == 'Matt')
+                    message.reply('matt ur a brat')
 
                 BotWordplay.bot.commandSatisfied = true
 

@@ -11,26 +11,25 @@ import DEFAULTS_IMAGE from '../../../bot_knowledge/defaults/image_search.json'
 
 export default class BotModuleGoogleImage {
 
-    static async fireImageMessageFromGoogle(trigger?: string) {
-        let bot: Bot = globalThis.bot
-
-        bot.context.channel.send(await this.fetchBuiltImageFromGoogle(trigger))
+    static async fireImageMessageFromGoogle(message: Discord.Message, trigger?: string) {
+        message.channel.send(await this.fetchBuiltImageFromGoogle(trigger))
     }
 
-    static async fetchBuiltImageFromGoogle(trigger?: string):
+    static async fetchBuiltImageFromGoogle(userQuery: Discord.Message | string, trigger?: string):
         Promise<Discord.Message | Discord.MessageEmbed> {
         let bot: Bot = globalThis.bot
 
         if (trigger) bot.preliminary(trigger, 'Image Search', true)
 
-        var userQuery: string = ''
+        if (userQuery instanceof Discord.Message)
+            userQuery = ''
 
         for (const trigAppender of TRIGGERS.context_prefix)
             //  If user includes a specific thing to look for.
-            if (bot.context.toString().toLowerCase().includes(trigAppender)) {
+            if (userQuery.toString().toLowerCase().includes(trigAppender)) {
                 //  Sets query to user's query (after prefix trigger)
                 userQuery =
-                    bot.context.toString()
+                    userQuery.toString()
                         .replace(`${trigger} ${trigAppender}`, '').trim()
                 break
             }

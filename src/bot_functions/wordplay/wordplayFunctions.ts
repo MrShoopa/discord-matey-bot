@@ -10,19 +10,17 @@ import BotModuleBraindead from '../novelty/QuiteSpecificFunctions'
 export default class BotWordplay {
     static bot: Bot
 
-    static runWordplayCheck() {
-        this.bot = globalThis.bot
-
-        this.checkForSelfSuicdeWordplay()
-        this.checkForSADWordplay()
-        this.checkForOnlyBeansWordplay()
-        this.checkForSendNudesWordplay()
-        this.checkForThankYouWordplay()
-        this.checkForCommieWordplay()
-        this.checkForNonHotwordWordplay()
+    static runWordplayCheck(message = this.bot.context) {
+        this.checkForSelfSuicdeWordplay(message)
+        this.checkForSADWordplay(message)
+        this.checkForOnlyBeansWordplay(message)
+        this.checkForSendNudesWordplay(message)
+        this.checkForThankYouWordplay(message)
+        this.checkForCommieWordplay(message)
+        this.checkForNonHotwordWordplay(message)
     }
 
-    private static checkForSelfSuicdeWordplay(message = this.bot.context) {
+    private static checkForSelfSuicdeWordplay(message) {
         let context: string = message.toString()
 
         //  Suicidal
@@ -48,7 +46,7 @@ export default class BotWordplay {
         })
     }
 
-    private static checkForSADWordplay(message = this.bot.context) {
+    private static checkForSADWordplay(message) {
         let context: string = message.toString()
 
         if (context.includes(TRIGGERS.third_person_phrase_triggers.suck_thing[0]) &&
@@ -59,12 +57,12 @@ export default class BotWordplay {
     }
 
 
-    private static async checkForOnlyBeansWordplay(message = this.bot.context) {
+    private static async checkForOnlyBeansWordplay(message) {
         if (message.toString() == 'beans')
-            BotModuleBraindead.beans()
+            BotModuleBraindead.beans(message)
         //  the master's favorite food
     }
-    private static checkForSendNudesWordplay(message = this.bot.context) {
+    private static checkForSendNudesWordplay(message) {
         let context: string = message.toString()
 
         //  Send Nudes (Per request of a friend :P)
@@ -78,7 +76,7 @@ export default class BotWordplay {
         })
     }
 
-    private static checkForThankYouWordplay(message = this.bot.context) {
+    private static checkForThankYouWordplay(message) {
         let context: string = message.toString()
 
         //  Thank you
@@ -92,14 +90,14 @@ export default class BotWordplay {
         })
     }
 
-    private static checkForCommieWordplay(message = this.bot.context) {
+    private static checkForCommieWordplay(message) {
         if (message.toString().toLowerCase().includes(TRIGGERS.are_you_triggers.communist))
             BotModuleBraindead.communistRepsonse()
         //  "Are you a X?"
     }
 
     //  When mentioning main hotword anywhere in message!
-    private static checkForNonHotwordWordplay(message = this.bot.context) {
+    private static checkForNonHotwordWordplay(message) {
         let context: string = message.toString()
 
         TRIGGERS.main_trigger.some(trigger => {

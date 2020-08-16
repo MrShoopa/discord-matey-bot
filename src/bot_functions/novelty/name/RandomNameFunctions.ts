@@ -6,7 +6,8 @@ import { uniqueNamesGenerator, Config, names, colors, adjectives, animals, starW
 import PHRASES_NAME_CHANGE from '../../../bot_knowledge/phrases/phrases_name_change.json'
 
 export default class BotModuleNameGenerator {
-    static processRandomNameRequest(trigger?: string, message: Discord.Message = globalThis.bot.context) {
+    static processRandomNameRequest(message: Discord.Message = globalThis.bot.context) {
+
         for (const trigger of TRIGGERS.name_change.star_wars)
             if (message.toString().toLowerCase().startsWith(trigger))
                 return this.giveUserRandomName(message.member, 'starwars')

@@ -10,7 +10,7 @@ import MorseCoderFunctions from './MorseFunctions'
 
 export default class BotModuleTranslation {
 
-    static processTranslationRequest(context: Discord.Message | Discord.PartialMessage, language?: string, trigger?: string) {
+    static processTranslationRequest(context: Discord.Message, language?: string, trigger?: string) {
         let lingua: string
         let args: string
 
@@ -37,30 +37,26 @@ export default class BotModuleTranslation {
                     return lingua = '!'
         }))
             if (lingua == 'warcraft')
-                WarcraftLanguageFunctions.generateWarcraftTranslationMessage(context.toString())
+                WarcraftLanguageFunctions.generateWarcraftTranslationMessage(context, trigger)
             else if (lingua == 'yoda')
-                YodaLanguageFunctions.generateYodaTranslationMessage(context.toString())
+                YodaLanguageFunctions.generateYodaTranslationMessage(context, trigger)
             else if (lingua == 'binary')
-                BinaryCoderFunctions.generateBinaryTranslationMessage(context.toString())
+                BinaryCoderFunctions.generateBinaryTranslationMessage(context, trigger)
             else if (lingua == 'morse') {
                 if (args == 'to')
-                    MorseCoderFunctions.generateMorseTranslationMessage(context.toString(), 'morse-to-text')
+                    MorseCoderFunctions.generateMorseTranslationMessage(context, trigger, 'morse-to-text')
                 else if (args == 'from')
-                    MorseCoderFunctions.generateMorseTranslationMessage(context.toString(), 'text-to-morse')
+                    MorseCoderFunctions.generateMorseTranslationMessage(context, trigger, 'text-to-morse')
                 else
-                    MorseCoderFunctions.generateMorseTranslationMessage(context.toString())
+                    MorseCoderFunctions.generateMorseTranslationMessage(context, trigger)
             }
             else
-                return this.replyUnknownLanguageMessage()
+                return this.replyUnknownLanguageMessage(context)
         else
-            return this.replyUnknownLanguageMessage()
+            return this.replyUnknownLanguageMessage(context)
     }
 
-    static replyUnknownLanguageMessage() {
-        let bot: Bot = globalThis.bot
-
-        bot.context.channel.send(`Which language? Type *megadork translation list* to see what I can translate.`)
-
-        return true
+    static replyUnknownLanguageMessage(message: Discord.Message) {
+        return message.channel.send(`Which language? Type *megadork translation list* to see what I can translate.`)
     }
 }

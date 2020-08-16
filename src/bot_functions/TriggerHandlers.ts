@@ -159,7 +159,7 @@ export default class TriggerHandlers {
     }
 
     private static chatterCheck() {
-        BotWordplay.runWordplayCheck()
+        BotWordplay.runWordplayCheck(TriggerHandlers.message)
     }
 
     private static checkForRedoActionRequest(message = TriggerHandlers.message) {
@@ -183,14 +183,14 @@ export default class TriggerHandlers {
     private static checkForSwearCountRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.swear_jar_triggers.count)
             if (message.toString().toLowerCase().includes(trigger))
-                return BotModuleSwearJar.fireSwearCountInquiryMessage(message.member.user, trigger)
+                return BotModuleSwearJar.fireSwearCountInquiryMessage(message as Discord.Message, trigger)
     }
 
     private static checkForSwearWord(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.swear_jar_triggers.bad_words)
             if (message.toString().toLowerCase().includes(trigger))
                 if (BotData.getUserProperty(message.author.id, 'swear_jar', false))
-                    return BotModuleSwearJar.dingUser(trigger)
+                    return BotModuleSwearJar.dingUser(message as Discord.Message, trigger)
     }
 
     /*  ---- Birthday Functionality ----  */
@@ -198,14 +198,14 @@ export default class TriggerHandlers {
     private static checkForBirthdayAppendRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.remember.birthday.self)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleBirthday.assignBirthdaySelf(trigger)
+                return BotModuleBirthday.assignBirthdaySelf(message as Discord.Message, trigger)
         //  Add birthday reminder!
     }
 
     private static checkForBirthdayInquiryRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.remember.birthday.inquire)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleBirthday.inquireBirthdaySelf()
+                return BotModuleBirthday.inquireBirthdaySelf(message as Discord.Message)
     }
 
     /*  ---- Music Functionality ----  */
@@ -271,7 +271,7 @@ export default class TriggerHandlers {
     private static checkForImageFetchRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.image_search_triggers.random_image)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleGoogleImage.fireImageMessageFromGoogle(trigger)
+                return BotModuleGoogleImage.fireImageMessageFromGoogle(message as Discord.Message, trigger)
     }
 
     /*  ----    Translation  ----    */
@@ -279,7 +279,7 @@ export default class TriggerHandlers {
     private static checkForTranslationRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.translate.hotword_default)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleTranslation.processTranslationRequest(TriggerHandlers.bot.context)
+                return BotModuleTranslation.processTranslationRequest(message as Discord.Message)
         //  Find random image (from Google Images)
     }
 
@@ -313,14 +313,14 @@ export default class TriggerHandlers {
     private static checkForMALAnimeFetchRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.anime_fetch.default)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleAnime.fireAnimeInfoMessageOfName(trigger)
+                return BotModuleAnime.fireAnimeInfoMessageOfName(message as Discord.Message, trigger)
         //  Get anime recommendation [from My Anime List (Jikan API)]
     }
 
     private static checkForMALMangaFetchRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.manga_fetch.default)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleAnime.fireMangaInfoMessageOfName(trigger)
+                return BotModuleAnime.fireMangaInfoMessageOfName(message as Discord.Message, trigger)
         //  Get manga recommendation [from My Anime List (Jikan API)]
     }
 
@@ -332,7 +332,7 @@ export default class TriggerHandlers {
     private static checkForLyricFetchRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.lyric_fetch.default)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleLyric.fireLyricMatchMessage(trigger)
+                return BotModuleLyric.fireLyricMatchMessage(message as Discord.Message, trigger)
     }
 
     private static checkForLyricSingRequest(message = TriggerHandlers.message) {
@@ -356,7 +356,7 @@ export default class TriggerHandlers {
     private static checkForMemeRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.meme_triggers.base)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleMeme.fireMemeRequest()
+                return BotModuleMeme.fireMemeRequest(message as Discord.Message)
     }
 
     private static checkForWarcraftProfileRequest(message = TriggerHandlers.message) {
@@ -368,7 +368,7 @@ export default class TriggerHandlers {
     private static checkForGIPHYRandomRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.giphy.random_gif)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleGiphy.fireGIFMessage(trigger)
+                return BotModuleGiphy.fireGIFMessage(message as Discord.Message, trigger)
     }
 
     private static checkForStockTickerDailyRequest(message = TriggerHandlers.message) {
@@ -388,14 +388,14 @@ export default class TriggerHandlers {
     private static checkForRestrictedRoleAssignRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.server_mod_triggers.set_restricted_role)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleRestrictedRole.assignToRestrictedRole(trigger)
+                return BotModuleRestrictedRole.assignToRestrictedRole(message as Discord.Message, trigger)
         //  Set Restricted Role        
     }
 
     private static checkForRestrictedRoleUnassignRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.server_mod_triggers.unset_restricted_role)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleRestrictedRole.unassignFromRestrictedRole(trigger)
+                return BotModuleRestrictedRole.unassignFromRestrictedRole(message as Discord.Message, trigger)
         //  Unset Restricted Role
     }
 

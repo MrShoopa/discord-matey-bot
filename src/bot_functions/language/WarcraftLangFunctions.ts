@@ -7,12 +7,12 @@ import Lexicon from 'wow-lexicon'
 
 export default class WarcraftLanguageFunctions {
 
-    static generateWarcraftTranslationMessage(trigger: string, language?: string, text?: string) {
+    static generateWarcraftTranslationMessage(message: Discord.Message, trigger?: string, language?: string, text?: string) {
         let bot: Bot = globalThis.bot
-        bot.preliminary(trigger, 'Warcraft translation', true)
+        if (trigger) bot.preliminary(trigger, 'Warcraft translation', true)
 
         if (!text)
-            text = bot.context.toString()
+            text = message.toString()
 
         if (!language)
             translate.warcraft.some(lang => {
@@ -24,13 +24,13 @@ export default class WarcraftLanguageFunctions {
 
         let translation = this.getWarcraftTranslation(text, language)
 
-        let message = new Discord.MessageEmbed()
+        let response = new Discord.MessageEmbed()
             .setTitle(`Translated to ${language}`)
             .setDescription(translation)
             .setColor('GOLD')
             .setFooter('Warcraft Language Translator')
 
-        bot.context.channel.send(message)
+        message.channel.send(response)
     }
 
     static getWarcraftTranslation(text: string, language: string) {

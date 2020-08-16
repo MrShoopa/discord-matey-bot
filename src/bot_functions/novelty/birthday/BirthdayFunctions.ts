@@ -9,11 +9,11 @@ import * as CALENDAR from "../../../bot_knowledge/calendar/values.json"
 import * as PHRASES from "../../../bot_knowledge/phrases/phrases_calendar.json"
 
 export default class BotModuleBirthday {
-	static assignBirthdaySelf(trigger?: string) {
+	static assignBirthdaySelf(message: Discord.Message, trigger?: string) {
 		let bot: Bot = globalThis.bot
 		//  Trim trigger for easier parsing of date
 		bot.preliminary(trigger, "Birthday reminder", true)
-		let context: string = bot.context.toString().replace(trigger, "").trim()
+		let context: string = message.toString().replace(trigger, "").trim()
 
 		let birthday: Date
 
@@ -33,59 +33,59 @@ export default class BotModuleBirthday {
 					birthday = new Date(yearNumber, monthNumber, dateNumber)
 
 				} else {
-					return bot.context.reply('you wrote an invalid date. Include a date from 1-31.')
+					return message.reply('you wrote an invalid date. Include a date from 1-31.')
 				}
 			}
 
 		})
 
 		if (!birthday)
-			return bot.context.reply(`invalid date. Type the month and date like this: 'September 10 (year optional)'`)
+			return message.reply(`invalid date. Type the month and date like this: 'September 10 (year optional)'`)
 
-		let userData = BotData.getUserData(bot.context.author.id)
+		let userData = BotData.getUserData(message.author.id)
 
 		try {
 			let newBirthday: boolean = userData.birthday !== null
 			userData.birthday = birthday
 
 			if (newBirthday) {
-				bot.context.reply(Bot.fetchRandomPhrase(PHRASES.birthday.created_user) +
+				message.reply(Bot.fetchRandomPhrase(PHRASES.birthday.created_user) +
 					` ${CALENDAR.months_prettier[birthday.getMonth()]} ${birthday.getDate().toLocaleString()}!`)
 			} else {
-				bot.context.reply(Bot.fetchRandomPhrase(PHRASES.birthday.updated_user) +
+				message.reply(Bot.fetchRandomPhrase(PHRASES.birthday.updated_user) +
 					` ${CALENDAR.months_prettier[birthday.getMonth()]} ${birthday.getDate().toLocaleString()}!`)
 			}
 		} catch (error) {
 			bot.saveBugReport(error, this.assignBirthdaySelf.name, true)
-			return bot.context.reply(`I couldn't save your birthday for some reason... :(`)
+			return message.reply(`I couldn't save your birthday for some reason... :(`)
 		}
 
 
-		return BotData.updateUserData(bot.context.author.id, userData)
+		return BotData.updateUserData(message.author.id, userData)
 	}
 
-	static inquireBirthdaySelf(trigger?: string) {
+	static inquireBirthdaySelf(message: Discord.Message, trigger?: string) {
 		let bot: Bot = globalThis.bot
 		bot.preliminary(trigger, 'Birthday Inquiry', true)
 
-		let userData = BotData.getUserData(bot.context.author.id)
+		let userData = BotData.getUserData(message.author.id)
 
 		if (userData?.birthday === undefined) {
-			bot.context.reply(`looks like I don't know it? Maybe tell me to remember? 🍰`)
+			message.reply(`looks like I don't know it? Maybe tell me to remember? 🍰`)
 		} else {
 			let birthday = new Date(userData.birthday)
-			bot.context.reply(`your birthday is on ${CALENDAR.months_prettier[birthday.getMonth()]} ${birthday.getDate()}! `)
+			message.reply(`your birthday is on ${CALENDAR.months_prettier[birthday.getMonth()]} ${birthday.getDate()}! `)
 
 			let difToleranceMs = 2160000000
 			let birthdayFromNowMs = (birthday.getMilliseconds() - Date.now())
 
 			if (birthday.getMonth() === new Date().getMonth()
 				&& birthday.getDate() === new Date().getDate())
-				bot.context.channel.send(`Hey, your birthday's today! I hope you have a great one! 🎂🎉`)
+				message.channel.send(`Hey, your birthday's today! I hope you have a great one! 🎂🎉`)
 			else if (Math.abs(birthdayFromNowMs) < difToleranceMs && birthdayFromNowMs > 0)
-				bot.context.channel.send(`Looks like your birthday's coming up soon! I'm excited!`)
+				message.channel.send(`Looks like your birthday's coming up soon! I'm excited!`)
 			else if (Math.abs(birthdayFromNowMs) < difToleranceMs && birthdayFromNowMs < 0)
-				bot.context.channel.send(`Looks like your birthday came by recently!`)
+				message.channel.send(`Looks like your birthday came by recently!`)
 
 		}
 

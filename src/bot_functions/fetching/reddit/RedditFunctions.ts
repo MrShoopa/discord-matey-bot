@@ -143,7 +143,7 @@ export default class BotModuleReddit {
         let bot: Bot = globalThis.bot
 
         // @see https://www.reddit.com/dev/api/ for more info.
-        let image = await bot.fetchImageFromURL(redditObject.data.children[0].data.url)
+        let image = await bot.fetchImageFromURL(redditObject.data.url)
         return image
     }
 

@@ -1,4 +1,4 @@
-import Discord from 'discord.js'
+import Discord, { MessageEmbed } from 'discord.js'
 import Bot from "../../../Bot"
 import BotData from "../../DataHandler"
 import { Audio } from '../../../types/index'
@@ -45,6 +45,8 @@ export default class BotModuleSwearJar {
             if (userData === undefined)
                 userData = BotData.createUserData(message.author.id)
 
+            oldNum = userData.swear_score ? userData.swear_score : 0
+
             //  Get current swear count
             try {
                 if (!userData.swear_score) {
@@ -55,6 +57,8 @@ export default class BotModuleSwearJar {
                 console.error(new EvalError(`Error updating swear score for ${message.author.username}!`))
                 bot.saveBugReport(error, this.dingUser.name)
             }
+
+            newNum = userData.swear_score
 
             BotData.updateUserData(message.author.id, userData)
 
@@ -100,7 +104,7 @@ export default class BotModuleSwearJar {
 
         let data = BotData.getUserData(message.author.id)
 
-        if (data.swear_score)
+        if (data.swear_score > 0)
             message.reply(`you have sworn ${data.swear_score} times.`)
         else
             message.reply(`oh wow, you're clean! 👀`)
@@ -214,19 +218,19 @@ export default class BotModuleSwearJar {
     static async thresholdCheck(oldNum: number, newNum: number, message: Discord.Message = globalThis.bot.context) {
         console.log(`Swear Jar: Doing treshold check...`)
 
-        if (oldNum % 100 < 100 && newNum % 100 < oldNum % 100) {
+        if (oldNum % 1000 < 1000 && newNum % 1000 < oldNum % 1000) {
             console.log(`Swear Jar: Giving the user a random name.`)
 
             BotModuleNameGenerator.giveUserRandomName(message.member, 'funky', true)
-        } else if (oldNum % 1000 < 1000 && newNum % 1000 < oldNum % 1000) {
+        } else if (oldNum % 100 < 100 && newNum % 100 < oldNum % 100) {
             console.log(`Swear Jar: Giving the user a random meme.`)
-            let url = await BotModuleReddit.fetchImageFromSubmission(await BotModuleReddit.fetchRandomSubmission('r/5050pics'))
+            let submission = await BotModuleReddit.fetchRandomSubmission('fiftyfifty')
 
-            message.reply(`You reached a hundred new points! Here's a 50/50 image! Proceed with caution!`)
+            message.reply(`You reached a hundred new points! Here's a 50/50 image! Proceed with caution! \n\n **Topic: *${submission.data.title}***`)
             message.channel.send({
                 files: [{
-                    attachment: url,
-                    name: 'SPOILER_NAME.jpg'
+                    attachment: submission.data.url,
+                    name: 'SPOILER_FILE.jpg'
                 }]
             })
         } else {

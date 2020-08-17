@@ -9,7 +9,7 @@ import AlphaVantage from 'alphavantage'
 const Moneyman = AlphaVantage({ key: USER_CREDS.alpha_vantage.key })
 
 export default class BotModuleStockMarket {
-    static async fireTickerInfoDailyMessage(message: Discord.Message, query?: string, trigger?: string, daysAgo?: number) {
+    static async fireTickerInfoDailyMessage(message: Discord.Message, query?: string, trigger?: string, dateChoice?: Date | string) {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'Stock Market Ticker search', true)
 
@@ -17,80 +17,106 @@ export default class BotModuleStockMarket {
             query = message.content
 
         let ticker = query.match(/[$][A-Za-z]{1,5}[\S]/)[0].substr(1).trim()
+        if (!dateChoice)
+            dateChoice = new Date(query.substr(query.indexOf('on') + 2).trim())
+        else if (typeof dateChoice === 'string')
+            dateChoice = new Date(dateChoice)
 
         if (!ticker) return message.channel.send("Invalid request for finding ticker's info. *;help stocks*")
 
         let data: StockInfo
 
         try {
-            data = await this.fetchTickerInfoDaily(ticker)
-        } catch (error) {
-            message.reply(bot.generateErrorMessage("could not find info for your ticker!"))
+            await this.fetchTickerInfoDaily(ticker).then(d => data = d).catch((err: Error) => { throw err })
+            return message.channel.send(this.buildTickerInfoDayMessage(data, dateChoice as Date))
+        } catch (err) {
+            if (err.message.includes('Invalid API call'))
+                return message.reply(bot.generateErrorMessage(`invalid ticker!`))
+            if (err.message.includes('No data exists for that day'))
+                return message.reply(bot.generateErrorMessage(`did not find your ticker's stats for that day!`))
+            if (err.message.includes('no data whatsoever'))
+                return message.reply(bot.generateErrorMessage("could not find info for your stock!"))
         }
-
-        return message.channel.send(this.buildTickerInfoDayMessage(data, daysAgo))
     }
 
-    static async fireCryptoInfoDailyMessage(message: Discord.Message, query?: string, trigger?: string, daysAgo?: number) {
+    static async fireCryptoInfoDailyMessage(message: Discord.Message, query?: string, trigger?: string, dateChoice?: Date | string) {
         let bot: Bot = globalThis.bot
-        bot.preliminary(trigger, 'Stock Market Ticker search', true)
+        bot.preliminary(trigger, 'Crypto Ticker search', true)
 
         if (!query)
             query = message.content
 
         let crypto = query.match(/[$][A-Za-z]{1,5}[\S]/)[0].substr(1).trim()
+        if (!dateChoice)
+            dateChoice = new Date(query.substr(query.indexOf('on') + 2).trim())
+        else if (typeof dateChoice === 'string')
+            dateChoice = new Date(dateChoice)
 
         if (!crypto) return message.channel.send("Invalid request for finding crypto info. *;help stocks*")
 
         let data: CryptoInfo
 
-        try {
-            data = await this.fetchCryptoInfoDaily(crypto)
-        } catch (error) {
-            message.reply(bot.generateErrorMessage("could not find info for your crypto!"))
-        }
 
-        return message.channel.send(this.buildTickerInfoDayMessage(data, daysAgo))
+        try {
+            await this.fetchCryptoInfoDaily(crypto).then(d => data = d).catch((err: Error) => { throw err })
+            return message.channel.send(this.buildTickerInfoDayMessage(data, dateChoice as Date))
+        } catch (err) {
+            if (err.message.includes('Invalid API call'))
+                return message.reply(bot.generateErrorMessage(`invalid crypto symbol!`))
+            if (err.message.includes('No data exists for that day'))
+                return message.reply(bot.generateErrorMessage(`did not find your crypto's stats for that day!`))
+            if (err.message.includes('no data whatsoever'))
+                return message.reply(bot.generateErrorMessage("could not find info for your crypto!"))
+        }
     }
 
-    static buildTickerInfoDayMessage(tickerDailyData: StockInfo | CryptoInfo, daysAgo?: number) {
+    static buildTickerInfoDayMessage(tickerDailyData: StockInfo | CryptoInfo, dayChoice?: Date) {
         let post = new Discord.MessageEmbed()
 
-        daysAgo = daysAgo ? daysAgo : 0
+        dayChoice = dayChoice ? dayChoice : new Date()
+        let dayLookup = `${dayChoice.getFullYear()}-${dayChoice.getMonth().toFixed(2)}-${dayChoice.getMonth().toFixed(2)}`
 
-        if (!tickerDailyData["Meta Data"]["1. Information"].includes('Digital')) {
+        try {
 
-            let metadata = tickerDailyData["Meta Data"], todayInfoArray = tickerDailyData["Time Series (Daily)"]
-            let todayInfo = todayInfoArray[Object.keys(todayInfoArray)[daysAgo]]
+            if (!tickerDailyData["Meta Data"]["1. Information"].includes('Digital')) {
 
-            post.setTitle(`$${metadata["2. Symbol"].toUpperCase()} on ${this.parseDateString(Object.keys(todayInfoArray)[daysAgo])}`)
-            post.addField("Open", Number.parseFloat(todayInfo["1. open"]).toFixed(2), true)
-            post.addField("Low", Number.parseFloat(todayInfo["3. low"]).toFixed(2), true)
-            post.addField("Volume", Number.parseFloat(todayInfo["5. volume"]).toFixed(2), true)
-            post.addField("Close", Number.parseFloat(todayInfo["4. close"]).toFixed(2), true)
-            post.addField("High", Number.parseFloat(todayInfo["2. high"]).toFixed(2), true)
+                let metadata = tickerDailyData["Meta Data"], todayInfoArray = tickerDailyData["Time Series (Daily)"]
+                let todayInfo = todayInfoArray[dayLookup]
 
-            if (Number.parseFloat(todayInfo["1. open"]) < Number.parseFloat(todayInfo["4. close"]))
-                post.setColor('GREEN')
-            else
-                post.setColor('RED')
-        } else if (tickerDailyData["Meta Data"]["1. Information"].includes('Digital')) {
-            let metadata = tickerDailyData["Meta Data"], todayInfoArray = tickerDailyData["Time Series (Digital Currency Daily)"]
-            let todayInfo = todayInfoArray[Object.keys(todayInfoArray)[daysAgo]]
-            let irlCurrency = metadata["4. Market Code"]
+                post.setTitle(`$${metadata["2. Symbol"].toUpperCase()} on ${this.parseDateString(dayLookup)}`)
+                post.addField("Open", Number.parseFloat(todayInfo["1. open"]).toFixed(2), true)
+                post.addField("Low", Number.parseFloat(todayInfo["3. low"]).toFixed(2), true)
+                post.addField("Volume", Number.parseFloat(todayInfo["5. volume"]).toFixed(2), true)
+                post.addField("Close", Number.parseFloat(todayInfo["4. close"]).toFixed(2), true)
+                post.addField("High", Number.parseFloat(todayInfo["2. high"]).toFixed(2), true)
 
-            post.setTitle(`${metadata["3. Digital Currency Name"]} (to ${irlCurrency}) on ${this.parseDateString(Object.keys(todayInfoArray)[daysAgo])}`)
-            post.addField("Open", Number.parseFloat(todayInfo[`1a. open (${irlCurrency})`]).toFixed(2), true)
-            post.addField("Low", Number.parseFloat(todayInfo[`3a. low (${irlCurrency})`]).toFixed(2), true)
-            post.addField("Volume", Number.parseFloat(todayInfo[`5. volume`]).toFixed(2), true)
-            post.addField("Close", Number.parseFloat(todayInfo[`4a. close (${irlCurrency})`]).toFixed(2), true)
-            post.addField("High", Number.parseFloat(todayInfo[`2a. high (${irlCurrency})`]).toFixed(2), true)
-            post.addField("Market Cap", Number.parseFloat(todayInfo[`6. market cap (${irlCurrency})`]).toFixed(2), true)
+                if (Number.parseFloat(todayInfo["1. open"]) < Number.parseFloat(todayInfo["4. close"]))
+                    post.setColor('GREEN')
+                else
+                    post.setColor('RED')
+            } else if (tickerDailyData["Meta Data"]["1. Information"].includes('Digital')) {
+                let metadata = tickerDailyData["Meta Data"], todayInfoArray = tickerDailyData["Time Series (Digital Currency Daily)"]
+                let todayInfo = todayInfoArray[Object.keys(todayInfoArray)[dayLookup]]
+                let irlCurrency = metadata["4. Market Code"]
 
-            if (Number.parseFloat(todayInfo["1. open"]) < Number.parseFloat(todayInfo["4. close"]))
-                post.setColor('GREEN')
-            else
-                post.setColor('RED')
+                post.setTitle(`${metadata["3. Digital Currency Name"]} (to ${irlCurrency}) on ${this.parseDateString(dayLookup)}`)
+                post.addField("Open", Number.parseFloat(todayInfo[`1a. open (${irlCurrency})`]).toFixed(2), true)
+                post.addField("Low", Number.parseFloat(todayInfo[`3a. low (${irlCurrency})`]).toFixed(2), true)
+                post.addField("Volume", Number.parseFloat(todayInfo[`5. volume`]).toFixed(2), true)
+                post.addField("Close", Number.parseFloat(todayInfo[`4a. close (${irlCurrency})`]).toFixed(2), true)
+                post.addField("High", Number.parseFloat(todayInfo[`2a. high (${irlCurrency})`]).toFixed(2), true)
+                post.addField("Market Cap", Number.parseFloat(todayInfo[`6. market cap (${irlCurrency})`]).toFixed(2), true)
+
+                if (Number.parseFloat(todayInfo["1. open"]) < Number.parseFloat(todayInfo["4. close"]))
+                    post.setColor('GREEN')
+                else
+                    post.setColor('RED')
+            }
+        } catch (error) {
+            if (!tickerDailyData)
+                throw new ReferenceError('Retrieved no data whatsoever.')
+            if (error.message.includes('undefined'))
+                throw new ReferenceError('No data exists for that day.')
         }
 
         post.setFooter("MegaBroker - AlphaVantage", "https://pbs.twimg.com/profile_images/1230031751659114496/UJtP9hb5_400x400.jpg")
@@ -107,10 +133,12 @@ export default class BotModuleStockMarket {
             console.groupEnd()
 
             return data
-        }).catch((err: Error) => {
+        }).catch((err) => {
             bot.saveBugReport(err, this.fetchTickerInfoDaily.name, true)
             console.groupEnd()
-            throw err
+            let fakeErrObj = err
+            fakeErrObj.message = err
+            throw fakeErrObj //hackerman
         })
     }
 
@@ -123,15 +151,17 @@ export default class BotModuleStockMarket {
             console.groupEnd()
 
             return data
-        }).catch((err: Error) => {
+        }).catch((err) => {
             bot.saveBugReport(err, this.fetchCryptoInfoDaily.name, true)
             console.groupEnd()
-            throw err
+            let fakeErrObj = err
+            fakeErrObj.message = err
+            throw fakeErrObj  //hackerman
         })
     }
 
-    static parseDateString(dateString: string) {
-        let date = new Date(dateString)
+    static parseDateString(dateThing: string | Date): string {
+        let date = (dateThing instanceof Date) ? dateThing : new Date(dateThing)
         return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
     }
 }

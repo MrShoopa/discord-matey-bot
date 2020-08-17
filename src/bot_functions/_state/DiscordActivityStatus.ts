@@ -45,7 +45,7 @@ export default class BotDiscordActivity {
     dynamicStatuses: Array<ActivityOptions> = [
         { name: `NSA watch with ${globalThis.bot.guilds.cache.size} servers`, type: 'PLAYING' },
         { name: `shoutouts to ${globalThis.bot?.context?.author?.username}`, type: 'PLAYING' },
-        { name: `WINNER: ${globalThis.bot.users.cache.random()}! PRIZE: NOTHING!`, type: 'PLAYING' },
+        { name: `WINNER: ${globalThis.bot.users.cache.random().username}! PRIZE: NOTHING!`, type: 'PLAYING' },
         { name: `${globalThis.bot.guilds.cache.size} copies of Bad Rats`, type: 'PLAYING' },
         { name: `dj hero on ${globalThis.bot.voice.connections.size} channels`, type: "PLAYING" },
         { name: `crippling ${globalThis.bot.guilds.cache.size} servers`, type: "STREAMING" },

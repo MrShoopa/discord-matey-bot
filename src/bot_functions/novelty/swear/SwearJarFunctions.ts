@@ -224,16 +224,18 @@ export default class BotModuleSwearJar {
             BotModuleNameGenerator.giveUserRandomName(message.member, 'funky', true)
         } else if (oldNum % 100 < 100 && newNum % 100 < oldNum % 100) {
             console.log(`Swear Jar: Giving the user a random meme.`)
-            let submission = await BotModuleReddit.fetchRandomSubmission('fiftyfifty')
+            let submission = await BotModuleReddit.fetchRandomSubmission('fiftyfifty'), extension = 'jpg'
 
             message.reply(`You reached a hundred new points! Here's a 50/50 image! Proceed with caution! \n\n **Topic: *${submission.data.title}***`)
-            if (submission.data.post_hint == 'image')
+            if (submission.data.url.includes('jpg') || submission.data.url.includes('png') || submission.data.url.includes('webm') || submission.data.url.includes('gif')) {
+                if (submission.data.url.includes('gif')) extension = 'gif'
                 message.channel.send({
                     files: [{
                         attachment: submission.data.url,
-                        name: 'SPOILER_FILE.jpg'
+                        name: `SPOILER_FILE.${extension}`
                     }]
                 })
+            }
             else
                 message.channel.send(new MessageEmbed({ title: "Mystery link...", url: submission.data.url, color: 'PINK' }))
         } else {

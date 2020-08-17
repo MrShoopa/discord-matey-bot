@@ -227,12 +227,15 @@ export default class BotModuleSwearJar {
             let submission = await BotModuleReddit.fetchRandomSubmission('fiftyfifty')
 
             message.reply(`You reached a hundred new points! Here's a 50/50 image! Proceed with caution! \n\n **Topic: *${submission.data.title}***`)
-            message.channel.send({
-                files: [{
-                    attachment: submission.data.url,
-                    name: 'SPOILER_FILE.jpg'
-                }]
-            })
+            if (submission.data.post_hint == 'image')
+                message.channel.send({
+                    files: [{
+                        attachment: submission.data.url,
+                        name: 'SPOILER_FILE.jpg'
+                    }]
+                })
+            else
+                message.channel.send(new MessageEmbed({ title: "Mystery link...", url: submission.data.url }))
         } else {
             console.log(`Swear Jar: ...no checkpoint reached.`)
             return

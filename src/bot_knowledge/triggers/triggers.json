@@ -1144,7 +1144,11 @@
         "default": [
             "joke",
             "get joke",
+            "get a joke",
+            "get me a joke",
             "fetch joke",
+            "fetch a joke",
+            "fetch me a joke",
             "joke me"
         ],
         "of_the_day": {

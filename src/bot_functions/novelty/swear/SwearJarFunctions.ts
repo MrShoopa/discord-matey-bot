@@ -235,7 +235,7 @@ export default class BotModuleSwearJar {
                     }]
                 })
             else
-                message.channel.send(new MessageEmbed({ title: "Mystery link...", url: submission.data.url }))
+                message.channel.send(new MessageEmbed({ title: "Mystery link...", url: submission.data.url, color: 'PINK' }))
         } else {
             console.log(`Swear Jar: ...no checkpoint reached.`)
             return

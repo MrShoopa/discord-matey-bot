@@ -82,6 +82,12 @@
         "subscriptions": [
             "help subscription",
             "help subscriptions"
+        ],
+        "stocks": [
+            "help stocks",
+            "help crypto",
+            "help ecurrency",
+            "help stock market"
         ]
     },
     "help_special": {
@@ -549,6 +555,29 @@
                 "delete_subscription": {
                     "title": "Delete subscription",
                     "example": "megadork delete subscription ***name***"
+                }
+            }
+        },
+        "stocks": {
+            "_title": "Stock Market and eCurrency Lookup",
+            "_description": "Fetch daily stats on a chosen",
+            "_footer": "😎",
+            "_command_list": {
+                "daily_stock": {
+                    "title": "Fetch today's info for a stock ticker",
+                    "example": "megadork fetch ticker **$LOL**"
+                },
+                "specific_day_stock": {
+                    "title": "Fetch a specific day's info for a stock ticker",
+                    "example": "megadork fetch ticker **$LOL** on **January 20 2020**"
+                },
+                "daily_crypto": {
+                    "title": "Fetch today's info for a cryptocurrency",
+                    "example": "megadork fetch crypto **$LOL**"
+                },
+                "specific_day_crypto": {
+                    "title": "Fetch a specific day's info for a cryptocurrency",
+                    "example": "megadork fetch crypto **$LOL** on **January 20 2020**"
                 }
             }
         }

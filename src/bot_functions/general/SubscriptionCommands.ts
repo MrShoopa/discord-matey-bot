@@ -162,7 +162,7 @@ export default class BotSubscriptionCommands {
             .setColor('GREEN')
             .setDescription(BotSubscriptionHandler.getFunctionTypeDescription(subscription.featureCode))
 
-        response.setTitle(`*${name}*`)
+        response.setTitle(`*${subName}*`)
 
         response.addField('Function', `${subscription.featureCode}`)
         response.addField('Interval', `${this.msToTimeMessage(subscription.frequencyMilli)}`)
@@ -194,7 +194,7 @@ export default class BotSubscriptionCommands {
             response.setTitle(`Subscriptions for this DM`)
 
         subscriptions.forEach(sub => {
-            response.addField(sub.name, `${sub.featureCode} every ${this.msToTimeMessage(sub.frequencyMilli)} at ${sub._lastRun.toLocaleTimeString()} - Creator: ${bot.users.cache.get(sub.authorId)}`)
+            response.addField(sub.name, `${sub.featureCode} every ${this.msToTimeMessage(sub.frequencyMilli)} at ${new Date(sub._lastRun).toLocaleTimeString()} - Creator: ${bot.users.cache.get(sub.authorId)}`)
         })
 
         return message.channel.send(response)

@@ -17,7 +17,7 @@ export default class BotModuleStockMarket {
             query = message.content
 
         let ticker = query.match(/[$][A-Za-z]{1,5}[\S]/)[0].substr(1).trim()
-        if (!dateChoice)
+        if (!dateChoice && query.includes('on'))
             dateChoice = new Date(query.substr(query.indexOf('on') + 2).trim())
         else if (typeof dateChoice === 'string')
             dateChoice = new Date(dateChoice)
@@ -34,8 +34,10 @@ export default class BotModuleStockMarket {
                 return message.reply(bot.generateErrorMessage(`invalid ticker!`))
             if (err.message.includes('No data exists for that day'))
                 return message.reply(bot.generateErrorMessage(`did not find your ticker's stats for that day!`))
+            if (err.message.includes('No data exists for that day') && !dateChoice)
+                return message.reply(bot.generateErrorMessage(`did not find your ticker's stats for today! Is the market closed today?`))
             if (err.message.includes('no data whatsoever'))
-                return message.reply(bot.generateErrorMessage("could not find info for your stock!"))
+                return message.reply(bot.generateErrorMessage("could not find info for your stock ticker!"))
         }
     }
 
@@ -47,7 +49,7 @@ export default class BotModuleStockMarket {
             query = message.content
 
         let crypto = query.match(/[$][A-Za-z]{1,5}[\S]/)[0].substr(1).trim()
-        if (!dateChoice)
+        if (!dateChoice && query.includes('on'))
             dateChoice = new Date(query.substr(query.indexOf('on') + 2).trim())
         else if (typeof dateChoice === 'string')
             dateChoice = new Date(dateChoice)
@@ -65,6 +67,8 @@ export default class BotModuleStockMarket {
                 return message.reply(bot.generateErrorMessage(`invalid crypto symbol!`))
             if (err.message.includes('No data exists for that day'))
                 return message.reply(bot.generateErrorMessage(`did not find your crypto's stats for that day!`))
+            if (err.message.includes('No data exists for that day') && !dateChoice)
+                return message.reply(bot.generateErrorMessage(`did not find your crypto's stats for today! Is the market closed today?`))
             if (err.message.includes('no data whatsoever'))
                 return message.reply(bot.generateErrorMessage("could not find info for your crypto!"))
         }
@@ -73,8 +77,8 @@ export default class BotModuleStockMarket {
     static buildTickerInfoDayMessage(tickerDailyData: StockInfo | CryptoInfo, dayChoice?: Date) {
         let post = new Discord.MessageEmbed()
 
-        dayChoice = dayChoice ? dayChoice : new Date()
-        let dayLookup = `${dayChoice.getFullYear()}-${dayChoice.getMonth().toFixed(2)}-${dayChoice.getMonth().toFixed(2)}`
+        dayChoice = dayChoice !== undefined ? dayChoice : new Date(Date.now())
+        let dayLookup = `${dayChoice.getFullYear()}-${this.force2DigString(dayChoice.getMonth() + 1)}-${this.force2DigString(dayChoice.getDate())}`
 
         try {
 
@@ -83,10 +87,10 @@ export default class BotModuleStockMarket {
                 let metadata = tickerDailyData["Meta Data"], todayInfoArray = tickerDailyData["Time Series (Daily)"]
                 let todayInfo = todayInfoArray[dayLookup]
 
-                post.setTitle(`$${metadata["2. Symbol"].toUpperCase()} on ${this.parseDateString(dayLookup)}`)
+                post.setTitle(`$${metadata["2. Symbol"].toUpperCase()} on ${this.parseDateString(dayChoice)}`)
                 post.addField("Open", Number.parseFloat(todayInfo["1. open"]).toFixed(2), true)
                 post.addField("Low", Number.parseFloat(todayInfo["3. low"]).toFixed(2), true)
-                post.addField("Volume", Number.parseFloat(todayInfo["5. volume"]).toFixed(2), true)
+                post.addField("Volume", Number.parseFloat(todayInfo["5. volume"]), true)
                 post.addField("Close", Number.parseFloat(todayInfo["4. close"]).toFixed(2), true)
                 post.addField("High", Number.parseFloat(todayInfo["2. high"]).toFixed(2), true)
 
@@ -96,10 +100,10 @@ export default class BotModuleStockMarket {
                     post.setColor('RED')
             } else if (tickerDailyData["Meta Data"]["1. Information"].includes('Digital')) {
                 let metadata = tickerDailyData["Meta Data"], todayInfoArray = tickerDailyData["Time Series (Digital Currency Daily)"]
-                let todayInfo = todayInfoArray[Object.keys(todayInfoArray)[dayLookup]]
+                let todayInfo = todayInfoArray[dayLookup]
                 let irlCurrency = metadata["4. Market Code"]
 
-                post.setTitle(`${metadata["3. Digital Currency Name"]} (to ${irlCurrency}) on ${this.parseDateString(dayLookup)}`)
+                post.setTitle(`${metadata["3. Digital Currency Name"]} (to ${irlCurrency}) on ${this.parseDateString(dayChoice)}`)
                 post.addField("Open", Number.parseFloat(todayInfo[`1a. open (${irlCurrency})`]).toFixed(2), true)
                 post.addField("Low", Number.parseFloat(todayInfo[`3a. low (${irlCurrency})`]).toFixed(2), true)
                 post.addField("Volume", Number.parseFloat(todayInfo[`5. volume`]).toFixed(2), true)
@@ -163,6 +167,10 @@ export default class BotModuleStockMarket {
     static parseDateString(dateThing: string | Date): string {
         let date = (dateThing instanceof Date) ? dateThing : new Date(dateThing)
         return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
+    }
+
+    static force2DigString(n: number) {
+        return (n > 9) ? "" + n : "0" + n
     }
 }
 

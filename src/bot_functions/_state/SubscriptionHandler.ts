@@ -310,7 +310,7 @@ export default class BotSubscriptionHandler {
 
         subscriptions.forEach(sub => {
             let currentTime = new Date(), lastTime = new Date(sub._lastRun)
-            let timeSince = currentTime.getMilliseconds() - lastTime.getMilliseconds()
+            let timeSince = currentTime.getTime() - lastTime.getTime()
 
             // Checks if this ran before the next interval
             if (sub.featureCode !== 'NOTHING' && sub._enabled && timeSince > sub.frequencyMilli) {

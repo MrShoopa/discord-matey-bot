@@ -16,7 +16,7 @@ export default class BotSubscriptionCommands {
             message.content.substr(message.content.indexOf(trigger) + trigger.length).trim()
 
         let name: string =
-            ctx.substr(ctx.indexOf('named') + 5, ctx.indexOf('for') - 5).trim()
+            ctx.substr(0, ctx.indexOf('for')).trim()
 
         let funcName: string =
             ctx.substr(ctx.indexOf('for') + 3).trim().toUpperCase()
@@ -110,8 +110,10 @@ export default class BotSubscriptionCommands {
 
         for (const param of TRIGGERS.subscription.update.params.time)
             if (command.toLowerCase().startsWith(param)) {
-                subscription._lastRun = this.processDateString(command.substr(command.indexOf('to') + 2).trim())
-                message.channel.send(`Updated the time start for '${subName}' to *${command.substr(command.indexOf('to') + 2).trim()}*!`)
+                let newDate = this.processDateString(command.substr(command.indexOf('to') + 2).trim())
+                if (isNaN(newDate.getDate())) return message.channel.send(`Invalid new datetime format. Try typing like so: *apr 20 2020 4:20PM*`)
+                else subscription._lastRun = newDate
+                message.channel.send(`Updated the time start for '${subName}' to *${subscription._lastRun.toLocaleString()}*!`)
                 break
             }
         for (const param of TRIGGERS.subscription.update.params.interval)
@@ -149,7 +151,7 @@ export default class BotSubscriptionCommands {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'Function subscription management - Subscription Inquiry', true)
 
-        let subName: string = message.content.substr(trigger.length)
+        let subName: string = message.content.substr(trigger.length).trim()
 
         let subscription = BotSubscriptionHandler.getSubscription(message.channel.id, subName)
 
@@ -192,7 +194,7 @@ export default class BotSubscriptionCommands {
             response.setTitle(`Subscriptions for this DM`)
 
         subscriptions.forEach(sub => {
-            response.addField(sub.name, `${sub.featureCode} every ${this.msToTimeMessage(sub.frequencyMilli)} - Creator: ${bot.users.cache.get(sub.authorId)}`)
+            response.addField(sub.name, `${sub.featureCode} every ${this.msToTimeMessage(sub.frequencyMilli)} at ${sub._lastRun.toLocaleTimeString()} - Creator: ${bot.users.cache.get(sub.authorId)}`)
         })
 
         return message.channel.send(response)
@@ -239,36 +241,16 @@ export default class BotSubscriptionCommands {
     }
 
     static processDateString(dateString: string): Date {
-        let date: Date
+        let date = new Date(), testFullDate = new Date(dateString)
         dateString = dateString.toLowerCase().trim()
-        //TODO
-        if (dateString.includes('jan'))
-            date.setMonth(0)
-        else if (dateString.includes('feb'))
-            date.setMonth(1)
-        else if (dateString.includes('mar'))
-            date.setMonth(2)
-        else if (dateString.includes('apr'))
-            date.setMonth(3)
-        else if (dateString.includes('may'))
-            date.setMonth(4)
-        else if (dateString.includes('jun'))
-            date.setMonth(5)
-        else if (dateString.includes('jul'))
-            date.setMonth(6)
-        else if (dateString.includes('aug'))
-            date.setMonth(7)
-        else if (dateString.includes('sep'))
-            date.setMonth(8)
-        else if (dateString.includes('oct'))
-            date.setMonth(9)
-        else if (dateString.includes('nov'))
-            date.setMonth(10)
-        else if (dateString.includes('dec'))
-            date.setMonth(11)
 
-        //if (dateString.match(/^[0-5]?[0-9]$/)[])
+        if (dateString.includes(':') && isNaN(testFullDate.getDate())) {
+            var timeString = dateString.match(/(0[1-9]:[0-5][0-9]((\ ){0,1})((AM)|(PM)|(am)|(pm)))|([1-9]:[0-5][0-9]((\ ){0,1})((AM)|(PM)|(am)|(pm)))|(1[0-2]:[0-5][0-9]((\ ){0,1})((AM)|(PM)|(am)|(pm)))/g)[0]
+            date = new Date(`${date.getMonth() + 1} ${date.getDate()} ${date.getFullYear()} ${timeString}`)
+            return date
+        } else {
+            return testFullDate
+        }
 
-        return date
     }
 }

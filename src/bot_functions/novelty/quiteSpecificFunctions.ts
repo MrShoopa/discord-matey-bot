@@ -1,3 +1,4 @@
+import Discord from 'discord.js'
 import { BeanContainer } from '../../types/data_types/Bean'
 import Bot from '../../Bot'
 
@@ -29,7 +30,8 @@ export default class BotModuleBraindead {
      * Joe says this is totally the best way to
      * test most of the bot's functionalities. :)
      */
-    static async beans(bot: Bot = globalThis.bot) {
+    static async beans(message: Discord.Message) {
+        let bot: Bot = globalThis.bot
         let beans: BeanContainer = new BeanContainer()
 
         bot.preliminary(beans.toString(), beans.toString(), true)
@@ -42,7 +44,7 @@ export default class BotModuleBraindead {
         bot.textChannel.send(
             Bot.fetchRandomPhrase(PHRASES_CONVO.beans.spam_intro))
 
-        await BotModuleGoogleImage.fireImageMessageFromGoogle(beans.toString())
+        await BotModuleGoogleImage.fireImageMessageFromGoogle(message, beans.toString())
 
         await BotModuleTwitter.fireTweetMessageOfQuery(beans.toString())
 

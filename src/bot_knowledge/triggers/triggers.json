@@ -342,7 +342,6 @@
             "b17ch",
             "b1tch",
             "ballbag",
-            "balls",
             "ballsack",
             "bastard",
             "beastial",
@@ -496,13 +495,36 @@
             "flange",
             "fook",
             "fooker",
+            "fuc",
+            "fucc",
+            "fuccc",
+            "fucccc",
+            "fuccccc",
+            "fucccccc",
+            "fuccccccc",
             "fuck",
+            "fuuck",
+            "fuuuck",
+            "fuuuuck",
+            "fuuuuuck",
+            "fuuuck",
+            "fucck",
+            "fuccck",
+            "fucccck",
+            "fuccckk",
+            "fucckk",
+            "fuckk",
+            "fuckkk",
+            "fuckkkk",
             "fucka",
             "fucked",
             "fucker",
             "fuckers",
             "fuckhead",
             "fuckheads",
+            "fuq",
+            "fuqq",
+            "fuuq",
             "fuckin",
             "fuckin'",
             "fucking",
@@ -1080,6 +1102,7 @@
     },
     "magic_ball": [
         "magic ball",
+        "magic 8 ball",
         "8ball",
         "8 ball"
     ],
@@ -1121,7 +1144,11 @@
         "default": [
             "joke",
             "get joke",
+            "get a joke",
+            "get me a joke",
             "fetch joke",
+            "fetch a joke",
+            "fetch me a joke",
             "joke me"
         ],
         "of_the_day": {
@@ -1272,6 +1299,20 @@
                     "toggle"
                 ]
             }
+        }
+    },
+    "finance": {
+        "stock_market": {
+            "default": [
+                "fetch stock",
+                "fetch ticker"
+            ]
+        },
+        "crypto": {
+            "default": [
+                "fetch crypto",
+                "fetch ecurrency"
+            ]
         }
     }
 }

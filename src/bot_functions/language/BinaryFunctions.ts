@@ -6,14 +6,14 @@ import { translate } from '../../bot_knowledge/triggers/triggers.json'
 import Binary from 'decode-encode-binary'
 
 export default class BinaryCoderFunctions {
-    static generateBinaryTranslationMessage(trigger: string, to?: string, text?: string) {
+    static generateBinaryTranslationMessage(message: Discord.Message, trigger: string, to?: string, text?: string) {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'Binary to Text conversion', true)
 
         let conversion
 
         if (!text) {
-            text = bot.context.toString()
+            text = message.toString()
             translate.binary.some(hotword => {
                 if (text.toLowerCase().includes(hotword)) {
                     text = text.slice(text.indexOf(hotword) + hotword.length).trim()
@@ -32,12 +32,12 @@ export default class BinaryCoderFunctions {
 
         let built = new Array<Discord.MessageEmbed>()
 
-        let message = new Discord.MessageEmbed()
+        let response = new Discord.MessageEmbed()
             .setDescription(conversion)
             .setColor('GOLD')
             .setFooter('Binary <-> Text')
 
-        built.push(message)
+        built.push(response)
 
         if (conversion.length > 1) {
             for (let i = 1; i < conversion.length; i++) {
@@ -51,7 +51,7 @@ export default class BinaryCoderFunctions {
         }
 
         built.forEach(part => {
-            bot.context.channel.send(part)
+            message.channel.send(part)
         });
     }
 

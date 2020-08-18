@@ -18,11 +18,15 @@
             "help reddit"
         ],
         "image_search": [
+            "help images",
             "help image search",
-            "help google image"
+            "help image_search",
+            "help google image",
+            "help google images"
         ],
         "twitter": [
             "help twitter",
+            "help tweet",
             "help tweets"
         ],
         "horoscope": [
@@ -41,7 +45,8 @@
             "help translate"
         ],
         "magic_ball": [
-            "help magic ball"
+            "help magic ball",
+            "help magic_ball"
         ],
         "dice": [
             "help dice"
@@ -78,6 +83,16 @@
         "gif": [
             "help gif",
             "help giphy"
+        ],
+        "subscriptions": [
+            "help subscription",
+            "help subscriptions"
+        ],
+        "stocks": [
+            "help stocks",
+            "help crypto",
+            "help ecurrency",
+            "help stock market"
         ]
     },
     "help_special": {
@@ -105,6 +120,8 @@
             "meme topics"
         ],
         "subscription": [
+            "subscription types",
+            "subscription type list",
             "list subscription types",
             "list subscription functions",
             "list subscription abilities"
@@ -521,7 +538,7 @@
         },
         "subscriptions": {
             "_title": "Subscriptions",
-            "_description": "Subscription management for automating functions to your channel! Type ;list subscription types for available functions.",
+            "_description": "Subscription management for automating functions to your channel! Type **;list subscription types for available functions.**",
             "_footer": "⚡",
             "_command_list": {
                 "create_subscription": {
@@ -543,6 +560,29 @@
                 "delete_subscription": {
                     "title": "Delete subscription",
                     "example": "megadork delete subscription ***name***"
+                }
+            }
+        },
+        "stocks": {
+            "_title": "Stock Market and eCurrency Lookup",
+            "_description": "Fetch daily stats on a chosen",
+            "_footer": "😎",
+            "_command_list": {
+                "daily_stock": {
+                    "title": "Fetch today's info for a stock ticker",
+                    "example": "megadork fetch ticker **$LOL**"
+                },
+                "specific_day_stock": {
+                    "title": "Fetch a specific day's info for a stock ticker",
+                    "example": "megadork fetch ticker **$LOL** on **January 20 2020**"
+                },
+                "daily_crypto": {
+                    "title": "Fetch today's info for a cryptocurrency",
+                    "example": "megadork fetch crypto **$LOL**"
+                },
+                "specific_day_crypto": {
+                    "title": "Fetch a specific day's info for a cryptocurrency",
+                    "example": "megadork fetch crypto **$LOL** on **January 20 2020**"
                 }
             }
         }

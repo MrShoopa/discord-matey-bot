@@ -15,13 +15,13 @@ export default class BotModuleSwearBlacklist {
                 }
     }
 
-    static banUserIfInBlacklist(word: string, user: Discord.GuildMember) {
+    static banUserIfInBlacklist(word: string, user: Discord.GuildMember, message?: Discord.Message) {
         let bot: Bot = globalThis.bot
 
         if (this.checkIfWordBlacklistedForRole(word, user)) {
             user.kick().then(res => {
                 console.warn(`User ${user.user.username} was kicked succesfully from guild ${user.guild.name}!`)
-                bot.context.channel.send(`A forbidden word has been heard, ${user.user.username}. b̴̩̳͈͙̻͍̩̙̜͇̟͚͈̜͎̈́̀͌̿̑̃̏e̴̡̧̹̳̫̺͔̹͓͇̩̖͋̊̇͌̒̎͜g̵̛͕͎̞̣̪̤͙̤̫̻̗̼͇̈́̕͜ö̵̳̻̦̭̖̲͎̟̦̯̩̝́̊̇̔̎̀͑̂̒̚͝n̶̨̯̹̥̱̩͙͙͇̼̣͗̅͐̊͑͐̋̾͌͆̄͝ę̸͈͈̖͍̼̞́̋̃̔̽̚ ̶̨͍̮͎̝̦̪͚͚̹̦͆͆͐̆̒͛̔͆̿̔͘͜**ţ̵̛͎̞̬̯̮̬̪̩̪̥̒͛̈͊̚̚͠  ḩ̵̜̳̙̰͓̘̹͌͐̓̋͋̿̕  o̸̡̨͎̫̤͖͉͐̿́̑̀͜  t̶̢̛̙͉͍͍̙̙͙̥̻̠̣̉̕**`)
+                if (message) message.channel.send(`A forbidden word has been heard, ${user.user.username}. b̴̩̳͈͙̻͍̩̙̜͇̟͚͈̜͎̈́̀͌̿̑̃̏e̴̡̧̹̳̫̺͔̹͓͇̩̖͋̊̇͌̒̎͜g̵̛͕͎̞̣̪̤͙̤̫̻̗̼͇̈́̕͜ö̵̳̻̦̭̖̲͎̟̦̯̩̝́̊̇̔̎̀͑̂̒̚͝n̶̨̯̹̥̱̩͙͙͇̼̣͗̅͐̊͑͐̋̾͌͆̄͝ę̸͈͈̖͍̼̞́̋̃̔̽̚ ̶̨͍̮͎̝̦̪͚͚̹̦͆͆͐̆̒͛̔͆̿̔͘͜**ţ̵̛͎̞̬̯̮̬̪̩̪̥̒͛̈͊̚̚͠  ḩ̵̜̳̙̰͓̘̹͌͐̓̋͋̿̕  o̸̡̨͎̫̤͖͉͐̿́̑̀͜  t̶̢̛̙͉͍͍̙̙͙̥̻̠̣̉̕**`)
             }).catch(e => {
                 bot.saveBugReport(e, this.banUserIfInBlacklist.name, true)
             })

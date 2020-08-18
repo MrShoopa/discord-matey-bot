@@ -10,7 +10,7 @@ import GIPHYApi from 'giphy-api'
 export default class BotModuleGiphy {
 
     static GIPHY = GIPHYApi(USER_CREDS.giphy.api_key)
-    static async fireGIFMessage(trigger: string, query?: string) {
+    static async fireGIFMessage(message: Discord.Message, trigger: string, query?: string) {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'Random GIF request')
 
@@ -23,12 +23,12 @@ export default class BotModuleGiphy {
                 gif = await this.fetchRandomGif()
         } catch (err) {
             if (err.message.includes('Unauthorized') || err.message.includes('404'))
-                return bot.context.channel.send(`My dev needs to refresh my GIF access! Try again later.`)
+                return message.channel.send(`My dev needs to refresh my GIF access! Try again later.`)
             else
-                return bot.context.channel.send(`I couldn't fetch a GIF at the moment.`)
+                return message.channel.send(`I couldn't fetch a GIF at the moment.`)
         }
 
-        let message = new Discord.MessageEmbed()
+        let response = new Discord.MessageEmbed()
             .setURL(gif.data.source_post_url)
             .setColor('GREEN')
             .setFooter(`GIPHY`,
@@ -37,11 +37,11 @@ export default class BotModuleGiphy {
             .setTimestamp(Date.parse(gif.data.create_datetime))
 
         if (query)
-            message.setTitle(`Here's a random GIF on ${query}!`)
+            response.setTitle(`Here's a random GIF on ${query}!`)
         else
-            message.setTitle(`Here's a random GIF!`)
+            response.setTitle(`Here's a random GIF!`)
 
-        return bot.context.channel.send(message)
+        return message.channel.send(message)
     }
 
     static async fetchRandomGif() {

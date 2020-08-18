@@ -7,12 +7,12 @@ import { erwarYoda } from 'erwar-yoda'
 
 export default class YodaLanguageFunctions {
 
-    static generateYodaTranslationMessage(trigger: string, language?: string, text?: string) {
+    static generateYodaTranslationMessage(message: Discord.Message, trigger: string, language?: string, text?: string) {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'Yoda translation', true)
 
         if (!text)
-            text = bot.context.toString()
+            text = message.toString()
 
         if (!language)
             translate.yoda.some(lang => {
@@ -24,13 +24,13 @@ export default class YodaLanguageFunctions {
 
         let translation = this.getYodaTranslation(text, language)
 
-        let message = new Discord.MessageEmbed()
+        let response = new Discord.MessageEmbed()
             .setTitle(`Translated to ${language}`)
             .setDescription(translation)
             .setColor('GOLD')
             .setFooter('Yoda Language Translator')
 
-        bot.context.channel.send(message)
+        message.channel.send(response)
     }
 
     static getYodaTranslation(text: string, language: string) {

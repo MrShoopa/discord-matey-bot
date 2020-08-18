@@ -6,7 +6,8 @@ import { uniqueNamesGenerator, Config, names, colors, adjectives, animals, starW
 import PHRASES_NAME_CHANGE from '../../../bot_knowledge/phrases/phrases_name_change.json'
 
 export default class BotModuleNameGenerator {
-    static processRandomNameRequest(trigger?: string, message: Discord.Message = globalThis.bot.context) {
+    static processRandomNameRequest(message: Discord.Message = globalThis.bot.context) {
+
         for (const trigger of TRIGGERS.name_change.star_wars)
             if (message.toString().toLowerCase().startsWith(trigger))
                 return this.giveUserRandomName(message.member, 'starwars')
@@ -30,13 +31,17 @@ export default class BotModuleNameGenerator {
         else
             name = this.generateRandomName()
 
-        this.changeMemberName(member, name, punishment)
+        this.changeMemberName(member, name, punishment, true).then(suc => {
+            if (suc)
+                if (punishment)
+                    member.lastMessage.channel.send(Bot.fetchRandomPhrase(PHRASES_NAME_CHANGE.response.punishment))
+        }).catch(err => {
 
-        if (punishment)
-            member.lastMessage.channel.send(Bot.fetchRandomPhrase(PHRASES_NAME_CHANGE.response.punishment))
+        })
+
     }
 
-    static async changeMemberName(member: Discord.GuildMember, name: string, noReply: boolean) {
+    static async changeMemberName(member: Discord.GuildMember, name: string, noReply: boolean, automated: boolean) {
         console.log(`Name Generator: Changing ${member.user.username}'s name to '${name}' here!`)
 
         try {
@@ -44,12 +49,13 @@ export default class BotModuleNameGenerator {
 
             if (!noReply)
                 member.lastMessage.channel.send(Bot.fetchRandomPhrase(PHRASES_NAME_CHANGE.response.user_demanded))
+            return true
         } catch (err) {
-            if (err.message.includes('Missing Permissions'))
-                member.lastMessage.channel.send(`Looks like you're more powerful than I am in this server! Can't change your name...`)
-            else
-                member.lastMessage.channel.send(`I couldn't change your name for some reason...`)
-
+            if (!automated)
+                if (err.message.includes('Missing Permissions'))
+                    member.lastMessage.channel.send(`Looks like you're more powerful than I am in this server! Can't change your name...`)
+                else
+                    member.lastMessage.channel.send(`I couldn't change your name for some reason...`)
         }
 
     }

@@ -28,6 +28,7 @@
         "@types/request": "^2.48.5",
         "@types/snekfetch": "^4.0.2",
         "@types/twitter": "^1.7.0",
+        "alphavantage": "^2.1.0",
         "aws-sdk": "^2.725.0",
         "blizzapi": "^1.1.7",
         "decode-encode-binary": "^1.4.13",

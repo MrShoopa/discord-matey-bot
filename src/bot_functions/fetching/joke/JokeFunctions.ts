@@ -5,24 +5,24 @@ import { joke } from '../../../bot_knowledge/triggers/triggers.json'
 import Joker from 'give-me-a-joke'
 
 export default class BotModuleJoke {
-    static async fireJokeMessage(trigger: string) {
+    static async fireJokeMessage(message: Discord.Message, trigger: string) {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'Joke pullup')
 
-        let query: string = bot.context.toString().replace(trigger, '').trim()
+        let query: string = message.toString().replace(trigger, '').trim()
         const joke: { joke: string, category: string, source: string } = await this.fetchJoke(query)
 
         if (joke.category == 'MISSING_NAME')
             return bot.context.reply(`you must type "**name** ***first*** ***last***" to get a custom joke!`)
 
-        let message = new Discord.MessageEmbed()
+        let response = new Discord.MessageEmbed()
             .setDescription(joke.joke)
             .setColor('GREEN')
             .setThumbnail('https://webstockreview.net/images/horn-clipart.png')
             .setFooter(`${joke.category} - ${joke.source}`)
         //? add credits to Joke APIs? .setFooter(joke)
 
-        return bot.context.channel.send(message)
+        return message.channel.send(response)
     }
 
     // this is what happens if your api doesn't use promises or typescript
@@ -76,6 +76,7 @@ export default class BotModuleJoke {
                 }
                 else {
                     let name = query.substring(query.indexOf('name') + 'name'.length).trim().split(' ').slice(0, 2)
+                    if (name[1] === undefined) name[1] = ''
                     jokeObject.source = 'icndb.com'
                     jokeObject.joke = await new Promise((res, rej) => { Joker.getCustomJoke(name[0], name[1], j => res(j)) })
                     jokeObject.category = 'Custom Joke'

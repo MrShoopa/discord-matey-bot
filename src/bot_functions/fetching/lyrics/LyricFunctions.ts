@@ -12,19 +12,21 @@ export default class BotModuleLyric {
         AUTH.genius.client_token
     )
 
-    static async fireLyricMatchMessage(trigger: string) {
+    static async fireLyricMatchMessage(message: Discord.Message, trigger?: string) {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'lyric fetch (Genius)', true)
 
-        const message = await this.fetchBuiltLyricMatchMessageForSong(
-            bot.context.content.toString(), trigger)
+        const response = await this.fetchBuiltLyricMatchMessageForSong(
+            message.content.toString(), trigger)
 
-        if (Array.isArray(message))
-            message.forEach(part => {
-                bot.context.channel.send(part)
+        if (!response) message.reply(`lyrics for what song? 😮`)
+
+        if (Array.isArray(response))
+            response.forEach(part => {
+                message.channel.send(part)
             });
         else
-            bot.context.channel.send(message)
+            message.channel.send(response)
 
         return true
     }
@@ -36,11 +38,8 @@ export default class BotModuleLyric {
         if (song.includes(trigger))
             song = song.replace(trigger, '').trim()
 
-        if (!song) {
-            let bot: Bot = globalThis.bot
-            bot.context.reply(`lyrics for what song? 😮`)
+        if (!song)
             return null
-        }
 
         let songInfo = await this.fetchLyricsInfoOfSong(song)
         if (!songInfo) {
@@ -105,19 +104,20 @@ export default class BotModuleLyric {
         }
     }
 
-    static async singSongInChat(song: string = this.fetchRandomSongTitle(),
+    static async singSongInChat(query: Discord.Message | string = this.fetchRandomSongTitle(),
         trigger: string) {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'lyric SINGING!!! (Genius)', true)
 
-        song = song.toLowerCase()
-        if (song.includes(trigger))
-            song = song.replace(trigger, '').trim()
+        if (query instanceof Discord.Message)
+            query = query.content
 
-        if (song.length === 0)
-            song = this.fetchRandomSongTitle()
+        query = query.toLowerCase()
+        if (query.includes(trigger))
+            query = query.replace(trigger, '').trim()
 
-        const songInfo = await this.fetchLyricsInfoOfSong(song)
+
+        const songInfo = await this.fetchLyricsInfoOfSong(query)
 
         //Limited to just a portion to prevent TTS annoyance
         let lyrics: string[] =

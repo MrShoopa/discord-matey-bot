@@ -5,20 +5,20 @@ import PHRASES_SERVER_MOD from '../../../bot_knowledge/phrases/phrases_server_mo
 
 
 export default class BotModuleRestrictedRole {
-    static assignToRestrictedRole(trigger?: string) {
+    static assignToRestrictedRole(message: Discord.Message, trigger?: string) {
         let bot: Bot = globalThis.bot
 
         if (trigger) bot.preliminary(trigger, 'Set restricted role', true)
 
-        if (bot.context.member.hasPermission(['ADMINISTRATOR']))
-            bot.context.mentions.members.forEach(member => {
-                let message = new Discord.MessageEmbed()
+        if (message.member.hasPermission(['ADMINISTRATOR']))
+            message.mentions.members.forEach(member => {
+                let response = new Discord.MessageEmbed()
                     .setTitle(`${Bot.fetchRandomPhrase(PHRASES_SERVER_MOD.restricted_role_set)}`)
                     .setColor('BLACK')
-                    .setDescription(`${bot.context.author.username} has banished ${member.displayName} for inexplicable reasons.`)
+                    .setDescription(`${message.author.username} has banished ${member.displayName} for inexplicable reasons.`)
                     .setFooter(`Role Enforced: ${bot.restrictedRoleIds[0]}`)
 
-                bot.context.channel.send(message)
+                message.channel.send(response)
 
                 member.roles.set([bot.restrictedRoleIds[0]])
                     .then(() => {
@@ -30,16 +30,16 @@ export default class BotModuleRestrictedRole {
                         bot.saveBugReport(error, this.assignToRestrictedRole.name)
                     })
             })
-        else return bot.context.channel.send(`You cannot harness this power without admin plox`)
+        else return message.channel.send(`You cannot harness this power without admin plox`)
     }
 
-    static unassignFromRestrictedRole(trigger: string) {
+    static unassignFromRestrictedRole(message: Discord.Message, trigger: string) {
         let bot: Bot = globalThis.bot
 
         if (trigger) bot.preliminary(trigger, 'Unset restricted role', true)
 
-        bot.context.mentions.members.forEach(member => {
-            bot.context.reply(
+        message.mentions.members.forEach(member => {
+            message.reply(
                 `${Bot.fetchRandomPhrase(PHRASES_SERVER_MOD.restricted_role_unset)} ${member.displayName}`)
             member.roles.remove(bot.restrictedRoleIds[0])
                 .then(() => {

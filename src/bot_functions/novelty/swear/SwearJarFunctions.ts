@@ -1,7 +1,7 @@
-import Discord, { Guild, MessageEmbed, MessageAttachment } from 'discord.js'
+import Discord, { MessageEmbed } from 'discord.js'
 import Bot from "../../../Bot"
 import BotData from "../../DataHandler"
-import { Audio, Data } from '../../../types/index'
+import { Audio } from '../../../types/index'
 import { you } from '../../../user_creds.json'
 
 import PHRASES_SWEAR_JAR from '../../../bot_knowledge/phrases/phrases_swear_jar.json'
@@ -12,23 +12,24 @@ import BotModuleNameGenerator from '../name/RandomNameFunctions'
 import BotModuleReddit from '../../fetching/reddit/RedditFunctions'
 
 export default class BotModuleSwearJar {
-    static dingUser(trigger: string) {
+    static dingUser(message: Discord.Message, trigger: string, keepStat?: boolean) {
         let bot: Bot = globalThis.bot
         let words: string[] =
-            bot.context.toString().toLowerCase().split(" ")
+            message.toString().toLowerCase().split(" ")
         let wordMatches: number = 0
+        let oldNum: number, newNum: number
 
         bot.preliminary(trigger, 'Swear Jar')
 
         for (const word of words)
-            this.checkForSoundReply(word, bot.context)
+            this.checkForSoundReply(word, message)
 
         for (const word of words)
-            if (BotModuleSwearBlacklist.banUserIfInBlacklist(word, bot.context.member))
+            if (BotModuleSwearBlacklist.banUserIfInBlacklist(word, message.member, message))
                 return
 
         for (const word of words) {
-            if (BotModuleSwearWhitelist.checkIfWordWhitelistedForRole(word, bot.context.member))
+            if (BotModuleSwearWhitelist.checkIfWordWhitelistedForRole(word, message.member))
                 wordMatches -= this.matchWord(word)
             else
                 wordMatches += this.matchWord(word)
@@ -39,23 +40,27 @@ export default class BotModuleSwearJar {
 
         if (wordMatches !== 0) {
 
-            let userData = BotData.getUserData(bot.context.author.id, true)
+            let userData = BotData.getUserData(message.author.id, true)
 
             if (userData === undefined)
-                userData = BotData.createUserData(bot.context.author.id)
+                userData = BotData.createUserData(message.author.id)
+
+            oldNum = userData.swear_score ? userData.swear_score : 0
 
             //  Get current swear count
             try {
                 if (!userData.swear_score) {
                     userData.swear_score = wordMatches
-                    bot.context.reply(Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.new_user))
+                    message.reply(Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.new_user))
                 } else userData.swear_score += wordMatches
             } catch (error) {
-                console.error(new EvalError(`Error updating swear score for ${bot.context.author.username}!`))
+                console.error(new EvalError(`Error updating swear score for ${message.author.username}!`))
                 bot.saveBugReport(error, this.dingUser.name)
             }
 
-            BotData.updateUserData(bot.context.author.id, userData)
+            newNum = userData.swear_score
+
+            BotData.updateUserData(message.author.id, userData)
 
             let response = function determineResponse() {
                 if (wordMatches == 1)
@@ -78,33 +83,36 @@ export default class BotModuleSwearJar {
                 //.setTitle(Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.bad_language_detected))
                 //.setAuthor('Your Friendly Neighborhood Megadork ✝', bot.user.avatarURL())
                 .setDescription(response)
-                //.setImage(bot.context.author.avatarURL()) <- Noise
+                //.setImage(message.author.avatarURL()) <- Noise
                 .addFields({
-                    name: `Watch out, ${bot.context.member.displayName}!`,
+                    name: `Watch out, ${message.member.displayName}!`,
                     value: `Your swear score has been updated to ${userData.swear_score}`
                 })
 
-            this.thresholdCheck(userData)
+            this.thresholdCheck(oldNum, newNum)
+            message.channel.send(swearDetectedMessage).then(message => {
+                if (!keepStat) message.delete({ timeout: 3000, reason: 'Prevent clutter' })
+            })
 
-            return bot.context.channel.send(swearDetectedMessage)
+            return true
         }
     }
 
-    static fireSwearCountInquiryMessage(user: Discord.User, trigger?: string) {
+    static fireSwearCountInquiryMessage(message: Discord.Message, trigger?: string) {
         let bot: Bot = globalThis.bot
         if (trigger) bot.preliminary(trigger, 'Swear Jar Check')
 
-        let data = BotData.getUserData(user.id)
+        let data = BotData.getUserData(message.author.id)
 
-        if (data.swear_score)
-            bot.context.reply(`you have sworn ${data.swear_score} times.`)
+        if (data.swear_score > 0)
+            message.reply(`you have sworn ${data.swear_score} times.`)
         else
-            bot.context.reply(`oh wow, you're clean! 👀`)
+            message.reply(`oh wow, you're clean! 👀`)
 
         return true
     }
 
-    static generateSwearStatsMessage(guild: Guild) {
+    static generateSwearStatsMessage(guild: Discord.Guild) {
 
         console.log('Swear stats of the month!')
 
@@ -207,26 +215,29 @@ export default class BotModuleSwearJar {
                 }
     }
 
-    static async thresholdCheck(userData: Data.UserSave) {
-        let score = userData.swear_score
-        let message: Discord.Message = globalThis.bot.context
+    static async thresholdCheck(oldNum: number, newNum: number, message: Discord.Message = globalThis.bot.context) {
         console.log(`Swear Jar: Doing treshold check...`)
 
-        if ((score % 1000) == 0) {
+        if (oldNum % 1000 < 1000 && newNum % 1000 < oldNum % 1000) {
             console.log(`Swear Jar: Giving the user a random name.`)
 
             BotModuleNameGenerator.giveUserRandomName(message.member, 'funky', true)
-        } else if ((score % 100) == 0) {
+        } else if (oldNum % 100 < 100 && newNum % 100 < oldNum % 100) {
             console.log(`Swear Jar: Giving the user a random meme.`)
-            let url = await BotModuleReddit.fetchImageFromSubmission(await BotModuleReddit.fetchRandomSubmission('r/5050pics'))
+            let submission = await BotModuleReddit.fetchRandomSubmission('fiftyfifty'), extension = 'jpg'
 
-            message.reply(`You reached a hundred new points! Here's a 50/50 image! Proceed with caution!`)
-            message.channel.send({
-                files: [{
-                    attachment: url,
-                    name: 'SPOILER_NAME.jpg'
-                }]
-            })
+            message.reply(`You reached a hundred new points! Here's a 50/50 image! Proceed with caution! \n\n **Topic: *${submission.data.title}***`)
+            if (submission.data.url.includes('jpg') || submission.data.url.includes('png') || submission.data.url.includes('webm') || submission.data.url.includes('gif')) {
+                if (submission.data.url.includes('gif')) extension = 'gif'
+                message.channel.send({
+                    files: [{
+                        attachment: submission.data.url,
+                        name: `SPOILER_FILE.${extension}`
+                    }]
+                })
+            }
+            else
+                message.channel.send(new MessageEmbed({ title: "Mystery link...", url: submission.data.url, color: 'PINK' }))
         } else {
             console.log(`Swear Jar: ...no checkpoint reached.`)
             return
@@ -247,6 +258,8 @@ export default class BotModuleSwearJar {
             message.reply(Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.enable))
         else
             message.reply(Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.disable))
+
+        message.delete({ timeout: 3000, reason: 'Unclutter' })
 
         return true
     }

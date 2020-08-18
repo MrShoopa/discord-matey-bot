@@ -143,7 +143,7 @@ export default class BotModuleReddit {
         let bot: Bot = globalThis.bot
 
         // @see https://www.reddit.com/dev/api/ for more info.
-        let image = await bot.fetchImageFromURL(redditObject.data.children[0].data.url)
+        let image = await bot.fetchImageFromURL(redditObject.data.url)
         return image
     }
 
@@ -190,9 +190,11 @@ export default class BotModuleReddit {
             } else messageArray.push(message)
         }
 
-        if (redditObject.data.post_hint == 'image')
+        if (redditObject.data.post_hint == 'image' && !redditObject.data.over_18)
             messageArray[0]
                 .setImage(redditObject.data.url)
+        if (redditObject.data.over_18)
+            messageArray[0].title = messageArray[0].title += ` **NSFW!!!**`
 
 
         return messageArray

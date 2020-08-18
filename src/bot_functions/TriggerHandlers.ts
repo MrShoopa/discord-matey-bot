@@ -31,6 +31,7 @@ import BotWordplay from './wordplay/WordplayFunctions'
 import BotModuleWarcraft from './fetching/game/blizzard/WarcraftDataFunctions'
 import BotModuleGiphy from './fetching/gif/GiphyFunctions'
 import BotSubscriptionCommands from './general/SubscriptionCommands'
+import BotModuleStockMarket from './fetching/finance/StockMarketFunctions'
 
 
 export default class TriggerHandlers {
@@ -76,6 +77,8 @@ export default class TriggerHandlers {
         TriggerHandlers.checkForMemeRequest,
         TriggerHandlers.checkForWarcraftProfileRequest,
         TriggerHandlers.checkForGIPHYRandomRequest,
+        TriggerHandlers.checkForStockTickerDailyRequest,
+        TriggerHandlers.checkForCryptoTickerDailyRequest,
 
         // Management Requests
         TriggerHandlers.checkForNameChangeRequest,
@@ -107,6 +110,7 @@ export default class TriggerHandlers {
         this.bot.commandSatisfied = false
 
         this.message = message
+        let unmodifiedMessage = message.content.toString()
         let msgString = message.toString()
 
         if (this.preventUnnecessaryResponse()) return
@@ -119,7 +123,7 @@ export default class TriggerHandlers {
 
         //  Actual processing
         await this.requestCheck()
-        this.chatterCheck()
+        this.chatterCheck(message, unmodifiedMessage)
 
         if (this.bot.commandSatisfied === false)
             this.replyGeneralDefault(msgString)
@@ -156,8 +160,8 @@ export default class TriggerHandlers {
             }
     }
 
-    private static chatterCheck() {
-        BotWordplay.runWordplayCheck()
+    private static chatterCheck(message: Discord.Message | Discord.PartialMessage, unmodifiedMessage: string) {
+        BotWordplay.runWordplayCheck(message as Discord.Message, unmodifiedMessage)
     }
 
     private static checkForRedoActionRequest(message = TriggerHandlers.message) {
@@ -181,14 +185,14 @@ export default class TriggerHandlers {
     private static checkForSwearCountRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.swear_jar_triggers.count)
             if (message.toString().toLowerCase().includes(trigger))
-                return BotModuleSwearJar.fireSwearCountInquiryMessage(message.member.user, trigger)
+                return BotModuleSwearJar.fireSwearCountInquiryMessage(message as Discord.Message, trigger)
     }
 
     private static checkForSwearWord(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.swear_jar_triggers.bad_words)
             if (message.toString().toLowerCase().includes(trigger))
                 if (BotData.getUserProperty(message.author.id, 'swear_jar', false))
-                    return BotModuleSwearJar.dingUser(trigger)
+                    return BotModuleSwearJar.dingUser(message as Discord.Message, trigger)
     }
 
     /*  ---- Birthday Functionality ----  */
@@ -196,14 +200,14 @@ export default class TriggerHandlers {
     private static checkForBirthdayAppendRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.remember.birthday.self)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleBirthday.assignBirthdaySelf(trigger)
+                return BotModuleBirthday.assignBirthdaySelf(message as Discord.Message, trigger)
         //  Add birthday reminder!
     }
 
     private static checkForBirthdayInquiryRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.remember.birthday.inquire)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleBirthday.inquireBirthdaySelf()
+                return BotModuleBirthday.inquireBirthdaySelf(message as Discord.Message)
     }
 
     /*  ---- Music Functionality ----  */
@@ -269,7 +273,7 @@ export default class TriggerHandlers {
     private static checkForImageFetchRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.image_search_triggers.random_image)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleGoogleImage.fireImageMessageFromGoogle(trigger)
+                return BotModuleGoogleImage.fireImageMessageFromGoogle(message as Discord.Message, trigger)
     }
 
     /*  ----    Translation  ----    */
@@ -277,7 +281,7 @@ export default class TriggerHandlers {
     private static checkForTranslationRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.translate.hotword_default)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleTranslation.processTranslationRequest(TriggerHandlers.bot.context)
+                return BotModuleTranslation.processTranslationRequest(message as Discord.Message)
         //  Find random image (from Google Images)
     }
 
@@ -287,7 +291,7 @@ export default class TriggerHandlers {
         for (const baseTrigger of TRIGGERS.reddit_fetch.default)
             for (const trigger of TRIGGERS.reddit_fetch.query_type.post)
                 if (message.toString().toLowerCase().startsWith(`${baseTrigger} ${trigger}`))
-                    return BotModuleReddit.fireRedditSubmissionMessage(null, `${baseTrigger} ${trigger}`)
+                    return BotModuleReddit.fireRedditSubmissionMessage((message as Discord.Message).channel as Discord.TextChannel)
         //  Get copypasta post [from Reddit]
 
         for (const trigger of TRIGGERS.reddit_fetch.copypasta.default)
@@ -311,14 +315,14 @@ export default class TriggerHandlers {
     private static checkForMALAnimeFetchRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.anime_fetch.default)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleAnime.fireAnimeInfoMessageOfName(trigger)
+                return BotModuleAnime.fireAnimeInfoMessageOfName(message as Discord.Message, trigger)
         //  Get anime recommendation [from My Anime List (Jikan API)]
     }
 
     private static checkForMALMangaFetchRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.manga_fetch.default)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleAnime.fireMangaInfoMessageOfName(trigger)
+                return BotModuleAnime.fireMangaInfoMessageOfName(message as Discord.Message, trigger)
         //  Get manga recommendation [from My Anime List (Jikan API)]
     }
 
@@ -330,7 +334,7 @@ export default class TriggerHandlers {
     private static checkForLyricFetchRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.lyric_fetch.default)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleLyric.fireLyricMatchMessage(trigger)
+                return BotModuleLyric.fireLyricMatchMessage(message as Discord.Message, trigger)
     }
 
     private static checkForLyricSingRequest(message = TriggerHandlers.message) {
@@ -342,7 +346,7 @@ export default class TriggerHandlers {
     private static checkForJokeRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.joke.default)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleJoke.fireJokeMessage(trigger)
+                return BotModuleJoke.fireJokeMessage(message as Discord.Message, trigger)
     }
 
     private static checkForCovidInfoRequest(message = TriggerHandlers.message) {
@@ -354,7 +358,7 @@ export default class TriggerHandlers {
     private static checkForMemeRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.meme_triggers.base)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleMeme.fireMemeRequest()
+                return BotModuleMeme.fireMemeRequest(message as Discord.Message)
     }
 
     private static checkForWarcraftProfileRequest(message = TriggerHandlers.message) {
@@ -366,7 +370,19 @@ export default class TriggerHandlers {
     private static checkForGIPHYRandomRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.giphy.random_gif)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleGiphy.fireGIFMessage(trigger)
+                return BotModuleGiphy.fireGIFMessage(message as Discord.Message, trigger)
+    }
+
+    private static checkForStockTickerDailyRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.finance.stock_market.default)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotModuleStockMarket.fireTickerInfoDailyMessage(message as Discord.Message, '', trigger)
+    }
+
+    private static checkForCryptoTickerDailyRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.finance.crypto.default)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotModuleStockMarket.fireCryptoInfoDailyMessage(message as Discord.Message, '', trigger)
     }
 
     /*  ----    Server-Management   ---- */
@@ -380,14 +396,14 @@ export default class TriggerHandlers {
     private static checkForRestrictedRoleAssignRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.server_mod_triggers.set_restricted_role)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleRestrictedRole.assignToRestrictedRole(trigger)
+                return BotModuleRestrictedRole.assignToRestrictedRole(message as Discord.Message, trigger)
         //  Set Restricted Role        
     }
 
     private static checkForRestrictedRoleUnassignRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.server_mod_triggers.unset_restricted_role)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleRestrictedRole.unassignFromRestrictedRole(trigger)
+                return BotModuleRestrictedRole.unassignFromRestrictedRole(message as Discord.Message, trigger)
         //  Unset Restricted Role
     }
 

@@ -7,19 +7,15 @@ export default class BotModuleAnime {
 
     static MAL = new JikanApiClient()
 
-    static async fireAnimeInfoMessageOfName(trigger: string) {
-        let bot: Bot = globalThis.bot
-
-        bot.context.channel.send(await this.fetchBuiltMsgAnimeInfoMessageOfName(bot.context.toString(), trigger))
+    static async fireAnimeInfoMessageOfName(message: Discord.Message, trigger: string) {
+        message.channel.send(await this.fetchBuiltMsgAnimeInfoMessageOfName(message.toString(), message.channel, trigger))
     }
 
-    static async fireMangaInfoMessageOfName(trigger: string) {
-        let bot: Bot = globalThis.bot
-
-        bot.context.channel.send(await this.fetchBuiltMsgMangaInfoMessageOfName(bot.context.toString(), trigger))
+    static async fireMangaInfoMessageOfName(message: Discord.Message, trigger: string) {
+        message.channel.send(await this.fetchBuiltMsgMangaInfoMessageOfName(message.toString(), message.channel, trigger))
     }
 
-    static async fetchBuiltMsgAnimeInfoMessageOfName(query: string, trigger?: string):
+    static async fetchBuiltMsgAnimeInfoMessageOfName(query: string, channel, trigger?: string):
         Promise<Discord.Message | Discord.MessageEmbed> {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'MyAnimeList anime fetch', true)
@@ -34,12 +30,12 @@ export default class BotModuleAnime {
         if (anime === undefined)
             return new Discord.Message(bot.user.client,
                 { content: "I couldn't fetch swag info of your animoo at the moment." },
-                bot.context.channel as Discord.TextChannel | Discord.DMChannel)
+                channel)
 
         return BotModuleAnime.generateInfoMessage(anime)
     }
 
-    static async fetchBuiltMsgMangaInfoMessageOfName(query: string, trigger?: string):
+    static async fetchBuiltMsgMangaInfoMessageOfName(query: string, channel, trigger?: string):
         Promise<Discord.Message | Discord.MessageEmbed> {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'MyAnimeList manga fetch', true)
@@ -54,7 +50,7 @@ export default class BotModuleAnime {
         if (anime === undefined)
             return new Discord.Message(bot.user.client,
                 { content: "I couldn't fetch swag info of your mango at the moment." },
-                bot.context.channel as Discord.TextChannel | Discord.DMChannel)
+                channel)
 
         return BotModuleAnime.generateInfoMessage(anime)
     }

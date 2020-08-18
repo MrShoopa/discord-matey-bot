@@ -31,7 +31,10 @@ export default class Bot extends Discord.Client {
     constructor(apiKey: string = CREDS.discord.API_KEY) {
         super()
 
-        this.login(apiKey).catch(error => (console.log(`Discord connection error: ${error}`)))
+        this.login(apiKey).catch(error => {
+            console.error(`Discord connection error: ${error}`)
+            throw error
+        })
 
         //  Check data
 

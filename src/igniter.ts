@@ -22,7 +22,12 @@ globalThis.dev_mode = (() => { return process.argv.includes('dev-mode') })()
 //  Initialize Discord Bot
 console.log('Initializing...')
 
-globalThis.bot = new Bot()
+try {
+	globalThis.bot = new Bot()
+} catch (error) {
+	if (error.message.includes('ENOTFOUND'))
+		console.log('Reattempting connection...')
+}
 var bot: Bot = globalThis.bot
 
 bot.on('ready', () => {

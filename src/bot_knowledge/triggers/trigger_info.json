@@ -18,11 +18,15 @@
             "help reddit"
         ],
         "image_search": [
+            "help images",
             "help image search",
-            "help google image"
+            "help image_search",
+            "help google image",
+            "help google images"
         ],
         "twitter": [
             "help twitter",
+            "help tweet",
             "help tweets"
         ],
         "horoscope": [
@@ -41,7 +45,8 @@
             "help translate"
         ],
         "magic_ball": [
-            "help magic ball"
+            "help magic ball",
+            "help magic_ball"
         ],
         "dice": [
             "help dice"

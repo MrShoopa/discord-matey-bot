@@ -346,7 +346,7 @@ export default class TriggerHandlers {
     private static checkForJokeRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.joke.default)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleJoke.fireJokeMessage(trigger)
+                return BotModuleJoke.fireJokeMessage(message as Discord.Message, trigger)
     }
 
     private static checkForCovidInfoRequest(message = TriggerHandlers.message) {

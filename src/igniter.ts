@@ -11,6 +11,8 @@ import Discord from 'discord.js'
 
 import Bot from './Bot'
 
+import WebServices from './www/Webpage'
+
 import TriggerHandlers from './bot_functions/TriggerHandlers'
 import PostReadyFunctions from './bot_functions/_state/PostReadyFunctions'
 import su from './tools/ConsoleFunctions' // Keep here for console.
@@ -24,6 +26,7 @@ console.log('Initializing...')
 
 try {
 	globalThis.bot = new Bot()
+	WebServices.startWebpage()
 } catch (error) {
 	if (error.message.includes('ENOTFOUND'))
 		console.log('Reattempting connection...')
@@ -84,18 +87,6 @@ bot.on('error', error => {
 
 	//  Re-login
 	bot = new Bot()
-})
-
-// Web Page redirect
-import Express from 'express'
-import Path from 'path'
-let webapp = new Express()
-var port = process.env.PORT || 3669;
-webapp.get("/", (request, response) => {
-	response.sendFile(Path.join(__dirname + '/index.html'));
-})
-webapp.listen(port, () => {
-	console.log(`Webpage listening at http://localhost:${port}`)
 })
 
 // System Signal Listeners

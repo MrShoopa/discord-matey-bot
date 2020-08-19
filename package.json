@@ -21,6 +21,7 @@
         "@discordjs/opus": "^0.3.2",
         "@thorbens/jikan-api": "^1.1.1",
         "@types/aws-sdk": "^2.7.0",
+        "@types/express": "^4.17.7",
         "@types/giphy-api": "^2.0.2",
         "@types/google-images": "^2.1.0",
         "@types/node": "^14.0.27",

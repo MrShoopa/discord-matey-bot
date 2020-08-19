@@ -20,6 +20,7 @@ import BotGeneralCommands from './../general/GeneralCommands'
 
 import SUBREFS from '../../bot_knowledge/references/subscriptions.json'
 import BotModuleReddit from '../fetching/reddit/RedditFunctions';
+import BotModuleQuote from '../fetching/quote/QuoteFunctions';
 
 let dataSkeleton: Data.SubscriptionSave =
 {
@@ -254,7 +255,7 @@ export default class BotSubscriptionHandler {
         return SUBREFS.type_descriptions[featureCode]
     }
 
-    static runTask(subscription: Subscriptions.ChannelSubscription | Subscriptions.DMSubscription | Data.SubscriptionSave) {
+    static async runTask(subscription: Subscriptions.ChannelSubscription | Subscriptions.DMSubscription | Data.SubscriptionSave) {
         let bot: Bot = globalThis.bot
 
         let subscribedChannelId: string
@@ -277,6 +278,9 @@ export default class BotSubscriptionHandler {
                 break;
             case 'REDDITPOST':
                 //TODO
+                break;
+            case 'INSPIRATIONALQUOTE':
+                channel.send(await BotModuleQuote.fetchInspirationalQuote())
                 break;
             case 'COPYPASTATIME':
                 BotModuleReddit.fireCopypastaFetch(channel)

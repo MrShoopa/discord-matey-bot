@@ -5,34 +5,35 @@ import Bot from '../../../Bot'
 import TRIGGERS from '../../../bot_knowledge/triggers/triggers.json'
 
 export default class BotModuleQuote {
-    static async fireQuoteMessage() {
+    static async fireQuoteMessage(message: Discord.Message) {
         let bot: Bot = globalThis.bot
         //  Quote of Day [from quotes.rest]
         for (const trigger of TRIGGERS.quote_fetch.OTD.default)
-            if (bot.context.toString().toLowerCase().includes(trigger))
-                return bot.textChannel.send(await this.fetchQuoteOfTheDay(trigger))
+            if (message.toString().toLowerCase().includes(trigger))
+                return message.channel.send(await this.fetchQuoteOfTheDay(message, trigger))
 
         //! API Depricated?  Movie quote [from MovieQuoter]
         for (const trigger of TRIGGERS.quote_fetch.movie.default)
-            if (bot.context.toString().toLowerCase().includes(trigger))
-                return bot.textChannel.send(await this.fetchMovieQuote(trigger))
+            if (message.toString().toLowerCase().includes(trigger))
+                return message.channel.send(await this.fetchMovieQuote(trigger))
 
         //  Inspirational quote [from inspirational-quotes]
         for (const trigger of TRIGGERS.quote_fetch.inspirational)
-            if (bot.context.toString().toLowerCase().includes(trigger))
-                return bot.textChannel.send(await this.fetchInspirationalQuote(trigger))
+            if (message.toString().toLowerCase().includes(trigger))
+                return message.channel.send(await this.fetchInspirationalQuote(trigger))
 
         //  Star Wars quote [from star-wars-quotes]
         for (const trigger of TRIGGERS.quote_fetch.star_wars.default)
-            if (bot.context.toString().toLowerCase().includes(trigger))
-                return bot.textChannel.send(await this.fetchStarWarsQuote(trigger))
+            if (message.toString().toLowerCase().includes(trigger))
+                return message.channel.send(await this.fetchStarWarsQuote(trigger))
     }
 
-    static async fetchQuoteOfTheDay(trigger?: string, bot: Bot = globalThis.bot) {
+    static async fetchQuoteOfTheDay(message: Discord.Message, trigger?: string) {
+        let bot: Bot = globalThis.bot
         let categoryRequest: string
 
         TRIGGERS.quote_fetch.OTD.sub_triggers.some(subTrig => {
-            if (bot.context.toString().toLowerCase().includes(subTrig))
+            if (message.toString().toLowerCase().includes(subTrig))
                 categoryRequest = subTrig
         })
 
@@ -49,7 +50,7 @@ export default class BotModuleQuote {
             } catch (e) {
                 bot.saveBugReport(e, this.fetchQuoteOfTheDay.name)
                 if (e.includes('Fetched'))
-                    bot.textChannel.send(`Fetched too much right now! ${e.timeMessage}`)
+                    message.channel.send(`Fetched too much right now! ${e.timeMessage}`)
             }
         })
 
@@ -66,7 +67,8 @@ export default class BotModuleQuote {
             .setFooter('Megadorky Quotter 💬🌟 - helped by theysaidso.com © 2017-19')
     }
 
-    static async fetchMovieQuote(trigger?: string, bot: Bot = globalThis.bot) {
+    static async fetchMovieQuote(trigger?: string) {
+        let bot: Bot = globalThis.bot
         if (trigger) bot.preliminary(trigger, 'quote fetch - movie', true)
         let quoteObject: any
 
@@ -94,7 +96,8 @@ export default class BotModuleQuote {
 
     }
 
-    static async fetchInspirationalQuote(trigger?: string, bot: Bot = globalThis.bot) {
+    static async fetchInspirationalQuote(trigger?: string) {
+        let bot: Bot = globalThis.bot
         if (trigger) bot.preliminary(trigger, 'quote fetch - inspirational', true)
 
         let quoteObject: { text: any; author: any; }
@@ -118,7 +121,8 @@ export default class BotModuleQuote {
             .setFooter('Megadorky Quotter 💬🌟')
     }
 
-    static async fetchStarWarsQuote(trigger?: string, bot: Bot = globalThis.bot) {
+    static async fetchStarWarsQuote(trigger?: string) {
+        let bot: Bot = globalThis.bot
         if (trigger) bot.preliminary(trigger, 'quote fetch - star wars', true)
 
         let quoteObject: { text: any; starWarsQuote: any; }

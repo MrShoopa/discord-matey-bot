@@ -328,7 +328,7 @@ export default class TriggerHandlers {
 
     private static checkForQuoteFetchRequest(message = TriggerHandlers.message) {
         if (message.toString().toLowerCase().includes('quote'))
-            return BotModuleQuote.fireQuoteMessage()
+            return BotModuleQuote.fireQuoteMessage(message as Discord.Message)
     }
 
     private static checkForLyricFetchRequest(message = TriggerHandlers.message) {

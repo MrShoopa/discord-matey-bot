@@ -8,7 +8,7 @@ export default class BotDefaultResponder {
     static generateResponse(message = globalThis.bot.context) {
         if (message.toString().length === 0)
             return this.noContextResponse(message)
-        else
+        else if ((message.toString().substr(0, 2).match(/[A-Za-z]/g)))
             return this.unknownCommandResponse()
     }
 

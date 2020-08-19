@@ -70,13 +70,21 @@ bot.on('message', async (message) => {
 bot.on('guildMemberAdd', member => {
 	let announcementChannel: Discord.TextChannel = member.guild.systemChannel
 
+	//TODO Rotating URL and descriptions
 	let message = new Discord.MessageEmbed()
 		.setAuthor('Hello hello? Hello hello!!! 😊')
-		.setTitle(`Welcome to the server, ${member}!`)
+		.setTitle(`Welcome to the server, ${member.displayName}!`)
 		.setDescription(` \n\n\n\n...\n\n who the f-`)
-		.setImage(member.user.avatar)
+		.setFooter(`-but actually, GIVE IT UP FOR ${member.displayName}!!!!!!!`)
+		.setColor(member.displayHexColor)
+		.setURL('https://www.youtube.com/watch?v=usu0XY4QNB0')
+		.setImage(member.user.avatarURL())
 
-	announcementChannel.send(message)
+	announcementChannel.send(message).then(mes => {
+		mes.react('🔥')
+		mes.react('🎊')
+		mes.react('👋')
+	})
 })
 
 bot.on('error', error => {

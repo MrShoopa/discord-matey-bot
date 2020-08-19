@@ -67,17 +67,18 @@ bot.on('message', async (message) => {
 	}
 })
 
-bot.on('guildMemberAdd', member => {
+bot.on('guildMemberAdd', async member => {
+	let URLLIST = await import('./bot_knowledge/references/urllist.json').then(a => a)
+	let WELCOMEMESSAGE = await import('./bot_knowledge/phrases/phrases_welcome.json').then(a => a)
 	let announcementChannel: Discord.TextChannel = member.guild.systemChannel
 
-	//TODO Rotating URL and descriptions
 	let message = new Discord.MessageEmbed()
 		.setAuthor('Hello hello? Hello hello!!! 😊')
 		.setTitle(`Welcome to the server, ${member.displayName}!`)
-		.setDescription(` \n\n\n\n...\n\n who the f-`)
+		.setDescription(Bot.fetchRandomPhrase(WELCOMEMESSAGE.guild_member_add))
 		.setFooter(`-but actually, GIVE IT UP FOR ${member.displayName}!!!!!!!`)
 		.setColor(member.displayHexColor)
-		.setURL('https://www.youtube.com/watch?v=usu0XY4QNB0')
+		.setURL(Bot.fetchRandomPhrase(URLLIST.welcome))
 		.setImage(member.user.avatarURL())
 
 	announcementChannel.send(message).then(mes => {

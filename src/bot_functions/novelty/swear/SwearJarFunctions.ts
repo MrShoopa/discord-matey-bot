@@ -221,7 +221,7 @@ export default class BotModuleSwearJar {
         if (oldNum % 1000 < 1000 && newNum % 1000 < oldNum % 1000) {
             console.log(`Swear Jar: Giving the user a random name.`)
 
-            BotModuleNameGenerator.giveUserRandomName(message.member, 'funky', true)
+            BotModuleNameGenerator.giveUserRandomName(message.member, 'funky', true, true)
         } else if (oldNum % 100 < 100 && newNum % 100 < oldNum % 100) {
             console.log(`Swear Jar: Giving the user a random meme.`)
             let submission = await BotModuleReddit.fetchRandomSubmission('fiftyfifty'), extension = 'jpg'

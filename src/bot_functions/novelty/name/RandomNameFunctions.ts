@@ -19,7 +19,7 @@ export default class BotModuleNameGenerator {
                 return this.giveUserRandomName(message.member)
     }
 
-    static giveUserRandomName(member: Discord.GuildMember, custom?: string, punishment?: boolean) {
+    static giveUserRandomName(member: Discord.GuildMember, custom?: string, punishment?: boolean, automated?: boolean) {
         let bot: Bot = globalThis.bot
         bot.preliminary(bot.context.toString(), 'Random Name Change', true)
 
@@ -31,7 +31,7 @@ export default class BotModuleNameGenerator {
         else
             name = this.generateRandomName()
 
-        this.changeMemberName(member, name, punishment, true).then(suc => {
+        this.changeMemberName(member, name, punishment, automated).then(suc => {
             if (suc)
                 if (punishment)
                     member.lastMessage.channel.send(Bot.fetchRandomPhrase(PHRASES_NAME_CHANGE.response.punishment))
@@ -53,7 +53,7 @@ export default class BotModuleNameGenerator {
         } catch (err) {
             if (!automated)
                 if (err.message.includes('Missing Permissions'))
-                    member.lastMessage.channel.send(`Looks like you're more powerful than I am in this server! Can't change your name...`)
+                    member.lastMessage.channel.send(`Looks like you're more powerful than I am in this server! Or... I can't change nicknames. Can't change your name...`)
                 else
                     member.lastMessage.channel.send(`I couldn't change your name for some reason...`)
         }

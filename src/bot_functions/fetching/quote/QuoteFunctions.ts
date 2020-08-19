@@ -96,7 +96,7 @@ export default class BotModuleQuote {
 
     }
 
-    static async fetchInspirationalQuote(trigger?: string) {
+    static async fetchInspirationalQuote(trigger?: string, log?: boolean) {
         let bot: Bot = globalThis.bot
         if (trigger) bot.preliminary(trigger, 'quote fetch - inspirational', true)
 
@@ -112,7 +112,7 @@ export default class BotModuleQuote {
                 }
         })
 
-        console.log("Quote Object Returned from inspirational-quotes: ",
+        if (log) console.log("Quote Object Returned from inspirational-quotes: ",
             quoteObject)
 
         return new Discord.MessageEmbed()

@@ -346,6 +346,13 @@ export default class Bot extends Discord.Client {
                     if (url.includes('?t='))
                         timeStart = url.substring(url.indexOf('?t=') + 3) + "s"
                     stream = YTDL(url.toString(), {
+                        requestOptions: {
+                            headers: {
+                                //TODO: Handle in Heroku
+                                /* "Cookie": CREDS.youtube.cookie || null,
+                                'x-youtube-identity-token': CREDS.youtube.identity_token || null */
+                            }
+                        },
                         filter: 'audioonly',
                         highWaterMark: 1 << 25,
                         begin: timeStart

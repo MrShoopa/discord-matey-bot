@@ -53,7 +53,7 @@ export default class BotDiscordActivity {
         { name: `loves his ${globalThis.bot.users.cache.size} peeps`, type: "STREAMING" },
         { name: `pattycake with ${globalThis.bot.guilds.cache.size} servers`, type: 'PLAYING' },
         { name: `${globalThis.bot.guilds.cache.size} zooms`, type: 'LISTENING' },
-        { name: `${BotModuleQuote.fetchInspirationalQuote().then(m => m.title)} zooms`, type: 'LISTENING' }
+        { name: `${BotModuleQuote.fetchInspirationalQuote(null, false).then(m => m.title)} zooms`, type: 'LISTENING' }
     ]
 
     static async getRandomStatus(): Promise<ActivityOptions> {

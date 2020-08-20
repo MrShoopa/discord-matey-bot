@@ -43,6 +43,7 @@ export default class TriggerHandlers {
     private static functions: any[] = [
         // Toggles
         TriggerHandlers.checkForSwearToggleRequest,
+        TriggerHandlers.checkForSwearWhitelistRequest,
 
         // Functional Requests
         TriggerHandlers.checkForBirthdayAppendRequest,
@@ -180,6 +181,12 @@ export default class TriggerHandlers {
         for (const trigger of TRIGGERS.swear_jar_triggers.toggle)
             if (message.toString().toLowerCase().includes(trigger))
                 return BotModuleSwearJar.toggleUserJar(message, trigger)
+    }
+
+    private static checkForSwearWhitelistRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.swear_jar_triggers.whitelist)
+            if (message.toString().toLowerCase().includes(trigger))
+                return BotModuleSwearJar.toggleUserJarChannelNotification(message, trigger)
     }
 
     private static checkForSwearCountRequest(message = TriggerHandlers.message) {

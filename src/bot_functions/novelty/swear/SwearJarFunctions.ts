@@ -19,8 +19,6 @@ export default class BotModuleSwearJar {
         let wordMatches: number = 0
         let oldNum: number, newNum: number
 
-        bot.preliminary(trigger, 'Swear Jar')
-
         for (const word of words)
             this.checkForSoundReply(word, message)
 
@@ -39,8 +37,12 @@ export default class BotModuleSwearJar {
         }
 
         if (wordMatches !== 0) {
+            bot.preliminary(trigger, 'Swear Jar')
 
             let userData = BotData.getUserData(message.author.id, true)
+
+            if (userData.swear_jar_notify_whitelist.includes(message.channel.id))
+                return console.log('Swore in whitelisted channel')
 
             if (userData === undefined)
                 userData = BotData.createUserData(message.author.id)
@@ -256,10 +258,41 @@ export default class BotModuleSwearJar {
 
         if (newBoolean)
             message.reply(Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.enable))
+                .then(m => m.delete({ timeout: 3000, reason: 'Unclutter' }))
         else
             message.reply(Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.disable))
+                .then(m => m.delete({ timeout: 3000, reason: 'Unclutter' }))
 
-        message.delete({ timeout: 3000, reason: 'Unclutter' })
+        return true
+    }
+
+    static toggleUserJarChannelNotification(message: Discord.Message | Discord.PartialMessage, trigger?: string) {
+        if (trigger) {
+            let bot: Bot = globalThis.bot
+            bot.preliminary(trigger, 'Toggle User Swear Jar', true)
+        }
+
+        let data = BotData.getUserData(message.author.id), whitelist: string[]
+
+        if (data.swear_jar_notify_whitelist)
+            whitelist = data.swear_jar_notify_whitelist
+        else
+            whitelist = []
+
+        if (whitelist.includes(message.channel.id)) {
+            whitelist = whitelist.filter(id => id !== message.channel.id)
+            message.reply(Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.whitelist_remove))
+                .then(m => m.delete({ timeout: 3000, reason: 'Unclutter' }))
+        }
+        else {
+            whitelist.push(message.channel.id)
+            message.reply(Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.whitelist_add))
+                .then(m => m.delete({ timeout: 3000, reason: 'Unclutter' }))
+        }
+
+        data.swear_jar_notify_whitelist = whitelist
+
+        BotData.updateUserData(message.author.id, data)
 
         return true
     }

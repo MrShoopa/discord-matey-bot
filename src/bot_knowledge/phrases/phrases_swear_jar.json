@@ -52,5 +52,13 @@
         "I have enabled your swear jar?",
         "I'll start watching ya dirty mouth again.",
         "BAD WORD POLICE ON WATCH AGAIN"
+    ],
+    "whitelist_add": [
+        "I won't ding you in this channel! (still counting)",
+        "I'll refrain from grounding you in this channel. (still counting those words in secret)"
+    ],
+    "whitelist_remove": [
+        "I'll ding you in this channel now.",
+        "your swear jar notifications are now active here!"
     ]
 }

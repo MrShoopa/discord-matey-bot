@@ -429,6 +429,10 @@
                 "toggle": {
                     "title": "Toggle your Swear Jar",
                     "example": "megadork toggle swear jar"
+                },
+                "whitelist_channel": {
+                    "title": "Disable swear notifications in channel",
+                    "example": "megadork whitelist swear"
                 }
             }
         },

@@ -308,6 +308,20 @@
             "switch swear game",
             "flip swear game"
         ],
+        "whitelist": [
+            "whitelist swear",
+            "toggle swear in channel",
+            "switch channel swear jar",
+            "flip channel swear jar",
+            "tick swear in channel",
+            "toggle swear in channel",
+            "switch swear in channel",
+            "flip swear in channel",
+            "tick channel swear",
+            "toggle channel swear",
+            "switch channel swear",
+            "flip channel swear"
+        ],
         "count": [
             "swear count",
             "swear jar count",

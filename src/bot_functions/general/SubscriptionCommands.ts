@@ -41,6 +41,8 @@ export default class BotSubscriptionCommands {
             subscription._enabled = true
             subscription.args = args
 
+            if (subscription.featureCode == "MRSHOOPASTREAMWATCH") subscription.frequencyMilli = 6000 //Does a minute check
+
             BotSubscriptionHandler.updateSubscription(message.channel.id, name, subscription, message)
         } catch (error) {
             bot.saveBugReport(error, this.createSubscription.name, true)

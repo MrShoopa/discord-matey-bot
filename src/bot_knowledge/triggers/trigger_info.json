@@ -589,6 +589,17 @@
                     "example": "megadork fetch crypto **$LOL** on **January 20 2020**"
                 }
             }
+        },
+        "youtube": {
+            "_title": "YouTube Video and Stream Lookup",
+            "_description": "Find some videos and look up any livestreams!",
+            "_footer": "😎",
+            "_command_list": {
+                "stream_check": {
+                    "title": "See if a channel is livestreaming",
+                    "example": "megadork youtube stream check **X**"
+                }
+            }
         }
     }
 }

@@ -1329,5 +1329,15 @@
                 "fetch ecurrency"
             ]
         }
+    },
+    "youtube": {
+        "live": {
+            "default": [
+                "youtube stream check",
+                "is youtube streaming",
+                "check youtube stream",
+                "fetch youtube stream status"
+            ]
+        }
     }
 }

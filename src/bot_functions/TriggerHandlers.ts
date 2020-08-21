@@ -32,6 +32,7 @@ import BotModuleWarcraft from './fetching/game/blizzard/WarcraftDataFunctions'
 import BotModuleGiphy from './fetching/gif/GiphyFunctions'
 import BotSubscriptionCommands from './general/SubscriptionCommands'
 import BotModuleStockMarket from './fetching/finance/StockMarketFunctions'
+import BotModuleYouTube from './fetching/streaming/YouTubeStreamFunctions'
 
 
 export default class TriggerHandlers {
@@ -80,6 +81,7 @@ export default class TriggerHandlers {
         TriggerHandlers.checkForGIPHYRandomRequest,
         TriggerHandlers.checkForStockTickerDailyRequest,
         TriggerHandlers.checkForCryptoTickerDailyRequest,
+        TriggerHandlers.checkForYouTubeChannelLiveActivityRequest,
 
         // Management Requests
         TriggerHandlers.checkForNameChangeRequest,
@@ -390,6 +392,12 @@ export default class TriggerHandlers {
         for (const trigger of TRIGGERS.finance.crypto.default)
             if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleStockMarket.fireCryptoInfoDailyMessage(message as Discord.Message, '', trigger)
+    }
+
+    private static checkForYouTubeChannelLiveActivityRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.youtube.live.default)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotModuleYouTube.fireChannelNowStreamingNotification(message as Discord.Message, trigger, true)
     }
 
     /*  ----    Server-Management   ---- */

@@ -83,7 +83,6 @@ export default class BotModuleStockMarket {
         try {
 
             if (!tickerDailyData["Meta Data"]["1. Information"].includes('Digital')) {
-
                 let metadata = tickerDailyData["Meta Data"], todayInfoArray = tickerDailyData["Time Series (Daily)"]
                 let todayInfo = todayInfoArray[dayLookup]
 

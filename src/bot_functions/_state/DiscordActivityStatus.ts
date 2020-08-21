@@ -33,13 +33,14 @@ export default class BotDiscordActivity {
         { name: `with coronavirus test kits`, type: 'PLAYING' },
         { name: `SimpMaster 69420™`, type: 'PLAYING' },
         { name: `the collapse of America`, type: 'WATCHING' },
+        { name: `itself`, type: 'PLAYING' },
         {
             name: `切腹`, type: 'STREAMING',
             url: "https://www.youtube.com/watch?v=zvq9r6R6QAY"
         },
         {
             name: `🌟 grinding poptart cat 🌟`, type: 'STREAMING',
-            url: "https://www.nyan.cat/"
+            url: "https://www.youtube.com/watch?v=QH2-TGUlwu4"
         },
     ]
 
@@ -53,14 +54,16 @@ export default class BotDiscordActivity {
         { name: `loves his ${globalThis.bot.users.cache.size} peeps`, type: "STREAMING" },
         { name: `pattycake with ${globalThis.bot.guilds.cache.size} servers`, type: 'PLAYING' },
         { name: `${globalThis.bot.guilds.cache.size} zooms`, type: 'LISTENING' },
-        { name: `${BotModuleQuote.fetchInspirationalQuote(null, false).then(m => m.title)} zooms`, type: 'LISTENING' }
     ]
 
     static async getRandomStatus(): Promise<ActivityOptions> {
         let looklist = this.customStatuses
 
-        if (globalThis.bot)
-            looklist = this.customStatuses.concat(await new BotDiscordActivity().dynamicStatuses)
+
+        if (globalThis.bot) {
+            looklist = this.customStatuses.concat(new BotDiscordActivity().dynamicStatuses)
+            looklist = this.customStatuses.concat(await BotDiscordActivity.generateAsyncStatuses())
+        }
 
         let dice = Math.floor(Math.random() * looklist.length)
 
@@ -75,6 +78,15 @@ export default class BotDiscordActivity {
         bot.user.setUsername("Megadork");
 
         bot.user.setActivity(await BotDiscordActivity.getRandomStatus())
+    }
+
+    static async generateAsyncStatuses(): Promise<Array<ActivityOptions>> {
+
+        let statuses: ActivityOptions[] = [
+            { name: `Quote Time: ${await BotModuleQuote.fetchInspirationalQuote(null, false).then(m => m.title)}`, type: 'LISTENING' }
+        ]
+
+        return statuses
     }
 
     static useDevModeStatus() {

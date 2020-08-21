@@ -21,6 +21,7 @@ import BotGeneralCommands from './../general/GeneralCommands'
 import SUBREFS from '../../bot_knowledge/references/subscriptions.json'
 import BotModuleReddit from '../fetching/reddit/RedditFunctions';
 import BotModuleQuote from '../fetching/quote/QuoteFunctions';
+import BotModuleYouTube from '../fetching/streaming/YouTubeStreamFunctions';
 
 let dataSkeleton: Data.SubscriptionSave =
 {
@@ -287,6 +288,14 @@ export default class BotSubscriptionHandler {
                 break;
             case 'SHITPOSTTIME':
                 BotModuleReddit.fireRedditSubmissionMessage(channel, 'r/shitposting')
+                break;
+            case 'MRSHOOPASTREAMWATCH':
+                let response = await BotModuleYouTube.buildChannelNowStreamingMessage('MrShoopa')
+                if (response) {
+                    channel.send(response)
+                    subscription.frequencyMilli = 21600000
+                }
+                // Backs out to 6 hours to prevent duplicate notifcations
                 break;
             default:
                 break;

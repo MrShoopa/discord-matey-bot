@@ -73,7 +73,8 @@ export module Subscriptions {
         'REDDITPOST' |
         'SHITPOSTTIME' |
         'COPYPASTATIME' |
-        'INSPIRATIONALQUOTE'
+        'INSPIRATIONALQUOTE' |
+        'MRSHOOPASTREAMWATCH'
 
     export type ChannelType = 'test' | 'DM' | 'PartialGroup' | 'GuildChannel'
 

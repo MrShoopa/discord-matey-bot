@@ -836,6 +836,30 @@
                 "fetch this week's copypasta",
                 "get this week's copypasta"
             ]
+        },
+        "fiftyfifty": {
+            "default": [
+                "fiftyfifty",
+                "fresh fiftyfifty",
+                "top new fiftyfifty",
+                "fetch fiftyfifty",
+                "fetch fresh fiftyfifty",
+                "fetch top new fiftyfifty",
+                "5050",
+                "fresh 5050",
+                "top new 5050",
+                "fetch 5050",
+                "fetch fresh 5050",
+                "fetch top new 5050"
+            ],
+            "top_of_week": [
+                "weekly fiftyfifty",
+                "fetch this week's fiftyfifty",
+                "get this week's fiftyfifty",
+                "weekly 5050",
+                "fetch this week's 5050",
+                "get this week's 5050"
+            ]
         }
     },
     "twitter_fetch": {

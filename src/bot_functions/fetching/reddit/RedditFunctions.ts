@@ -88,6 +88,35 @@ export default class BotModuleReddit {
         }
         channel.send(delivery)
     }
+    static async fire5050Fetch(channel?: Discord.TextChannel | Discord.DMChannel, trigger?: string) {
+        let bot: Bot = globalThis.bot
+        channel = channel ? channel : bot.textChannel
+
+        if (trigger) bot.preliminary(trigger, 'Reddit - 50/50 Fetch', true)
+
+        let riskyRiskyThingy = await BotModuleReddit.fetchRandomSubmission('fiftyfifty'), extension = 'jpg'
+
+        channel.send(`Here's a 50/50 image! Proceed with caution! \n\n **Topic: *${riskyRiskyThingy.data.title}***`)
+        if (riskyRiskyThingy.data.url.includes('jpg') || riskyRiskyThingy.data.url.includes('png') || riskyRiskyThingy.data.url.includes('webm') || riskyRiskyThingy.data.url.includes('gif')) {
+            if (riskyRiskyThingy.data.url.includes('gif')) extension = 'gif'
+            channel.send({
+                files: [{
+                    attachment: riskyRiskyThingy.data.url,
+                    name: `SPOILER_FILE.${extension}`
+                }]
+            })
+        } else {
+            let response = new Discord.MessageEmbed()
+                .setTitle(`Mystery link...`)
+                .setAuthor(`Courtesy of u/${riskyRiskyThingy.data.author}`)
+                .setURL(riskyRiskyThingy.data.url)
+                .setColor('#8B0000')
+                .setFooter('I hope you know what r/5050 is',
+                    'https://images.vexels.com/media/users/3/129189/isolated/preview/59a4614a4e033709d1b90042a9cc9bd2-50-percent-infographic-by-vexels.png')
+
+            channel.send(response)
+        }
+    }
 
     static async fireSubmissionImageMessage(redditObject: any) {
         let bot: Bot = globalThis.bot

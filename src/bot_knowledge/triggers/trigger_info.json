@@ -260,6 +260,16 @@
                         "title": "Get week's top copypasta",
                         "example": "megadork fetch this week's copypasta"
                     }
+                },
+                "fiftyfifty": {
+                    "default": {
+                        "title": "Get random 5050",
+                        "example": "megadork fetch 5050"
+                    },
+                    "top_of_week": {
+                        "title": "Get week's top 5050",
+                        "example": "megadork fetch this week's 5050"
+                    }
                 }
             }
         },

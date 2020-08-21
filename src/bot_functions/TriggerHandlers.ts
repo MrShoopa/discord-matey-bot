@@ -307,6 +307,11 @@ export default class TriggerHandlers {
             if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleReddit.fireCopypastaFetch(null, trigger)
         //  Get copypasta post [from Reddit]
+        
+        for (const trigger of TRIGGERS.reddit_fetch.fiftyfifty.default)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotModuleReddit.fire5050Fetch(null, trigger)
+        //  Get copypasta post [from Reddit]
     }
 
     private static checkForTwitterFetchRequest(message = TriggerHandlers.message) {

@@ -263,12 +263,22 @@
                 },
                 "fiftyfifty": {
                     "default": {
-                        "title": "Get random 5050",
+                        "title": "Get random r/fiftyfifty post",
                         "example": "megadork fetch 5050"
                     },
                     "top_of_week": {
-                        "title": "Get week's top 5050",
+                        "title": "Get week's top r/fiftyfifty post",
                         "example": "megadork fetch this week's 5050"
+                    }
+                },
+                "askreddit": {
+                    "default": {
+                        "title": "Get random askreddit post",
+                        "example": "megadork fetch askreddit"
+                    },
+                    "top_of_week": {
+                        "title": "Get week's top askreddit post",
+                        "example": "megadork fetch this week's askreddit"
                     }
                 }
             }

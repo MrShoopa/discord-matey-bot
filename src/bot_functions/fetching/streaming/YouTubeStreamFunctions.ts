@@ -67,6 +67,7 @@ export default class BotModuleYouTube {
 
         try {
             const res = await this.YouTubeHelper.videos.search(query)
+
             if (log) console.log('...success!')
             console.groupEnd()
             return res
@@ -80,4 +81,29 @@ export default class BotModuleYouTube {
         }
 
     }
+
+    static async fetchRandomVideoInPlaylist(playlistUrl: string, limit = 25, log?) {
+        if (log) console.group(`Fetching YouTube Playlist Info for ${playlistUrl}...`)
+
+        try {
+            const playlist = await this.YouTubeHelper.playlists.items(playlistUrl, { maxResults: limit.toString() })
+            let items = playlist.items
+
+            if (log) console.log('...success!')
+            console.groupEnd()
+
+            let video = items[Math.floor(Math.random() * items.length)]
+
+            return video
+        }
+        catch (err) {
+            if (log) {
+                let bot: Bot = globalThis.bot
+                bot.saveBugReport(err, this.fetchRandomVideoInPlaylist.name, true)
+            }
+            throw new Error(err)
+        }
+
+    }
+
 }

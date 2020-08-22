@@ -1,6 +1,9 @@
 import Bot from "../../Bot"
 import { ActivityOptions } from "discord.js"
 import BotModuleQuote from "../fetching/quote/QuoteFunctions"
+import BotModuleYouTube from "../fetching/streaming/YouTubeStreamFunctions"
+
+const PLAYLISTCHOICE = "https://www.youtube.com/playlist?list=PLYb74g1gGQ0wmPN8vemhi49o6yu9TNOGm"
 
 export default class BotDiscordActivity {
     public static customStatuses: Array<ActivityOptions> = [
@@ -83,7 +86,8 @@ export default class BotDiscordActivity {
     static async generateAsyncStatuses(): Promise<Array<ActivityOptions>> {
 
         let statuses: ActivityOptions[] = [
-            { name: `Quote Time: ${await BotModuleQuote.fetchInspirationalQuote(null, false).then(m => m.title)}`, type: 'LISTENING' }
+            { name: `a quote: ${await BotModuleQuote.fetchInspirationalQuote(null, false).then(m => m.title)}`, type: 'LISTENING' },
+            { name: `Meme Time`, type: "STREAMING", url: await BotModuleYouTube.fetchRandomVideoInPlaylist(PLAYLISTCHOICE).then(p => p.contentDetails.videoId) }
         ]
 
         return statuses
@@ -95,8 +99,7 @@ export default class BotDiscordActivity {
         let status: ActivityOptions =
         {
             name: `DEBUGGING. Sorry for unexpected weirdness :)`,
-            type: 'PLAYING',
-
+            type: 'PLAYING'
         }
 
         bot.user.setActivity(status)

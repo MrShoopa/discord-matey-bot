@@ -34,7 +34,7 @@ export module Subscriptions {
 
         dmChannelId: string
         featureCode: SubscriptionFeature
-        frequencyMilli: Number
+        frequencyMilli: number
         [args: string]: any
 
         constructor(callingDM: Discord.DMChannel, featureCode: SubscriptionFeature, args?: any) {
@@ -74,7 +74,8 @@ export module Subscriptions {
         'SHITPOSTTIME' |
         'COPYPASTATIME' |
         'INSPIRATIONALQUOTE' |
-        'MRSHOOPASTREAMWATCH'
+        'MRSHOOPASTREAMWATCH' |
+        'ASKREDDITRELAY'
 
     export type ChannelType = 'test' | 'DM' | 'PartialGroup' | 'GuildChannel'
 

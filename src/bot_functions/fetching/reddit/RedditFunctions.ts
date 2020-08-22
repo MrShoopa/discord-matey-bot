@@ -121,6 +121,23 @@ export default class BotModuleReddit {
         }
     }
 
+    static async fireQuestionAsk(channel?: Discord.TextChannel | Discord.DMChannel, trigger?: string) {
+        let bot: Bot = globalThis.bot
+        channel = channel ? channel : bot.textChannel
+        if (trigger) bot.preliminary(trigger, 'Reddit - 50/50 Fetch', true)
+
+        let question = await BotModuleReddit.fetchRandomSubmission('askreddit')
+        let response = new Discord.MessageEmbed()
+            .setTitle(question.data.title)
+            .setAuthor(`A question by u/${question.data.author}...`)
+            .setURL(question.data.url)
+            .setColor('#8B0000')
+            .setFooter('r/AskReddit',
+                'https://b.thumbs.redditmedia.com/EndDxMGB-FTZ2MGtjepQ06cQEkZw_YQAsOUudpb9nSQ.png')
+
+        channel.send(response)
+    }
+
     static async fireSubmissionImageMessage(redditObject: any) {
         let bot: Bot = globalThis.bot
 

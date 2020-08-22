@@ -7,6 +7,7 @@
         "SHITPOSTTIME": "Gets a shitpost from r/shitposting",
         "COPYPASTATIME": "Gets that sweet sweet copypasta from r/copypasta",
         "INSPIRATIONALQUOTE": "Gets an inspirational quote!",
-        "MRSHOOPASTREAMWATCH": "Checks whenever MrShoopa is streaming on YouTube!"
+        "MRSHOOPASTREAMWATCH": "Checks whenever MrShoopa is streaming on YouTube!",
+        "ASKREDDITRELAY": "Gets a random question from r/AskReddit"
     }
 }

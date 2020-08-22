@@ -297,11 +297,15 @@ export default class BotSubscriptionHandler {
                 }
                 // Backs out to 6 hours to prevent duplicate notifcations
                 break;
+            case 'ASKREDDITRELAY':
+                channel.send('Routine question!')
+                BotModuleReddit.fireQuestionAsk(channel)
+                break;
             default:
                 break;
         }
 
-        subscription._lastRun = new Date()
+        subscription._lastRun = new Date(new Date(subscription._lastRun).getTime() + subscription.frequencyMilli)
         this.updateSubscription(subscribedChannelId, subscription.name, subscription as Data.SubscriptionSave, null, false)
     }
 

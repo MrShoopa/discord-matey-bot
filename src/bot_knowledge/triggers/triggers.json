@@ -870,6 +870,21 @@
                 "fetch this week's 5050",
                 "get this week's 5050"
             ]
+        },
+        "askreddit": {
+            "default": [
+                "askreddit",
+                "fresh askreddit",
+                "top new askreddit",
+                "fetch askreddit",
+                "fetch fresh askreddit",
+                "fetch top new askreddit"
+            ],
+            "top_of_week": [
+                "weekly askreddit",
+                "fetch this week's askreddit",
+                "get this week's askreddit"
+            ]
         }
     },
     "twitter_fetch": {

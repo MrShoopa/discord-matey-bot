@@ -332,6 +332,16 @@
             "how many swears",
             "how many times did i swear"
         ],
+        "server_stats": [
+            "swear leaderboard",
+            "swear jar leaderboard",
+            "swear stats",
+            "swear server stats",
+            "bad word server count",
+            "bad word total count",
+            "show swear stats",
+            "show swear stats for sever"
+        ],
         "bad_words": [
             "4r5e",
             "5h1t",

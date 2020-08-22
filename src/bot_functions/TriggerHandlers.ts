@@ -51,6 +51,7 @@ export default class TriggerHandlers {
         TriggerHandlers.checkForBirthdayInquiryRequest,
 
         TriggerHandlers.checkForSwearCountRequest,
+        TriggerHandlers.checkForSwearLeaderboardRequest,
 
         TriggerHandlers.checkForMusicPlaybackRequest,
         TriggerHandlers.checkForMusicStopRequest,
@@ -197,6 +198,12 @@ export default class TriggerHandlers {
                 return BotModuleSwearJar.fireSwearCountInquiryMessage(message as Discord.Message, trigger)
     }
 
+    private static checkForSwearLeaderboardRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.swear_jar_triggers.server_stats)
+            if (message.toString().toLowerCase().includes(trigger))
+                return BotModuleSwearJar.fireSwearServerStatsMessage(message as Discord.Message, trigger)
+    }
+
     private static checkForSwearWord(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.swear_jar_triggers.bad_words)
             if (message.toString().toLowerCase().includes(trigger))
@@ -307,7 +314,7 @@ export default class TriggerHandlers {
             if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleReddit.fireCopypastaFetch(null, trigger)
         //  Get copypasta post [from Reddit]
-        
+
         for (const trigger of TRIGGERS.reddit_fetch.fiftyfifty.default)
             if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleReddit.fire5050Fetch(null, trigger)

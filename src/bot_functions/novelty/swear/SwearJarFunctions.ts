@@ -114,7 +114,15 @@ export default class BotModuleSwearJar {
         return true
     }
 
-    static generateSwearStatsMessage(guild: Discord.Guild) {
+    static async fireSwearServerStatsMessage(message: Discord.Message, trigger?: string) {
+        let bot: Bot = globalThis.bot
+        if (trigger) bot.preliminary(trigger, 'Swear Jar Check')
+
+        let response = await this.generateSwearStatsMessage(message.guild)
+        return message.channel.send(response)
+    }
+
+    static async generateSwearStatsMessage(guild: Discord.Guild) {
 
         console.log('Swear stats of the month!')
 
@@ -128,28 +136,29 @@ export default class BotModuleSwearJar {
 
             const att =
                 new Discord.MessageAttachment(__dirname +
-                    '..\\..\\..\\..\\bot_knowledge\\images\\dedede-christian.jpg',
+                    '.\\..\\..\\..\\bot_knowledge\\images\\dedede-christian.jpg',
                     'dedede-christian.jpg')
 
             let swearStatsMessage = new Discord.MessageEmbed()
-                .setTitle('Swear Kings of the Month! 🤬')
-                .setAuthor(`✝ Pope Megadork ✝`)
+                .setTitle(`Swear Jar Leaderboard for\n${guild.name}! 🤬`)
+                .setAuthor(`Papa Megadork Reportin' in...`)
                 .setColor('DARK_VIVID_PINK')
-                .setDescription(`How many times have y'al spoke the nasties??!?!`)
+                .setDescription(`How much dirt has been spit in this server??!?! \nLet's see...`)
                 .setFooter(`congrats to y'all`)
-                .attachFiles([att])
-                .setImage('attachment://dedede-christian.jpg')
-                .setTimestamp(new Date().getMonth() - 1)
+                //.attachFiles([att])
+                .setImage('https://i.quotev.com/img/q/u/19/6/12/mqt7zw4ktn.jpg')
 
-            guild.members.cache.forEach(member => {
-                swearingUsers.some(user => {
-                    if (member.user.id == user?._id)
-                        swearStatsMessage
-                            .addFields({ name: member.user.username, value: user.swear_score })
-                })
+            swearingUsers.forEach(async user => {
+                if (user?._id)
+                    await guild.members.fetch(user._id).then(member => {
+                        if (member.user.id == user?._id)
+                            swearStatsMessage
+                                .addFields({ name: member.user.username, value: user.swear_score, inline: true })
+                    })
             })
 
-            return swearStatsMessage
+            if (swearStatsMessage.fields.length >= 0)
+                return swearStatsMessage
         } else return null
     }
 
@@ -219,33 +228,40 @@ export default class BotModuleSwearJar {
 
     static async thresholdCheck(oldNum: number, newNum: number, message: Discord.Message = globalThis.bot.context) {
         console.log(`Swear Jar: Doing treshold check...`)
+        if (Math.floor(oldNum / 10000) < Math.floor(newNum / 10000)) {
+            //TODO
 
-        if (oldNum % 1000 < 1000 && newNum % 1000 < oldNum % 1000) {
+        } else if (Math.floor(oldNum / 1000) < Math.floor(newNum / 1000)) {
             console.log(`Swear Jar: Giving the user a random name.`)
-
             BotModuleNameGenerator.giveUserRandomName(message.member, 'funky', true, true)
-        } else if (oldNum % 100 < 100 && newNum % 100 < oldNum % 100) {
-            console.log(`Swear Jar: Giving the user a random meme.`)
-            let submission = await BotModuleReddit.fetchRandomSubmission('fiftyfifty'), extension = 'jpg'
 
-            message.reply(`You reached a hundred new points! Here's a 50/50 image! Proceed with caution! \n\n **Topic: *${submission.data.title}***`)
-            if (submission.data.url.includes('jpg') || submission.data.url.includes('png') || submission.data.url.includes('webm') || submission.data.url.includes('gif')) {
-                if (submission.data.url.includes('gif')) extension = 'gif'
-                message.channel.send({
-                    files: [{
-                        attachment: submission.data.url,
-                        name: `SPOILER_FILE.${extension}`
-                    }]
-                })
-            }
-            else
-                message.channel.send(new MessageEmbed({ title: "Mystery link...", url: submission.data.url, color: 'PINK' }))
+            message.channel.send("Looks like someone got uh... reached a new thousand points 🍃 Here's your 50/50?")
+            this.giveUser5050(message)
+        } else if (Math.floor(oldNum / 100) < Math.floor(newNum / 100)) {
+            message.channel.send("One hundred new swear words? Congrats? But actually here's a punishment to bear")
+            await this.giveUser5050(message)
         } else {
             console.log(`Swear Jar: ...no checkpoint reached.`)
             return
         }
 
         console.log(`Swear Jar: ... checkpoint matched! Something happened to the user!`)
+    }
+
+    static async giveUser5050(message: Discord.Message) {
+        console.log(`Swear Jar: Giving the user a random 50/50.`)
+        let submission = await BotModuleReddit.fetchRandomSubmission('fiftyfifty'), extension = 'jpg'
+
+        message.reply(`Here's a 50/50 image! Proceed with caution! \n\n **Topic: *${submission.data.title}***`)
+        if (submission.data.url.includes('jpg') || submission.data.url.includes('png') || submission.data.url.includes('webm') || submission.data.url.includes('gif')) {
+            if (submission.data.url.includes('gif')) extension = 'gif'
+            message.channel.send({
+                files: [{
+                    attachment: submission.data.url,
+                    name: `SPOILER_FILE.${extension}`
+                }]
+            })
+        } else message.channel.send(new MessageEmbed({ title: "Mystery link...", url: submission.data.url, color: 'PINK' }))
     }
 
     static toggleUserJar(message: Discord.Message | Discord.PartialMessage, trigger?: string) {

@@ -96,7 +96,10 @@ export default class BotModuleReddit {
 
         let riskyRiskyThingy = await BotModuleReddit.fetchRandomSubmission('fiftyfifty'), extension = 'jpg'
 
-        channel.send(`Here's a 50/50 image! Proceed with caution! \n\n **Topic: *${riskyRiskyThingy.data.title}***`)
+        while (!riskyRiskyThingy.data.title.includes('Here are all the answers') && !riskyRiskyThingy.data.title.includes('Users follow the rules'))
+            riskyRiskyThingy = await BotModuleReddit.fetchRandomSubmission('fiftyfifty')
+
+        channel.send(`Here's a r/fiftyfifty image! Proceed with caution! \n\n *${riskyRiskyThingy.data.title}*`)
         if (riskyRiskyThingy.data.url.includes('jpg') || riskyRiskyThingy.data.url.includes('png') || riskyRiskyThingy.data.url.includes('webm') || riskyRiskyThingy.data.url.includes('gif')) {
             if (riskyRiskyThingy.data.url.includes('gif')) extension = 'gif'
             channel.send({

@@ -252,7 +252,10 @@ export default class BotModuleSwearJar {
         console.log(`Swear Jar: Giving the user a random 50/50.`)
         let submission = await BotModuleReddit.fetchRandomSubmission('fiftyfifty'), extension = 'jpg'
 
-        message.reply(`Here's a 50/50 image! Proceed with caution! \n\n **Topic: *${submission.data.title}***`)
+        while (!submission.data.title.includes('Here are all the answers') && !submission.data.title.includes('Users follow the rules'))
+            submission = await BotModuleReddit.fetchRandomSubmission('fiftyfifty')
+
+        message.reply(`Here's a r/fiftyfifty image! Proceed with caution! \n\n **${submission.data.title}**`)
         if (submission.data.url.includes('jpg') || submission.data.url.includes('png') || submission.data.url.includes('webm') || submission.data.url.includes('gif')) {
             if (submission.data.url.includes('gif')) extension = 'gif'
             message.channel.send({

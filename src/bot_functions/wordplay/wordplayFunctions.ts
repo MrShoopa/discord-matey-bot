@@ -13,12 +13,14 @@ export default class BotWordplay {
     static wholeMessage: string
 
     static runWordplayCheck(message: Message, wholeMessage: string) {
+        this.bot = globalThis.bot
         this.wholeMessage = wholeMessage
 
         this.checkForSelfSuicdeWordplay(message)
         this.checkForSADWordplay(message)
         this.checkForOnlyBeansWordplay(message)
         this.checkForSendNudesWordplay(message)
+        this.checkForYourMomWordplay(message)
         this.checkForThankYouWordplay(message)
         this.checkForCommieWordplay(message)
         this.checkForNonHotwordWordplay(message)
@@ -76,6 +78,20 @@ export default class BotWordplay {
 
                 return message.reply(
                     Bot.fetchRandomPhrase(PHRASES_CONVO.asked_to_send_nudes))
+            }
+        })
+    }
+
+    private static checkForYourMomWordplay(message) {
+        let context: string = message.toString()
+
+        //  Shotout to UW🅱
+        TRIGGERS.your_mom_direct.some(trigger => {
+            if (context.toLowerCase().includes(trigger)) {
+                this.bot.preliminary(trigger, 'ur mom', true)
+
+                return message.reply(
+                    Bot.fetchRandomPhrase(PHRASES_CONVO.your_mom_wordplay))
             }
         })
     }
@@ -139,6 +155,8 @@ class NonTargettedTriggers {
                     message.reply(`noob you're such a boob 👁👅👁`)
                 else if (message.author.username == 'Jayden')
                     message.reply(`jayden i'd rather drop you at gamestop as a trade-in 🎮😎`)
+                else if (message.author.username == 'MeanMrMustard42')
+                    message.reply(`Damn Mustard, you rock the "Mean" in your name 👁👁`)
                 /* else
                     return message.reply(
                         Bot.fetchRandomPhrase(PHRASES_CONVO.asked_death_threat)) */

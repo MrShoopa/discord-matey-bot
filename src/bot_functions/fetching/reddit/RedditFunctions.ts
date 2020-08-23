@@ -96,7 +96,7 @@ export default class BotModuleReddit {
 
         let riskyRiskyThingy = await BotModuleReddit.fetchRandomSubmission('fiftyfifty'), extension = 'jpg'
 
-        while (!riskyRiskyThingy.data.title.includes('Here are all the answers') && !riskyRiskyThingy.data.title.includes('Users follow the rules'))
+        while (riskyRiskyThingy.data.title.includes('Here are all the answers') || riskyRiskyThingy.data.title.includes('Users follow the rules'))
             riskyRiskyThingy = await BotModuleReddit.fetchRandomSubmission('fiftyfifty')
 
         channel.send(`Here's a r/fiftyfifty image! Proceed with caution! \n\n *${riskyRiskyThingy.data.title}*`)

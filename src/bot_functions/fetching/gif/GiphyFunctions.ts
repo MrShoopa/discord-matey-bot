@@ -41,7 +41,7 @@ export default class BotModuleGiphy {
         else
             response.setTitle(`Here's a random GIF!`)
 
-        return message.channel.send(message)
+        return message.channel.send(response)
     }
 
     static async fetchRandomGif() {

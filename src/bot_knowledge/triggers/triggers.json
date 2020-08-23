@@ -1,5 +1,8 @@
 {
     "main_trigger": [
+        ";megadork",
+        ";dork",
+        ";mega",
         "megadork",
         "cyberplop",
         "megadick",
@@ -56,6 +59,8 @@
         "send hot nudes"
     ],
     "thank_you_triggers": [
+        "thanks",
+        "thank you",
         "thank you megadork",
         "thanks megadork",
         "god bless megadork"
@@ -68,6 +73,7 @@
     "threat": {
         "kill_self": [
             "kill yourself",
+            "die",
             "go die",
             "you're worthless",
             "eat shit",
@@ -78,6 +84,14 @@
     },
     "how_is_bot": [
         "how are you"
+    ],
+    "your_mom_direct": [
+        "ur mom",
+        "your mom",
+        "ur mum",
+        "your mum",
+        "yur mom",
+        "yur mum"
     ],
     "remember": {
         "birthday": {

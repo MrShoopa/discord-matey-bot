@@ -16,14 +16,18 @@ export default class BotWordplay {
         this.bot = globalThis.bot
         this.wholeMessage = wholeMessage
 
-        this.checkForSelfSuicdeWordplay(message)
-        this.checkForSADWordplay(message)
-        this.checkForOnlyBeansWordplay(message)
-        this.checkForSendNudesWordplay(message)
-        this.checkForYourMomWordplay(message)
-        this.checkForThankYouWordplay(message)
-        this.checkForCommieWordplay(message)
-        this.checkForNonHotwordWordplay(message)
+        TRIGGERS.main_trigger.some(trigger => {
+            if (this.wholeMessage.toLowerCase().startsWith(trigger, 0)) {
+                this.checkForSelfSuicdeWordplay(message)
+                this.checkForSADWordplay(message)
+                this.checkForOnlyBeansWordplay(message)
+                this.checkForSendNudesWordplay(message)
+                this.checkForYourMomWordplay(message)
+                this.checkForThankYouWordplay(message)
+                this.checkForCommieWordplay(message)
+            }
+        })
+        this.checkForNonHotwordWordplay(message, wholeMessage)
     }
 
     private static checkForSelfSuicdeWordplay(message) {
@@ -116,14 +120,26 @@ export default class BotWordplay {
         //  "Are you a X?"
     }
 
+    static checkForHowAreYouWordPlay(message) {
+        let context: string = message.toString()
+
+        TRIGGERS.how_is_bot.some(trigger => {
+            if (context.toLowerCase().includes(trigger)) {
+                this.bot.preliminary(trigger, 'How is bot', true)
+
+                return message.reply(
+                    Bot.fetchRandomPhrase(PHRASES_CONVO.asked_how_are_you))
+            }
+        })
+    }
+
     //  When mentioning main hotword anywhere in message!
-    private static checkForNonHotwordWordplay(message) {
+    private static checkForNonHotwordWordplay(message, wholeMessage) {
         let context: string = message.toString()
 
         TRIGGERS.main_trigger.some(trigger => {
             if (this.wholeMessage.toLowerCase().startsWith(trigger, 0)) {
                 NonTargettedTriggers.checkForDeathThreatWordPlay(message)
-                NonTargettedTriggers.checkForHowAreYouWordPlay(message)
             }
         })
     }
@@ -165,19 +181,6 @@ class NonTargettedTriggers {
 
                 return message.reply(
                     Bot.fetchRandomPhrase(PHRASES_CONVO.asked_death_threat))
-            }
-        })
-    }
-
-    static checkForHowAreYouWordPlay(message = BotWordplay.bot.context) {
-        BotWordplay.wholeMessage = message.toString()
-
-        TRIGGERS.how_is_bot.some(trigger => {
-            if (BotWordplay.wholeMessage.toLowerCase().includes(trigger)) {
-                globalThis.bot.preliminary(trigger, 'How is bot', true)
-
-                return message.reply(
-                    Bot.fetchRandomPhrase(PHRASES_CONVO.asked_how_are_you))
             }
         })
     }

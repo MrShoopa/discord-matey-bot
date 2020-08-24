@@ -101,7 +101,7 @@ export default class BotModuleGoogleImage {
                 bot.saveBugReport(error, this.fetchImageFromGoogle.name, true)
 
                 bot.textChannel.send(
-                    'Couldn\'t find image! Let Joe know to find the error.')
+                    'Couldn\'t find image! Let Shoop know to find the error.')
             })
         })
     }

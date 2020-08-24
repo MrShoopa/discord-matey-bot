@@ -267,7 +267,7 @@ export default class Bot extends Discord.Client {
                 bot.saveBugReport(error, playAudioFile.name, true)
 
                 bot.waker.lastMessage.channel
-                    .send(`Ah! I couldn't play that song for some reason. Sent a bug report to Joe.`)
+                    .send(`Ah! I couldn't play that song for some reason. Sent a bug report to Shoop.`)
 
                 throw new Error(`Music playback error (file), see above for error message.`)
             }
@@ -413,7 +413,7 @@ export default class Bot extends Discord.Client {
                     else if (err.response.status == 404)
                         bot.context.reply(`unfortunately this SoundCloud track is unavailable to play.`)
                     else if (err.response.status == 403)
-                        bot.context.reply(`I need to get something updated. Pinged Joe.`)
+                        bot.context.reply(`I need to get something updated. Pinged Shoop.`)
                     else
                         bot.saveBugReport(err, createStreamObject.name, true)
 
@@ -488,7 +488,7 @@ export default class Bot extends Discord.Client {
                 bot.saveBugReport(error, playAudioURL.name, true)
 
                 bot.waker.lastMessage.channel
-                    .send(`Ah! I couldn't play that song for some reason. Sent a bug report to Joe.`)
+                    .send(`Ah! I couldn't play that song for some reason. Sent a bug report to Shoop.`)
 
                 throw new Error(`Music playback error (URL), see above for error message.`)
             }

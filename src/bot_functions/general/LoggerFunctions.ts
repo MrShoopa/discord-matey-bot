@@ -26,7 +26,7 @@ export default class BotLoggerFunctions {
         if (reply && bot.lastWaker)
             bot.lastWaker.lastMessage.channel.send(new Discord.MessageEmbed()
                 .setAuthor('Megadork Crash Reporter 📝')
-                .setDescription`Log submitted to Joe.`)
+                .setDescription`Log submitted to Shoopa.`)
     }
 
     static async saveUserSuggestion(message: Discord.Message | Discord.PartialMessage, reply?: boolean, trigger?: string) {
@@ -81,7 +81,7 @@ export default class BotLoggerFunctions {
         if (reply && bot.lastWaker)
             bot.lastWaker.lastMessage.channel.send(new Discord.MessageEmbed()
                 .setAuthor('Megadork 📝')
-                .setDescription`I don't know that command so I've pinged Joe to look at it later.`)
+                .setDescription`I don't know that command so I've pinged Shoopa to look at it later.`)
     }
 
     private static writeTextToFile(text: string,
@@ -115,7 +115,7 @@ export default class BotLoggerFunctions {
         if (reply && bot.lastWaker)
             bot.lastWaker.lastMessage.channel.send(new Discord.MessageEmbed()
                 .setAuthor('Megadork Text Writer 📝')
-                .setDescription`Log submitted to Joe.`)
+                .setDescription`Log submitted to Shoopa.`)
     }
 
     static instantiateLogFolder() {

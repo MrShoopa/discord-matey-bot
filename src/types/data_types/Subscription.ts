@@ -75,7 +75,8 @@ export module Subscriptions {
         'COPYPASTATIME' |
         'INSPIRATIONALQUOTE' |
         'MRSHOOPASTREAMWATCH' |
-        'ASKREDDITRELAY'
+        'ASKREDDITRELAY' |
+        '5050FETCH'
 
     export type ChannelType = 'test' | 'DM' | 'PartialGroup' | 'GuildChannel'
 

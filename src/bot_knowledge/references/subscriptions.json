@@ -8,6 +8,7 @@
         "COPYPASTATIME": "Gets that sweet sweet copypasta from r/copypasta",
         "INSPIRATIONALQUOTE": "Gets an inspirational quote!",
         "MRSHOOPASTREAMWATCH": "Checks whenever MrShoopa is streaming on YouTube!",
-        "ASKREDDITRELAY": "Gets a random question from r/AskReddit"
+        "ASKREDDITRELAY": "Gets a random question from r/AskReddit",
+        "5050FETCH": "Gets a random r/5050 image/link"
     }
 }

@@ -301,6 +301,9 @@ export default class BotSubscriptionHandler {
                 channel.send('Routine question!')
                 BotModuleReddit.fireQuestionAsk(channel)
                 break;
+            case '5050FETCH':
+                BotModuleReddit.fire5050Fetch(channel)
+                break;
             default:
                 break;
         }
@@ -327,6 +330,7 @@ export default class BotSubscriptionHandler {
 
         subscriptions.forEach(sub => {
             let currentTime = new Date(), lastTime = new Date(sub._lastRun)
+            lastTime.setTime(lastTime.getTime() + 25200000) // offset pst
             let timeSince = currentTime.getTime() - lastTime.getTime()
 
             // Checks if this ran before the next interval

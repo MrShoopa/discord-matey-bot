@@ -70,6 +70,12 @@ export default class BotDiscordActivity {
 
         let dice = Math.floor(Math.random() * looklist.length)
 
+        let choice = looklist[dice]
+
+        //Special Statuses
+        if (choice.name == 'MemeTime')
+            choice.url = await BotModuleYouTube.fetchRandomVideoInPlaylist(PLAYLISTCHOICE).then(p => p.contentDetails.videoId).catch(e => 'No Meme')
+
         return looklist[dice]
     }
 
@@ -87,7 +93,7 @@ export default class BotDiscordActivity {
 
         let statuses: ActivityOptions[] = [
             { name: `a quote: ${await BotModuleQuote.fetchInspirationalQuote(null, false).then(m => m.title)}`, type: 'LISTENING' },
-            { name: `Meme Time`, type: "STREAMING", url: await BotModuleYouTube.fetchRandomVideoInPlaylist(PLAYLISTCHOICE).then(p => p.contentDetails.videoId).catch(e => 'No Meme') }
+            { name: `Meme Time`, type: "STREAMING" }
         ]
 
         return statuses

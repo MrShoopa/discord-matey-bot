@@ -134,8 +134,8 @@ export default class BotLoggerFunctions {
 // These classes below are for formulating templates for the types of logging.
 
 class ErrorLog {
-    static reportPath: string = BotLoggerFunctions.logPathName + `/ error_logs`
-    static filename: string = ErrorLog.reportPath + `/ ` + `crash_log_` +
+    static reportPath: string = BotLoggerFunctions.logPathName + `/error_logs`
+    static filename: string = ErrorLog.reportPath + `/` + `crash_log_` +
         (new Date().getMonth() + 1) + `_` +
         new Date().getDate() + `_` +
         new Date().getFullYear().toString() +
@@ -164,8 +164,8 @@ Error encountered during bot runtime! -> ${ new Date().toLocaleTimeString()}
 }
 
 class UnknownCommandLog {
-    static reportPath: string = BotLoggerFunctions.logPathName + `/ unknown_commands`
-    static filename: string = UnknownCommandLog.reportPath + `/ ` + `unknown_commands_` +
+    static reportPath: string = BotLoggerFunctions.logPathName + `/unknown_commands`
+    static filename: string = UnknownCommandLog.reportPath + `/` + `unknown_commands_` +
         (new Date().getMonth() + 1) + `_` +
         new Date().getDate() + `_` +
         new Date().getFullYear().toString() +

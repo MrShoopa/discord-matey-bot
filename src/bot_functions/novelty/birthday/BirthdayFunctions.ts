@@ -121,19 +121,19 @@ export default class BotModuleBirthday {
 					"You look like a monkey\n" +
 					"And you smell like one too.\n"
 
-				const att =
+				/* const att =
 					new Discord.MessageAttachment(__dirname +
 						'..\\..\\..\\bot_knowledge\\images\\birthday-stock-image.jpg',
-						'birthday-stock.jpg')
+						'birthday-stock.jpg') */
 
 				let birthdayMesssage = new Discord.MessageEmbed()
 					.setColor('#FFC0CB')
-					.setFooter('🎂🎂🎂🎂🎂🎂🎂🎂🎂')
+					.setFooter('🎂🎂🎂🎂🎂🎂🎂🎂🎂', 'https://img.icons8.com/bubbles/2x/birthday.png')
 					.setTitle(`DOOT DOOT! IT'S SOMEONE'S BIRTHDAY!!!! `)
-					.setDescription(`GIVE IT THE F UP FOR ${specialUser.displayName}!!!!1111!! \n aite hit the mic \n\n\n`)
+					.setDescription(`GIVE IT UP FOR ${specialUser.displayName}!!!!1111!! \n aite hit the mic \n\n\n${specialSong}`)
 					.setImage(specialUser.user.avatarURL())
-					.attachFiles([att])
-					.setThumbnail('attachment://birthday-stock.jpg')
+					//.attachFiles([att])
+					.setThumbnail('https://i.redd.it/d33lp13fd6w11.jpg')
 
 				if (new Date(user.birthday).getUTCFullYear() !== 6969)
 					birthdayMesssage.addFields({

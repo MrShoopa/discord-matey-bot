@@ -41,7 +41,7 @@ export default class BotModuleSwearJar {
 
             let userData = BotData.getUserData(message.author.id, true)
 
-            if (userData.swear_jar_notify_whitelist.includes(message.channel.id))
+            if (userData.swear_jar_notify_whitelist?.includes(message.channel.id))
                 return console.log('Swore in whitelisted channel')
 
             if (userData === undefined)

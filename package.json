@@ -57,18 +57,18 @@
         "parse-time": "^0.1.4",
         "request": "^2.88.2",
         "snekfetch": "^4.0.4",
-        "soundcloud.ts": "0.2.9",
+        "soundcloud.ts": "0.3.0",
         "starwars": "^1.0.1",
         "ts-node": "8.10.2",
         "twitter": "^1.7.1",
-        "unique-names-generator": "^4.3.0",
+        "unique-names-generator": "^4.3.1",
         "winston": "^3.3.3",
         "wow-lexicon": "0.0.3",
         "youtube-api": "^3.0.1",
         "youtube-playlist": "^1.0.4",
         "youtube-search": "^1.1.4",
-        "youtube.ts": "^0.1.6",
-        "ytdl-core": "3.2.0"
+        "youtube.ts": "^0.1.7",
+        "ytdl-core": "3.2.2"
     },
     "devDependencies": {
         "@types/chai": "^4.2.12",

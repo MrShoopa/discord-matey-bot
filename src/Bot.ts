@@ -348,9 +348,7 @@ export default class Bot extends Discord.Client {
                     stream = YTDL(url.toString(), {
                         requestOptions: {
                             headers: {
-                                //TODO: Handle in Heroku
-                                /* "Cookie": CREDS.youtube.cookie || null,
-                                'x-youtube-identity-token': CREDS.youtube.identity_token || null */
+                                apim: CREDS.youtube.api_key
                             }
                         },
                         filter: 'audioonly',

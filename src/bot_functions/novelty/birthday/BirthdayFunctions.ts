@@ -1,4 +1,4 @@
-import Discord from 'discord.js'
+import Discord, { TextChannel } from 'discord.js'
 
 import Bot from "../../../Bot"
 import BotData from "../../DataHandler"
@@ -111,7 +111,7 @@ export default class BotModuleBirthday {
 	static announceBirthday(user: Data.UserSave, earrape?: boolean) {
 		let bot: Bot = globalThis.bot
 
-		bot.guilds.cache.some(guild => {
+		bot.guilds.cache.forEach(guild => {
 			if (guild.members.cache.has(user._id)) {
 				let specialUser = guild.members.cache.get(user._id)
 
@@ -147,7 +147,13 @@ export default class BotModuleBirthday {
 					bot.playAudioFromURL('https://www.youtube.com/watch?v=s6gLh6mf0Ig&ab_channel=jobv3')
 				}
 
-				guild.systemChannel.send(birthdayMesssage)
+				if (guild.systemChannel)
+					guild.systemChannel.send(birthdayMesssage)
+				/*
+				TODO else
+					guild.channels.cache.some(item => {
+
+					}) */
 				return true
 			} else return false
 		})

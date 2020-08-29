@@ -203,9 +203,9 @@ export default class BotModuleReddit {
         let message = new Discord.MessageEmbed()
             .setTitle(`${redditObject.data.title} - *r/${redditObject.data.subreddit}*`)
             .setAuthor(`u/${redditObject.data.author} posted:`)
-            .setURL(redditObject.data.url)
+            .setURL(`https://www.reddit.com${redditObject.data.permalink}`)
             .setDescription(redditObject.data.selftext)
-            //.setTimestamp(new Date(redditObject.data.created_utc))
+            //.setTimestamp(Date.now() - redditObject.data.created_utc)
             .setColor('#FF5700')
             .setFooter('redditdork',
                 'https://icons-for-free.com/iconfiles/png/512/reddit+round+icon+icon-1320190507793599697.png')

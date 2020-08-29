@@ -87,7 +87,7 @@ export default class BotModuleAnime {
         return await this.MAL.search(name, JikanApiType.ANIME)
             .catch(error => {
                 let bot: Bot = globalThis.bot
-                bot.saveBugReport(error, this.fetchAnimeOfName.name)
+                bot.saveBugReport(error, this.fetchAnimeOfName.name, true)
                 return null
             })
             .then(anime => {

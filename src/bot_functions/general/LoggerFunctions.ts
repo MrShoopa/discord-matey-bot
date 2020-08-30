@@ -6,6 +6,7 @@ import Discord from 'discord.js';
 import Bot from '../../Bot';
 
 import AUTH from '../../user_creds.json'
+import PHRASES from '../../bot_knowledge/phrases/phrases_suggestion.json'
 
 export default class BotLoggerFunctions {
 
@@ -57,8 +58,12 @@ export default class BotLoggerFunctions {
         try {
             const result = await transport.sendMail(email);
             console.log(`Successfully sent Suggestion Email to ${AUTH.smtp.email_to}.`, result);
-            if (reply)
-                message.reply(`I have submitted your suggestion to my creator!`);
+            if (reply) {
+                for (let username of Object.keys(PHRASES.username_response))
+                    if (message.author.username === username)
+                        return message.reply(Bot.fetchRandomPhrase(PHRASES.username_response[username]))
+                return message.reply(Bot.fetchRandomPhrase(PHRASES.default_response))
+            }
         }
         catch (err) {
             console.error(`Failed to send Suggestion Email to ${AUTH.smtp.email_to}`, err);

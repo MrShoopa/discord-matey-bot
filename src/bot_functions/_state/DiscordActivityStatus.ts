@@ -18,7 +18,6 @@ export default class BotDiscordActivity {
         { name: `with toasters 🍞`, type: 'PLAYING' },
         { name: `boku no pico to kids`, type: 'STREAMING' },
         { name: `your servers`, type: 'LISTENING' },
-        { name: `bts 😂👌🏿👌🏿👌🏿👌🏿`, type: 'LISTENING' },
         { name: `🍆`, type: 'PLAYING' },
         { name: `nothing cuz i can't IM A BOT`, type: 'STREAMING' },
         { name: `shrek bingewatches`, type: 'WATCHING' },
@@ -35,7 +34,22 @@ export default class BotDiscordActivity {
         { name: `Sonic '06, The Greatest Game in the Universe`, type: 'PLAYING' },
         { name: `with coronavirus test kits`, type: 'PLAYING' },
         { name: `SimpMaster 69420™`, type: 'PLAYING' },
+        { name: `Capitol Hill Simulator™`, type: 'PLAYING' },
+        {
+            name: 'the SECRET TUNNELLLLL', type: 'STREAMING',
+            url: 'https://www.youtube.com/watch?v=7o4EI_-5reA'
+        },
+        {
+            name: 'Killer Bean Forever™', type: 'STREAMING',
+            url: "https://www.youtube.com/watch?v=qyYHWkVWQ4o"
+        },
         { name: `the collapse of America`, type: 'WATCHING' },
+        { name: `ShoopBeats by Joe`, type: 'PLAYING' },
+        { name: 'I LOVE YOU - BASED GOD', type: 'LISTENING' },
+        {
+            name: '🦀🦀🦀', type: 'STREAMING',
+            url: "https://www.youtube.com/watch?v=LDU_Txk06tM"
+        },
         { name: `itself`, type: 'PLAYING' },
         {
             name: `切腹`, type: 'STREAMING',
@@ -57,6 +71,8 @@ export default class BotDiscordActivity {
         { name: `loves his ${globalThis.bot.users.cache.size} peeps`, type: "STREAMING" },
         { name: `pattycake with ${globalThis.bot.guilds.cache.size} servers`, type: 'PLAYING' },
         { name: `${globalThis.bot.guilds.cache.size} zooms`, type: 'LISTENING' },
+        { name: `${globalThis.bot.guilds.cache.size} zooms`, type: 'LISTENING' },
+        { name: `with ${globalThis.bot.emojis.cache.size} zooms`, type: 'PLAYING' },
     ]
 
     static async getRandomStatus(): Promise<ActivityOptions> {
@@ -82,7 +98,7 @@ export default class BotDiscordActivity {
     static async updateRandomStatus() {
         let bot: Bot = globalThis.bot
 
-        bot.voice.connections.size
+        bot.emojis.cache.size
 
         bot.user.setUsername("Megadork");
 

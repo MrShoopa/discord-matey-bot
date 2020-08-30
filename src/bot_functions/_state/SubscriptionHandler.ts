@@ -290,13 +290,14 @@ export default class BotSubscriptionHandler {
                 BotModuleReddit.fireRedditSubmissionMessage(channel, 'r/shitposting')
                 break;
             case 'MRSHOOPASTREAMWATCH':
-                let response = await BotModuleYouTube.buildChannelNowStreamingMessage('MrShoopa')
+            //TODO Fix overqueries    
+            /* let response = await BotModuleYouTube.buildChannelNowStreamingMessage('MrShoopa')
                 if (response) {
                     channel.send(response)
                     subscription.frequencyMilli = 21600000
                 }
                 // Backs out to 6 hours to prevent duplicate notifcations
-                break;
+                break; */break
             case 'ASKREDDITRELAY':
                 channel.send('Routine question!')
                 BotModuleReddit.fireQuestionAsk(channel)

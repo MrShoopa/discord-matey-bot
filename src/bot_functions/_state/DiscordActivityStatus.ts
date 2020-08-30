@@ -76,7 +76,7 @@ export default class BotDiscordActivity {
         if (choice.name == 'MemeTime')
             choice.url = await BotModuleYouTube.fetchRandomVideoInPlaylist(PLAYLISTCHOICE).then(p => p.contentDetails.videoId).catch(e => 'No Meme')
 
-        return looklist[dice]
+        return choice
     }
 
     static async updateRandomStatus() {

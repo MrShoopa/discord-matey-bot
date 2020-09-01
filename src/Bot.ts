@@ -19,6 +19,7 @@ import BotModuleMusic from './bot_functions/music/MusicFunctions'
 
 export enum SongState {
     Unknown = 'unknown',
+    Down = 'down',
     Fetching = 'fetching',
     Loading = 'loading',
     Playing = 'playing',
@@ -279,14 +280,13 @@ export default class Bot extends Discord.Client {
             }
         }
     }
-    //TODO: Fix for local files, add soundcloud support
 
     async playAudioFromURL(url: string, message?: Discord.Message,
         loop?: boolean, queueNumber?: number, trigger?: string,
         skipLog?: boolean)
         : Promise<SongState> {
         var dispatcher: Discord.StreamDispatcher
-        var stream: Stream.Readable | FileSystem.ReadStream
+        var stream: string | Stream.Readable | Discord.VoiceBroadcast
         var songInfo: Datypes.Stream.SongInfo
             = { source: 'undefined turtle', url: url }
         var cacheFolder = './cache/music', tempSong: string
@@ -326,6 +326,9 @@ export default class Bot extends Discord.Client {
                     })
                     if (result == SongState.Unknown)
                         message.channel.send(`I couldn't play that source. Did you type in your URL correctly?`)
+
+                    if (result == SongState.Down)
+                        message.channel.send(`Currently my backend to ${songInfo.platform} is down! Try again later.`)
 
                     return new Promise(resolve => {
                         resolve(result)
@@ -386,19 +389,20 @@ export default class Bot extends Discord.Client {
                 }
             } else if (url.includes('soundcloud')) {
                 songInfo = { source: url, platform: 'SoundCloud' }
+                url = url.substr(url.indexOf('soundcloud.com') + 15)
 
                 let sc = BotModuleMusic.scClient
 
                 try {
 
-                    await sc.tracks.get(url).then(async track => {
+                    await sc.tracks.getAlt(url).then(async track => {
                         songInfo.name = track.title
                         songInfo.author = track.user.username
                         songInfo.thumbnailUrl = track.artwork_url
                         songInfo.authorImgUrl = track.user.avatar_url
                         songInfo.genre = track.genre
 
-                        stream = await BotModuleMusic.scClient.util.streamTrack(`${track.id}`,
+                        stream = await BotModuleMusic.scClient.util.streamTrack(`https://soundcloud.com/${url}`,
                             './cache/music/soundcloud')
                             .then(s => {
                                 return s as FileSystem.ReadStream
@@ -406,7 +410,10 @@ export default class Bot extends Discord.Client {
                                 console.log(e)
                                 throw e
                             }) as FileSystem.ReadStream
-                    }).catch(e => { throw e })
+                    }).catch(
+                        e => {
+                            throw e
+                        })
 
                     if (stream instanceof FileSystem.ReadStream)
                         tempSong = stream.path.toString()
@@ -419,7 +426,7 @@ export default class Bot extends Discord.Client {
                     else if (err.response.status == 404)
                         bot.context.reply(`unfortunately this SoundCloud track is unavailable to play.`)
                     else if (err.response.status == 403)
-                        bot.context.reply(`I need to get something updated. Pinged Shoop.`)
+                        return SongState.Down
                     else
                         bot.saveBugReport(err, createStreamObject.name, true)
 
@@ -460,7 +467,7 @@ export default class Bot extends Discord.Client {
                         console.log(`Song interrupted by user.`)
                         console.groupEnd()
 
-                        BotModuleMusic.convertPlaybackMessageToInterrupted(response, message)
+                        if (response) BotModuleMusic.convertPlaybackMessageToInterrupted(response, message)
 
                         resolve(SongState.Stopped)
                     })
@@ -471,7 +478,7 @@ export default class Bot extends Discord.Client {
                             return playAudioURL(connection, message, true)
                         } else {
 
-                            BotModuleMusic.convertPlaybackMessageToFinished(response, message)
+                            if (response) BotModuleMusic.convertPlaybackMessageToFinished(response, message)
                             console.info('Song played successfully.')
 
                             let fileInstance = cacheFolder + `/${tempSong}`

@@ -12,7 +12,7 @@ import YouTube from 'youtube-search'
 import YouTubeDownloader from 'ytdl-core'
 import YouTubePlaylister from 'youtube-playlist'
 
-import Soundcloud, { SoundcloudTrack } from "soundcloud.ts"
+import Soundcloud, { SoundcloudTrackV2, SoundcloudTrackSearchV2 } from "soundcloud.ts"
 
 export default class BotModuleMusic {
 
@@ -323,9 +323,9 @@ export default class BotModuleMusic {
     }
 
     static async fetchSingleSoundCloudSearchResult(query: string)
-        : Promise<SoundcloudTrack> {
+        : Promise<SoundcloudTrackV2> {
         let result = await this.processSoundCloudSearch(query, 1)
-        return result[0]
+        return result.collection[0]
     }
 
     static async checkIfUrlSpecialFormat(url: string, message: Message) {
@@ -420,9 +420,9 @@ export default class BotModuleMusic {
     }
 
     static async processSoundCloudSearch(query: string, resultCount = 10)
-        : Promise<Array<SoundcloudTrack>> {
+        : Promise<SoundcloudTrackSearchV2> {
 
-        return await this.scClient.tracks.search({ q: query })
+        return await this.scClient.tracks.searchV2({ q: query })
             .then(res => {
                 console.info(`Fetched SoundCloud search results:`)
                 console.log(res)

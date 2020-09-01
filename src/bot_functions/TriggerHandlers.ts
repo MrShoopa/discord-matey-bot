@@ -158,9 +158,44 @@ export default class TriggerHandlers {
     private static async requestCheck(message = TriggerHandlers.message) {
         for (var hotword of TRIGGERS.main_trigger)
             if (message.toString().toLowerCase().startsWith(hotword)) {
+                let thinking =
+                    await message.channel.send(new Discord.MessageEmbed()
+                        .setDescription('🧠 \\ Thinking.')
+                        .setColor('RANDOM'))
+
+                let loadingAnimation = setInterval(() => {
+                    let nextIcon = () => {
+                        if (thinking.embeds[0].description.includes('\\'))
+                            return '|'
+                        if (thinking.embeds[0].description.includes('|'))
+                            return '/'
+                        if (thinking.embeds[0].description.includes('/'))
+                            return '-'
+                        if (thinking.embeds[0].description.includes('-'))
+                            return '\\'
+                    }
+                    let nextText = () => {
+                        if (thinking.embeds[0].description.includes('...'))
+                            return 'Thinking.  '
+                        if (thinking.embeds[0].description.includes('..'))
+                            return 'Thinking...'
+                        if (thinking.embeds[0].description.includes('.'))
+                            return 'Thinking.. '
+                    }
+                    thinking.edit(new Discord.MessageEmbed()
+                        .setDescription(`🧠 ${nextIcon()} ${nextText()}`)
+                        .setColor('RANDOM'))
+                }, 333)
+
                 message.content = message.content.replace(hotword, '').trim()
                 for (var check of this.functions)
-                    if (await check()) return this.bot.commandSatisfied = true
+                    if (await check()) {
+                        clearInterval(loadingAnimation)
+                        thinking.delete()
+                        return this.bot.commandSatisfied = true
+                    }
+                clearInterval(loadingAnimation)
+                thinking.delete()
             }
     }
 

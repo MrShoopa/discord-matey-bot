@@ -134,7 +134,8 @@ export default class Bot extends Discord.Client {
             return null
     }
 
-    async playAudioFromFiles(song: Datypes.Audio.SongObject | string, loop?: boolean, gapless?: boolean,
+    async playAudioFromFiles(song: Datypes.Audio.SongObject | string, message: Discord.Message,
+        loop?: boolean, queueNumber?: number,
         trigger?: string, skipLog?: boolean)
         : Promise<SongState> {
         let dispatcher: Discord.StreamDispatcher
@@ -151,7 +152,7 @@ export default class Bot extends Discord.Client {
 
             try {
                 let connection = await this.voiceChannel.join().catch(e => { throw e }).then(async c => {
-                    if (!gapless)
+                    if (!queueNumber)
                         await this.playSFX(c, Datypes.Audio.SFX.MusicJoin)
                     return c
                 })
@@ -162,11 +163,11 @@ export default class Bot extends Discord.Client {
                     `Voice channel connection status: ${connection.status}`)
 
                 if (loop)
-                    this.context.channel.send('This track is... loop-de-looped! 💫🤹‍♀️')
+                    message.channel.send('This track is... loop-de-looped! 💫🤹‍♀️')
 
                 try {
                     let result = await playAudioFile(song, connection).catch(e => {
-                        this.context.channel.send(`I couldn't play that right now. Try again later.`)
+                        message.channel.send(`I couldn't play that right now. Try again later.`)
                         throw e
                     })
 
@@ -176,7 +177,7 @@ export default class Bot extends Discord.Client {
                 } catch (err) { throw err }
             } catch (error) {
                 if (!this.voiceChannel)
-                    this.context
+                    message
                         .reply(`where do I dump this noise? you gotta be in a voice channel first!`)
                 else
                     this.saveBugReport(error, this.playAudioFromFiles.name, true)
@@ -188,12 +189,13 @@ export default class Bot extends Discord.Client {
         }
 
         async function playAudioFile(song: string | Datypes.Audio.SongObject,
-            connection: Discord.VoiceConnection, replaying?: boolean) {
+            connection: Discord.VoiceConnection, messageObj?: Discord.Message, replaying?: boolean) {
             let bot: Bot = globalThis.bot
 
             try {
                 return new Promise<SongState>((resolve, reject) => {
                     let state = SongState.Loading
+                    let response: Discord.Message
 
                     if (typeof song == 'string') {
 
@@ -223,7 +225,7 @@ export default class Bot extends Discord.Client {
                         reject(SongState.Unknown)
                     }
 
-                    dispatcher.on('start', () => {
+                    dispatcher.on('start', async () => {
                         state = SongState.Playing
                         console.groupEnd()
                         console.group()
@@ -232,29 +234,33 @@ export default class Bot extends Discord.Client {
                         else
                             console.log(`Now playing local file: ${song}`)
 
-                        if (!replaying && !skipLog)
-                            bot.textChannel
-                                .send(BotModuleMusic.generatePlaybackMessage(songInfo))
+                        if (!replaying && !skipLog && message)
+                            response = await bot.textChannel
+                                .send(BotModuleMusic.generatePlaybackMessage(messageObj, songInfo))
                     })
 
                     dispatcher.on('close', () => {
                         console.log(`Song interrupted by user.`)
                         console.groupEnd()
 
+                        BotModuleMusic.convertPlaybackMessageToInterrupted(response, message)
+
                         resolve(SongState.Stopped)
                     })
 
-                    dispatcher.on('finish', async () => {
+                    dispatcher.on('finish', async (connection: Discord.VoiceConnection) => {
                         if (loop) {
                             console.info('Looping song...')
-                            playAudioFile(song, connection, true)
+                            playAudioFile(song, connection, messageObj, true)
                         } else {
+                            BotModuleMusic.convertPlaybackMessageToFinished(response, message)
+
                             console.info('Song played successfully.')
 
                             bot.songState = SongState.Finished
-                            if (!gapless) {
+                            if (!queueNumber) {
                                 await bot.playSFX(connection, Datypes.Audio.SFX.MusicLeave)
-                                bot.voiceChannel.leave()
+                                connection.disconnect()
                             }
                         }
 
@@ -273,9 +279,10 @@ export default class Bot extends Discord.Client {
             }
         }
     }
+    //TODO: Fix for local files, add soundcloud support
 
     async playAudioFromURL(url: string, message?: Discord.Message,
-        loop?: boolean, gapless?: boolean, trigger?: string,
+        loop?: boolean, queueNumber?: number, trigger?: string,
         skipLog?: boolean)
         : Promise<SongState> {
         var dispatcher: Discord.StreamDispatcher
@@ -299,7 +306,7 @@ export default class Bot extends Discord.Client {
 
             try {
                 let connection = await this.voiceChannel.join().catch(e => { throw e }).then(async c => {
-                    if (!gapless)
+                    if (!queueNumber)
                         await this.playSFX(c, Datypes.Audio.SFX.MusicJoin)
                     return c
                 })
@@ -310,15 +317,15 @@ export default class Bot extends Discord.Client {
                     `Voice channel connection status: ${connection.status}`)
 
                 if (loop)
-                    this.context.channel.send(`Looks like I'm looping this one! 💫🤹‍♀️`)
+                    message.channel.send(`Looks like I'm looping this one! 💫🤹‍♀️`)
 
                 try {
-                    let result = await playAudioURL(connection, message).catch(e => {
-                        this.context.channel.send(`I couldn't play that right now. Try again later.`)
+                    let result = await playAudioURL(connection, message, null, queueNumber).catch(e => {
+                        message.channel.send(`I couldn't play that right now. Try again later.`)
                         throw e
                     })
                     if (result == SongState.Unknown)
-                        this.context.channel.send(`I couldn't play that source. Did you type in your URL correctly?`)
+                        message.channel.send(`I couldn't play that source. Did you type in your URL correctly?`)
 
                     return new Promise(resolve => {
                         resolve(result)
@@ -326,7 +333,7 @@ export default class Bot extends Discord.Client {
                 } catch (err) { throw err }
             } catch (err) {
                 if (!this.voiceChannel)
-                    this.context
+                    message
                         .reply(`where do I dump this noise? you gotta be in a voice channel first!`)
                 else
                     this.saveBugReport(err, playAudioURL.name, true)
@@ -359,7 +366,7 @@ export default class Bot extends Discord.Client {
 
                     await YTDL.getInfo(url.toString()).then(video => {
                         songInfo.name = video.videoDetails.title
-                        songInfo.thumbnailUrl = video.thumbnail_url
+                        songInfo.thumbnailUrl = video.videoDetails.thumbnail.thumbnails[3].url
                         songInfo.author = video.videoDetails.author.name
                         songInfo.url = video.videoDetails.video_url
                     }).catch(e => { throw e })
@@ -424,7 +431,7 @@ export default class Bot extends Discord.Client {
         }
 
         async function playAudioURL(
-            connection: Discord.VoiceConnection, messageObj?: Discord.Message, replaying?: boolean) {
+            connection: Discord.VoiceConnection, messageObj?: Discord.Message, replaying?: boolean, queueNumber?: number) {
             let bot: Bot = globalThis.bot
 
             stream = await createStreamObject()
@@ -453,17 +460,7 @@ export default class Bot extends Discord.Client {
                         console.log(`Song interrupted by user.`)
                         console.groupEnd()
 
-                        response.edit(response.content, {
-                            embed: {
-                                author: response.embeds[0].author,
-                                url: response.embeds[0].url,
-                                fields: response.embeds[0].fields,
-                                footer: response.embeds[0].footer,
-                                title: 'Played some 🅱eatz',
-                                description: `- Jam got interrupted by request -`,
-                                color: '#7c7286'
-                            }
-                        })
+                        BotModuleMusic.convertPlaybackMessageToInterrupted(response, message)
 
                         resolve(SongState.Stopped)
                     })
@@ -473,17 +470,8 @@ export default class Bot extends Discord.Client {
                             console.info('Looping song...')
                             return playAudioURL(connection, message, true)
                         } else {
-                            response.edit(response.content, {
-                                embed: {
-                                    author: response.embeds[0].author,
-                                    url: response.embeds[0].url,
-                                    fields: response.embeds[0].fields,
-                                    footer: response.embeds[0].footer,
-                                    title: 'Played some 🅱eatz',
-                                    description: `- Finished playing this! -`,
-                                    color: '#7c7286'
-                                }
-                            })
+
+                            BotModuleMusic.convertPlaybackMessageToFinished(response, message)
                             console.info('Song played successfully.')
 
                             let fileInstance = cacheFolder + `/${tempSong}`
@@ -494,7 +482,7 @@ export default class Bot extends Discord.Client {
                             })
 
                             bot.songState = SongState.Finished
-                            if (!gapless) {
+                            if (!queueNumber) {
                                 await bot.playSFX(connection, Datypes.Audio.SFX.MusicLeave)
                                 connection.disconnect()
                             }

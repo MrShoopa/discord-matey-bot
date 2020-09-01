@@ -21,7 +21,7 @@ export default class BotModuleMusic {
     static scClient: Soundcloud =
         new Soundcloud(AUTH.soundcloud.client_id, AUTH.soundcloud.o_auth_token)
 
-    static async playMusic(trigger: string, loop?: boolean, queueMode?: boolean, messageObj?: Message) {
+    static async playMusic(trigger: string, loop?: boolean, queueNumber?: number, messageObj?: Message) {
         let bot: Bot = globalThis.bot
         let songState = SongState.Fetching
 
@@ -29,7 +29,7 @@ export default class BotModuleMusic {
             messageObj = bot.context as Message
 
         let context: string[] =
-            bot.context.toString().substring(0, 100).split(' ')
+            messageObj.toString().substring(0, 100).split(' ')
 
         loop = loop ? true : checkForLoop()
 
@@ -114,7 +114,7 @@ export default class BotModuleMusic {
 
                 songState = SongState.Playing
                 songState =
-                    await bot.playAudioFromURL(url_string, messageObj, loop, queueMode, trigger)
+                    await bot.playAudioFromURL(url_string, messageObj, loop, queueNumber, trigger)
                         .catch(error => { throw error })
             }
 
@@ -128,7 +128,7 @@ export default class BotModuleMusic {
 
                         songState = SongState.Playing
                         songState =
-                            await bot.playAudioFromFiles(foundSong, loop, queueMode, trigger)
+                            await bot.playAudioFromFiles(foundSong, messageObj, loop, queueNumber, trigger)
                                 .catch(error => { throw error })
                     }
                 }
@@ -147,7 +147,7 @@ export default class BotModuleMusic {
 
                     songState = SongState.Playing
                     songState =
-                        await bot.playAudioFromFiles(matchedSongs[0], loop, queueMode, trigger)
+                        await bot.playAudioFromFiles(matchedSongs[0], messageObj, loop, queueNumber, trigger)
                             .catch(error => { throw error })
                 }
             }
@@ -171,7 +171,7 @@ export default class BotModuleMusic {
 
         // Finished
         bot.commandSatisfied = true
-        if (queueMode && songState == SongState.Finished) {
+        if (queueNumber && songState == SongState.Finished) {
             return 'next'
         }
     }
@@ -272,7 +272,38 @@ export default class BotModuleMusic {
             playbackMessage
                 .setTitle(songInfo.botPhrase)
 
+        if (songInfo.queueNumber)
+            playbackMessage.setDescription(`\nPlaying ${message.author.username}'s request! ${songInfo.queueNumber} songs left in queue.`)
+
         return playbackMessage
+    }
+
+    static convertPlaybackMessageToFinished(botResponse: Message, ogMessage: Message) {
+        botResponse.edit(botResponse.content, {
+            embed: {
+                author: botResponse.embeds[0].author,
+                url: botResponse.embeds[0].url,
+                fields: botResponse.embeds[0].fields,
+                footer: botResponse.embeds[0].footer,
+                title: 'Played some 🅱eatz',
+                description: `- Finished playing ${ogMessage.author.username}'s jam! -`,
+                color: '#7c7286'
+            }
+        })
+    }
+
+    static convertPlaybackMessageToInterrupted(botResponse: Message, ogMessage: Message) {
+        botResponse.edit(botResponse.content, {
+            embed: {
+                author: botResponse.embeds[0].author,
+                url: botResponse.embeds[0].url,
+                fields: botResponse.embeds[0].fields,
+                footer: botResponse.embeds[0].footer,
+                title: 'Played some 🅱eatz',
+                description: `- Jam got interrupted by ${ogMessage.author.username} -`,
+                color: '#7c7286'
+            }
+        })
     }
 
     static async searchUrlofYouTubeVideo(query: string): Promise<string> {
@@ -524,16 +555,15 @@ class MusicQueue {
                     await bot.playSFX(connection, Audio.SFX.MusicJoin)
                 }
 
-                if (request.author?.username)
-                    request.channel.send(`👉💿👉 ${request.author.username}'s song is up next!`)
-                else
-                    request.channel.send(`👉💿👉 Playing next song.`)
+                /*  if (request.author?.username)
+                     request.channel.send(`👉💿👉 ${request.author.username}'s song is up next!`)
+                 else */
+                request.channel.send(`👉💿👉 Playing next song.`)
 
-                let channel = message.member.voice.channel
                 message = request
-                bot.voiceChannel = channel
+                bot.voiceChannel = message.member.voice.channel
 
-                if (await BotModuleMusic.playMusic(request.content.toString(), false, true)
+                if (await BotModuleMusic.playMusic(request.content.toString(), false, this.queue.size(), message)
                     == 'next')
                     this.processNextSongRequest(message, skip, false, null, connection.channel)
             }

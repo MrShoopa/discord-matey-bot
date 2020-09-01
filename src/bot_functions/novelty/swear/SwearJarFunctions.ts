@@ -219,7 +219,7 @@ export default class BotModuleSwearJar {
                     let bot: Bot = globalThis.bot
                     console.log(`Swear Jar: Playing SFX for matched word '${word}' towards '${message.author.username}'`)
                     try {
-                        bot.playAudioFromURL(key, message, false, false, null, true)
+                        bot.playAudioFromURL(key, message, false, null, null, true)
                     } catch (err) {
                         console.log(`Swear Jar: Failed to play SFX on this key '${key}'`)
                     }

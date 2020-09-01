@@ -11,5 +11,6 @@ export module Stream {
         length?: string
         thumbnailUrl?: string
         botPhrase?: string
+        queueNumber?: number
     }
 }

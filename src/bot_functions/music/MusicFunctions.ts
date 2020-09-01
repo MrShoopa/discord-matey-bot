@@ -21,9 +21,12 @@ export default class BotModuleMusic {
     static scClient: Soundcloud =
         new Soundcloud(AUTH.soundcloud.client_id, AUTH.soundcloud.o_auth_token)
 
-    static async playMusic(trigger: string, loop?: boolean, queueMode?: boolean) {
+    static async playMusic(trigger: string, loop?: boolean, queueMode?: boolean, messageObj?: Message) {
         let bot: Bot = globalThis.bot
         let songState = SongState.Fetching
+
+        if (!messageObj)
+            messageObj = bot.context as Message
 
         let context: string[] =
             bot.context.toString().substring(0, 100).split(' ')
@@ -35,8 +38,8 @@ export default class BotModuleMusic {
                 return context.some(word => {
                     if (word === trigger) {
                         context = context.slice(0, context.length - 1)
-                        return bot.context.content =
-                            bot.context.content.replace(trigger, '').trimRight()
+                        return messageObj.content =
+                            messageObj.content.replace(trigger, '').trimRight()
                     }
                 })
             })) return true
@@ -79,8 +82,8 @@ export default class BotModuleMusic {
                         break
                 }
 
-                bot.context.content =
-                    bot.context.content.replace(`${requestedQuery}`, newQuery).trim()
+                messageObj.content =
+                    messageObj.content.replace(`${requestedQuery}`, newQuery).trim()
                 return true
             } else return false
 
@@ -100,24 +103,24 @@ export default class BotModuleMusic {
                 2. Local Files w/ special names
                 3. Local Files w/ exact file
             */
-            if (bot.context.toString().toLowerCase().match(urlRegex)
+            if (messageObj.toString().toLowerCase().match(urlRegex)
                 && songState == SongState.Fetching) {
                 //  When song from URL is found
 
-                var url_string: any = bot.context.toString().match(urlRegex)
+                var url_string: any = messageObj.toString().match(urlRegex)
                 url_string = url_string[0]
 
-                if (await this.checkIfUrlSpecialFormat(url_string)) return true
+                if (await this.checkIfUrlSpecialFormat(url_string, messageObj)) return true
 
                 songState = SongState.Playing
                 songState =
-                    await bot.playAudioFromURL(url_string, loop, queueMode, trigger)
+                    await bot.playAudioFromURL(url_string, messageObj, loop, queueMode, trigger)
                         .catch(error => { throw error })
             }
 
             if (songState == SongState.Fetching) {
                 for (const song of PHRASES_SING.songs_to_sing) {
-                    if (bot.context.toString().toLowerCase().includes(song.title.toLowerCase())) {
+                    if (messageObj.toString().toLowerCase().includes(song.title.toLowerCase())) {
 
                         //  When song from local files is found
 
@@ -133,7 +136,7 @@ export default class BotModuleMusic {
 
             if (songState == SongState.Fetching) {
                 // Start searching local audio folder for 'non-tagged' songs
-                let songRequest = bot.context.toString().substring(trigger.length + 1)
+                let songRequest = messageObj.toString().substring(trigger.length + 1)
 
                 let matchedSongs = Bot.searchFilesRecursive('./', `${songRequest}.mp3`)
                 if (matchedSongs.length > 0 && songRequest) {
@@ -152,7 +155,7 @@ export default class BotModuleMusic {
         } catch (error) {
             if (!bot.voiceChannel) {
                 console.warn(`Bot couldn't find a voice channel to join. Please have user join a channel first.`)
-                bot.context.reply(
+                messageObj.reply(
                     PHRASES_SING.message_not_in_channel)
 
                 songState = SongState.Unknown
@@ -160,7 +163,7 @@ export default class BotModuleMusic {
         }
 
         if (songState == SongState.Fetching) { //  When song is not found
-            bot.context.reply(
+            messageObj.reply(
                 PHRASES_SING.message_unknown_summon)
 
             console.warn('No such song found.')
@@ -173,10 +176,12 @@ export default class BotModuleMusic {
         }
     }
 
-    static async stopMusic(trigger?: string) {
+    static async stopMusic(trigger?: string, messageObj?: Discord.Message) {
         let bot: Bot = globalThis.bot
 
-        let connection = bot.voice.connections.find(c => c.channel.id == bot.context.member.voice?.channel?.id)
+        if (!messageObj) messageObj = bot.context as Message
+
+        let connection = bot.voice.connections.find(c => c.channel.id == messageObj.member.voice?.channel?.id)
 
         if (trigger) bot.preliminary(trigger, 'Singing Stop', true, true)
 
@@ -185,12 +190,12 @@ export default class BotModuleMusic {
             try {
                 if (!connection) // "the bottom might annoy some"
                     return console.log(`Matching voice connection not found`)
-                //.bot.context.reply(`join my voice channel and repeat that action!`)
+                //.messageObj.reply(`join my voice channel and repeat that action!`)
                 else {
                     await bot.playSFX(connection, Audio.SFX.MusicLeave)
-                    bot.context.member.voice.channel.leave()
+                    messageObj.member.voice.channel.leave()
 
-                    bot.textChannel.send(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.active))
+                    //. dw about it bot.textChannel.send(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.active))
                     console.log('Bot exited voice channel by user message.')
 
                     if (this.findQueue()?.queue.peek()) {
@@ -202,12 +207,12 @@ export default class BotModuleMusic {
                 bot.saveBugReport(error, this.stopMusic.name, true)
             }
         } else {
-            bot.context.reply(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.null))
+            messageObj.reply(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.null))
             console.log('No sound was playing, nothing terminated.')
         }
     }
 
-    static generatePlaybackMessage(songInfo?: Stream.SongInfo, bot: Bot = globalThis.bot)
+    static generatePlaybackMessage(message: Message, songInfo?: Stream.SongInfo)
         : Discord.MessageEmbed {
         let playbackMessage = new Discord.MessageEmbed()
             .setAuthor('Mega-Juker! 🔊')
@@ -215,7 +220,7 @@ export default class BotModuleMusic {
             .setColor('ffc0cb')
 
         playbackMessage
-            .setDescription(`\nI'm playing your request, ${bot.context.author.username}! 👌`)
+            .setDescription(`\nI'm playing your request, ${message.author.username}! 👌`)
 
         if (songInfo.name && songInfo.author)
             playbackMessage
@@ -286,10 +291,15 @@ export default class BotModuleMusic {
         return result[0]
     }
 
-    static async checkIfUrlSpecialFormat(url: string) {
+    static async fetchSingleSoundCloudSearchResult(query: string)
+        : Promise<SoundcloudTrack> {
+        let result = await this.processSoundCloudSearch(query, 1)
+        return result[0]
+    }
+
+    static async checkIfUrlSpecialFormat(url: string, message: Message) {
         function checkForShuffle() {
-            let bot: Bot = globalThis.bot
-            let context: string[] = bot.context.toString().substring(0, 1000).split(' ')
+            let context: string[] = message.toString().substring(0, 1000).split(' ')
             return TRIGGERS.singing_triggers.args.shuffle.some((trigger) => {
                 return context.some(word => {
                     if (word === trigger) return true
@@ -310,23 +320,22 @@ export default class BotModuleMusic {
             playlistUrls = await this.checkIfYouTubePlaylist(url)
 
         if (playlistUrls) {
-            let bot: Bot = globalThis.bot
             let messageReply: string
             if (checkForShuffle()) {
                 playlistUrls = shuffleArray(playlistUrls)
-                messageReply = `🎶📃▶ **Playing ${bot.context.author.username}'s *shuffled* playlist!** `
+                messageReply = `🎶📃▶ **Playing ${message.author.username}'s *shuffled* playlist!** `
             } else {
-                messageReply = `🎶📃▶ **Playing ${bot.context.author.username}'s playlist!** `
+                messageReply = `🎶📃▶ **Playing ${message.author.username}'s playlist!** `
             }
 
-            let queue = this.createNewQueue(bot.context.member.voice?.channel)
+            let queue = this.createNewQueue(message.member.voice?.channel)
 
             playlistUrls.forEach((url: string) => {
-                queue.addNewSongRequest('', url)
+                queue.addNewSongRequest(message, '', url)
             })
 
-            bot.context.channel.send(messageReply)
-            await queue.processNextSongRequest()
+            message.channel.send(messageReply)
+            await queue.processNextSongRequest(message)
 
             return true
         }
@@ -358,12 +367,6 @@ export default class BotModuleMusic {
             .catch(e => { throw e })
     }
 
-    static async fetchSingleSoundCloudSearchResult(query: string)
-        : Promise<SoundcloudTrack> {
-        let result = await this.processSoundCloudSearch(query, 1)
-        return result[0]
-    }
-
     static async processYouTubeSearch(query: string, resultCount = 10, type = 'video')
         : Promise<Array<YouTube.YouTubeSearchResults>> {
         var opts: YouTube.YouTubeSearchOptions = {
@@ -390,7 +393,7 @@ export default class BotModuleMusic {
 
         return await this.scClient.tracks.search({ q: query })
             .then(res => {
-                console.info(`Fetched YouTube search results:`)
+                console.info(`Fetched SoundCloud search results:`)
                 console.log(res)
 
                 return res
@@ -402,41 +405,37 @@ export default class BotModuleMusic {
             })
     }
 
-    static addNewSongRequest(trigger: string) {
-        let bot: Bot = globalThis.bot
-        if (bot.context.member.voice.channel) {
-            let queue = this.findQueue(bot.context.member.voice.channel)
+    static addNewSongRequest(trigger: string, message: Discord.Message) {
+        if (message.member.voice.channel) {
+            let queue = this.findQueue(message.member.voice.channel)
 
-            if (!queue?.addNewSongRequest(trigger))
-                return this.createNewQueue().addNewSongRequest(trigger)
-        } else return bot.context.channel.send(`Join a channel first before adding to a music queue.`)
+            if (!queue?.addNewSongRequest(message, trigger))
+                return this.createNewQueue(message.member.voice.channel).addNewSongRequest(message, trigger)
+        } else return message.channel.send(`Join a channel first before adding to a music queue.`)
     }
-    static processNextSongRequest(skip?: boolean, restart?: boolean, trigger?: string) {
-        let bot: Bot = globalThis.bot
-        if (bot.context.member.voice.channel) {
+    static processNextSongRequest(message: Discord.Message, skip?: boolean, restart?: boolean, trigger?: string) {
+        if (message.member.voice.channel) {
             let queue = this.findQueue()
 
-            if (!queue?.processNextSongRequest(skip, restart, trigger))
-                return this.createNewQueue().processNextSongRequest(skip, restart, trigger)
-        } else return bot.context.channel.send(`Join a channel first before managing a music queue.`)
+            if (!queue?.processNextSongRequest(message, skip, restart, trigger))
+                return this.createNewQueue(message.member.voice.channel).processNextSongRequest(message, skip, restart, trigger)
+        } else return message.channel.send(`Join a channel first before managing a music queue.`)
     }
-    static fireQueueNextUpMessage(trigger?: string) {
-        let bot: Bot = globalThis.bot
-        if (bot.context.member.voice.channel) {
+    static fireQueueNextUpMessage(message: Discord.Message, trigger?: string) {
+        if (message.member.voice.channel) {
             let queue = this.findQueue()
 
             if (!queue?.fireQueueNextUpMessage(trigger))
-                return this.createNewQueue().fireQueueNextUpMessage(trigger)
-        } else return bot.context.channel.send(`Join a channel first before reading music queues.`)
+                return this.createNewQueue(message.member.voice.channel).fireQueueNextUpMessage(trigger)
+        } else return message.channel.send(`Join a channel first before reading music queues.`)
     }
-    static fireQueueListMessage(trigger?: string) {
-        let bot: Bot = globalThis.bot
-        if (bot.context.member.voice.channel) {
+    static fireQueueListMessage(message: Discord.Message, trigger?: string) {
+        if (message.member.voice.channel) {
             let queue = this.findQueue()
 
-            if (!queue?.fireQueueListMessage(trigger))
-                return this.createNewQueue().fireQueueListMessage(trigger)
-        } else return bot.context.channel.send(`Join a channel first before reading music queues.`)
+            if (!queue?.fireQueueListMessage(message, trigger))
+                return this.createNewQueue(message.member.voice.channel).fireQueueListMessage(message, trigger)
+        } else return message.channel.send(`Join a channel first before reading music queues.`)
     }
 
     static findQueue(channel: Discord.VoiceChannel = globalThis.bot.context.member.voice.channel) {
@@ -465,25 +464,25 @@ class MusicQueue {
         this.queue = new QueueHandler<Message>()
     }
 
-    addNewSongRequest(trigger?: string, manualQuery?: string) {
+    addNewSongRequest(message: Message, trigger?: string, manualQuery?: string) {
         let bot: Bot = globalThis.bot
         if (trigger) {
             bot.preliminary(trigger, 'Song Request Enqueue', true)
 
-            bot.context.content = bot.context.content.replace(trigger, "").trim()
+            message.content = message.content.replace(trigger, "").trim()
         }
 
         try {
             if (manualQuery) {
                 this.queue.add(new Discord.Message(bot,
-                    { author: bot.context.author, content: manualQuery },
-                    bot.context.channel as Discord.TextChannel))
+                    { author: message.author, content: manualQuery },
+                    message.channel as Discord.TextChannel))
                 return true
             }
 
-            bot.context.channel.send(`${bot.context.author.username}, queuing your request.`)
+            message.channel.send(`${message.author.username}, queuing your request.`)
 
-            this.queue.add(bot.context as Message)
+            this.queue.add(message as Message)
         } catch (err) {
             bot.saveBugReport(err, this.addNewSongRequest.name, true)
         }
@@ -491,7 +490,7 @@ class MusicQueue {
         return true
     }
 
-    async processNextSongRequest(skip?: boolean, restart?: boolean, trigger?: string, channel?: Discord.VoiceChannel) {
+    async processNextSongRequest(message: Message, skip?: boolean, restart?: boolean, trigger?: string, channel?: Discord.VoiceChannel) {
         let request = this.queue.dequeue()
         let bot: Bot = globalThis.bot
         let connection: Discord.VoiceConnection
@@ -499,11 +498,11 @@ class MusicQueue {
         if (channel)
             connection = await channel.join()
         else
-            connection = bot.voice.connections.find(c => c.channel.id == bot.context.member.voice.channel?.id)
+            connection = bot.voice.connections.find(c => c.channel.id == message.member.voice.channel?.id)
 
         if (request === undefined) {
             console.info(`Music queue list for ${this.channel.name} is now empty.`)
-            bot.context.channel.send(`📻... *that's all folks*!`)
+            message.channel.send(`📻... *that's all folks*!`)
 
             if (connection) {
                 await bot.playSFX(connection, Audio.SFX.MusicLeave)
@@ -518,10 +517,10 @@ class MusicQueue {
                 if (connection)
                     await bot.playSFX(connection, Audio.SFX.MusicTransition)
                 else {
-                    if (bot.context.member.voice.channel)
-                        connection = await bot.context.member.voice.channel.join()
+                    if (message.member.voice.channel)
+                        connection = await message.member.voice.channel.join()
                     else
-                        return bot.context.channel.send(`😵 Join a voice channel in this server first to play your queue!`)
+                        return message.channel.send(`😵 Join a voice channel in this server first to play your queue!`)
                     await bot.playSFX(connection, Audio.SFX.MusicJoin)
                 }
 
@@ -530,13 +529,13 @@ class MusicQueue {
                 else
                     request.channel.send(`👉💿👉 Playing next song.`)
 
-                let channel = bot.context.member.voice.channel
-                bot.context = request
+                let channel = message.member.voice.channel
+                message = request
                 bot.voiceChannel = channel
 
                 if (await BotModuleMusic.playMusic(request.content.toString(), false, true)
                     == 'next')
-                    this.processNextSongRequest(skip, false, null, connection.channel)
+                    this.processNextSongRequest(message, skip, false, null, connection.channel)
             }
             else {
                 request.channel.send(`${request.author.username}'s request is being skipped.`)
@@ -548,9 +547,9 @@ class MusicQueue {
         return true
     }
 
-    async fireQueueListMessage(trigger?: string) {
+    async fireQueueListMessage(messageObj: Message, trigger?: string) {
         let bot: Bot = globalThis.bot
-        let textChannel = bot.context.channel
+        let textChannel = messageObj.channel
         if (trigger) bot.preliminary(trigger, `Song Request List Inquiry for ${this.channel.guild.name}`, true)
 
         let currentList = this.queue.peekAll()

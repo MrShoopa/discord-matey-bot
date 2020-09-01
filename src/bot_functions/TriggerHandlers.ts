@@ -247,32 +247,32 @@ export default class TriggerHandlers {
     private static checkForMusicQueueAddRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.singing_triggers.queue.add)
             if (message.toString().substring(0).toLowerCase().startsWith(trigger))
-                return BotModuleMusic.addNewSongRequest(trigger)
+                return BotModuleMusic.addNewSongRequest(trigger, message as Discord.Message)
     }
     private static checkForMusicQueueInquireListRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.singing_triggers.queue.inquire.list)
             if (message.toString().substring(0).toLowerCase().startsWith(trigger))
-                return BotModuleMusic.fireQueueListMessage(trigger)
+                return BotModuleMusic.fireQueueListMessage(message as Discord.Message, trigger)
     }
     private static checkForMusicQueueStartRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.singing_triggers.queue.start)
             if (message.toString().substring(0).toLowerCase().startsWith(trigger))
-                return BotModuleMusic.processNextSongRequest(false, true, trigger)
+                return BotModuleMusic.processNextSongRequest(message as Discord.Message, false, true, trigger)
     }
     private static async checkForMusicQueueSkipRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.singing_triggers.queue.play_next)
             if (message.toString().substring(0).toLowerCase().startsWith(trigger))
-                return await BotModuleMusic.processNextSongRequest(false, false, trigger)
+                return await BotModuleMusic.processNextSongRequest(message as Discord.Message, false, false, trigger)
     }
     private static checkForMusicQueueAvoidNextRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.singing_triggers.queue.skip)
             if (message.toString().substring(0).toLowerCase().startsWith(trigger))
-                return BotModuleMusic.processNextSongRequest(true, false, trigger)
+                return BotModuleMusic.processNextSongRequest(message as Discord.Message, true, false, trigger)
     }
     private static checkForMusicQueueInquireNextRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.singing_triggers.queue.inquire.next)
             if (message.toString().substring(0).toLowerCase().startsWith(trigger))
-                return BotModuleMusic.fireQueueNextUpMessage(trigger)
+                return BotModuleMusic.fireQueueNextUpMessage(message as Discord.Message, trigger)
     }
 
 
@@ -311,17 +311,17 @@ export default class TriggerHandlers {
         //  Get copypasta post [from Reddit]
 
         for (const trigger of TRIGGERS.reddit_fetch.copypasta.default)
-            if (message.toString().toLowerCase().startsWith(trigger))
+            if (message.toString() === (trigger))
                 return BotModuleReddit.fireCopypastaFetch(null, trigger)
         //  Get copypasta post [from Reddit]
 
         for (const trigger of TRIGGERS.reddit_fetch.fiftyfifty.default)
-            if (message.toString().toLowerCase().startsWith(trigger))
+            if (message.toString() === (trigger))
                 return BotModuleReddit.fire5050Fetch(null, trigger)
         //  Get fifityfifity post [from Reddit]
 
         for (const trigger of TRIGGERS.reddit_fetch.askreddit.default)
-            if (message.toString().toLowerCase().startsWith(trigger))
+            if (message.toString() === (trigger))
                 return BotModuleReddit.fireQuestionAsk(null, trigger)
         //  Get askreddit post [from Reddit]
     }

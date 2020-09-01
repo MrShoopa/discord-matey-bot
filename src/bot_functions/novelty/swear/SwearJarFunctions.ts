@@ -210,7 +210,7 @@ export default class BotModuleSwearJar {
         }
     }
 
-    static checkForSoundReply(word: string, message: Discord.Message | Discord.PartialMessage) {
+    static checkForSoundReply(word: string, message: Discord.Message) {
         const list = you.word_list.sound_reply
 
         for (let key of Object.keys(list))
@@ -219,7 +219,7 @@ export default class BotModuleSwearJar {
                     let bot: Bot = globalThis.bot
                     console.log(`Swear Jar: Playing SFX for matched word '${word}' towards '${message.author.username}'`)
                     try {
-                        bot.playAudioFromURL(key, false, false, null, true)
+                        bot.playAudioFromURL(key, message, false, false, null, true)
                     } catch (err) {
                         console.log(`Swear Jar: Failed to play SFX on this key '${key}'`)
                     }

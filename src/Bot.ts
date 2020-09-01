@@ -274,7 +274,8 @@ export default class Bot extends Discord.Client {
         }
     }
 
-    async playAudioFromURL(url: string, loop?: boolean, gapless?: boolean, trigger?: string,
+    async playAudioFromURL(url: string, message?: Discord.Message,
+        loop?: boolean, gapless?: boolean, trigger?: string,
         skipLog?: boolean)
         : Promise<SongState> {
         var dispatcher: Discord.StreamDispatcher
@@ -312,7 +313,7 @@ export default class Bot extends Discord.Client {
                     this.context.channel.send(`Looks like I'm looping this one! 💫🤹‍♀️`)
 
                 try {
-                    let result = await playAudioURL(connection).catch(e => {
+                    let result = await playAudioURL(connection, message).catch(e => {
                         this.context.channel.send(`I couldn't play that right now. Try again later.`)
                         throw e
                     })
@@ -357,10 +358,10 @@ export default class Bot extends Discord.Client {
                     })
 
                     await YTDL.getInfo(url.toString()).then(video => {
-                        songInfo.name = video.title
+                        songInfo.name = video.videoDetails.title
                         songInfo.thumbnailUrl = video.thumbnail_url
-                        songInfo.author = video.author.name
-                        songInfo.url = video.video_url
+                        songInfo.author = video.videoDetails.author.name
+                        songInfo.url = video.videoDetails.video_url
                     }).catch(e => { throw e })
                     return stream
                 } catch (error) {
@@ -423,7 +424,7 @@ export default class Bot extends Discord.Client {
         }
 
         async function playAudioURL(
-            connection: Discord.VoiceConnection, replaying?: boolean) {
+            connection: Discord.VoiceConnection, messageObj?: Discord.Message, replaying?: boolean) {
             let bot: Bot = globalThis.bot
 
             stream = await createStreamObject()
@@ -434,16 +435,17 @@ export default class Bot extends Discord.Client {
                 return new Promise<SongState>(resolve => {
                     dispatcher = connection.play(stream, streamOptions)
                     let state = SongState.Loading
+                    let response: Discord.Message
 
-                    dispatcher.on('start', () => {
+                    dispatcher.on('start', async () => {
                         state = SongState.Playing
                         console.groupEnd()
                         console.group()
                         console.log(`Now playing song from ${url}.`)
 
-                        if (!replaying && !skipLog)
-                            bot.textChannel
-                                .send(BotModuleMusic.generatePlaybackMessage(songInfo))
+                        if (!replaying && !skipLog && messageObj)
+                            response = await bot.textChannel
+                                .send(BotModuleMusic.generatePlaybackMessage(messageObj, songInfo))
 
                     })
 
@@ -451,14 +453,37 @@ export default class Bot extends Discord.Client {
                         console.log(`Song interrupted by user.`)
                         console.groupEnd()
 
+                        response.edit(response.content, {
+                            embed: {
+                                author: response.embeds[0].author,
+                                url: response.embeds[0].url,
+                                fields: response.embeds[0].fields,
+                                footer: response.embeds[0].footer,
+                                title: 'Played some 🅱eatz',
+                                description: `- Jam got interrupted by request -`,
+                                color: '#7c7286'
+                            }
+                        })
+
                         resolve(SongState.Stopped)
                     })
 
                     dispatcher.on('finish', async () => {
                         if (loop) {
                             console.info('Looping song...')
-                            return playAudioURL(connection, true)
+                            return playAudioURL(connection, message, true)
                         } else {
+                            response.edit(response.content, {
+                                embed: {
+                                    author: response.embeds[0].author,
+                                    url: response.embeds[0].url,
+                                    fields: response.embeds[0].fields,
+                                    footer: response.embeds[0].footer,
+                                    title: 'Played some 🅱eatz',
+                                    description: `- Finished playing this! -`,
+                                    color: '#7c7286'
+                                }
+                            })
                             console.info('Song played successfully.')
 
                             let fileInstance = cacheFolder + `/${tempSong}`
@@ -471,7 +496,7 @@ export default class Bot extends Discord.Client {
                             bot.songState = SongState.Finished
                             if (!gapless) {
                                 await bot.playSFX(connection, Datypes.Audio.SFX.MusicLeave)
-                                bot.voiceChannel.leave()
+                                connection.disconnect()
                             }
                         }
 

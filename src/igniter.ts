@@ -15,6 +15,7 @@ import WebServices from './www/Webpage'
 
 import TriggerHandlers from './bot_functions/TriggerHandlers'
 import PostReadyFunctions from './bot_functions/_state/PostReadyFunctions'
+import BotModuleModeration from './bot_functions/_state/Moderation'
 import su from './tools/ConsoleFunctions' // Keep here for console.
 globalThis.su = new su()
 
@@ -72,20 +73,22 @@ bot.on('guildMemberAdd', async member => {
 	let WELCOMEMESSAGE = await import('./bot_knowledge/phrases/phrases_welcome.json').then(a => a)
 	let announcementChannel: Discord.TextChannel = member.guild.systemChannel
 
-	let message = new Discord.MessageEmbed()
-		.setAuthor('Hello hello? Hello hello!!! 😊')
-		.setTitle(`Welcome to the server, ${member.displayName}!`)
-		.setDescription(Bot.fetchRandomPhrase(WELCOMEMESSAGE.guild_member_add))
-		.setFooter(`-but actually, GIVE IT UP FOR ${member.displayName}!!!!!!!`)
-		.setColor(member.displayHexColor)
-		.setURL(Bot.fetchRandomPhrase(URLLIST.welcome))
-		.setImage(member.user.avatarURL())
+	if (!BotModuleModeration.kickIfBlacklisted(member as Discord.GuildMember)) {
+		let message = new Discord.MessageEmbed()
+			.setAuthor('Hello hello? Hello hello!!! 😊')
+			.setTitle(`Welcome to the server, ${member.displayName}!`)
+			.setDescription(Bot.fetchRandomPhrase(WELCOMEMESSAGE.guild_member_add))
+			.setFooter(`-but actually, GIVE IT UP FOR ${member.displayName}!!!!!!!`)
+			.setColor(member.displayHexColor)
+			.setURL(Bot.fetchRandomPhrase(URLLIST.welcome))
+			.setImage(member.user.avatarURL())
 
-	announcementChannel.send(message).then(mes => {
-		mes.react('🔥')
-		mes.react('🎊')
-		mes.react('👋')
-	})
+		announcementChannel.send(message).then(mes => {
+			mes.react('🔥')
+			mes.react('🎊')
+			mes.react('👋')
+		})
+	}
 })
 
 bot.on('error', error => {

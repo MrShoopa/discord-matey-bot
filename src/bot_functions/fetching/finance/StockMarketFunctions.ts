@@ -103,12 +103,21 @@ export default class BotModuleStockMarket {
                 let irlCurrency = metadata["4. Market Code"]
 
                 post.setTitle(`${metadata["3. Digital Currency Name"]} (to ${irlCurrency}) on ${this.parseDateString(dayChoice)}`)
-                post.addField("Open", Number.parseFloat(todayInfo[`1a. open (${irlCurrency})`]).toFixed(2), true)
-                post.addField("Low", Number.parseFloat(todayInfo[`3a. low (${irlCurrency})`]).toFixed(2), true)
-                post.addField("Volume", Number.parseFloat(todayInfo[`5. volume`]).toFixed(2), true)
-                post.addField("Close", Number.parseFloat(todayInfo[`4a. close (${irlCurrency})`]).toFixed(2), true)
-                post.addField("High", Number.parseFloat(todayInfo[`2a. high (${irlCurrency})`]).toFixed(2), true)
-                post.addField("Market Cap", Number.parseFloat(todayInfo[`6. market cap (${irlCurrency})`]).toFixed(2), true)
+                if (Number.parseFloat(todayInfo[`1a. open (${irlCurrency})`]).toFixed(1) == "0.0") {
+                    post.addField("Open", Number.parseFloat(todayInfo[`1a. open (${irlCurrency})`]), true)
+                    post.addField("Low", Number.parseFloat(todayInfo[`3a. low (${irlCurrency})`]), true)
+                    post.addField("Volume", Number.parseFloat(todayInfo[`5. volume`]), true)
+                    post.addField("Close", Number.parseFloat(todayInfo[`4a. close (${irlCurrency})`]), true)
+                    post.addField("High", Number.parseFloat(todayInfo[`2a. high (${irlCurrency})`]), true)
+                    post.addField("Market Cap", Number.parseFloat(todayInfo[`6. market cap (${irlCurrency})`]), true)
+                } else {
+                    post.addField("Open", Number.parseFloat(todayInfo[`1a. open (${irlCurrency})`]).toFixed(2), true)
+                    post.addField("Low", Number.parseFloat(todayInfo[`3a. low (${irlCurrency})`]).toFixed(2), true)
+                    post.addField("Volume", Number.parseFloat(todayInfo[`5. volume`]).toFixed(2), true)
+                    post.addField("Close", Number.parseFloat(todayInfo[`4a. close (${irlCurrency})`]).toFixed(2), true)
+                    post.addField("High", Number.parseFloat(todayInfo[`2a. high (${irlCurrency})`]).toFixed(2), true)
+                    post.addField("Market Cap", Number.parseFloat(todayInfo[`6. market cap (${irlCurrency})`]).toFixed(2), true)
+                }
 
                 if (Number.parseFloat(todayInfo["1. open"]) < Number.parseFloat(todayInfo["4. close"]))
                     post.setColor('GREEN')

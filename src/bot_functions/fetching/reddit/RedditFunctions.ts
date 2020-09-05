@@ -99,7 +99,15 @@ export default class BotModuleReddit {
         while (riskyRiskyThingy.data.title.includes('Here are all the answers') || riskyRiskyThingy.data.title.includes('Users follow the rules'))
             riskyRiskyThingy = await BotModuleReddit.fetchRandomSubmission('fiftyfifty')
 
-        channel.send(`Here's a r/fiftyfifty image! Proceed with caution! \n\n *${riskyRiskyThingy.data.title}*`)
+        let fiftyPost = new Discord.MessageEmbed()
+            .setColor('#8B0000')
+            .setTitle(`${riskyRiskyThingy.data.title}`)
+            .setURL(`https://www.reddit.com${riskyRiskyThingy.data.permalink}`)
+            .setAuthor(`Here's a r/fiftyfifty post! Proceed with caution!`)
+            .setFooter(`Courtesy of u/${riskyRiskyThingy.data.author}`,
+                'https://images.vexels.com/media/users/3/129189/isolated/preview/59a4614a4e033709d1b90042a9cc9bd2-50-percent-infographic-by-vexels.png')
+        channel.send(fiftyPost)
+
         if (riskyRiskyThingy.data.url.includes('jpg') || riskyRiskyThingy.data.url.includes('png') || riskyRiskyThingy.data.url.includes('webm') || riskyRiskyThingy.data.url.includes('gif')) {
             if (riskyRiskyThingy.data.url.includes('gif')) extension = 'gif'
             channel.send({
@@ -111,12 +119,8 @@ export default class BotModuleReddit {
         } else {
             let response = new Discord.MessageEmbed()
                 .setTitle(`Mystery link...`)
-                .setAuthor(`Courtesy of u/${riskyRiskyThingy.data.author}`)
                 .setURL(riskyRiskyThingy.data.url)
                 .setColor('#8B0000')
-                .setFooter('I hope you know what r/5050 is',
-                    'https://images.vexels.com/media/users/3/129189/isolated/preview/59a4614a4e033709d1b90042a9cc9bd2-50-percent-infographic-by-vexels.png')
-
             channel.send(response)
         }
     }

@@ -3,7 +3,7 @@ import 'mocha'
 import Bot from '../../Bot'
 
 // Tested module of interest
-import BotModuleLyric from '../../bot_functions/fetching/lyrics/LyricFunctions'
+import BotModuleLyric from '../../bot_functions/fetching/music/LyricFunctions'
 
 let bot = new Bot()
 globalThis.bot = bot

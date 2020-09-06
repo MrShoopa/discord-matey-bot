@@ -236,7 +236,7 @@ export default class Bot extends Discord.Client {
                             console.log(`Now playing local file: ${song}`)
 
                         if (!replaying && !skipLog && message)
-                            response = await bot.textChannel
+                            response = await messageObj.channel
                                 .send(BotModuleMusic.generatePlaybackMessage(messageObj, songInfo))
                     })
 
@@ -351,6 +351,7 @@ export default class Bot extends Discord.Client {
 
             if (url.includes('youtu')) {
                 songInfo = { source: url, platform: 'YouTube' }
+                url = url.replace(`youtu.be/`, `https://www.youtube.com/watch?v=`)
 
                 try {
                     let timeStart = "0s"
@@ -377,11 +378,11 @@ export default class Bot extends Discord.Client {
                 } catch (error) {
                     let bot: Bot = globalThis.bot
                     if (error.message.includes('video id'))
-                        bot.context.reply(`this YouTube link isn't valid...`)
+                        message.reply(`this YouTube link isn't valid...`)
                     else if (error.message.includes('No'))
-                        bot.context.reply(`unfortunately this YouTube video is unavailable to play. Damn copyrights.`)
+                        message.reply(`unfortunately this YouTube video is unavailable to play. Damn copyrights.`)
                     else if (error.message.includes('unavailable'))
-                        bot.context.reply(`unfortunately this YouTube video is unavailable to play. Damn copyrights.`)
+                        message.reply(`unfortunately this YouTube video is unavailable to play. Damn copyrights.`)
                     else
                         bot.saveBugReport(error, createStreamObject.name, true)
 
@@ -422,9 +423,9 @@ export default class Bot extends Discord.Client {
                 } catch (err) {
                     let bot: Bot = globalThis.bot
                     if (err.response.status == 400)
-                        bot.context.reply(`this SoundCloud link isn't valid...`)
+                        message.reply(`this SoundCloud link isn't valid...`)
                     else if (err.response.status == 404)
-                        bot.context.reply(`unfortunately this SoundCloud track is unavailable to play.`)
+                        message.reply(`unfortunately this SoundCloud track is unavailable to play.`)
                     else if (err.response.status == 403)
                         return SongState.Down
                     else
@@ -458,7 +459,7 @@ export default class Bot extends Discord.Client {
                         console.log(`Now playing song from ${url}.`)
 
                         if (!replaying && !skipLog && messageObj)
-                            response = await bot.textChannel
+                            response = await message.channel
                                 .send(BotModuleMusic.generatePlaybackMessage(messageObj, songInfo))
 
                     })

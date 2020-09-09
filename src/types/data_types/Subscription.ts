@@ -76,7 +76,8 @@ export module Subscriptions {
         'INSPIRATIONALQUOTE' |
         'MRSHOOPASTREAMWATCH' |
         'ASKREDDITRELAY' |
-        '5050FETCH'
+        '5050FETCH' |
+        'NINTENDODIRECTWATCH'
 
     export type ChannelType = 'test' | 'DM' | 'PartialGroup' | 'GuildChannel'
 

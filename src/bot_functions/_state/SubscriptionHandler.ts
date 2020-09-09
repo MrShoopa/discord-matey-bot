@@ -305,6 +305,11 @@ export default class BotSubscriptionHandler {
             case '5050FETCH':
                 BotModuleReddit.fire5050Fetch(channel)
                 break;
+            case 'NINTENDODIRECTWATCH':
+                let response = await BotModuleYouTube.buildChannelNewVideoMessage('Nintendo')
+                if (response)
+                    channel.send(response)
+                break;
             default:
                 break;
         }

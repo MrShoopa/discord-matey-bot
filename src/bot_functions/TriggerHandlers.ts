@@ -19,7 +19,7 @@ import BotModuleReddit from './fetching/reddit/RedditFunctions'
 import BotModuleBirthday from './novelty/birthday/BirthdayFunctions'
 import BotModuleAnime from './fetching/anime/AnimeFunctions'
 import BotModuleQuote from './fetching/quote/QuoteFunctions'
-import BotModuleLyric from './fetching/lyrics/LyricFunctions'
+import BotModuleLyric from './fetching/music/LyricFunctions'
 import BotModuleTranslation from './language/TranslationFunctions'
 import BotModuleCovid from './fetching/info/current/CovidFunctions'
 import BotModuleJoke from './fetching/joke/JokeFunctions'
@@ -83,6 +83,7 @@ export default class TriggerHandlers {
         TriggerHandlers.checkForStockTickerDailyRequest,
         TriggerHandlers.checkForCryptoTickerDailyRequest,
         TriggerHandlers.checkForYouTubeChannelLiveActivityRequest,
+        TriggerHandlers.checkForYouTubeChannelNewVideoRequest,
 
         // Management Requests
         TriggerHandlers.checkForNameChangeRequest,
@@ -450,6 +451,12 @@ export default class TriggerHandlers {
         for (const trigger of TRIGGERS.youtube.live.default)
             if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleYouTube.fireChannelNowStreamingNotification(message as Discord.Message, trigger, true)
+    }
+
+    private static checkForYouTubeChannelNewVideoRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.youtube.new_video.default)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotModuleYouTube.fireChannelNewVideoNotification(message as Discord.Message, trigger, true)
     }
 
     /*  ----    Server-Management   ---- */

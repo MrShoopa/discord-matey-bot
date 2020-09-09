@@ -1401,6 +1401,21 @@
                 "check youtube stream",
                 "fetch youtube stream status"
             ]
+        },
+        "new_video": {
+            "default": [
+                "youtube check new vid",
+                "youtube check new video",
+                "is there a new video from",
+                "check youtube new vid",
+                "check youtube new video",
+                "fetch youtube new vid",
+                "fetch youtube new video",
+                "check new youtube vid",
+                "check new youtube video",
+                "fetch new youtube vid",
+                "fetch new youtube video"
+            ]
         }
     }
 }

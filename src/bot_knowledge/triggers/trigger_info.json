@@ -618,6 +618,10 @@
                 "stream_check": {
                     "title": "See if a channel is livestreaming",
                     "example": "megadork youtube stream check **X**"
+                },
+                "new_vid_check": {
+                    "title": "Check if channel posted new video today",
+                    "example": "megadork youtube check youtube new vid **X**"
                 }
             }
         }

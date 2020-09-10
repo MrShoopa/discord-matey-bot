@@ -14,23 +14,28 @@ export default class BotModuleSpotify {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'Spotify Rec Fetch', true)
 
-        let query: string = message.content, limit = 1
+        let query: string = message.content, limit = 1, finalQuery = ""
 
         if (query.includes(trigger))
             query = query.replace(trigger, '').trim()
 
         TRIGGERS.spotify.recomendations.limit.forEach(trig => {
-            if (query.includes(trig))
+            if (query.includes(trig)) {
                 limit = parseInt(query.substr(query.indexOf(trig) + trig.length).trim())
+                query = query.replace(query.substring(query.indexOf(trig)), '')
+            }
         })
+        if (query.includes('genre'))
+            finalQuery += query.substring(query.indexOf('genre')).trim().replace(' ', '-')
         if (query.match(/(https?:\/\/open.spotify.com\/(track|user|artist|album)\/[a-zA-Z0-9]+(\/playlist\/[a-zA-Z0-9]+|)|spotify:(track|user|artist|album):[a-zA-Z0-9]+(:playlist:[a-zA-Z0-9]+|))/))
-            query = query.match(/(https?:\/\/open.spotify.com\/(track|user|artist|album)\/[a-zA-Z0-9]+(\/playlist\/[a-zA-Z0-9]+|)|spotify:(track|user|artist|album):[a-zA-Z0-9]+(:playlist:[a-zA-Z0-9]+|))/)[0]
+            finalQuery += " " + query.match(/(https?:\/\/open.spotify.com\/(track|user|artist|album)\/[a-zA-Z0-9]+(\/playlist\/[a-zA-Z0-9]+|)|spotify:(track|user|artist|album):[a-zA-Z0-9]+(:playlist:[a-zA-Z0-9]+|))/g).join(' ')
 
-        if (!query || !query.includes('genre'))
-            return message.channel.send('Fetch recommendations based of what?\nSee ```;help spotify``` for more info.')
+        if (!finalQuery.includes('genre'))
+            if (!finalQuery)
+                return message.channel.send('Fetch recommendations based of what?\nSee ```;help spotify``` for more info.')
 
         const response = await this.fetchBuiltRecommendationMessage(
-            query, limit)
+            finalQuery, limit)
 
         if (Array.isArray(response))
             response.forEach(part => {
@@ -54,7 +59,7 @@ export default class BotModuleSpotify {
             //.setURL(query)
             .setTitle('Spotify Recommends...')
             .setColor('GREEN')
-            .setDescription(`Based off: ${query}`)
+            .setDescription(`Based off: ${query.replace(' ', ' + ')}`)
             //.setThumbnail(songInfo.thumbnail)
             .setFooter('MegaSpotter', 'https://www.freepnglogos.com/uploads/spotify-logo-png/spotify-download-logo-30.png');
 
@@ -68,14 +73,17 @@ export default class BotModuleSpotify {
 
     static async fetchRecommendationsFromTextQuery(query: string, limit: number = 5) {
         try {
-            var recObj: SpotifyApi.RecommendationsOptionsObject = {}
+            var recObj: SpotifyApi.RecommendationsOptionsObject = { seed_artists: [], seed_genres: [], seed_tracks: [] }
+            let querySplits = query.split(' ')
             recObj.limit = limit
-            if (query.includes('track/'))
-                recObj.seed_tracks = (await BotModuleSpotify.Spotify.getTrack(query.substring(query.indexOf('k/') + 2).trim())).body.id
-            else if (query.includes('artist/'))
-                recObj.seed_artists = (await BotModuleSpotify.Spotify.getArtist(query.substring(query.indexOf('t/') + 2).trim())).body.id
-            else if (query.includes('genre'))
-                recObj.seed_genres = query.substring(query.indexOf('genre') + 5).trim()
+            querySplits.forEach(async q => {
+                if (q.includes('track/'))
+                    recObj.seed_tracks += (await BotModuleSpotify.Spotify.getTrack(query.substring(query.indexOf('k/') + 2).trim())).body.id
+                if (q.includes('artist/'))
+                    recObj.seed_artists += (await BotModuleSpotify.Spotify.getArtist(query.substring(query.indexOf('t/') + 2).trim())).body.id
+                if (q.includes('genre'))
+                    recObj.seed_genres += query.substring(query.indexOf('genre') + 6).trim().split(' ')[0]
+            })
             const recomendations =
                 await BotModuleSpotify.Spotify.getRecommendations(recObj)
                     .then(recs => recs)

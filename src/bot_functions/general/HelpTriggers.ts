@@ -40,7 +40,10 @@ export default class HelpTriggers {
                         case 'subscription':
                             return HelpTriggers.replyForSubscriptionTypeInfo(message)
                         case 'general':
-                            return HelpTriggers.replyForGeneralInfo(message)
+                            if (message.toString().toLowerCase() == hotword)
+                                return HelpTriggers.replyForGeneralInfo(message)
+                            else
+                                return message.reply('help on what? Ping me ```;help``` for more info.')
                     }
     }
 

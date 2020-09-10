@@ -18,7 +18,7 @@ export default class BotLoggerFunctions {
 
         if (func)
             console.error(`Error! On function: ${func} `)
-        if (logInConsole)
+        if (logInConsole && error.stack)
             console.error(`Error occured on: ${new Date().toLocaleTimeString()}:\n ${error.stack}`)
 
         // Finalize

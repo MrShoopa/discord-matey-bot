@@ -1417,5 +1417,32 @@
                 "fetch new youtube video"
             ]
         }
+    },
+    "spotify": {
+        "recomendations": {
+            "base": [
+                "fetch spotify recommendation",
+                "get spotify recommendation",
+                "retrieve spotify recommendation",
+                "fetch recommendation from spotify",
+                "get recommendation from spotify",
+                "retrieve recommendation from spotify",
+                "what's a good song based off",
+                "give me a good song from"
+            ],
+            "limit": [
+                "limit",
+                "limit of",
+                "limit to"
+            ],
+            "genres": [
+                "get spotify genres",
+                "fetch spotify genres",
+                "get spotify recommendation genres",
+                "fetch spotify recommendation genres",
+                "get spotify track genres",
+                "fetch spotify track genres"
+            ]
+        }
     }
 }

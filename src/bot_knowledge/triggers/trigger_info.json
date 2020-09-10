@@ -624,6 +624,25 @@
                     "example": "megadork youtube check youtube new vid **X**"
                 }
             }
+        },
+        "spotify": {
+            "_title": "Spotify Info Lookup",
+            "_description": "Find information on tracks, albums, playlist, personalized recommendations, etc.",
+            "_footer": "🎵",
+            "_command_list": {
+                "track_recommendations": {
+                    "title": "Get a recommendation based off a link",
+                    "example": "megadork get recommendation from spotify **https://open.spotify.com/whatever**"
+                },
+                "track_recommendations_genre": {
+                    "title": "Get a recommendation based off a genre",
+                    "example": "megadork get recommendation from spotify genre **genre code**"
+                },
+                "track_genres": {
+                    "title": "Get recommendation genres (in codes)",
+                    "example": "megadork get spotify genres"
+                }
+            }
         }
     }
 }

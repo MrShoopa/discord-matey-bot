@@ -33,6 +33,7 @@ import BotModuleGiphy from './fetching/gif/GiphyFunctions'
 import BotSubscriptionCommands from './general/SubscriptionCommands'
 import BotModuleStockMarket from './fetching/finance/StockMarketFunctions'
 import BotModuleYouTube from './fetching/streaming/YouTubeStreamFunctions'
+import BotModuleSpotify from './fetching/music/SpotifyFunctions'
 
 
 export default class TriggerHandlers {
@@ -74,6 +75,8 @@ export default class TriggerHandlers {
         TriggerHandlers.checkForMALMangaFetchRequest,
         TriggerHandlers.checkForQuoteFetchRequest,
         TriggerHandlers.checkForLyricFetchRequest,
+        TriggerHandlers.checkForSpotifyRecommendationRequest,
+        TriggerHandlers.checkForSpotifyGenreListRequest,
         TriggerHandlers.checkForLyricSingRequest,
         TriggerHandlers.checkForJokeRequest,
         TriggerHandlers.checkForCovidInfoRequest,
@@ -405,6 +408,18 @@ export default class TriggerHandlers {
                 return BotModuleLyric.singSongInChat(message.toString(), trigger)
     }
 
+    private static checkForSpotifyRecommendationRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.spotify.recomendations.base)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotModuleSpotify.fireSpotifyRecommendationMessage(message as Discord.Message, trigger)
+    }
+
+    private static checkForSpotifyGenreListRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.spotify.recomendations.genres)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotModuleSpotify.fireGenresListMessage(message as Discord.Message, trigger)
+    }
+
     private static checkForJokeRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.joke.default)
             if (message.toString().toLowerCase().startsWith(trigger))
@@ -414,7 +429,7 @@ export default class TriggerHandlers {
     private static checkForCovidInfoRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.covid.default)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleCovid.fireCovidInfoMessage(trigger)
+                return BotModuleCovid.fireCovidInfoMessage(message as Discord.Message, trigger)
     }
 
     private static checkForMemeRequest(message = TriggerHandlers.message) {

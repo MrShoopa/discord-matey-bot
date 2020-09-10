@@ -6,45 +6,44 @@ import { covid } from '../../../../bot_knowledge/triggers/triggers.json'
 import * as NovelCovid from 'novelcovid'
 
 export default class BotModuleCovid {
-    static async fireCovidInfoMessage(trigger: string) {
+    static async fireCovidInfoMessage(message: Discord.Message, trigger: string) {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'Covid case pullup')
 
-        let message: Discord.Message | Discord.MessageEmbed
-        let query: string = bot.context.toString()
+        let response: string | Discord.MessageEmbed
+        let query: string = message.toString()
 
         for (const keyword of covid.state)
-            if (bot.context.toString().includes(keyword)) {
+            if (query.includes(keyword)) {
                 query = query.substring(query.indexOf(keyword) + keyword.length).trim()
-                message = await BotModuleCovid.fetchBuiltCovidInfoMessage('United States', query) // Province?
+                response = await BotModuleCovid.fetchBuiltCovidInfoMessage('United States', query) // Province?
                 break
             }
         for (const keyword of covid.country)
-            if (bot.context.toString().includes(keyword)) {
+            if (query.includes(keyword)) {
                 query = query.substring(query.indexOf(keyword) + keyword.length).trim()
-                message = await BotModuleCovid.fetchBuiltCovidInfoMessage(query)
+                response = await BotModuleCovid.fetchBuiltCovidInfoMessage(query)
                 break
             }
         for (const keyword of covid.continent)
-            if (bot.context.toString().includes(keyword)) {
+            if (query.includes(keyword)) {
                 query = query.substring(query.indexOf(keyword) + keyword.length).trim()
-                message = await BotModuleCovid.fetchBuiltCovidInfoMessage(null, null, query)
+                response = await BotModuleCovid.fetchBuiltCovidInfoMessage(null, null, query)
                 break
             }
         for (const keyword of covid.default)
-            if (bot.context.toString().endsWith(keyword)) {
-                message = await BotModuleCovid.fetchBuiltCovidInfoMessage()
+            if (query.endsWith(keyword)) {
+                response = await BotModuleCovid.fetchBuiltCovidInfoMessage()
                 break
             }
 
-        if (message)
-            return bot.context.channel.send(message)
+        if (response)
+            return message.channel.send(response)
         else
-            return bot.context.channel.send(`Invalid COVID-19 info request. *megadork help covid*`)
+            return message.channel.send(`Invalid COVID-19 info request. *megadork help covid*`)
     }
 
-    static async fetchBuiltCovidInfoMessage(country?: string, state?: string, continent?: string):
-        Promise<Discord.Message | Discord.MessageEmbed> {
+    static async fetchBuiltCovidInfoMessage(country?: string, state?: string, continent?: string) {
         let bot: Bot = globalThis.bot
 
         let data: any
@@ -89,34 +88,32 @@ export default class BotModuleCovid {
         }
 
         if (data === undefined)
-            return new Discord.Message(bot.user.client,
-                { content: "Couldn't fetch cases for your location." },
-                bot.context.channel as Discord.TextChannel | Discord.DMChannel)
+            return "Couldn't fetch cases for your location."
 
         return BotModuleCovid.generateCovidInfoMessage(data)
     }
 
     static generateCovidInfoMessage(data: any) {
-        let message = new Discord.MessageEmbed()
+        let response = new Discord.MessageEmbed()
             .setColor('RED')
             .setTitle(`Coronavirus Cases for ${data.location}`)
             .setTimestamp(new Date(data.updated))
 
-        if (data.countryInfo?.flag) message.setThumbnail(data.countryInfo.flag)
-        if (data.continent) message.setDescription(`${data.continent}`)
+        if (data.countryInfo?.flag) response.setThumbnail(data.countryInfo.flag)
+        if (data.continent) response.setDescription(`${data.continent}`)
 
         let recPercentage = `${((data.active / data.cases) * 100).toFixed(2)}%`
 
-        if (data.active) message.addFields({ name: 'Active', value: `${data.active.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
-        if (data.recovered) message.addFields({ name: 'Recoveries', value: `${data.recovered.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
-        if (data.deaths) message.addFields({ name: 'Deaths', value: `${data.deaths.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
-        if (data.cases) message.addFields({ name: 'Total Cases', value: `${data.cases.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
-        if (data.tests) message.addFields({ name: 'Total Tests', value: `${data.tests.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
-        if (data.affectedCountries) message.addFields({ name: 'Affected Countries', value: `${data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
-        if (data.todayCases) message.addFields({ name: `Today's Cases`, value: `+${data.todayCases.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
-        if (data.todayDeaths) message.addFields({ name: `Today's Deaths`, value: `+${data.todayDeaths.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
-        if (recPercentage) message.addFields({ name: 'Active/Total %', value: `${recPercentage}`, inline: true })
+        if (data.active) response.addFields({ name: 'Active', value: `${data.active.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
+        if (data.recovered) response.addFields({ name: 'Recoveries', value: `${data.recovered.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
+        if (data.deaths) response.addFields({ name: 'Deaths', value: `${data.deaths.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
+        if (data.cases) response.addFields({ name: 'Total Cases', value: `${data.cases.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
+        if (data.tests) response.addFields({ name: 'Total Tests', value: `${data.tests.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
+        if (data.affectedCountries) response.addFields({ name: 'Affected Countries', value: `${data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
+        if (data.todayCases) response.addFields({ name: `Today's Cases`, value: `+${data.todayCases.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
+        if (data.todayDeaths) response.addFields({ name: `Today's Deaths`, value: `+${data.todayDeaths.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
+        if (recPercentage) response.addFields({ name: 'Active/Total %', value: `${recPercentage}`, inline: true })
 
-        return message
+        return response
     }
 }

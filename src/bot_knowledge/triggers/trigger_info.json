@@ -93,6 +93,13 @@
             "help crypto",
             "help ecurrency",
             "help stock market"
+        ],
+        "youtube": [
+            "help youtube",
+            "help yt",
+        ],
+        "spotify": [
+            "help spotify"
         ]
     },
     "help_special": {

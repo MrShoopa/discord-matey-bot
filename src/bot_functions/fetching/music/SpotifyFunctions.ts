@@ -99,23 +99,24 @@ export default class BotModuleSpotify {
         let bot: Bot = globalThis.bot
         if (trigger) bot.preliminary(trigger, 'Spotify genre fetch', true)
 
-        var genres = await BotModuleSpotify.Spotify.getMe()
-        /* .then(g => g.genres)
-        .catch(e => {
-            let bot: Bot = globalThis.bot()
-            bot.saveBugReport(e, this.fireGenresListMessage.name, true)
-            return message.channel.send(`Couldn't fetch Spotify genres at the moment.`)
-        }) */
+        //TODO Add type for function
+        var genres = await BotModuleSpotify.Spotify.getAvailableGenreSeeds()
+            .then((g: { genres: any }) => g.genres)
+            .catch((e: Error) => {
+                let bot: Bot = globalThis.bot
+                bot.saveBugReport(e, this.fireGenresListMessage.name, true)
+                return message.channel.send(`Couldn't fetch Spotify genres at the moment.`)
+            })
 
         if (genres instanceof Discord.Message)
             return `This doesn't work yet :)`
 
-        /*  let response = new Discord.MessageEmbed()
-             .setColor('GREEN')
-             .setTitle('Available Spotify Genre Codes')
-             .setDescription(genres.join('\n'))
-             .setFooter('MegaSpotter', 'https://cdn.worldvectorlogo.com/logos/spotify.svg') */
+        let response = new Discord.MessageEmbed()
+            .setColor('GREEN')
+            .setTitle('Available Spotify Genre Codes')
+            .setDescription(genres.join('\n'))
+            .setFooter('MegaSpotter', 'https://cdn.worldvectorlogo.com/logos/spotify.svg')
 
-        //return message.channel.send(response)
+        return message.channel.send(response)
     }
 }

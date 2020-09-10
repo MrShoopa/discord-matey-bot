@@ -7,7 +7,8 @@ import AUTH from '../../../user_creds.json'
 import TRIGGERS from '../../../bot_knowledge/triggers/triggers.json'
 
 export default class BotModuleSpotify {
-    static Spotify = new SpotifyWebApi({ clientId: AUTH.spotify.client_id, clientSecret: AUTH.spotify.client_secret })
+    static Spotify: SpotifyWebApi
+    static hackStart = BotModuleSpotify.initAPI()
 
     static async fireSpotifyRecommendationMessage(message: Discord.Message, trigger?: string) {
         let bot: Bot = globalThis.bot
@@ -20,11 +21,12 @@ export default class BotModuleSpotify {
 
         TRIGGERS.spotify.recomendations.limit.forEach(trig => {
             if (query.includes(trig))
-                limit = parseInt(query.substr(query.indexOf(trig) + query.length).trim())
+                limit = parseInt(query.substr(query.indexOf(trig) + trig.length).trim())
         })
-        query = query.match(/(https?:\/\/open.spotify.com\/(track|user|artist|album)\/[a-zA-Z0-9]+(\/playlist\/[a-zA-Z0-9]+|)|spotify:(track|user|artist|album):[a-zA-Z0-9]+(:playlist:[a-zA-Z0-9]+|))/)[0]
+        if (query.match(/(https?:\/\/open.spotify.com\/(track|user|artist|album)\/[a-zA-Z0-9]+(\/playlist\/[a-zA-Z0-9]+|)|spotify:(track|user|artist|album):[a-zA-Z0-9]+(:playlist:[a-zA-Z0-9]+|))/))
+            query = query.match(/(https?:\/\/open.spotify.com\/(track|user|artist|album)\/[a-zA-Z0-9]+(\/playlist\/[a-zA-Z0-9]+|)|spotify:(track|user|artist|album):[a-zA-Z0-9]+(:playlist:[a-zA-Z0-9]+|))/)[0]
 
-        if (!query)
+        if (!query || !query.includes('genre'))
             return message.channel.send('Fetch recommendations based of what?\nSee ```;help spotify``` for more info.')
 
         const response = await this.fetchBuiltRecommendationMessage(
@@ -41,27 +43,23 @@ export default class BotModuleSpotify {
     }
 
     static async fetchBuiltRecommendationMessage(query: string, limit: number = 1) {
-        query = query.toLowerCase()
-
-        //let seed = await BotModuleSpotify.Spotify.getGeneric(query)
-
         let recs = await this.fetchRecommendationsFromTextQuery(query, limit)
         if (recs === 'Error') {
             return 'There was an issue getting recommendations at the moment. Try again later.'
-        } else if ((recs as SpotifyApi.RecommendationsFromSeedsResponse).tracks.length == 0) {
+        } else if (recs == null) {
             return `Couldn't find any recommendations from your query.\`\`\`; help spotify\`\`\` for help.`
         }
 
         let built = new Discord.MessageEmbed()
-            .setURL(query)
-            .setTitle('Spotify Recommendations')
+            //.setURL(query)
+            .setTitle('Spotify Recommends...')
             .setColor('GREEN')
             .setDescription(`Based off: ${query}`)
             //.setThumbnail(songInfo.thumbnail)
-            .setFooter('MegaSpotter', 'https://cdn.worldvectorlogo.com/logos/spotify.svg');
+            .setFooter('MegaSpotter', 'https://www.freepnglogos.com/uploads/spotify-logo-png/spotify-download-logo-30.png');
 
         (recs as SpotifyApi.RecommendationsFromSeedsResponse).tracks.forEach(track => {
-            built.addField(track.name + track.artists.join(', ').trim(), track.preview_url)
+            built.addField(track.name + ' - ' + track.artists.map(a => a.name).join(', ').trim(), track.external_urls.spotify)
         })
 
         return built
@@ -71,12 +69,13 @@ export default class BotModuleSpotify {
     static async fetchRecommendationsFromTextQuery(query: string, limit: number = 5) {
         try {
             var recObj: SpotifyApi.RecommendationsOptionsObject = {}
+            recObj.limit = limit
             if (query.includes('track/'))
                 recObj.seed_tracks = (await BotModuleSpotify.Spotify.getTrack(query.substring(query.indexOf('k/') + 2).trim())).body.id
             else if (query.includes('artist/'))
                 recObj.seed_artists = (await BotModuleSpotify.Spotify.getArtist(query.substring(query.indexOf('t/') + 2).trim())).body.id
             else if (query.includes('genre'))
-                recObj.seed_genres = query.substring(query.indexOf('genre') + 5)
+                recObj.seed_genres = query.substring(query.indexOf('genre') + 5).trim()
             const recomendations =
                 await BotModuleSpotify.Spotify.getRecommendations(recObj)
                     .then(recs => recs)
@@ -88,6 +87,8 @@ export default class BotModuleSpotify {
 
             if (e.message === 'Unauthorized')
                 console.warn(`Please update your Spotify API token.`)
+            if (e.code === 404)
+                return null
 
             let bot: Bot = globalThis.bot
             bot.saveBugReport(e, this.fetchRecommendationsFromTextQuery.name, true)
@@ -101,7 +102,7 @@ export default class BotModuleSpotify {
 
         //TODO Add type for function
         var genres = await BotModuleSpotify.Spotify.getAvailableGenreSeeds()
-            .then((g: { genres: any }) => g.genres)
+            .then(g => g)
             .catch((e: Error) => {
                 let bot: Bot = globalThis.bot
                 bot.saveBugReport(e, this.fireGenresListMessage.name, true)
@@ -114,9 +115,15 @@ export default class BotModuleSpotify {
         let response = new Discord.MessageEmbed()
             .setColor('GREEN')
             .setTitle('Available Spotify Genre Codes')
-            .setDescription(genres.join('\n'))
-            .setFooter('MegaSpotter', 'https://cdn.worldvectorlogo.com/logos/spotify.svg')
+            .setDescription(genres.body.genres.join('\n'))
+            .setFooter('MegaSpotter', 'https://www.freepnglogos.com/uploads/spotify-logo-png/spotify-download-logo-30.png');
 
         return message.channel.send(response)
+    }
+
+    static async initAPI() {
+        this.Spotify = new SpotifyWebApi({ clientId: AUTH.spotify.client_id, clientSecret: AUTH.spotify.client_secret })
+        let token = (await this.Spotify.clientCredentialsGrant()).body.access_token
+        this.Spotify.setAccessToken(token)
     }
 }

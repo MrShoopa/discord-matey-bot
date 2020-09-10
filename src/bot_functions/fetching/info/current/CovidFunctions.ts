@@ -99,8 +99,13 @@ export default class BotModuleCovid {
             .setTitle(`Coronavirus Cases for ${data.location}`)
             .setTimestamp(new Date(data.updated))
 
+        let description = ""
+
         if (data.countryInfo?.flag) response.setThumbnail(data.countryInfo.flag)
-        if (data.continent) response.setDescription(`${data.continent}`)
+        if (data.continent) description += `Country in *${data.continent}*`
+        if (data.population) description += `, Population of **${data.population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}**`
+
+        response.setDescription(description)
 
         let recPercentage = `${((data.active / data.cases) * 100).toFixed(2)}%`
 

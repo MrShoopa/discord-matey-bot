@@ -6,6 +6,7 @@ import BotLoggerFunctions from '../general/LoggerFunctions'
 
 import BotModuleMusic from "../music/MusicFunctions"
 import BotData from '../DataHandler'
+import BotModuleSpotify from '../fetching/music/SpotifyFunctions'
 
 export default class PostReadyFunctions {
     static run() {
@@ -36,6 +37,7 @@ export default class PostReadyFunctions {
         }
 
         BotModuleMusic.loadClients()
+        BotModuleSpotify.initAPI()
     }
 
     static postBotConnectDataFetch() {

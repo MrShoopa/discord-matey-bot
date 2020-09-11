@@ -8,7 +8,6 @@ import TRIGGERS from '../../../bot_knowledge/triggers/triggers.json'
 
 export default class BotModuleSpotify {
     static Spotify: SpotifyWebApi
-    static hackStart = BotModuleSpotify.initAPI()
 
     static async fireSpotifyRecommendationMessage(message: Discord.Message, trigger?: string) {
         let bot: Bot = globalThis.bot
@@ -130,7 +129,7 @@ export default class BotModuleSpotify {
     }
 
     static async initAPI() {
-        this.Spotify = new SpotifyWebApi({ clientId: AUTH.spotify.client_id, clientSecret: AUTH.spotify.client_secret })
+        this.Spotify = await new SpotifyWebApi({ clientId: AUTH.spotify.client_id, clientSecret: AUTH.spotify.client_secret })
         let token = (await this.Spotify.clientCredentialsGrant()).body.access_token
         this.Spotify.setAccessToken(token)
     }

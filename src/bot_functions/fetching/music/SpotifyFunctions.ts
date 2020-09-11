@@ -54,11 +54,13 @@ export default class BotModuleSpotify {
             return `Couldn't find any recommendations from your query.\`\`\`; help spotify\`\`\` for help.`
         }
 
+        query = query.trim()
+
         let built = new Discord.MessageEmbed()
             //.setURL(query)
             .setTitle('Spotify Recommends...')
             .setColor('GREEN')
-            .setDescription(`Based off: ${query.replace(' ', ' + ')}`)
+            .setDescription(`Based off: ${query.replace(' ', '\n+ ')}`)
             //.setThumbnail(songInfo.thumbnail)
             .setFooter('MegaSpotter', 'https://www.freepnglogos.com/uploads/spotify-logo-png/spotify-download-logo-30.png');
 
@@ -72,17 +74,21 @@ export default class BotModuleSpotify {
 
     static async fetchRecommendationsFromTextQuery(query: string, limit: number = 5) {
         try {
-            var recObj: SpotifyApi.RecommendationsOptionsObject = { seed_artists: [], seed_genres: [], seed_tracks: [] }
+            var recObj = { seed_artists: [], seed_tracks: [], seed_genres: [], limit: limit }
             let querySplits = query.split(' ')
-            recObj.limit = limit
-            querySplits.forEach(async q => {
-                if (q.includes('track/'))
-                    recObj.seed_tracks += (await BotModuleSpotify.Spotify.getTrack(query.substring(query.indexOf('k/') + 2).trim())).body.id
-                if (q.includes('artist/'))
-                    recObj.seed_artists += (await BotModuleSpotify.Spotify.getArtist(query.substring(query.indexOf('t/') + 2).trim())).body.id
+            for (let q of querySplits) {
+                if (q.includes('track/')) {
+                    let trackId = (await BotModuleSpotify.Spotify.getTrack(q.substring(q.indexOf('k/') + 2).trim())).body.id
+                    recObj.seed_tracks.push(trackId)
+                }
+                if (q.includes('artist/')) {
+                    let artistId = (await BotModuleSpotify.Spotify.getArtist(q.substring(q.indexOf('t/') + 2).trim())).body.id
+                    recObj.seed_artists.push(artistId)
+                }
                 if (q.includes('genre'))
-                    recObj.seed_genres += query.substring(query.indexOf('genre') + 6).trim().split(' ')[0]
-            })
+                    recObj.seed_genres.push(q.substring(q.indexOf('genre') + 6).trim().split(' ')[0])
+            }
+
             const recomendations =
                 await BotModuleSpotify.Spotify.getRecommendations(recObj)
                     .then(recs => recs)

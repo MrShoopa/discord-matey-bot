@@ -20,6 +20,10 @@ export default class BotLoggerFunctions {
             console.error(`Error! On function: ${func} `)
         if (logInConsole && error.stack)
             console.error(`Error occured on: ${new Date().toLocaleTimeString()}:\n ${error.stack}`)
+        else if (logInConsole && error.message)
+            console.error(`Error occured on: ${new Date().toLocaleTimeString()}:\n Error Message: ${error.message}`)
+        else if (logInConsole && error)
+            console.error(`Error occured on: ${new Date().toLocaleTimeString()}:\n Error: ${error}`)
 
         // Finalize
         this.writeTextToFile(ErrorLog.generateText(error, bot), ErrorLog.filename, ErrorLog.reportPath)
@@ -148,14 +152,13 @@ class ErrorLog {
 
     static generateText(error: Error, bot: Bot) {
         return `
-Error encountered during bot runtime! -> ${ new Date().toLocaleTimeString()}
+Error encountered during bot runtime! -> ${new Date().toLocaleTimeString()}
 ---------
-    ${ error.stack}
+    ${error.stack}
 ---------
-    ${ bot.waker.username} on ${bot.context?.guild.name} ` +
+    ${bot.waker.username} on ${bot.context?.guild.name} ` +
             // Add extra details where necessary            
-            `${
-            (() => {
+            `${(() => {
                 if (bot.textChannel instanceof Discord.TextChannel) {
                     return `'s channel '${bot.textChannel.name}'`
                 }
@@ -179,10 +182,10 @@ class UnknownCommandLog {
     static generateText(message: Discord.Message | Discord.PartialMessage,
         bot: Bot) {
         return `
-Unknown command attempted on ${ new Date().toLocaleTimeString()}:
+Unknown command attempted on ${new Date().toLocaleTimeString()}:
 ---------
 \t"${message}"
-\t\tfrom user: ${ message.author.username}
+\t\tfrom user: ${message.author.username}
 ---------
     `
     }

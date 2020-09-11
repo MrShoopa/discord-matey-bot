@@ -10,7 +10,7 @@ export default class WebServices {
         webapp = Express()
 
         webapp.get("/", (request, response) => {
-            response.sendFile(Path.join(__dirname + '/index.html'));
+            response.sendFile(Path.join(__dirname + '../../index.html'));
         })
         webapp.listen(port, () => {
             console.log(`Webpage listening at http://localhost:${port}`)

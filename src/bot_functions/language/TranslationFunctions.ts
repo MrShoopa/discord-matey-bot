@@ -7,6 +7,7 @@ import WarcraftLanguageFunctions from './WarcraftLangFunctions'
 import YodaLanguageFunctions from './YodaLangFunctions'
 import BinaryCoderFunctions from './BinaryFunctions'
 import MorseCoderFunctions from './MorseFunctions'
+import ZalgoTextFunctions from './ZalgoTextFunctions'
 
 export default class BotModuleTranslation {
 
@@ -22,6 +23,17 @@ export default class BotModuleTranslation {
                     return lingua = 'yoda'
                 else if (translate.binary.some(h => context.toString().includes(h)))
                     return lingua = 'binary'
+                else if (translate.distorted.base.some(h => context.toString().includes(h))) {
+                    translate.distorted.to.some(hotword => {
+                        if (context.toString().includes(hotword))
+                            return args = 'to'
+                    })
+                    translate.distorted.from.some(hotword => {
+                        if (context.toString().includes(hotword))
+                            return args = 'from'
+                    })
+                    return lingua = 'distorted'
+                }
                 else if (translate.morse.default.some(h => context.toString().includes(h))) {
                     translate.morse.to.some(hotword => {
                         if (context.toString().includes(hotword))
@@ -42,6 +54,12 @@ export default class BotModuleTranslation {
                 YodaLanguageFunctions.generateYodaTranslationMessage(context, trigger)
             else if (lingua == 'binary')
                 BinaryCoderFunctions.generateBinaryTranslationMessage(context, trigger)
+            else if (lingua == 'distorted') {
+                if (args == 'to')
+                    ZalgoTextFunctions.generateZalgoTextTranslationMessage(context, trigger, 'zalgo')
+                else if (args == 'from')
+                    ZalgoTextFunctions.generateZalgoTextTranslationMessage(context, trigger, 'text')
+            }
             else if (lingua == 'morse') {
                 if (args == 'to')
                     MorseCoderFunctions.generateMorseTranslationMessage(context, trigger, 'morse-to-text')

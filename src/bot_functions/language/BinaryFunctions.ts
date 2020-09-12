@@ -32,27 +32,21 @@ export default class BinaryCoderFunctions {
 
         let built = new Array<Discord.MessageEmbed>()
 
-        let response = new Discord.MessageEmbed()
-            .setDescription(conversion)
-            .setColor('GOLD')
-            .setFooter('Binary <-> Text')
-
-        built.push(response)
-
-        if (conversion.length > 1) {
-            for (let i = 1; i < conversion.length; i++) {
+        if (conversion.length > 0) {
+            for (let i = 0; i < conversion.length; i++) {
                 let add = new Discord.MessageEmbed()
-                    .setDescription(conversion)
+                    .setDescription(conversion[i])
                     .setColor('GOLD')
                     .setFooter('Binary <-> Text')
+
+                if (i == conversion.length - 1)
+                    add.setFooter('Binary <-> Text')
 
                 built.push(add)
             }
         }
 
-        built.forEach(part => {
-            message.channel.send(part)
-        });
+        built.forEach(part => { message.channel.send(part) });
     }
 
     static convertToBinary(text: string) {

@@ -1147,6 +1147,31 @@
                 "to text from morse",
                 "to text from morse speak"
             ]
+        },
+        "distorted": {
+            "base": [
+                "distorted",
+                "zalgo"
+            ],
+            "to": [
+                "disorted",
+                "zalgo",
+                "to distorted",
+                "to distorted speak",
+                "to distorted text",
+                "to zalgo",
+                "to zalgo speak",
+                "to zalgo text"
+            ],
+            "from": [
+                "undistorted",
+                "to text from distorted",
+                "to text from distorted speak",
+                "to text from distorted text",
+                "to text from zalgo",
+                "to text from zalgo speak",
+                "to text from zalgo text"
+            ]
         }
     },
     "covid": {
@@ -1444,5 +1469,24 @@
                 "fetch spotify track genres"
             ]
         }
+    },
+    "text_edit": {
+        "super": [
+            "t^",
+            "text^",
+            "text-super",
+            "text-superscript"
+        ],
+        "sub": [
+            "t.",
+            "text.",
+            "text-sub",
+            "text-subscript"
+        ],
+        "big": [
+            "t+",
+            "text+",
+            "text-big"
+        ]
     }
 }

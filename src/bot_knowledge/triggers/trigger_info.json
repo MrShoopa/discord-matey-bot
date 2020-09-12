@@ -136,6 +136,7 @@
     },
     "help_reference": {
         "translate": [
+            "distorted (and 'undistorted')",
             "binary (and 'text from binary')",
             "morse (and 'text from morse')",
             "draenei",

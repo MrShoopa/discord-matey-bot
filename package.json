@@ -62,6 +62,7 @@
         "spotify-web-api-js": "^1.5.0",
         "spotify-web-api-node": "^4.0.0",
         "starwars": "^1.0.1",
+        "to-zalgo": "^1.0.1",
         "ts-node": "8.10.2",
         "twitter": "^1.7.1",
         "unique-names-generator": "^4.3.1",

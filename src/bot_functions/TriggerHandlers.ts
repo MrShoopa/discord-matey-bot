@@ -140,6 +140,9 @@ export default class TriggerHandlers {
     private static preventUnnecessaryResponse() {
         let messageString = this.message.toString()
 
+        //  Prevent unwanted invocation for users needing a space after
+        if (this.isHotwordSpaceRequired(this.message)) return true
+
         //  Preventing bot to respond to itself or other bots
         if (this.bot.waker.id === this.bot.user.id)
             if (!messageString.startsWith('redoin, '))
@@ -153,6 +156,13 @@ export default class TriggerHandlers {
             }
         else if (this.bot.waker.bot)
             return true
+    }
+
+    private static isHotwordSpaceRequired(message = TriggerHandlers.message) {
+        if (PARAMS.you.hotword_space_only_users.some(listedId => message.author.id == listedId))
+            return true
+        else
+            return false
     }
 
     private static ambientEventCheck() {

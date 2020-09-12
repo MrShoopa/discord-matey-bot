@@ -6,6 +6,7 @@ import BotGeneralCommands from './general/GeneralCommands'
 import BotLoggerFunctions from './general/LoggerFunctions'
 import BotDefaultResponder from './general/DefaultCase'
 
+import PARAMS from '../user_creds.json'
 import TRIGGERS from '../bot_knowledge/triggers/triggers.json'
 import HelpTriggers from './general/HelpTriggers'
 
@@ -34,6 +35,7 @@ import BotSubscriptionCommands from './general/SubscriptionCommands'
 import BotModuleStockMarket from './fetching/finance/StockMarketFunctions'
 import BotModuleYouTube from './fetching/streaming/YouTubeStreamFunctions'
 import BotModuleSpotify from './fetching/music/SpotifyFunctions'
+import BotModuleTextEditor from './language/TextEditorFunctions'
 
 
 export default class TriggerHandlers {
@@ -67,6 +69,8 @@ export default class TriggerHandlers {
         TriggerHandlers.checkForImageFetchRequest,
 
         TriggerHandlers.checkForTranslationRequest,
+
+        TriggerHandlers.checkForTextEditRequest,
 
         // External Data Requests
         TriggerHandlers.checkForRedditFetchRequest,
@@ -346,10 +350,12 @@ export default class TriggerHandlers {
     private static checkForTranslationRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.translate.hotword_default)
             if (message.toString().toLowerCase().startsWith(trigger))
-                return BotModuleTranslation.processTranslationRequest(message as Discord.Message)
-        //  Find random image (from Google Images)
+                return BotModuleTranslation.processTranslationRequest(message as Discord.Message, null, trigger)
     }
 
+    private static checkForTextEditRequest(message = TriggerHandlers.message) {
+        BotModuleTextEditor.processRequest(message as Discord.Message)
+    }
     /*      ---- External Data Retreival ----   */
 
     private static checkForRedditFetchRequest(message = TriggerHandlers.message) {
@@ -357,7 +363,6 @@ export default class TriggerHandlers {
             for (const trigger of TRIGGERS.reddit_fetch.query_type.post)
                 if (message.toString().toLowerCase().startsWith(`${baseTrigger} ${trigger}`))
                     return BotModuleReddit.fireRedditSubmissionMessage((message as Discord.Message).channel as Discord.TextChannel)
-        //  Get copypasta post [from Reddit]
 
         for (const trigger of TRIGGERS.reddit_fetch.copypasta.default)
             if (message.toString() === (trigger))

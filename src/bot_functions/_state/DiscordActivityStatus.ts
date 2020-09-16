@@ -59,15 +59,33 @@ export default class BotDiscordActivity {
             name: `🌟 grinding poptart cat 🌟`, type: 'STREAMING',
             url: "https://www.youtube.com/watch?v=QH2-TGUlwu4"
         },
+        { name: `with your emotions 💦😞👌`, type: 'PLAYING' },
+        { name: `no games 🔫`, type: 'PLAYING' },
+
     ]
+
+    static randomObjects: Array<string> = [
+        "tacos",
+        "english majors",
+        "👁👅👁",
+        "🅱eter",
+        "🅱eans 🌱",
+        "myself UwU",
+        "Novabot 🔨",
+        "Shoopa"
+    ]
+
+    static regions: any
 
     dynamicStatuses: Array<ActivityOptions> = [
         { name: `NSA watch with ${globalThis.bot.guilds.cache.size} servers`, type: 'PLAYING' },
         { name: `shoutouts to ${globalThis.bot?.context?.author?.username}`, type: 'PLAYING' },
         { name: `WINNER: ${globalThis.bot.users.cache.random().username}! PRIZE: NOTHING!`, type: 'PLAYING' },
+        { name: `simping for ${BotDiscordActivity.randomObjects[Math.floor(Math.random() * BotDiscordActivity.randomObjects.length)]}`, type: 'PLAYING' },
         { name: `${globalThis.bot.guilds.cache.size} copies of Bad Rats`, type: 'PLAYING' },
         { name: `dj hero on ${globalThis.bot.voice.connections.size} channels`, type: "PLAYING" },
         { name: `crippling ${globalThis.bot.guilds.cache.size} servers`, type: "STREAMING" },
+        { name: `traveling to ${BotDiscordActivity.regions.random().name}`, type: "STREAMING" },
         { name: `loves his ${globalThis.bot.users.cache.size} peeps`, type: "STREAMING" },
         { name: `pattycake with ${globalThis.bot.guilds.cache.size} servers`, type: 'PLAYING' },
         { name: `${globalThis.bot.guilds.cache.size} zooms`, type: 'LISTENING' },
@@ -80,6 +98,7 @@ export default class BotDiscordActivity {
 
 
         if (globalThis.bot) {
+            this.regions = await globalThis.bot.fetchVoiceRegions()
             looklist = this.customStatuses.concat(new BotDiscordActivity().dynamicStatuses)
             looklist = this.customStatuses.concat(await BotDiscordActivity.generateAsyncStatuses())
         }
@@ -90,15 +109,13 @@ export default class BotDiscordActivity {
 
         //Special Statuses
         if (choice.name == 'MemeTime')
-            choice.url = await BotModuleYouTube.fetchRandomVideoInPlaylist(PLAYLISTCHOICE).then(p => p.contentDetails.videoId).catch(e => 'No Meme')
+            choice.url = await BotModuleYouTube.fetchRandomVideoInPlaylist(PLAYLISTCHOICE).then(p => `https://www.youtube.com/watch?v=${p.contentDetails.videoId}`).catch(e => 'No Meme')
 
         return choice
     }
 
     static async updateRandomStatus() {
         let bot: Bot = globalThis.bot
-
-        bot.emojis.cache.size
 
         bot.user.setUsername("Megadork");
 

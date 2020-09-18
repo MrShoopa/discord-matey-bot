@@ -44,7 +44,8 @@ export default class BotModuleLyric {
         let songInfo = await this.fetchLyricsInfoOfSong(song)
         if (!songInfo) {
             let bot: Bot = globalThis.bot
-            bot.generateErrorMessage(`I couldn't find those lyrics at the moment.`
+            bot.generateErrorMessage(bot.context.channel as Discord.TextChannel
+                , `I couldn't find those lyrics at the moment.`
                 + ` Try again later.`)
             return null
         }

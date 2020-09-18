@@ -598,11 +598,11 @@ export default class Bot extends Discord.Client {
         return bot.context.toString().includes(desiredContext)
     }
 
-    generateErrorMessage(message?: string): Discord.Message {
+    generateErrorMessage(channel: Discord.TextChannel, message?: string): Discord.Message {
         let built = new Discord.Message(this,
             {
                 content: "Unfortunately, I couldn't perform that action at the moment."
-            }, this.context.channel as Discord.TextChannel | Discord.DMChannel)
+            }, channel)
 
         if (message)
             built.content = message

@@ -31,13 +31,13 @@ export default class BotModuleStockMarket {
             return message.channel.send(this.buildTickerInfoDayMessage(data, dateChoice as Date))
         } catch (err) {
             if (err.message.includes('Invalid API call'))
-                return message.reply(bot.generateErrorMessage(`invalid ticker!`))
+                return message.reply(bot.generateErrorMessage(message.channel as Discord.TextChannel, `invalid ticker!`))
             if (err.message.includes('No data exists for that day'))
-                return message.reply(bot.generateErrorMessage(`did not find your ticker's stats for that day!`))
+                return message.reply(bot.generateErrorMessage(message.channel as Discord.TextChannel, `did not find your ticker's stats for that day!`))
             if (err.message.includes('No data exists for that day') && !dateChoice)
-                return message.reply(bot.generateErrorMessage(`did not find your ticker's stats for today! Is the market closed today?`))
+                return message.reply(bot.generateErrorMessage(message.channel as Discord.TextChannel, `did not find your ticker's stats for today! Is the market closed today?`))
             if (err.message.includes('no data whatsoever'))
-                return message.reply(bot.generateErrorMessage("could not find info for your stock ticker!"))
+                return message.reply(bot.generateErrorMessage(message.channel as Discord.TextChannel, "could not find info for your stock ticker!"))
         }
     }
 
@@ -64,13 +64,13 @@ export default class BotModuleStockMarket {
             return message.channel.send(this.buildTickerInfoDayMessage(data, dateChoice as Date))
         } catch (err) {
             if (err.message.includes('Invalid API call'))
-                return message.reply(bot.generateErrorMessage(`invalid crypto symbol!`))
+                return message.reply(bot.generateErrorMessage(message.channel as Discord.TextChannel, `invalid crypto symbol!`))
             if (err.message.includes('No data exists for that day'))
-                return message.reply(bot.generateErrorMessage(`did not find your crypto's stats for that day!`))
+                return message.reply(bot.generateErrorMessage(message.channel as Discord.TextChannel, `did not find your crypto's stats for that day!`))
             if (err.message.includes('No data exists for that day') && !dateChoice)
-                return message.reply(bot.generateErrorMessage(`did not find your crypto's stats for today! Is the market closed today?`))
+                return message.reply(bot.generateErrorMessage(message.channel as Discord.TextChannel, `did not find your crypto's stats for today! Is the market closed today?`))
             if (err.message.includes('no data whatsoever'))
-                return message.reply(bot.generateErrorMessage("could not find info for your crypto!"))
+                return message.reply(bot.generateErrorMessage(message.channel as Discord.TextChannel, "could not find info for your crypto!"))
         }
     }
 

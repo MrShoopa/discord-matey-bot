@@ -36,12 +36,14 @@ export default class BotModuleReddit {
                 post = await this.fetchRandomSubmissionFromUser(query.replace('u/', ""))
             }
         } catch (err) {
-            return bot.generateErrorMessage(`That does not exist within reddit. Check your request.`)
+            if (channel)
+                return bot.generateErrorMessage(channel, `That does not exist within reddit. Check your request.`)
         }
 
-        this.buildRedditSubmissionMessage(post).forEach(message => {
-            channel.send(message)
-        })
+        this.
+            buildRedditSubmissionMessage(post).forEach(message => {
+                channel.send(message)
+            })
         return true
     }
 
@@ -56,7 +58,8 @@ export default class BotModuleReddit {
         try {
             pasta = await this.fetchRandomSubmission('copypasta', 'best')
         } catch {
-            return bot.generateErrorMessage(`r/copypasta went missing? Try again later.`)
+            if (channel)
+                return bot.generateErrorMessage(channel, `r/copypasta went missing? Try again later.`)
         }
 
         let delivery = new Discord.MessageEmbed()

@@ -35,7 +35,7 @@ export default class BotModuleTwitter {
         bot.textChannel.send(await this.fetchBuiltMsgTweetWithQuery(query.toString(), trigger))
     }
 
-    static async fetchBuiltMsgTweetWithQuery(query: string, trigger?: string):
+    static async fetchBuiltMsgTweetWithQuery(query: string, trigger?: string, channel?: Discord.DMChannel | Discord.TextChannel):
         Promise<Discord.Message | Discord.MessageEmbed> {
         let bot: Bot = globalThis.bot
 
@@ -49,7 +49,7 @@ export default class BotModuleTwitter {
         let tweet = await this.fetchTweetWithQuery(query)
 
         if (!tweet)
-            return bot.generateErrorMessage(`I couldn't fetch that tweet at the moment.`)
+            return bot.generateErrorMessage(channel, `I couldn't fetch that tweet at the moment.`)
 
         let url =
             `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
@@ -72,7 +72,7 @@ export default class BotModuleTwitter {
         return built
     }
 
-    static async fetchBuiltMsgTweetWithUserLatestPost(user: string, trigger?: string) {
+    static async fetchBuiltMsgTweetWithUserLatestPost(user: string, trigger?: string, channel?: Discord.TextChannel | Discord.DMChannel) {
         let bot: Bot = globalThis.bot
 
         user = user.toLowerCase()
@@ -83,16 +83,16 @@ export default class BotModuleTwitter {
             user = bot.context.toString().split(' ').pop()
 
         if (/\s/g.test(user))
-            return bot.generateErrorMessage(`Please enter the username (no spaces) of the twitter user.`)
+            return bot.generateErrorMessage(channel, `Please enter the username (no spaces) of the twitter user.`)
 
         let tweet = await this.fetchLatestTweetFromUser(user)
 
         if (tweet === 'not found')
-            return bot.generateErrorMessage(`That user doesn't seem to exist on Twitter...
+            return bot.generateErrorMessage(channel, `That user doesn't seem to exist on Twitter...
             or hasn't tweeted in a while...`)
 
         if (!tweet)
-            return bot.generateErrorMessage(`I couldn't fetch that tweet at the moment.`)
+            return bot.generateErrorMessage(channel, `I couldn't fetch that tweet at the moment.`)
 
         let url =
             `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`

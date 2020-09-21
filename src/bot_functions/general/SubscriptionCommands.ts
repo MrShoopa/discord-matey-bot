@@ -26,7 +26,8 @@ export default class BotSubscriptionCommands {
             subscription = BotSubscriptionHandler.createSubscription(message.channel.id, name, message)
         } catch (err) {
             if (err.message.includes('already exists'))
-                return message.channel.send(bot.generateErrorMessage(`A subscription named *${name}* already exists for this channel.`))
+                if (message.channel instanceof Discord.TextChannel || message.channel instanceof Discord.DMChannel)
+                    return message.channel.send(bot.generateErrorMessage(message.channel, `A subscription named *${name}* already exists for this channel.`))
         }
 
         if (message.channel instanceof Discord.TextChannel)
@@ -47,10 +48,13 @@ export default class BotSubscriptionCommands {
         } catch (error) {
             bot.saveBugReport(error, this.createSubscription.name, true)
 
-            if (error instanceof TypeError && error.message.includes('featureCode'))
-                return message.channel.send(bot.generateErrorMessage(`There is no subscription feature for that function or it does not exist...`))
-            else
-                return message.channel.send(bot.generateErrorMessage())
+            if (error instanceof TypeError && error.message.includes('featureCode')) {
+                if (message.channel instanceof Discord.TextChannel || message.channel instanceof Discord.DMChannel)
+                    return message.channel.send(bot.generateErrorMessage(message.channel, `There is no subscription feature for that function or it does not exist...`))
+            } else {
+                if (message.channel instanceof Discord.TextChannel || message.channel instanceof Discord.DMChannel)
+                    return message.channel.send(bot.generateErrorMessage(message.channel))
+            }
         }
 
         let response = new Discord.MessageEmbed()

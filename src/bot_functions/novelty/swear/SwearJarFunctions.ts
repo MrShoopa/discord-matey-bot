@@ -23,11 +23,11 @@ export default class BotModuleSwearJar {
             this.checkForSoundReply(word, message)
 
         for (const word of words)
-            if (BotModuleSwearBlacklist.banUserIfInBlacklist(word, message.member, message))
+            if (message.guild && BotModuleSwearBlacklist.banUserIfInBlacklist(word, message.member, message))
                 return
 
         for (const word of words) {
-            if (BotModuleSwearWhitelist.checkIfWordWhitelistedForRole(word, message.member))
+            if (message.guild && BotModuleSwearWhitelist.checkIfWordWhitelistedForRole(word, message.member))
                 wordMatches -= this.matchWord(word)
             else
                 wordMatches += this.matchWord(word)

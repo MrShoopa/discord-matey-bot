@@ -177,44 +177,53 @@ export default class TriggerHandlers {
         for (var hotword of TRIGGERS.main_trigger)
             if (message.toString().toLowerCase().startsWith(hotword)) {
 
-                /* let thinking =
-                    await message.channel.send(new Discord.MessageEmbed()
-                        .setDescription('🧠 \\ Thinking.')
-                        .setColor('RANDOM'))
-                let loadingAnimation = setInterval(() => {
-                    let nextIcon = () => {
-                        if (thinking.embeds[0].description.includes('\\'))
-                            return '|'
-                        if (thinking.embeds[0].description.includes('|'))
-                            return '/'
-                        if (thinking.embeds[0].description.includes('/'))
-                            return '-'
-                        if (thinking.embeds[0].description.includes('-'))
-                            return '\\'
-                    }
-                    let nextText = () => {
-                        if (thinking.embeds[0].description.includes('...'))
-                            return 'Thinking.  '
-                        if (thinking.embeds[0].description.includes('..'))
-                            return 'Thinking...'
-                        if (thinking.embeds[0].description.includes('.'))
-                            return 'Thinking.. '
-                    }
-                    thinking.edit(new Discord.MessageEmbed()
-                        .setDescription(`🧠 ${nextIcon()} ${nextText()}`)
-                        .setColor('RANDOM')).catch(e => this.bot.saveBugReport(e, 'Loading Animation'))
-                }, 2000) */
+                let loading = await TriggerHandlers.processThinkingMessage(message.channel as Discord.TextChannel)
 
                 message.content = message.content.replace(hotword, '').trim()
                 for (var check of this.functions)
                     if (await check()) {
-                        /* clearInterval(loadingAnimation)
-                        thinking.delete() */
+                        TriggerHandlers.clearThinkingMessage(loading)
                         return this.bot.commandSatisfied = true
                     }
-                /* clearInterval(loadingAnimation)
-                thinking.delete() */
+                TriggerHandlers.clearThinkingMessage(loading)
             }
+    }
+
+    static async processThinkingMessage(channel: Discord.TextChannel) {
+        let thinkingMessage =
+            await channel.send(new Discord.MessageEmbed()
+                .setDescription('🧠 \\ Thinking.')
+                .setColor('RANDOM'))
+        let animationTimeout = setInterval(() => {
+            let nextIcon = () => {
+                if (thinkingMessage.embeds[0].description.includes('\\'))
+                    return '|'
+                if (thinkingMessage.embeds[0].description.includes('|'))
+                    return '/'
+                if (thinkingMessage.embeds[0].description.includes('/'))
+                    return '-'
+                if (thinkingMessage.embeds[0].description.includes('-'))
+                    return '\\'
+            }
+            let nextText = () => {
+                if (thinkingMessage.embeds[0].description.includes('...'))
+                    return 'Thinking.  '
+                if (thinkingMessage.embeds[0].description.includes('..'))
+                    return 'Thinking...'
+                if (thinkingMessage.embeds[0].description.includes('.'))
+                    return 'Thinking.. '
+            }
+            thinkingMessage.edit(new Discord.MessageEmbed()
+                .setDescription(`🧠 ${nextIcon()} ${nextText()}`)
+                .setColor('RANDOM')).catch(e => this.bot.saveBugReport(e, 'Loading Animation'))
+        }, 5000)
+
+        return { thinkingMessage, animationTimeout }
+    }
+
+    static clearThinkingMessage(loading: { thinkingMessage: Discord.Message; animationTimeout: NodeJS.Timeout }) {
+        clearInterval(loading.animationTimeout)
+        loading.thinkingMessage.delete()
     }
 
     private static chatterCheck(message: Discord.Message | Discord.PartialMessage, unmodifiedMessage: string) {

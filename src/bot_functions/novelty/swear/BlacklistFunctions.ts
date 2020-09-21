@@ -7,12 +7,13 @@ import BotModuleSwearWhitelist from './WhitelistFunctions'
 export default class BotModuleSwearBlacklist {
 
     static checkIfWordBlacklistedForRole(word: string, user: Discord.GuildMember) {
-        if (Object.keys(you.word_list.black_list).includes(user.guild.id))
-            for (let w of you.word_list.black_list[`${user.guild.id}`])
-                if (word == w && !BotModuleSwearWhitelist.checkIfWordWhitelistedForRole(w, user)) {
-                    console.log(`Word ${word} passes blacklist in guild ${user.guild.id} for user ${user.user.username}. Uh oh.`)
-                    return true
-                }
+        if (user)
+            if (Object.keys(you.word_list.black_list).includes(user.guild.id))
+                for (let w of you.word_list.black_list[`${user.guild.id}`])
+                    if (word == w && !BotModuleSwearWhitelist.checkIfWordWhitelistedForRole(w, user)) {
+                        console.log(`Word ${word} passes blacklist in guild ${user.guild.id} for user ${user.user.username}. Uh oh.`)
+                        return true
+                    }
     }
 
     static banUserIfInBlacklist(word: string, user: Discord.GuildMember, message?: Discord.Message) {

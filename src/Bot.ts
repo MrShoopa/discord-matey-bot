@@ -46,6 +46,7 @@ export default class Bot extends Discord.Client {
     restrictedRoleIds: string[] = []
 
     private _context: Discord.Message | Discord.PartialMessage
+    lastDM: Discord.Message
     waker: Discord.User
     textChannel: Discord.TextChannel | Discord.DMChannel
     voiceChannel: Discord.VoiceChannel
@@ -76,7 +77,7 @@ export default class Bot extends Discord.Client {
             this.voiceChannel = this.lastMessage.member.voice.channel
         else if (this.waker.id === this.user.id)
             this.voiceChannel = this.voiceChannel
-        else
+        else if (value.member?.voice.channel)
             this.voiceChannel = value.member.voice.channel
     }
 
@@ -598,7 +599,7 @@ export default class Bot extends Discord.Client {
         return bot.context.toString().includes(desiredContext)
     }
 
-    generateErrorMessage(channel: Discord.TextChannel, message?: string): Discord.Message {
+    generateErrorMessage(channel: Discord.TextChannel | Discord.DMChannel, message?: string): Discord.Message {
         let built = new Discord.Message(this,
             {
                 content: "Unfortunately, I couldn't perform that action at the moment."

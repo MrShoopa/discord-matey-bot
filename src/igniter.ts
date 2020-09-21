@@ -1,7 +1,7 @@
 /*  
-    ~~~~~~Oddly Specific Discord Bot~~~~~~
+	~~~~~~Oddly Specific Discord Bot~~~~~~
     
-    @author Joe Villegas (joevillegasisawesome@gmail.com)
+	@author Joe Villegas (joevillegasisawesome@gmail.com)
 	@date   Started on May 16th, 2019.
 	
 	@see	./user_creds.json for providing API keys/secrets to use third-party services.
@@ -54,8 +54,17 @@ bot.on('message', async (message) => {
 	//  Logging message
 
 	try {
+		if (message.channel instanceof Discord.DMChannel) {
+			console.group(`DM from ${message.author.username} (${message.author.id})`)
+			console.log(`${message.content}`)
+			console.groupEnd()
+
+			bot.lastDM = message
+		}
+
 		if (globalThis.dev_mode) {
-			console.log(`\nOn ${new Date().toString()}, a user said:\n	"${(message.content).toString()}"`)
+			if (message.guild)
+				console.log(`\nOn ${new Date().toString()}, a user said:\n	"${(message.content).toString()}"`)
 
 			if (message.toString().startsWith('`')) {
 				message.content = message.content.substring(1)

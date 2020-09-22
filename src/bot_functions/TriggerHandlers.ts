@@ -177,12 +177,12 @@ export default class TriggerHandlers {
         for (var hotword of TRIGGERS.main_trigger)
             if (message.toString().toLowerCase().startsWith(hotword)) {
 
-                let loading = await TriggerHandlers.processThinkingMessage(message.channel as Discord.TextChannel)
+                //TODO: Figure out why it doesn't work for music playback
+                //let loading = await TriggerHandlers.processThinkingMessage(message.channel as Discord.TextChannel)
 
                 message.content = message.content.replace(hotword, '').trim()
                 for (var check of this.functions)
                     if (await check()) {
-                        //TODO: Figure out why it doesn't work for music playback
                         //TriggerHandlers.clearThinkingMessage(loading)
                         return this.bot.commandSatisfied = true
                     }

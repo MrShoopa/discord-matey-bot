@@ -182,10 +182,11 @@ export default class TriggerHandlers {
                 message.content = message.content.replace(hotword, '').trim()
                 for (var check of this.functions)
                     if (await check()) {
-                        TriggerHandlers.clearThinkingMessage(loading)
+                        //TODO: Figure out why it doesn't work for music playback
+                        //TriggerHandlers.clearThinkingMessage(loading)
                         return this.bot.commandSatisfied = true
                     }
-                TriggerHandlers.clearThinkingMessage(loading)
+                //TriggerHandlers.clearThinkingMessage(loading)
             }
     }
 

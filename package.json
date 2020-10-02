@@ -1,6 +1,6 @@
 {
     "name": "discord-matey-bot",
-    "version": "0.19.0",
+    "version": "0.19.1",
     "description": "MrShoopa's Lil' Discord Bot",
     "author": "MrShoopa",
     "license": "ISC",
@@ -15,7 +15,8 @@
         "registry": "https://npm.pkg.github.com/"
     },
     "repository": {
-        "url": "git://github.com//MrShoopa/discord-matey-bot.git"
+        "url": "git://github.com//MrShoopa/discord-matey-bot.git",
+        "type": "git"
     },
     "dependencies": {
         "@discordjs/opus": "^0.3.2",

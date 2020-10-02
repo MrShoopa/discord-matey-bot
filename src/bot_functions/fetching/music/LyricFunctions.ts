@@ -50,8 +50,8 @@ export default class BotModuleLyric {
             return null
         }
 
-        let prettifiedLyrics = await songInfo.lyrics()
-        prettifiedLyrics = prettifiedLyrics.replace(/\[(.*?)\]/g, '').match(/.{1,2040}/gs)
+        let songLyrics = await songInfo.lyrics()
+        let prettifiedLyrics = songLyrics.replace(/\[(.*?)\]/g, '').match(/.{1,2040}/gs)
 
         let built: Discord.MessageEmbed | Discord.MessageEmbed[]
 
@@ -90,7 +90,7 @@ export default class BotModuleLyric {
     static async fetchLyricsInfoOfSong(song: string) {
         try {
             const search =
-                await this.geniusClient.tracks.search(song)
+                await this.geniusClient.songs.search(song)
 
             return await search[0]
         } catch (e) {
@@ -122,7 +122,7 @@ export default class BotModuleLyric {
 
         //Limited to just a portion to prevent TTS annoyance
         let lyrics: string[] =
-            songInfo.lyrics.replace(/\[(.*?)\]/g, '').match(/((?:[^\n][\n]?))+/g)
+            (await songInfo.lyrics()).replace(/\[(.*?)\]/g, '').match(/((?:[^\n][\n]?))+/g)
 
         // Gets a random verse
         const verse = lyrics[Math.floor(Math.random() * lyrics.length)];
@@ -132,12 +132,12 @@ export default class BotModuleLyric {
 
         const infoMessage = new Discord.MessageEmbed()
             .setAuthor(Bot.fetchRandomPhrase(PHRASES.singing_start))
-            .setTitle(`${songInfo.title} - ${songInfo.primary_artist.name}`)
+            .setTitle(`${songInfo.title} - ${songInfo.artist.name}`)
             .setDescription(`Megadork sings ${songInfo.title}!`)
             .setURL(songInfo.url)
             .addFields({ name: `Excuse the 'Megadork says' ...that's Discord's control!`, value: `🤔` })
             .setColor('#ffff64')
-            .setThumbnail(songInfo.header_image_thumbnail_url)
+            .setThumbnail(songInfo.thumbnail)
             .setFooter('Megadork Bowie - Powered by Genius © 2020',
                 'https://cdn.apk4all.com/wp-content/uploads/apps/Genius-%E2%80%94-Song-Lyrics-More/KEzNV79C2uSJnYjJxImKUt_dIAnXjBiB3aahKHeMOsMAxZJlBvZ6gviOKaReUNBi5v7N.png')
 

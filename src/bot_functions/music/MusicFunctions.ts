@@ -605,7 +605,7 @@ class MusicQueue {
                     let url = currentList[i].toString().match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/)
                     let vid = await BotModuleMusic.fetchYouTubeVideoInfo(url[0])
 
-                    refactoredRequest = `${vid.title} - ${vid.author.name}`
+                    refactoredRequest = `${vid.videoDetails.title} - ${vid.videoDetails.author.name}`
                 } catch (err) {
                     refactoredRequest = "Unknown YouTube Item"
                 }

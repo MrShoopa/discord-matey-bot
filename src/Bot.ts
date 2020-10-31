@@ -423,14 +423,14 @@ export default class Bot extends Discord.Client {
                     return stream
                 } catch (err) {
                     let bot: Bot = globalThis.bot
-                    if (err.response.status == 400)
-                        message.reply(`this SoundCloud link isn't valid...`)
+                    if (err == 'client id expired' || err.response.status == 403)
+                        return SongState.Down;
                     else if (err.response.status == 404)
-                        message.reply(`unfortunately this SoundCloud track is unavailable to play.`)
-                    else if (err.response.status == 403)
-                        return SongState.Down
+                        message.reply(`unfortunately this SoundCloud track is unavailable to play.`);
+                    else if (err.response.status == 400)
+                        message.reply(`this SoundCloud link isn't valid...`);
                     else
-                        bot.saveBugReport(err, createStreamObject.name, true)
+                        bot.saveBugReport(err, createStreamObject.name, true);
 
                     return null
                 }

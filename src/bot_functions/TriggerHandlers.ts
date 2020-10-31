@@ -177,6 +177,7 @@ export default class TriggerHandlers {
         for (var hotword of TRIGGERS.main_trigger)
             if (message.toString().toLowerCase().startsWith(hotword)) {
 
+                //? tbh this messes with the message edits on discord (lots of calls)
                 //TODO: Figure out why it doesn't work for music playback
                 //let loading = await TriggerHandlers.processThinkingMessage(message.channel as Discord.TextChannel)
 

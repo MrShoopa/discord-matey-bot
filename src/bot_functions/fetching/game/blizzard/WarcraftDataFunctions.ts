@@ -50,9 +50,12 @@ export default class BotModuleWarcraft {
             await this.Blizzard.query(`/profile/wow/guild/${realm}/${character}?namespace=profile-us&locale=en_US`)
         */
         let builtTitle = ""
-        title.titles.forEach(t => {
-            builtTitle += t.name + ", "
-        })
+        if (title.titles)
+            title.titles.forEach(t => {
+                builtTitle += t.name + ", "
+            })
+        else
+            builtTitle = "Titleless Wanderer"
         builtTitle = builtTitle.slice(0, -2)
 
         let message = new Discord.MessageEmbed()

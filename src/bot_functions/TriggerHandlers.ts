@@ -36,6 +36,7 @@ import BotModuleStockMarket from './fetching/finance/StockMarketFunctions'
 import BotModuleYouTube from './fetching/streaming/YouTubeStreamFunctions'
 import BotModuleSpotify from './fetching/music/SpotifyFunctions'
 import BotModuleTextEditor from './language/TextEditorFunctions'
+import BotModuleUW from './fetching/college/UW'
 
 
 export default class TriggerHandlers {
@@ -91,6 +92,7 @@ export default class TriggerHandlers {
         TriggerHandlers.checkForCryptoTickerDailyRequest,
         TriggerHandlers.checkForYouTubeChannelLiveActivityRequest,
         TriggerHandlers.checkForYouTubeChannelNewVideoRequest,
+        TriggerHandlers.checkForUWFacultyRequest,
 
         // Management Requests
         TriggerHandlers.checkForNameChangeRequest,
@@ -498,6 +500,18 @@ export default class TriggerHandlers {
         for (const trigger of TRIGGERS.youtube.new_video.default)
             if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleYouTube.fireChannelNewVideoNotification(message as Discord.Message, trigger, true)
+    }
+
+    private static checkForUWFacultyRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.faculty_search.query)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotModuleUW.fireFacultySearchMessage(message as Discord.Message, trigger)
+    }
+
+    private static checkForUWFacultyRandomRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.faculty_search.random)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotModuleUW.fireRandomFacultySearchMessage(message as Discord.Message, trigger)
     }
 
     /*  ----    Server-Management   ---- */

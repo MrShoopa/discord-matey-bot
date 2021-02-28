@@ -1203,10 +1203,12 @@
         ]
     },
     "magic_ball": [
+        "magic_ball",
         "magic ball",
         "magic 8 ball",
         "8ball",
-        "8 ball"
+        "8 ball",
+        "8_ball"
     ],
     "google_search_triggers": {
         "base_request": [
@@ -1487,6 +1489,36 @@
             "t+",
             "text+",
             "text-big"
+        ]
+    },
+    "faculty_search": {
+        "query": [
+            "fetch faculty for",
+            "fetch faculty on",
+            "fetch faculty about",
+            "fetch faculty info for",
+            "fetch faculty info on",
+            "fetch faculty info about",
+            "fetch faculty contact for",
+            "fetch faculty contact on",
+            "fetch faculty contact about",
+            "fetch faculty contact info for",
+            "fetch faculty contact info on",
+            "fetch faculty contact info about",
+            "fetch uw faculty",
+            "fetch uw faculty info for",
+            "fetch uw faculty info on",
+            "fetch uw faculty info about",
+            "fetch uw faculty contact for",
+            "fetch uw faculty contact on",
+            "fetch uw faculty contact about",
+            "fetch uw faculty contact info for",
+            "fetch uw faculty contact info on",
+            "fetch uw faculty contact info about"
+        ],
+        "random": [
+            "fetch random faculty",
+            "fetch random uw faculty"
         ]
     }
 }

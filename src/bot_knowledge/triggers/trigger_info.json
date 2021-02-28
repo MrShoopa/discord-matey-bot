@@ -651,6 +651,17 @@
                     "example": "megadork get spotify genres"
                 }
             }
+        },
+        "faculty_uw": {
+            "_title": "UW Faculty Lookup",
+            "_description": "Look up contact info on UW Faculty members",
+            "_footer": "🏫",
+            "_command_list": {
+                "faculty_lookup": {
+                    "title": "Look up a faculty member's contact info (If you get a different teacher, try using a more specific name.)",
+                    "example": "megadork fetch uw faculty **nan mary sauce**"
+                }
+            }
         }
     }
 }

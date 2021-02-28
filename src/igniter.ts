@@ -78,8 +78,11 @@ bot.on('message', async (message) => {
 })
 
 bot.on('guildMemberAdd', async member => {
-	let URLLIST = await import('./bot_knowledge/references/urllist.json').then(a => a)
-	let WELCOMEMESSAGE = await import('./bot_knowledge/phrases/phrases_welcome.json').then(a => a)
+	let URLLIST = await import('./bot_knowledge/references/urllist.json').then(a => a).catch(err => {
+		console.log(err)
+		return null
+	})
+	let WELCOMEMESSAGE = await import('./bot_knowledge/phrases/phrases_welcome.json')
 	let announcementChannel: Discord.TextChannel = member.guild.systemChannel
 
 	if (!BotModuleModeration.kickIfBlacklisted(member as Discord.GuildMember)) {

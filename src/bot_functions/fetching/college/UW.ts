@@ -50,13 +50,23 @@ export default class BotModuleUW {
         console.log("Retrieved faculty member from UWFaculty API: ",
             facultyObject)
 
-        return new Discord.MessageEmbed()
+        let teacher = new Discord.MessageEmbed()
             .setDescription(facultyObject.description)
-            .addFields([
-                { name: 'Email', value: facultyObject.email },
-                { name: 'Phone', value: facultyObject.phone }
-            ])
             .setTitle(`${facultyObject.name}\n`)
             .setFooter('UW Faculty API')
+
+        facultyObject.email.forEach(ema => {
+            teacher.addFields([
+                { name: 'Email', value: ema.length > 0 ? ema : "N/A" },
+            ])
+        });
+
+        facultyObject.phone.forEach(pho => {
+            teacher.addFields([
+                { name: 'Phone', value: pho.length > 0 ? pho : "N/A" },
+            ])
+        });
+
+        return teacher;
     }
 }

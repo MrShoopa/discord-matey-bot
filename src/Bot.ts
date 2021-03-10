@@ -4,7 +4,7 @@ import Request from 'request'
 import Stream from 'stream'
 import NodeFetch from 'node-fetch'
 
-import Discord, { Role } from 'discord.js'
+import Discord, { Intents, Role } from 'discord.js'
 import YTDL from 'ytdl-core'
 
 import * as Datypes from './types/index'
@@ -30,7 +30,17 @@ export enum SongState {
 export default class Bot extends Discord.Client {
 
     constructor(apiKey: string = CREDS.discord.API_KEY) {
-        super()
+        super({
+            intents: [
+                'GUILDS',
+                'DIRECT_MESSAGES',
+                'DIRECT_MESSAGE_TYPING',
+                'GUILD_BANS',
+                'GUILD_INVITES',
+                'GUILD_MESSAGES',
+                'GUILD_PRESENCES'
+            ]
+        })
 
         this.login(apiKey).catch(error => {
             console.error(`Discord connection error: ${error}`)
@@ -397,7 +407,7 @@ export default class Bot extends Discord.Client {
 
                 try {
 
-                    await sc.tracks.getAlt(url).then(async track => {
+                    await sc.tracks.getV2(url).then(async track => {
                         songInfo.name = track.title
                         songInfo.author = track.user.username
                         songInfo.thumbnailUrl = track.artwork_url

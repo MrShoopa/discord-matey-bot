@@ -93,6 +93,7 @@ export default class TriggerHandlers {
         TriggerHandlers.checkForYouTubeChannelLiveActivityRequest,
         TriggerHandlers.checkForYouTubeChannelNewVideoRequest,
         TriggerHandlers.checkForUWFacultyRequest,
+        TriggerHandlers.checkForUWFacultyRandomRequest,
 
         // Management Requests
         TriggerHandlers.checkForNameChangeRequest,

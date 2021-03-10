@@ -93,7 +93,7 @@ export default class BotModuleSwearJar {
 
             this.thresholdCheck(oldNum, newNum)
             message.channel.send(swearDetectedMessage).then(message => {
-                if (!keepStat) message.delete({ timeout: 3000, reason: 'Prevent clutter' })
+                if (!keepStat) message.delete() //({ timeout: 3000, reason: 'Prevent clutter' })
             })
 
             return true
@@ -165,11 +165,11 @@ export default class BotModuleSwearJar {
     static printSwearStats() {
         let bot: Bot = globalThis.bot
 
-        bot.guilds.cache.forEach(guild => {
+        bot.guilds.cache.forEach(async guild => {
             let msg = this.generateSwearStatsMessage(guild)
 
             if (msg && guild.systemChannel)
-                guild.systemChannel.send(msg)
+                guild.systemChannel.send(await msg)
         })
     }
 
@@ -277,10 +277,10 @@ export default class BotModuleSwearJar {
 
         if (newBoolean)
             message.reply(Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.enable))
-                .then(m => m.delete({ timeout: 3000, reason: 'Unclutter' }))
+                .then(m => m.delete())
         else
             message.reply(Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.disable))
-                .then(m => m.delete({ timeout: 3000, reason: 'Unclutter' }))
+                .then(m => m.delete())
 
         return true
     }
@@ -301,12 +301,12 @@ export default class BotModuleSwearJar {
         if (whitelist.includes(message.channel.id)) {
             whitelist = whitelist.filter(id => id !== message.channel.id)
             message.reply(Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.whitelist_remove))
-                .then(m => m.delete({ timeout: 3000, reason: 'Unclutter' }))
+                .then(m => m.delete())
         }
         else {
             whitelist.push(message.channel.id)
             message.reply(Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.whitelist_add))
-                .then(m => m.delete({ timeout: 3000, reason: 'Unclutter' }))
+                .then(m => m.delete()) //{ timeout: 3000, reason: 'Unclutter' }
         }
 
         data.swear_jar_notify_whitelist = whitelist

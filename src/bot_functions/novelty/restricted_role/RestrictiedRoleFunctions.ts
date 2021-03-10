@@ -10,7 +10,7 @@ export default class BotModuleRestrictedRole {
 
         if (trigger) bot.preliminary(trigger, 'Set restricted role', true)
 
-        if (message.member.hasPermission(['ADMINISTRATOR']))
+        if (message.member.permissions.has(['ADMINISTRATOR']))
             message.mentions.members.forEach(member => {
                 let response = new Discord.MessageEmbed()
                     .setTitle(`${Bot.fetchRandomPhrase(PHRASES_SERVER_MOD.restricted_role_set)}`)

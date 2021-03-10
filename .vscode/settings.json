@@ -13,11 +13,11 @@
 	},
 
 	//  Discord
-	"discord.largeImage": "Editing a {LANG} file",
+	"discord.largeImage": "Editing a {lang} file",
 	"discord.detailsEditing": "Working on Megadork",
-	"discord.lowerDetailsEditing": "Line {currentline} of {filename}",
+	"discord.lowerDetailsEditing": "Line {current_line} of {file_name}",
 	"discord.detailsIdle": "Chillin'",
 	"discord.lowerDetailsIdle": "{null}",
 	"discord.detailsDebugging": "Debugging Megadork",
-	"discord.lowerDetailsDebugging": "Debugging {totallines} lines of code in {filename}"
+	"discord.lowerDetailsDebugging": "Debugging {total_lines} lines of code in {file_name}"
 }

@@ -19,7 +19,7 @@
         "type": "git"
     },
     "dependencies": {
-        "@discordjs/opus": "^0.4.0",
+        "@discordjs/opus": "^0.5.0",
         "@thorbens/jikan-api": "2.0.0-alpha.11",
         "alphavantage": "^2.2.0",
         "aws-sdk": "^2.860.0",

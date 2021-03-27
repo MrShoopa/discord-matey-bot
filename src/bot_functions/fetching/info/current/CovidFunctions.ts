@@ -4,6 +4,7 @@ import Bot from '../../../../Bot'
 import { covid } from '../../../../bot_knowledge/triggers/triggers.json'
 
 import * as NovelCovid from 'novelcovid'
+import * as VaccineCovid from '../../../../bot_modules/_external_wrappers/CovidExtras'
 
 export default class BotModuleCovid {
     static async fireCovidInfoMessage(message: Discord.Message, trigger: string) {
@@ -62,9 +63,13 @@ export default class BotModuleCovid {
                     country: country.toLowerCase(),
                     allowNull: true,
                     sort: "cases",
-                    strict: false
+                    strict: false,
                 })
                 data.location = data.country
+
+
+                let vaccineData = await VaccineCovid.default.getVaccinesInCountry(country)
+                data = BotModuleCovid.calculateVaccineData(data, vaccineData)
             } else if (continent) {
                 continent = continent.charAt(0).toUpperCase() + continent.slice(1);
                 data = await NovelCovid.continents({
@@ -78,6 +83,9 @@ export default class BotModuleCovid {
             else {
                 data = await NovelCovid.all()
                 data.location = 'World'
+
+                let vaccineData = await VaccineCovid.default.getVaccines()
+                data = BotModuleCovid.calculateVaccineData(data, vaccineData)
             }
 
             if (data?.message?.includes('not found'))
@@ -108,6 +116,8 @@ export default class BotModuleCovid {
         response.setDescription(description)
 
         let recPercentage = `${((data.active / data.cases) * 100).toFixed(2)}%`
+        let vaccineIncreasePercentage = `${(((data.totalVaccinesToday / data.totalVaccinesLastWeek) * 100) - 100).toFixed(2)}%`
+        if (vaccineIncreasePercentage == 'NaN%') vaccineIncreasePercentage = null
 
         if (data.active) response.addFields({ name: 'Active', value: `${data.active.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
         if (data.recovered) response.addFields({ name: 'Recoveries', value: `${data.recovered.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
@@ -118,7 +128,37 @@ export default class BotModuleCovid {
         if (data.todayCases) response.addFields({ name: `Today's Cases`, value: `+${data.todayCases.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
         if (data.todayDeaths) response.addFields({ name: `Today's Deaths`, value: `+${data.todayDeaths.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
         if (recPercentage) response.addFields({ name: 'Active/Total %', value: `${recPercentage}`, inline: true })
+        if (data.vaccinesToday && data.vaccinesToday != 0) response.addFields({ name: `Today's Vaccinations`, value: `+${data.vaccinesToday.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
+        if (data.totalVaccinesToday) response.addFields({ name: `Total Vaccinations`, value: `${data.totalVaccinesToday.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, inline: true })
+        if (vaccineIncreasePercentage) response.addFields({ name: 'Vaccination +% this week', value: `${vaccineIncreasePercentage}`, inline: true })
 
         return response
+    }
+
+    static calculateVaccineData(data: any, vaccineData: any) {
+        var today = new Date();
+        var yesterday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1);
+        var yesteryesterday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 2);
+        var lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+
+        data.totalVaccinesToday = vaccineData.timeline[`${this.generateDateString(today)}`]
+        data.totalVaccinesYesterday = vaccineData.timeline[`${this.generateDateString(yesterday)}`]
+        data.totalVaccinesYesterYesterday = vaccineData.timeline[`${this.generateDateString(yesteryesterday)}`]
+        data.totalVaccinesLastWeek = vaccineData.timeline[`${this.generateDateString(lastWeek)}`]
+
+        data.vaccinesToday = data.totalVaccinesToday - data.totalVaccinesYesterday
+        data.vaccinesYesterday = data.totalVaccinesYesterday - data.totalVaccinesYesterYesterday
+
+        return data
+    }
+
+    static generateDateString(date: Date): string {
+        var dd = String(date.getDate())
+        var mm = String(date.getMonth() + 1) //January is 0!
+        var yy = String(date.getFullYear()).substr(-2)
+
+        let dateString = mm + '/' + dd + '/' + yy
+
+        return dateString
     }
 }

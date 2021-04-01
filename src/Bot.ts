@@ -38,7 +38,8 @@ export default class Bot extends Discord.Client {
                 'GUILD_BANS',
                 'GUILD_INVITES',
                 'GUILD_MESSAGES',
-                'GUILD_PRESENCES'
+                'GUILD_PRESENCES',
+                'GUILD_VOICE_STATES'
             ]
         })
 
@@ -379,7 +380,7 @@ export default class Bot extends Discord.Client {
                         begin: timeStart
                     })
 
-                    await YTDL.getInfo(url.toString()).then(video => {
+                    await YTDL.getInfo(url).then(video => {
                         songInfo.name = video.videoDetails.title
                         songInfo.thumbnailUrl = video.videoDetails.thumbnail.thumbnails[3].url
                         songInfo.author = video.videoDetails.author.name
@@ -391,7 +392,7 @@ export default class Bot extends Discord.Client {
                     if (error.message.includes('video id'))
                         message.reply(`this YouTube link isn't valid...`)
                     else if (error.message.includes('No'))
-                        message.reply(`unfortunately this YouTube video is unavailable to play. Damn copyrights.`)
+                        message.reply(`unfortunately this - video is unavailable to play. Damn copyrights.`)
                     else if (error.message.includes('unavailable'))
                         message.reply(`unfortunately this YouTube video is unavailable to play. Damn copyrights.`)
                     else

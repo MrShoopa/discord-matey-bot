@@ -364,6 +364,9 @@ export default class Bot extends Discord.Client {
             if (url.includes('youtu')) {
                 songInfo = { source: url, platform: 'YouTube' }
                 url = url.replace(`youtu.be/`, `https://www.youtube.com/watch?v=`)
+                url = url.match(/(?<=\?v=).*(?=&)/g)[0]
+                if (!url) url = url.match(/(?<=\?v=).*(?=&)?/g)[0]
+                if (!url) throw new Error('No parsable YT URL found - invalid video id')
 
                 try {
                     let timeStart = "0s"

@@ -45,6 +45,7 @@
         "nodemailer": "^6.5.0",
         "novelcovid": "^3.0.0",
         "opus": "0.0.0",
+        "opusscript": "^0.0.8",
         "parse-time": "^0.1.4",
         "request": "^2.88.2",
         "snekfetch": "^4.0.4",

@@ -398,10 +398,12 @@ export default class Bot extends Discord.Client {
                     let bot: Bot = globalThis.bot
                     if (error.message.includes('video id'))
                         message.reply(`this YouTube link isn't valid...`)
-                    else if (error.message.includes('No'))
-                        message.reply(`unfortunately this - video is unavailable to play. Damn copyrights.`)
+                    else if (error.message.includes('404'))
+                        message.reply(`Video not... found? Huh?`)
                     else if (error.message.includes('unavailable'))
                         message.reply(`unfortunately this YouTube video is unavailable to play. Damn copyrights.`)
+                    else if (error.message.includes('429'))
+                        message.reply(`Too many YouTube requests have been made in my shared pod. Try again later 😊`)
                     else
                         bot.saveBugReport(error, createStreamObject.name, true)
 
@@ -422,8 +424,7 @@ export default class Bot extends Discord.Client {
                         songInfo.authorImgUrl = track.user.avatar_url
                         songInfo.genre = track.genre
 
-                        stream = await BotModuleMusic.scClient.util.streamTrack(`https://soundcloud.com/${url}`,
-                            './cache/music/soundcloud')
+                        stream = await BotModuleMusic.scClient.util.streamTrack(`https://soundcloud.com/${url}`)
                             .then(s => {
                                 return s as FileSystem.ReadStream
                             }).catch(e => {

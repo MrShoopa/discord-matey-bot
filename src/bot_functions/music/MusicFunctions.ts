@@ -181,11 +181,11 @@ export default class BotModuleMusic {
 
         if (!messageObj) messageObj = bot.context as Message
 
-        let connection = bot.voice.connections.find(c => c.channel.id == messageObj.member.voice?.channel?.id)
+        let connection = bot..cache.find(c => c.id == messageObj.member.voice?.channel?.id)
 
         if (trigger) bot.preliminary(trigger, 'Singing Stop', true, true)
 
-        if (bot.voiceChannel != null && bot.voice.connections.size !== 0) {
+        if (bot.voiceChannel != null && bot.voice.client.channels.cache.size !== 0) {
 
             try {
                 if (!connection) // "the bottom might annoy some"
@@ -193,7 +193,7 @@ export default class BotModuleMusic {
                 //.messageObj.reply(`join my voice channel and repeat that action!`)
                 else {
                     await bot.playSFX(connection, Audio.SFX.MusicLeave)
-                    messageObj.member.voice.channel.leave()
+                    connection.fetch().then(c => )
 
                     //. dw about it bot.textChannel.send(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.active))
                     console.log('Bot exited voice channel by user message.')
@@ -213,7 +213,7 @@ export default class BotModuleMusic {
     }
 
     static generatePlaybackMessage(message: Message, songInfo?: Stream.SongInfo)
-        : Discord.MessageEmbed {
+        : Discord.APIMessage {
         let playbackMessage = new Discord.MessageEmbed()
             .setAuthor('Mega-Juker! 🔊')
             .setTitle('Playing some 🅱eatz')
@@ -279,30 +279,34 @@ export default class BotModuleMusic {
     }
 
     static convertPlaybackMessageToFinished(botResponse: Message, ogMessage: Message) {
-        botResponse.edit(botResponse.content, {
-            embed: {
-                author: botResponse.embeds[0].author,
-                url: botResponse.embeds[0].url,
-                fields: botResponse.embeds[0].fields,
-                footer: botResponse.embeds[0].footer,
-                title: 'Played some 🅱eatz',
-                description: `- Finished playing ${ogMessage.author.username}'s jam! -`,
-                color: '#7c7286'
-            }
+        botResponse.edit({
+            embeds: [
+                {
+                    author: botResponse.embeds[0].author,
+                    url: botResponse.embeds[0].url,
+                    fields: botResponse.embeds[0].fields,
+                    footer: botResponse.embeds[0].footer,
+                    title: 'Played some 🅱eatz',
+                    description: `- Finished playing ${ogMessage.author.username}'s jam! -`,
+                    color: '#7c7286'
+                }
+            ]
         })
     }
 
     static convertPlaybackMessageToInterrupted(botResponse: Message, ogMessage: Message) {
-        botResponse.edit(botResponse.content, {
-            embed: {
-                author: botResponse.embeds[0].author,
-                url: botResponse.embeds[0].url,
-                fields: botResponse.embeds[0].fields,
-                footer: botResponse.embeds[0].footer,
-                title: 'Played some 🅱eatz',
-                description: `- Jam got interrupted by ${ogMessage.author.username} -`,
-                color: '#7c7286'
-            }
+        botResponse.edit({
+            embeds: [
+                {
+                    author: botResponse.embeds[0].author,
+                    url: botResponse.embeds[0].url,
+                    fields: botResponse.embeds[0].fields,
+                    footer: botResponse.embeds[0].footer,
+                    title: 'Played some 🅱eatz',
+                    description: `- Jam got interrupted by ${ogMessage.author.username} -`,
+                    color: '#7c7286'
+                }
+            ]
         })
     }
 

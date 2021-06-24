@@ -83,13 +83,14 @@ export default class Bot extends Discord.Client {
         this.waker = value.author
         this.textChannel = value.channel as Discord.TextChannel | Discord.DMChannel
 
-        if (this.voiceChannel === null &&
-            this.waker.id === this.user.id)
-            this.voiceChannel = this.lastMessage.member.voice.channel
-        else if (this.waker.id === this.user.id)
-            this.voiceChannel = this.voiceChannel
-        else if (value.member?.voice.channel)
-            this.voiceChannel = value.member.voice.channel
+        if (this.lastMessage.member.voice.channel instanceof Discord.VoiceChannel && value.member.voice.channel instanceof Discord.VoiceChannel)
+            if (this.voiceChannel === null &&
+                this.waker.id === this.user.id)
+                this.voiceChannel = this.lastMessage.member.voice.channel
+            else if (this.waker.id === this.user.id)
+                this.voiceChannel = this.voiceChannel
+            else if (value.member?.voice.channel)
+                this.voiceChannel = value.member.voice.channel
     }
 
     get lastMessage() {
@@ -151,7 +152,7 @@ export default class Bot extends Discord.Client {
         loop?: boolean, queueNumber?: number,
         trigger?: string, skipLog?: boolean)
         : Promise<SongState> {
-        let dispatcher: Discord.StreamDispatcher
+        let dispatcher
         let songInfo: Datypes.Stream.SongInfo
             = {
             source: 'local',
@@ -202,7 +203,7 @@ export default class Bot extends Discord.Client {
         }
 
         async function playAudioFile(song: string | Datypes.Audio.SongObject,
-            connection: Discord.VoiceConnection, messageObj?: Discord.Message, replaying?: boolean) {
+            connection, messageObj?: Discord.Message, replaying?: boolean) {
             let bot: Bot = globalThis.bot
 
             try {

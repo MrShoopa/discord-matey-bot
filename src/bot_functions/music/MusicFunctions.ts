@@ -1,4 +1,5 @@
-import Discord, { Message } from 'discord.js'
+import Discord from 'discord.js'
+import { joinVoiceChannel, VoiceConnection } from '@discordjs/voice'
 import Bot, { SongState } from "../../Bot"
 import { Audio, Stream } from "../../types"
 import QueueHandler from '../_state/QueueHandler'
@@ -21,12 +22,12 @@ export default class BotModuleMusic {
     static scClient: Soundcloud =
         new Soundcloud(AUTH.soundcloud.client_id, AUTH.soundcloud.o_auth_token)
 
-    static async playMusic(trigger: string, loop?: boolean, queueNumber?: number, messageObj?: Message) {
+    static async playMusic(trigger: string, loop?: boolean, queueNumber?: number, messageObj?: Discord.Message) {
         let bot: Bot = globalThis.bot
         let songState = SongState.Fetching
 
         if (!messageObj)
-            messageObj = bot.context as Message
+            messageObj = bot.context as Discord.Message
 
         let context: string[] =
             messageObj.toString().substring(0, 100).split(' ')
@@ -179,28 +180,36 @@ export default class BotModuleMusic {
     static async stopMusic(trigger?: string, messageObj?: Discord.Message) {
         let bot: Bot = globalThis.bot
 
-        if (!messageObj) messageObj = bot.context as Message
+        if (!messageObj) messageObj = bot.context as Discord.Message
 
-        let connection = bot..cache.find(c => c.id == messageObj.member.voice?.channel?.id)
+        let channelNeeded = bot.channels.cache.find(c => c.id == messageObj.member.voice?.channel?.id)
 
         if (trigger) bot.preliminary(trigger, 'Singing Stop', true, true)
 
         if (bot.voiceChannel != null && bot.voice.client.channels.cache.size !== 0) {
 
             try {
-                if (!connection) // "the bottom might annoy some"
-                    return console.log(`Matching voice connection not found`)
-                //.messageObj.reply(`join my voice channel and repeat that action!`)
-                else {
-                    await bot.playSFX(connection, Audio.SFX.MusicLeave)
-                    connection.fetch().then(c => )
+                if (channelNeeded instanceof Discord.VoiceChannel) {
 
-                    //. dw about it bot.textChannel.send(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.active))
-                    console.log('Bot exited voice channel by user message.')
+                    if (!channelNeeded) // "the bottom might annoy some"
+                        return console.log(`Matching voice connection not found`)
+                    //.messageObj.reply(`join my voice channel and repeat that action!`)
+                    else {
+                        let connection = joinVoiceChannel({
+                            channelId: channelNeeded.id,
+                            guildId: channelNeeded.guild.id,
+                            adapterCreator: channelNeeded.guild.voiceAdapterCreator
+                        })
+                        await bot.playSFX(connection, Audio.SFX.MusicLeave)
 
-                    if (this.findQueue()?.queue.peek()) {
-                        bot.textChannel.send(`Jukebox is cleaned out too.`)
-                        this.findQueue().queue.empty()
+
+                        //. dw about it bot.textChannel.send(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.active))
+                        console.log('Bot exited voice channel by user message.')
+
+                        if (this.findQueue()?.queue.peek()) {
+                            bot.textChannel.send(`Jukebox is cleaned out too.`)
+                            this.findQueue().queue.empty()
+                        }
                     }
                 }
             } catch (error) {
@@ -212,8 +221,9 @@ export default class BotModuleMusic {
         }
     }
 
-    static generatePlaybackMessage(message: Message, songInfo?: Stream.SongInfo)
+    static generatePlaybackMessage(message: Discord.Message, songInfo?: Stream.SongInfo)
         : Discord.APIMessage {
+
         let playbackMessage = new Discord.MessageEmbed()
             .setAuthor('Mega-Juker! 🔊')
             .setTitle('Playing some 🅱eatz')
@@ -275,10 +285,19 @@ export default class BotModuleMusic {
         if (songInfo.queueNumber)
             playbackMessage.setDescription(`\nPlaying ${message.author.username}'s request! ${songInfo.queueNumber} songs left in queue.`)
 
-        return playbackMessage
+        var finalMessage = new Discord.APIMessage(message.channel, {
+            embeds: [
+                new Discord.MessageEmbed()
+                    .setAuthor('Mega-Juker! 🔊')
+                    .setTitle('Playing some 🅱eatz')
+                    .setColor('ffc0cb')
+            ]
+        })
+
+        return finalMessage
     }
 
-    static convertPlaybackMessageToFinished(botResponse: Message, ogMessage: Message) {
+    static convertPlaybackMessageToFinished(botResponse: Discord.Message, ogMessage: Discord.Message) {
         botResponse.edit({
             embeds: [
                 {
@@ -294,7 +313,7 @@ export default class BotModuleMusic {
         })
     }
 
-    static convertPlaybackMessageToInterrupted(botResponse: Message, ogMessage: Message) {
+    static convertPlaybackMessageToInterrupted(botResponse: Discord.Message, ogMessage: Discord.Message) {
         botResponse.edit({
             embeds: [
                 {
@@ -332,7 +351,7 @@ export default class BotModuleMusic {
         return result.collection[0]
     }
 
-    static async checkIfUrlSpecialFormat(url: string, message: Message) {
+    static async checkIfUrlSpecialFormat(url: string, message: Discord.Message) {
         function checkForShuffle() {
             let context: string[] = message.toString().substring(0, 1000).split(' ')
             return TRIGGERS.singing_triggers.args.shuffle.some((trigger) => {
@@ -363,7 +382,7 @@ export default class BotModuleMusic {
                 messageReply = `🎶📃▶ **Playing ${message.author.username}'s playlist!** `
             }
 
-            let queue = this.createNewQueue(message.member.voice?.channel)
+            let queue = this.createNewQueue(message.member.voice?.channel as Discord.VoiceChannel)
 
             playlistUrls.forEach((url: string) => {
                 queue.addNewSongRequest(message, '', url)
@@ -442,10 +461,11 @@ export default class BotModuleMusic {
 
     static addNewSongRequest(trigger: string, message: Discord.Message) {
         if (message.member.voice.channel) {
-            let queue = this.findQueue(message.member.voice.channel)
+            let queue = this.findQueue(message.member.voice.channel as Discord.VoiceChannel)
 
             if (!queue?.addNewSongRequest(message, trigger))
-                return this.createNewQueue(message.member.voice.channel).addNewSongRequest(message, trigger)
+                return this.createNewQueue(message.member.voice.channel as Discord.VoiceChannel)
+                    .addNewSongRequest(message, trigger)
         } else return message.channel.send(`Join a channel first before adding to a music queue.`)
     }
     static processNextSongRequest(message: Discord.Message, skip?: boolean, restart?: boolean, trigger?: string) {
@@ -453,7 +473,8 @@ export default class BotModuleMusic {
             let queue = this.findQueue()
 
             if (!queue?.processNextSongRequest(message, skip, restart, trigger))
-                return this.createNewQueue(message.member.voice.channel).processNextSongRequest(message, skip, restart, trigger)
+                return this.createNewQueue(message.member.voice.channel as Discord.VoiceChannel)
+                    .processNextSongRequest(message, skip, restart, trigger)
         } else return message.channel.send(`Join a channel first before managing a music queue.`)
     }
     static fireQueueNextUpMessage(message: Discord.Message, trigger?: string) {
@@ -461,7 +482,8 @@ export default class BotModuleMusic {
             let queue = this.findQueue()
 
             if (!queue?.fireQueueNextUpMessage(trigger))
-                return this.createNewQueue(message.member.voice.channel).fireQueueNextUpMessage(trigger)
+                return this.createNewQueue(message.member.voice.channel as Discord.VoiceChannel)
+                    .fireQueueNextUpMessage(trigger)
         } else return message.channel.send(`Join a channel first before reading music queues.`)
     }
     static fireQueueListMessage(message: Discord.Message, trigger?: string) {
@@ -469,7 +491,8 @@ export default class BotModuleMusic {
             let queue = this.findQueue()
 
             if (!queue?.fireQueueListMessage(message, trigger))
-                return this.createNewQueue(message.member.voice.channel).fireQueueListMessage(message, trigger)
+                return this.createNewQueue(message.member.voice.channel as Discord.VoiceChannel)
+                    .fireQueueListMessage(message, trigger)
         } else return message.channel.send(`Join a channel first before reading music queues.`)
     }
 
@@ -491,15 +514,15 @@ export default class BotModuleMusic {
 
 class MusicQueue {
 
-    queue: QueueHandler<Message>
+    queue: QueueHandler<Discord.Message>
     channel: Discord.VoiceChannel
 
     constructor(channel: Discord.VoiceChannel) {
         this.channel = channel
-        this.queue = new QueueHandler<Message>()
+        this.queue = new QueueHandler<Discord.Message>()
     }
 
-    addNewSongRequest(message: Message, trigger?: string, manualQuery?: string) {
+    addNewSongRequest(message: Discord.Message, trigger?: string, manualQuery?: string) {
         let bot: Bot = globalThis.bot
         if (trigger) {
             bot.preliminary(trigger, 'Song Request Enqueue', true)
@@ -517,7 +540,7 @@ class MusicQueue {
 
             message.channel.send(`${message.author.username}, queuing your request.`)
 
-            this.queue.add(message as Message)
+            this.queue.add(message as Discord.Message)
         } catch (err) {
             bot.saveBugReport(err, this.addNewSongRequest.name, true)
         }
@@ -525,23 +548,32 @@ class MusicQueue {
         return true
     }
 
-    async processNextSongRequest(message: Message, skip?: boolean, restart?: boolean, trigger?: string, channel?: Discord.VoiceChannel) {
+    async processNextSongRequest(message: Discord.Message, skip?: boolean, restart?: boolean, trigger?: string, channel?: Discord.VoiceChannel) {
         let request = this.queue.dequeue()
         let bot: Bot = globalThis.bot
-        let connection: Discord.VoiceConnection
+        let connection: VoiceConnection
         if (trigger) bot.preliminary(trigger, `Song Request Process for ${this.channel.guild.name}`, true)
         if (channel)
-            connection = await channel.join()
-        else
-            connection = bot.voice.connections.find(c => c.channel.id == message.member.voice.channel?.id)
-
+            connection = joinVoiceChannel({
+                channelId: channel.id,
+                guildId: channel.guild.id,
+                adapterCreator: channel.guild.voiceAdapterCreator
+            })
+        else {
+            channel = message.member.voice.channel as Discord.VoiceChannel
+            connection = joinVoiceChannel({
+                channelId: channel.id,
+                guildId: channel.guild.id,
+                adapterCreator: channel.guild.voiceAdapterCreator
+            })
+        }
         if (request === undefined) {
             console.info(`Music queue list for ${this.channel.name} is now empty.`)
             message.channel.send(`📻... *that's all folks*!`)
 
             if (connection) {
                 await bot.playSFX(connection, Audio.SFX.MusicLeave)
-                return connection.voice.channel.leave()
+                return connection.disconnect()
             }
 
             return true
@@ -552,8 +584,13 @@ class MusicQueue {
                 if (connection)
                     await bot.playSFX(connection, Audio.SFX.MusicTransition)
                 else {
-                    if (message.member.voice.channel)
-                        connection = await message.member.voice.channel.join()
+                    let memberChannel = message.member.voice.channel
+                    if (memberChannel)
+                        connection = joinVoiceChannel({
+                            channelId: memberChannel.id,
+                            guildId: memberChannel.guild.id,
+                            adapterCreator: memberChannel.guild.voiceAdapterCreator
+                        })
                     else
                         return message.channel.send(`😵 Join a voice channel in this server first to play your queue!`)
                     await bot.playSFX(connection, Audio.SFX.MusicJoin)
@@ -565,11 +602,11 @@ class MusicQueue {
                 request.channel.send(`👉💿👉 Playing next song.`)
 
                 message = request
-                bot.voiceChannel = message.member.voice.channel
+                bot.voiceChannel = message.member.voice.channel as Discord.VoiceChannel
 
                 if (await BotModuleMusic.playMusic(request.content.toString(), false, this.queue.size(), message)
                     == 'next')
-                    this.processNextSongRequest(message, skip, false, null, connection.channel)
+                    this.processNextSongRequest(message, skip, false, null, channel)
             }
             else {
                 request.channel.send(`${request.author.username}'s request is being skipped.`)
@@ -581,7 +618,7 @@ class MusicQueue {
         return true
     }
 
-    async fireQueueListMessage(messageObj: Message, trigger?: string) {
+    async fireQueueListMessage(messageObj: Discord.Message, trigger?: string) {
         let bot: Bot = globalThis.bot
         let textChannel = messageObj.channel
         if (trigger) bot.preliminary(trigger, `Song Request List Inquiry for ${this.channel.guild.name}`, true)
@@ -626,7 +663,7 @@ class MusicQueue {
                 loadingMsg.delete()
         }
 
-        textChannel.send(message)
+        textChannel.send(new Discord.APIMessage(textChannel, { embeds: [message] }))
 
         return true
     }
@@ -650,7 +687,7 @@ class MusicQueue {
             .setColor('LUMINOUS_VIVID_PINK')
             .setFooter(`${this.queue.peekAll().length} request(s) to play...`)
 
-        bot.context.channel.send(message)
+        bot.context.channel.send(new Discord.APIMessage(bot.context.channel, { embeds: [message] }))
 
         return true
 

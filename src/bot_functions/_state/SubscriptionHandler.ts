@@ -64,11 +64,11 @@ export default class BotSubscriptionHandler {
     }
 
     /**
-	 * Creates a new subscription datastore file for the server's instance.
-	 * 
-	 * @param  {boolean} fetch? Returns the new data file.
-	 * @param  {boolean} force? Erases the existing datastore if it already exists.
-	 */
+     * Creates a new subscription datastore file for the server's instance.
+     *
+     * @param  {boolean} fetch? Returns the new data file.
+     * @param  {boolean} force? Erases the existing datastore if it already exists.
+     */
     static instantiateSubscriptionData(fetch?: boolean, force?: boolean) {
         if (!force && JSON.parse(FileSystem.readFileSync(this.SUBSCRIPTION_DATA_FILE).toString())) {
             console.log('Subscription Data already exists.')
@@ -93,12 +93,12 @@ export default class BotSubscriptionHandler {
         }
     }
 
-	/**
-	 * Overwrites the current subscription datastore file with any given
+    /**
+     * Overwrites the current subscription datastore file with any given
      * complete subscription data object.
-	 * 
-	 * @param  {any} data
-	 */
+     *
+     * @param  {any} data
+     */
     private static writeSubscriptionDataFile(data: any) {
         if (typeof data === 'object')
             try {
@@ -115,12 +115,12 @@ export default class BotSubscriptionHandler {
     }
 
     /**
-	 * Creates a new Datype.SubscriptionSave object based off a message channel's ID
+     * Creates a new Datype.SubscriptionSave object based off a message channel's ID
      * and saves it to the datastore file.
-	 * 
-	 * @param  {number|string} id Message Channel Discord ID
-	 * @param  {boolean} log? If true, logs extra info to console.
-	 */
+     *
+     * @param  {number|string} id Message Channel Discord ID
+     * @param  {boolean} log? If true, logs extra info to console.
+     */
     static createSubscription(id: number | string, name: string, caller?: Discord.Message, force?: boolean): Data.SubscriptionSave {
         if (typeof id === 'number') id = id.toString()
 
@@ -170,12 +170,12 @@ export default class BotSubscriptionHandler {
 
     }
 
-	/**
-	 * Updates an existing user's data with given new data.
-	 * 
-	 * @param  {number|string} id Message Channel id
-	 * @param  {object} newData New data to overwrite existing data with.
-	 */
+    /**
+     * Updates an existing user's data with given new data.
+     *
+     * @param  {number|string} id Message Channel id
+     * @param  {object} newData New data to overwrite existing data with.
+     */
     static updateSubscription(id: string, name: string, newData: Data.SubscriptionSave, caller?: Discord.Message, log: boolean = true) {
         if (log) console.group(`Updating data for channel ${id}'s subscription with name '${name}'`)
 
@@ -259,7 +259,7 @@ export default class BotSubscriptionHandler {
     static async runTask(subscription: Subscriptions.ChannelSubscription | Subscriptions.DMSubscription | Data.SubscriptionSave) {
         let bot: Bot = globalThis.bot
 
-        let subscribedChannelId: string
+        let subscribedChannelId: Discord.Snowflake
 
         if (subscription.channelId) subscribedChannelId = subscription.channelId
         if (subscription.dmChannelId) subscribedChannelId = subscription.dmChannelId
@@ -281,7 +281,7 @@ export default class BotSubscriptionHandler {
                 //TODO
                 break;
             case 'INSPIRATIONALQUOTE':
-                channel.send(await BotModuleQuote.fetchInspirationalQuote())
+                this.runInsporationalFetcher(channel)
                 break;
             case 'COPYPASTATIME':
                 BotModuleReddit.fireCopypastaFetch(channel)
@@ -307,8 +307,8 @@ export default class BotSubscriptionHandler {
                 break;
             case 'NINTENDODIRECTWATCH':
                 let response = await BotModuleYouTube.buildChannelNewVideoMessage('Nintendo')
-                if (response)
-                    channel.send(response)
+                if (response instanceof Discord.MessageEmbed)
+                    channel.send(new Discord.APIMessage(channel, { embeds: [response] }))
                 break;
             default:
                 break;
@@ -357,4 +357,10 @@ export default class BotSubscriptionHandler {
         if (log) console.log('SUBSCRIPTIONS - Finished running all subscribed tasks for channels!')
         console.groupEnd()
     }
+
+    static async runInsporationalFetcher(channel) {
+        let inspoMessage = await BotModuleQuote.fetchInspirationalQuote()
+        channel.send(new Discord.APIMessage(channel, { embeds: [inspoMessage] }))
+    }
+
 }

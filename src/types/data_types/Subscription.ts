@@ -13,7 +13,7 @@ export module Subscriptions {
         name: string
         _enabled: boolean
 
-        channelId: string
+        channelId: Discord.Snowflake
         authorId: string
         featureCode: SubscriptionFeature
         frequencyMilli: number

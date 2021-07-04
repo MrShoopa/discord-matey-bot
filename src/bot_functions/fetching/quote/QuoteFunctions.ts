@@ -115,6 +115,7 @@ export default class BotModuleQuote {
         if (log) console.log("Quote Object Returned from inspirational-quotes: ",
             quoteObject)
 
+
         return new Discord.MessageEmbed()
             .setTitle(quoteObject.text)
             .setAuthor(quoteObject.author)

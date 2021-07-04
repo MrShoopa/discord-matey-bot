@@ -8,11 +8,12 @@ export default class BotModuleAnime {
     static MAL = new JikanApiClient()
 
     static async fireAnimeInfoMessageOfName(message: Discord.Message, trigger: string) {
-        message.channel.send(await this.fetchBuiltMsgAnimeInfoMessageOfName(message.toString(), message.channel, trigger))
+        let fetechedMessage = await this.fetchBuiltMsgAnimeInfoMessageOfName(message.toString(), message.channel, trigger)
+        message.channel.send(new Discord.APIMessage(message.channel, { embeds: [fetechedMessage] }))
     }
 
     static async fireMangaInfoMessageOfName(message: Discord.Message, trigger: string) {
-        message.channel.send(await this.fetchBuiltMsgMangaInfoMessageOfName(message.toString(), message.channel, trigger))
+        message.channel.send(new Discord.APIMessage(message.channel, { embeds: [await this.fetchBuiltMsgMangaInfoMessageOfName(message.toString(), message.channel, trigger)] })
     }
 
     static async fetchBuiltMsgAnimeInfoMessageOfName(query: string, channel, trigger?: string):

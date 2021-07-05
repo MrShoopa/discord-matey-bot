@@ -20,10 +20,10 @@
     },
     "dependencies": {
         "@discordjs/opus": "^0.5.3",
-        "@discordjs/voice": "^0.5.1",
+        "@discordjs/voice": "^0.5.3",
         "@thorbens/jikan-api": "2.0.0-alpha.11",
         "alphavantage": "^2.2.0",
-        "aws-sdk": "^2.934.0",
+        "aws-sdk": "^2.939.0",
         "blizzapi": "^2.0.2",
         "decode-encode-binary": "^2.0.5",
         "discord.js": "github:discordjs/discord.js",
@@ -36,7 +36,7 @@
         "give-me-a-joke": "^0.4.0",
         "google-images": "^2.1.0",
         "google-it": "^1.6.2",
-        "googleapis": "^78.0.0",
+        "googleapis": "^80.1.0",
         "horoscope": "^2.0.1",
         "imgflip": "^3.0.0",
         "inspirational-quotes": "^1.0.8",
@@ -63,7 +63,7 @@
         "youtube-playlist": "^1.0.4",
         "youtube-search": "^1.1.6",
         "youtube.ts": "^0.2.0",
-        "ytdl-core": "4.8.2"
+        "ytdl-core": "4.8.3"
     },
     "devDependencies": {
         "@types/aws-sdk": "^2.7.0",
@@ -72,20 +72,20 @@
         "@types/fs-extra": "^9.0.11",
         "@types/giphy-api": "^2.0.2",
         "@types/google-images": "^2.1.0",
-        "@types/mocha": "^8.2.1",
-        "@types/node": "^14.17.4",
+        "@types/mocha": "^8.2.2",
+        "@types/node": "^16.0.0",
         "@types/node-fetch": "^2.5.10",
         "@types/nodemailer": "^6.4.2",
         "@types/request": "^2.48.5",
         "@types/snekfetch": "^4.0.2",
-        "@types/spotify-web-api-node": "^5.0.1",
-        "@types/twitter": "^1.7.0",
-        "chai": "^4.3.3",
-        "mocha": "^8.4.0",
+        "@types/spotify-web-api-node": "^5.0.2",
+        "@types/twitter": "^1.7.1",
+        "chai": "^4.3.4",
+        "mocha": "^9.0.2",
         "nyc": "^15.1.0",
         "ts-node": "10.0.0",
         "tsc-watch": "^4.4.0",
         "ttypescript": "^1.5.12",
-        "typescript": "^4.3.4"
+        "typescript": "^4.3.5"
     }
 }

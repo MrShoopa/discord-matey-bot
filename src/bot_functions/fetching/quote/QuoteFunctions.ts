@@ -7,25 +7,26 @@ import TRIGGERS from '../../../bot_knowledge/triggers/triggers.json'
 export default class BotModuleQuote {
     static async fireQuoteMessage(message: Discord.Message) {
         let bot: Bot = globalThis.bot
+        let channel = message.channel
         //  Quote of Day [from quotes.rest]
         for (const trigger of TRIGGERS.quote_fetch.OTD.default)
             if (message.toString().toLowerCase().includes(trigger))
-                return message.channel.send(await this.fetchQuoteOfTheDay(message, trigger))
+                return channel.send(new Discord.APIMessage(channel, { embeds: [await this.fetchQuoteOfTheDay(message, trigger)] }))
 
         //! API Depricated?  Movie quote [from MovieQuoter]
         for (const trigger of TRIGGERS.quote_fetch.movie.default)
             if (message.toString().toLowerCase().includes(trigger))
-                return message.channel.send(await this.fetchMovieQuote(trigger))
+                return channel.send(new Discord.APIMessage(channel, { embeds: [await this.fetchMovieQuote(trigger)] }))
 
         //  Inspirational quote [from inspirational-quotes]
         for (const trigger of TRIGGERS.quote_fetch.inspirational)
             if (message.toString().toLowerCase().includes(trigger))
-                return message.channel.send(await this.fetchInspirationalQuote(trigger))
+                return channel.send(new Discord.APIMessage(channel, { embeds: [await this.fetchInspirationalQuote(trigger)] }))
 
         //  Star Wars quote [from star-wars-quotes]
         for (const trigger of TRIGGERS.quote_fetch.star_wars.default)
             if (message.toString().toLowerCase().includes(trigger))
-                return message.channel.send(await this.fetchStarWarsQuote(trigger))
+                return channel.send(new Discord.APIMessage(channel, { embeds: [await this.fetchStarWarsQuote(trigger)] }))
     }
 
     static async fetchQuoteOfTheDay(message: Discord.Message, trigger?: string) {
@@ -141,7 +142,7 @@ export default class BotModuleQuote {
             quoteObject)
 
         return new Discord.MessageEmbed()
-            .setTitle(quoteObject)
+            .setTitle(quoteObject.starWarsQuote)
             .setAuthor(`From a galaxy far far away...`)
             .setFooter('Megadorky Quotter 💬🌟')
     }

@@ -104,12 +104,12 @@ export default class BotModuleStockMarket {
 
                 post.setTitle(`${metadata["3. Digital Currency Name"]} (to ${irlCurrency}) on ${this.parseDateString(dayChoice)}`)
                 if (Number.parseFloat(todayInfo[`1a. open (${irlCurrency})`]).toFixed(1) == "0.0") {
-                    post.addField("Open", Number.parseFloat(todayInfo[`1a. open (${irlCurrency})`]), true)
-                    post.addField("Low", Number.parseFloat(todayInfo[`3a. low (${irlCurrency})`]), true)
-                    post.addField("Volume", Number.parseFloat(todayInfo[`5. volume`]), true)
-                    post.addField("Close", Number.parseFloat(todayInfo[`4a. close (${irlCurrency})`]), true)
-                    post.addField("High", Number.parseFloat(todayInfo[`2a. high (${irlCurrency})`]), true)
-                    post.addField("Market Cap", Number.parseFloat(todayInfo[`6. market cap (${irlCurrency})`]), true)
+                    post.addField("Open", Number.parseFloat(todayInfo[`1a. open (${irlCurrency})`]).toString(), true)
+                    post.addField("Low", Number.parseFloat(todayInfo[`3a. low (${irlCurrency})`]).toString(), true)
+                    post.addField("Volume", Number.parseFloat(todayInfo[`5. volume`]).toString(), true)
+                    post.addField("Close", Number.parseFloat(todayInfo[`4a. close (${irlCurrency})`]).toString(), true)
+                    post.addField("High", Number.parseFloat(todayInfo[`2a. high (${irlCurrency})`]).toString(), true)
+                    post.addField("Market Cap", Number.parseFloat(todayInfo[`6. market cap (${irlCurrency})`]).toString(), true)
                 } else {
                     post.addField("Open", Number.parseFloat(todayInfo[`1a. open (${irlCurrency})`]).toFixed(2), true)
                     post.addField("Low", Number.parseFloat(todayInfo[`3a. low (${irlCurrency})`]).toFixed(2), true)

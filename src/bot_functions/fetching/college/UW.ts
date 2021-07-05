@@ -10,14 +10,14 @@ export default class BotModuleUW {
         //  Quote of Day [from quotes.rest]
         for (const trigger of TRIGGERS.faculty_search.query)
             if (message.toString().toLowerCase().includes(trigger))
-                return message.channel.send(await this.fetchFacultyTeacher(message, trigger))
+                return message.channel.send(new Discord.APIMessage(message.channel, { embeds: [await this.fetchFacultyTeacher(message, trigger)] }))
     }
 
     static async fireRandomFacultySearchMessage(message: Discord.Message, trigger?: string) {
         //  Quote of Day [from quotes.rest]
         for (const trigger of TRIGGERS.faculty_search.random)
             if (message.toString().toLowerCase().includes(trigger))
-                return message.channel.send(await this.fetchFacultyTeacher(message, trigger, true))
+                return message.channel.send(new Discord.APIMessage(message.channel, { embeds: [await this.fetchFacultyTeacher(message, trigger, true)] }))
     }
 
     static async fetchFacultyTeacher(message: Discord.Message, trigger?: string, random?: boolean) {

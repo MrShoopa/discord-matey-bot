@@ -8,16 +8,17 @@ export default class BotModuleAnime {
     static MAL = new JikanApiClient()
 
     static async fireAnimeInfoMessageOfName(message: Discord.Message, trigger: string) {
-        let fetechedMessage = await this.fetchBuiltMsgAnimeInfoMessageOfName(message.toString(), message.channel, trigger)
-        message.channel.send(new Discord.APIMessage(message.channel, { embeds: [fetechedMessage] }))
+        let fetchedMessage = await this.fetchBuiltMsgAnimeInfoMessageOfName(message.toString(), message.channel, trigger)
+        message.channel.send(new Discord.APIMessage(message.channel, { embeds: [fetchedMessage] }))
     }
 
     static async fireMangaInfoMessageOfName(message: Discord.Message, trigger: string) {
-        message.channel.send(new Discord.APIMessage(message.channel, { embeds: [await this.fetchBuiltMsgMangaInfoMessageOfName(message.toString(), message.channel, trigger)] })
+        let fetchedMessage = await this.fetchBuiltMsgMangaInfoMessageOfName(message.toString(), message.channel, trigger)
+        message.channel.send(new Discord.APIMessage(message.channel, { embeds: [fetchedMessage] }))
     }
 
     static async fetchBuiltMsgAnimeInfoMessageOfName(query: string, channel, trigger?: string):
-        Promise<Discord.Message | Discord.MessageEmbed> {
+        Promise<Discord.MessageEmbed> {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'MyAnimeList anime fetch', true)
 
@@ -29,15 +30,17 @@ export default class BotModuleAnime {
         let anime = await BotModuleAnime.fetchAnimeOfName(query)
 
         if (anime === undefined)
-            return new Discord.Message(bot.user.client,
-                { content: "I couldn't fetch swag info of your animoo at the moment." },
-                channel)
+            return new Discord.MessageEmbed()
+                .setColor('#0099ff')
+                .setTitle(`Anime broke?`)
+                .setAuthor('Megaweeb Finds')
+                .setDescription(`I couldn't fetch swag info of your animoo at the moment.`)
 
         return BotModuleAnime.generateInfoMessage(anime)
     }
 
     static async fetchBuiltMsgMangaInfoMessageOfName(query: string, channel, trigger?: string):
-        Promise<Discord.Message | Discord.MessageEmbed> {
+        Promise<Discord.MessageEmbed> {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'MyAnimeList manga fetch', true)
 
@@ -49,9 +52,11 @@ export default class BotModuleAnime {
         let anime = await BotModuleAnime.fetchMangaOfName(query)
 
         if (anime === undefined)
-            return new Discord.Message(bot.user.client,
-                { content: "I couldn't fetch swag info of your mango at the moment." },
-                channel)
+            return new Discord.MessageEmbed()
+                .setColor('#0099ff')
+                .setTitle(`Manga broke?`)
+                .setAuthor('Megaweeb Finds')
+                .setDescription(`I couldn't fetch swag info of your mango at the moment.`)
 
         return BotModuleAnime.generateInfoMessage(anime)
     }

@@ -38,7 +38,7 @@ describe('Finding specific user in guilds', () => {
 		let matchedUser
 
 		bot.guilds.cache.forEach(guild => {
-			guild.members.cache.get('')
+			guild.members.cache.get(`23`)
 		})
 
 		expect(matchedUser)

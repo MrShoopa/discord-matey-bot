@@ -10,14 +10,14 @@ export default class BotModuleUW {
         //  Quote of Day [from quotes.rest]
         for (const trigger of TRIGGERS.faculty_search.query)
             if (message.toString().toLowerCase().includes(trigger))
-                return message.channel.send(new Discord.APIMessage(message.channel, { embeds: [await this.fetchFacultyTeacher(message, trigger)] }))
+                return message.channel.send({ embeds: [await this.fetchFacultyTeacher(message, trigger)] })
     }
 
     static async fireRandomFacultySearchMessage(message: Discord.Message, trigger?: string) {
         //  Quote of Day [from quotes.rest]
         for (const trigger of TRIGGERS.faculty_search.random)
             if (message.toString().toLowerCase().includes(trigger))
-                return message.channel.send(new Discord.APIMessage(message.channel, { embeds: [await this.fetchFacultyTeacher(message, trigger, true)] }))
+                return message.channel.send({ embeds: [await this.fetchFacultyTeacher(message, trigger, true)] })
     }
 
     static async fetchFacultyTeacher(message: Discord.Message, trigger?: string, random?: boolean) {
@@ -38,13 +38,19 @@ export default class BotModuleUW {
             else if (random)
                 facultyObject = await UwFacultyAPI.getRandomFaculty()
             else
-                return message.channel.send(`Unable to fetch; Check your UW faculty member's name.`)
+                return new Discord.MessageEmbed()
+                    .setDescription(`Unable to fetch; Check your UW faculty member's name.`)
+                    .setFooter('UW Faculty API')
         } catch (e) {
             bot.saveBugReport(e, this.fetchFacultyTeacher.name)
             if (e.includes(`Bad request`))
-                return message.channel.send(`No results found from the UW Faculty API :/ Maybe check spelling?`)
+                return new Discord.MessageEmbed()
+                    .setDescription(`No results found from the UW Faculty API :/ Maybe check spelling?`)
+                    .setFooter('UW Faculty API')
             else
-                return message.channel.send(`Couldn't retrieve any results from the UW Faculty API :/ Try again later.`)
+                return new Discord.MessageEmbed()
+                    .setDescription(`Couldn't retrieve any results from the UW Faculty API :/ Try again later.`)
+                    .setFooter('UW Faculty API')
         }
 
         console.log("Retrieved faculty member from UWFaculty API: ",

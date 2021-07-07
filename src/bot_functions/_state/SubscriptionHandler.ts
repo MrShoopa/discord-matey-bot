@@ -308,7 +308,7 @@ export default class BotSubscriptionHandler {
             case 'NINTENDODIRECTWATCH':
                 let response = await BotModuleYouTube.buildChannelNewVideoMessage('Nintendo')
                 if (response instanceof Discord.MessageEmbed)
-                    channel.send(new Discord.APIMessage(channel, { embeds: [response] }))
+                    channel.send({ embeds: [response] })
                 break;
             default:
                 break;
@@ -360,7 +360,7 @@ export default class BotSubscriptionHandler {
 
     static async runInsporationalFetcher(channel) {
         let inspoMessage = await BotModuleQuote.fetchInspirationalQuote()
-        channel.send(new Discord.APIMessage(channel, { embeds: [inspoMessage] }))
+        channel.send({ embeds: [inspoMessage] })
     }
 
 }

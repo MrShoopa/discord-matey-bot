@@ -19,6 +19,7 @@
         "type": "git"
     },
     "dependencies": {
+        "@discordjs/builders": "^0.2.0",
         "@discordjs/opus": "^0.5.3",
         "@discordjs/voice": "^0.5.3",
         "@thorbens/jikan-api": "2.0.0-alpha.11",

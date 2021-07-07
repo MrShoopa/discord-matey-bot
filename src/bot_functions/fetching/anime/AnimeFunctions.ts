@@ -9,12 +9,12 @@ export default class BotModuleAnime {
 
     static async fireAnimeInfoMessageOfName(message: Discord.Message, trigger: string) {
         let fetchedMessage = await this.fetchBuiltMsgAnimeInfoMessageOfName(message.toString(), message.channel, trigger)
-        message.channel.send(new Discord.APIMessage(message.channel, { embeds: [fetchedMessage] }))
+        message.channel.send({ embeds: [fetchedMessage] })
     }
 
     static async fireMangaInfoMessageOfName(message: Discord.Message, trigger: string) {
         let fetchedMessage = await this.fetchBuiltMsgMangaInfoMessageOfName(message.toString(), message.channel, trigger)
-        message.channel.send(new Discord.APIMessage(message.channel, { embeds: [fetchedMessage] }))
+        message.channel.send({ embeds: [fetchedMessage] })
     }
 
     static async fetchBuiltMsgAnimeInfoMessageOfName(query: string, channel, trigger?: string):

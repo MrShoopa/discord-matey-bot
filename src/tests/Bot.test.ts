@@ -57,7 +57,7 @@ describe('Bot can find specific user in guilds', () => {
     it('matched', () => {
         let wholeData = BotData.getUserDataFile()
 
-        let randomID: string = wholeData[0]._id
+        let randomID: `${bigint}` = wholeData[0]._id
 
         let matchedUser
 

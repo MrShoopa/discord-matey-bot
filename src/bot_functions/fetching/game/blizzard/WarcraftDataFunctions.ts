@@ -80,7 +80,7 @@ export default class BotModuleWarcraft {
             { name: 'Equipped Item Level', value: profile.equipped_item_level, inline: true },
         )
 
-        return query.reply(message)
+        return query.reply({ embeds: [message] })
     }
 
     static async fetchWarcraftProfile(realm: string, character: string) {

@@ -78,6 +78,7 @@ export default class BotModuleMeme {
                 })
             } else {
                 image = await this.ImgFlip.meme(templateId, {
+                    captions: params
                     //? path: `${topic}.png`
                 })
             }

@@ -11,12 +11,14 @@ import DEFAULTS_IMAGE from '../../../bot_knowledge/defaults/image_search.json'
 
 export default class BotModuleGoogleImage {
 
+    static funcTitle = `MegaGoog Image Searcher 📷`
+
     static async fireImageMessageFromGoogle(message: Discord.Message, trigger?: string) {
-        message.channel.send(await this.fetchBuiltImageFromGoogle(trigger))
+        message.channel.send({ embeds: [await this.fetchBuiltImageFromGoogle(trigger)] })
     }
 
     static async fetchBuiltImageFromGoogle(userQuery: Discord.Message | string, trigger?: string):
-        Promise<Discord.Message | Discord.MessageEmbed> {
+        Promise<Discord.MessageEmbed> {
         let bot: Bot = globalThis.bot
 
         if (trigger) bot.preliminary(trigger, 'Image Search', true)
@@ -40,7 +42,7 @@ export default class BotModuleGoogleImage {
             bot.saveBugReport(new ReferenceError('No image was returned.'),
                 this.fetchBuiltImageFromGoogle.name,
                 true, true)
-            return bot.generateErrorMessage(userQuery as any, `Due to some error, I couldn't fetch anything at the moment.`)
+            return bot.generateErrorMessage(userQuery as any, `Due to some error, I couldn't fetch anything at the moment.`, BotModuleGoogleImage.funcTitle)
         }
 
         let message = new Discord.MessageEmbed()

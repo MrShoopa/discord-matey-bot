@@ -22,7 +22,7 @@ export default class BotModuleJoke {
             .setFooter(`${joke.category} - ${joke.source}`)
         //? add credits to Joke APIs? .setFooter(joke)
 
-        return message.channel.send(response)
+        return message.channel.send({ embeds: [response] })
     }
 
     // this is what happens if your api doesn't use promises or typescript

@@ -1,4 +1,4 @@
-import Discord from 'discord.js'
+import Discord, { MessageEmbed } from 'discord.js'
 import Bot from '../../../../Bot'
 
 import { covid } from '../../../../bot_knowledge/triggers/triggers.json'
@@ -38,8 +38,8 @@ export default class BotModuleCovid {
                 break
             }
 
-        if (response)
-            return message.channel.send(response)
+        if (response && response instanceof MessageEmbed)
+            return message.channel.send({ embeds: [response] })
         else
             return message.channel.send(`Invalid COVID-19 info request. *megadork help covid*`)
     }

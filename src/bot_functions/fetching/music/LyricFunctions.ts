@@ -23,10 +23,10 @@ export default class BotModuleLyric {
 
         if (Array.isArray(response))
             response.forEach(part => {
-                message.channel.send(part)
+                message.channel.send({ embeds: [part] })
             });
         else
-            message.channel.send(response)
+            message.channel.send({ embeds: [response] })
 
         return true
     }
@@ -141,10 +141,10 @@ export default class BotModuleLyric {
             .setFooter('Megadork Bowie - Powered by Genius © 2020',
                 'https://cdn.apk4all.com/wp-content/uploads/apps/Genius-%E2%80%94-Song-Lyrics-More/KEzNV79C2uSJnYjJxImKUt_dIAnXjBiB3aahKHeMOsMAxZJlBvZ6gviOKaReUNBi5v7N.png')
 
-        bot.context.channel.send(infoMessage)
+        bot.context.channel.send({ embeds: [infoMessage] })
 
         lyrics.forEach(part => {
-            bot.context.channel.send(part, { tts: true }) // ultimate weapon
+            bot.context.channel.send({ content: part, tts: true }) // ultimate weapon
         })
     }
 

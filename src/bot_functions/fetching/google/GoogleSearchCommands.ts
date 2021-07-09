@@ -11,16 +11,18 @@ import DEFAULTS_GOOGLE from '../../../bot_knowledge/defaults/image_search.json'
 
 export default class BotModuleGoogleSearch {
 
+    static funcTitle = 'MegaGoog'
+
     static async fireSearchMessageFromGoogle(trigger?: string) {
         let bot: Bot = globalThis.bot
 
         let query = bot.context.toString()
 
-        bot.context.channel.send(await this.fetchBuiltSearchFromGoogle(query, trigger))
+        bot.context.channel.send({ embeds: [await this.fetchBuiltSearchFromGoogle(query, trigger)] })
     }
 
     static async fetchBuiltSearchFromGoogle(query?: string, trigger?: string):
-        Promise<Discord.Message | Discord.MessageEmbed> {
+        Promise<Discord.MessageEmbed> {
         let bot: Bot = globalThis.bot
 
         if (trigger) {
@@ -43,11 +45,11 @@ export default class BotModuleGoogleSearch {
         if (!list) {
             bot.saveBugReport(new ReferenceError('No Search was returned.'),
                 this.fetchBuiltSearchFromGoogle.name, true)
-            return bot.generateErrorMessage(bot.context.channel as Discord.TextChannel, `I got nothing fam`)
+            return bot.generateErrorMessage(bot.context.channel as Discord.TextChannel, `I got nothing fam`, this.funcTitle)
         }
 
         let message = new Discord.MessageEmbed()
-            .setAuthor('MegaGoog')
+            .setAuthor(this.funcTitle)
             .setColor('BLUE')
             .setFooter(`Google Search`,
                 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/235px-Google_%22G%22_Logo.svg.png')

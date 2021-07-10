@@ -104,7 +104,7 @@ bot.on('guildMemberAdd', async member => {
 })
 
 bot.on('error', error => {
-	bot.waker.lastMessage.channel.send(`Ah! Something crashed my lil' engine!
+	bot.context.channel.send(`Ah! Something crashed my lil' engine!
 		Log submitted to Joe. Restarting...`)
 
 	bot.saveBugReport(error)

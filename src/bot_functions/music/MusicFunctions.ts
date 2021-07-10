@@ -222,12 +222,12 @@ export default class BotModuleMusic {
     }
 
     static generatePlaybackMessage(message: Discord.Message, songInfo?: Stream.SongInfo)
-        : Discord.APIMessage {
+        : Discord.MessageEmbed {
 
         let playbackMessage = new Discord.MessageEmbed()
             .setAuthor('Mega-Juker! 🔊')
             .setTitle('Playing some 🅱eatz')
-            .setColor('ffc0cb')
+            .setColor(`FUCHSIA`)
 
         playbackMessage
             .setDescription(`\nI'm playing your request, ${message.author.username}! 👌`)
@@ -285,14 +285,11 @@ export default class BotModuleMusic {
         if (songInfo.queueNumber)
             playbackMessage.setDescription(`\nPlaying ${message.author.username}'s request! ${songInfo.queueNumber} songs left in queue.`)
 
-        var finalMessage = new Discord.APIMessage(message.channel, {
-            embeds: [
+        var finalMessage =
                 new Discord.MessageEmbed()
                     .setAuthor('Mega-Juker! 🔊')
                     .setTitle('Playing some 🅱eatz')
-                    .setColor('ffc0cb')
-            ]
-        })
+                .setColor(`FUCHSIA`)
 
         return finalMessage
     }

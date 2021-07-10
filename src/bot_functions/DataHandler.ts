@@ -170,7 +170,7 @@ export default class BotData {
 		if (userData === undefined || force) {
 			// ...if not found, create new data.
 			let newSave: Data.UserSave = {
-				_id: id, _toggles: {}
+				_id: id as `${bigint}`, _toggles: {}
 			}
 
 			data.push(newSave)

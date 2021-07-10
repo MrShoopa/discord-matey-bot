@@ -121,7 +121,7 @@ export default class BotSubscriptionHandler {
      * @param  {number|string} id Message Channel Discord ID
      * @param  {boolean} log? If true, logs extra info to console.
      */
-    static createSubscription(id: number | string, name: string, caller?: Discord.Message, force?: boolean): Data.SubscriptionSave {
+    static createSubscription(id: number | string | `${bigint}`, name: string, caller?: Discord.Message, force?: boolean): Data.SubscriptionSave {
         if (typeof id === 'number') id = id.toString()
 
         var data = this.getSubscriptionDatastore()
@@ -153,7 +153,7 @@ export default class BotSubscriptionHandler {
             else if (caller?.channel instanceof Discord.DMChannel) {
                 newSub._type = 'DM'
                 newSub.dmChannelId = caller.channel.id
-            } else newSub.channelId = id
+            } else newSub.channelId = id as `${bigint}`
 
             data.push(newSub)
 

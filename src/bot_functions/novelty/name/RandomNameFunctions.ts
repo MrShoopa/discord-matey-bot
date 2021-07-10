@@ -34,7 +34,7 @@ export default class BotModuleNameGenerator {
         this.changeMemberName(member, name, punishment, automated).then(suc => {
             if (suc)
                 if (punishment)
-                    member.lastMessage.channel.send(Bot.fetchRandomPhrase(PHRASES_NAME_CHANGE.response.punishment))
+                    member.lastMessage.channel.send({ embeds: [Bot.fetchRandomPhrase(PHRASES_NAME_CHANGE.response.punishment)] })
         }).catch(err => {
 
         })
@@ -48,7 +48,7 @@ export default class BotModuleNameGenerator {
             await member.edit({ nick: name }).catch(err => { throw err })
 
             if (!noReply)
-                member.lastMessage.channel.send(Bot.fetchRandomPhrase(PHRASES_NAME_CHANGE.response.user_demanded))
+                member.lastMessage.channel.send({ embeds: [Bot.fetchRandomPhrase(PHRASES_NAME_CHANGE.response.user_demanded)] })
             return true
         } catch (err) {
             if (!automated)

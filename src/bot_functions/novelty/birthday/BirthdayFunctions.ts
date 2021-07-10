@@ -143,12 +143,12 @@ export default class BotModuleBirthday {
 					})
 
 				if (earrape && specialUser.voice.channel) {
-					bot.voiceChannel = specialUser.voice.channel
+					bot.voiceChannel = specialUser.voice.channel as Discord.VoiceChannel
 					bot.playAudioFromURL('https://www.youtube.com/watch?v=s6gLh6mf0Ig&ab_channel=jobv3')
 				}
 
 				if (guild.systemChannel)
-					guild.systemChannel.send(birthdayMesssage)
+					guild.systemChannel.send({ embeds: [birthdayMesssage] })
 				/*
 				TODO else
 					guild.channels.cache.some(item => {

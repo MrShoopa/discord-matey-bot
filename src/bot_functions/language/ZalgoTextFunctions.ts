@@ -40,7 +40,7 @@ export default class ZalgoTextFunctions {
             for (let i = 0; i < conversion.length; i++) {
                 let add = new Discord.MessageEmbed()
                     .setDescription(conversion[i])
-                    .setColor('BLACK')
+                    .setColor(`DARK_GREY`)
 
                 if (i == conversion.length - 1)
                     add.setFooter('brrr', 'https://www.kindpng.com/picc/b/28/283431.png')
@@ -49,7 +49,9 @@ export default class ZalgoTextFunctions {
             }
         }
 
-        built.forEach(part => { message.channel.send(part) })
+        built.forEach(part => {
+            message.channel.send({ embeds: [part] })
+        })
     }
 
     static generateZalgoText(text: string) {

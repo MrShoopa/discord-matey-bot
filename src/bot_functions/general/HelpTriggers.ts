@@ -60,7 +60,7 @@ export default class HelpTriggers {
             listedMessage.addFields({ name: key, value: '\u200B', inline: true })
         })
 
-        message.channel.send(listedMessage)
+        message.channel.send({ embeds: [listedMessage] })
 
         // ? Fix up later? (Noise?)
         /* for (const x of Object.keys(PHRASES_FRONT)) {
@@ -100,7 +100,7 @@ export default class HelpTriggers {
             + '\n\n **Local Song List**:' + songList
         )
 
-        return message.channel.send(listedMessage)
+        return message.channel.send({ embeds: [listedMessage] })
     }
 
     static replyForTranslateInfo(message = TriggerHandlers.message) {
@@ -118,7 +118,7 @@ export default class HelpTriggers {
 
         listedMessage.setDescription(languageList)
 
-        return message.channel.send(listedMessage)
+        return message.channel.send({ embeds: [listedMessage] })
     }
 
     static replyForSubscriptionTypeInfo(message = TriggerHandlers.message) {
@@ -132,7 +132,7 @@ export default class HelpTriggers {
         for (const [key, value] of Object.entries(subscription_reference.type_descriptions))
             listedMessage.addField(key, value)
 
-        return message.channel.send(listedMessage)
+        return message.channel.send({ embeds: [listedMessage] })
     }
 
     static replyForMemeInfo(message = TriggerHandlers.message) {
@@ -151,7 +151,7 @@ export default class HelpTriggers {
 
         listedMessage.setDescription(memeList)
 
-        return message.channel.send(listedMessage)
+        return message.channel.send({ embeds: [listedMessage] })
     }
 
     static buildFunctionMessage(trigRef: FunctionReference) {
@@ -185,7 +185,7 @@ export default class HelpTriggers {
         TriggerHandlers.bot
             .preliminary(message.toString(), `Function Info Inquiry for ${trigRef._title}`, true)
 
-        return message.channel.send(this.buildFunctionMessage(trigRef))
+        return message.channel.send({ embeds: [this.buildFunctionMessage(trigRef)] })
     }
 }
 

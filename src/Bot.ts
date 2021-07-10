@@ -625,7 +625,21 @@ export default class Bot extends Discord.Client {
         return bot.context.toString().includes(desiredContext)
     }
 
-    generateErrorMessage(channel: Discord.TextChannel | Discord.DMChannel, message?: string, footer?: string): Discord.MessageEmbed {
+    generateWarningMessage(message?: string, footer?: string): Discord.MessageEmbed {
+        let built = new Discord.MessageEmbed()
+            .setAuthor('😮')
+            .setDescription(`Something might've not been input right.`)
+            .setColor('YELLOW')
+
+        if (message)
+            built.setDescription(message)
+        if (footer)
+            built.setFooter(footer)
+
+        return built
+    }
+
+    generateErrorMessage(message?: string, footer?: string): Discord.MessageEmbed {
         let built = new Discord.MessageEmbed()
             .setAuthor('🥴')
             .setDescription(`Unfortunately, I couldn't perform that action at the moment.`)

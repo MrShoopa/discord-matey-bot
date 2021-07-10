@@ -30,7 +30,7 @@ export default class WarcraftLanguageFunctions {
             .setColor('GOLD')
             .setFooter('Warcraft Language Translator')
 
-        message.channel.send(response)
+        message.channel.send({ embeds: [response] })
     }
 
     static getWarcraftTranslation(text: string, language: string) {

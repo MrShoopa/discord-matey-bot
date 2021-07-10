@@ -46,7 +46,7 @@ export default class BinaryCoderFunctions {
             }
         }
 
-        built.forEach(part => { message.channel.send(part) });
+        built.forEach(part => { message.channel.send({ embeds: [part] }) });
     }
 
     static convertToBinary(text: string) {

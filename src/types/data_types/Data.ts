@@ -2,7 +2,7 @@ import { Subscriptions } from './Subscription';
 
 export module Data {
     export interface UserSave extends Object {
-        _id: string
+        _id: `${bigint}`
         _toggles: any
         [x: string]: any
     }
@@ -21,8 +21,8 @@ export module Data {
         frequencyMilli: number,
         name: string,
         endDate?: Date,
-        channelId?: string
-        authorId?: string,
+        channelId?: `${bigint}`
+        authorId?: `${bigint}`
         userId?: string,
         dmChannelId?: string,
         [args: string]: any

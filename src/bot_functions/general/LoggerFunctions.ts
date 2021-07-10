@@ -29,9 +29,12 @@ export default class BotLoggerFunctions {
         this.writeTextToFile(ErrorLog.generateText(error, bot), ErrorLog.filename, ErrorLog.reportPath)
 
         if (reply && bot.lastWaker)
-            bot.lastWaker.lastMessage.channel.send(new Discord.MessageEmbed()
-                .setAuthor('Megadork Crash Reporter 📝')
-                .setDescription`Log submitted to Shoopa.`)
+            bot.context.channel.send({
+                embeds:
+                    [new Discord.MessageEmbed()
+                        .setAuthor('Megadork Crash Reporter 📝')
+                        .setDescription(`Log submitted to Shoopa.`)]
+            })
     }
 
     static async saveUserSuggestion(message: Discord.Message | Discord.PartialMessage, reply?: boolean, trigger?: string) {
@@ -88,9 +91,11 @@ export default class BotLoggerFunctions {
             console.info(`Unknown command logged on ${new Date().toString()}: '${message.toString()}'`)
 
         if (reply && bot.lastWaker)
-            bot.lastWaker.lastMessage.channel.send(new Discord.MessageEmbed()
-                .setAuthor('Megadork 📝')
-                .setDescription`I don't know that command so I've pinged Shoopa to look at it later.`)
+            bot.context.channel.send({
+                embeds: [new Discord.MessageEmbed()
+                    .setAuthor('Megadork 📝')
+                    .setDescription(`I don't know that command so I've pinged Shoopa to look at it later.`)]
+            })
     }
 
     private static writeTextToFile(text: string,
@@ -122,9 +127,11 @@ export default class BotLoggerFunctions {
             console.info(`Wrote on "${path}": ${new Date().toString()}: \n\t ${text} `)
 
         if (reply && bot.lastWaker)
-            bot.lastWaker.lastMessage.channel.send(new Discord.MessageEmbed()
-                .setAuthor('Megadork Text Writer 📝')
-                .setDescription`Log submitted to Shoopa.`)
+            bot.context.channel.send({
+                embeds: [new Discord.MessageEmbed()
+                    .setAuthor('Megadork Text Writer 📝')
+                    .setDescription(`Log submitted to Shoopa.`)]
+            })
     }
 
     static instantiateLogFolder() {

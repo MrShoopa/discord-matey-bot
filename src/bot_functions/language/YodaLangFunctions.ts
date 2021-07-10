@@ -30,7 +30,7 @@ export default class YodaLanguageFunctions {
             .setColor('GOLD')
             .setFooter('Yoda Language Translator')
 
-        message.channel.send(response)
+        message.channel.send({ embeds: [response] })
     }
 
     static getYodaTranslation(text: string, language: string) {

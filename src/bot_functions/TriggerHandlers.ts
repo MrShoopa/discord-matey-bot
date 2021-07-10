@@ -196,9 +196,11 @@ export default class TriggerHandlers {
 
     static async processThinkingMessage(channel: Discord.TextChannel) {
         let thinkingMessage =
-            await channel.send(new Discord.MessageEmbed()
-                .setDescription('🧠 \\ Thinking.')
-                .setColor('RANDOM'))
+            await channel.send({
+                embeds: [new Discord.MessageEmbed()
+                    .setDescription('🧠 \\ Thinking.')
+                    .setColor('RANDOM')]
+            })
         let animationTimeout = setInterval(() => {
             let nextIcon = () => {
                 if (thinkingMessage.embeds[0].description.includes('\\'))
@@ -218,9 +220,11 @@ export default class TriggerHandlers {
                 if (thinkingMessage.embeds[0].description.includes('.'))
                     return 'Thinking.. '
             }
-            thinkingMessage.edit(new Discord.MessageEmbed()
-                .setDescription(`🧠 ${nextIcon()} ${nextText()}`)
-                .setColor('RANDOM')).catch(e => this.bot.saveBugReport(e, 'Loading Animation'))
+            thinkingMessage.edit({
+                embeds: [new Discord.MessageEmbed()
+                    .setDescription(`🧠 ${nextIcon()} ${nextText()}`)
+                    .setColor('RANDOM')]
+            }).catch(e => this.bot.saveBugReport(e, 'Loading Animation'))
         }, 5000)
 
         return { thinkingMessage, animationTimeout }

@@ -14,13 +14,13 @@ export default class BotModuleRestrictedRole {
             message.mentions.members.forEach(member => {
                 let response = new Discord.MessageEmbed()
                     .setTitle(`${Bot.fetchRandomPhrase(PHRASES_SERVER_MOD.restricted_role_set)}`)
-                    .setColor('BLACK')
+                    .setColor('DARK_GREY')
                     .setDescription(`${message.author.username} has banished ${member.displayName} for inexplicable reasons.`)
                     .setFooter(`Role Enforced: ${bot.restrictedRoleIds[0]}`)
 
-                message.channel.send(response)
+                message.channel.send({ embeds: [response] })
 
-                member.roles.set([bot.restrictedRoleIds[0]])
+                member.roles.set([bot.restrictedRoleIds[0] as `${bigint}`])
                     .then(() => {
                         console.log(
                             `Adding ${member.displayName} to the role: ${bot.restrictedRoleIds[0]}`)
@@ -41,7 +41,7 @@ export default class BotModuleRestrictedRole {
         message.mentions.members.forEach(member => {
             message.reply(
                 `${Bot.fetchRandomPhrase(PHRASES_SERVER_MOD.restricted_role_unset)} ${member.displayName}`)
-            member.roles.remove(bot.restrictedRoleIds[0])
+            member.roles.remove(bot.restrictedRoleIds[0] as `${bigint}`)
                 .then(() => {
                     console.log(
                         `Removing ${member.displayName} from the role: ${globalThis.RESTRICTED_ROLE_NAME}`)

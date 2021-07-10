@@ -42,7 +42,7 @@ export default class BotModuleGoogleImage {
             bot.saveBugReport(new ReferenceError('No image was returned.'),
                 this.fetchBuiltImageFromGoogle.name,
                 true, true)
-            return bot.generateErrorMessage(userQuery as any, `Due to some error, I couldn't fetch anything at the moment.`, BotModuleGoogleImage.funcTitle)
+            return bot.generateErrorMessage(`Due to some error, I couldn't fetch anything at the moment.`, BotModuleGoogleImage.funcTitle)
         }
 
         let message = new Discord.MessageEmbed()

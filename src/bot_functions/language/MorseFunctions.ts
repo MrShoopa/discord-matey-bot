@@ -51,7 +51,7 @@ export default class MorseCoderFunctions {
         }
 
         built.forEach(part => {
-            message.channel.send(part)
+            message.channel.send({ embeds: [part] })
         });
     }
 

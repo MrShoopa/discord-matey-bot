@@ -81,7 +81,7 @@ export default class BotModuleSwearJar {
             }()
 
             let swearDetectedMessage = new Discord.MessageEmbed()
-                .setColor('PINK')
+                .setColor(`LUMINOUS_VIVID_PINK`)
                 //.setTitle(Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.bad_language_detected))
                 //.setAuthor('Your Friendly Neighborhood Megadork ✝', bot.user.avatarURL())
                 .setDescription(response)
@@ -92,7 +92,7 @@ export default class BotModuleSwearJar {
                 })
 
             this.thresholdCheck(oldNum, newNum)
-            message.channel.send(swearDetectedMessage).then(message => {
+            message.channel.send({ embeds: [swearDetectedMessage] }).then(message => {
                 if (!keepStat) message.delete() //({ timeout: 3000, reason: 'Prevent clutter' })
             })
 
@@ -119,7 +119,7 @@ export default class BotModuleSwearJar {
         if (trigger) bot.preliminary(trigger, 'Swear Jar Check')
 
         let response = await this.generateSwearStatsMessage(message.guild)
-        return message.channel.send(response)
+        return message.channel.send({ embeds: [response] })
     }
 
     static async generateSwearStatsMessage(guild: Discord.Guild) {
@@ -169,7 +169,7 @@ export default class BotModuleSwearJar {
             let msg = this.generateSwearStatsMessage(guild)
 
             if (msg && guild.systemChannel)
-                guild.systemChannel.send(await msg)
+                guild.systemChannel.send({ embeds: [await msg] })
         })
     }
 
@@ -264,7 +264,7 @@ export default class BotModuleSwearJar {
                     name: `SPOILER_FILE.${extension}`
                 }]
             })
-        } else message.channel.send(new MessageEmbed({ title: "Mystery link...", url: submission.data.url, color: 'PINK' }))
+        } else message.channel.send({ embeds: [new MessageEmbed({ title: "Mystery link...", url: submission.data.url, color: 'LUMINOUS_VIVID_PINK' })] })
     }
 
     static toggleUserJar(message: Discord.Message | Discord.PartialMessage, trigger?: string) {

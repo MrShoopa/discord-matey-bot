@@ -37,12 +37,12 @@ export default class BotModuleReddit {
             }
         } catch (err) {
             if (channel)
-                return bot.generateErrorMessage(channel, `That does not exist within reddit. Check your request.`)
+                return bot.generateErrorMessage(`That does not exist within reddit. Check your request.`)
         }
 
         this.
             buildRedditSubmissionMessage(post).forEach(message => {
-                channel.send(message)
+                channel.send({ embeds: [message] })
             })
         return true
     }
@@ -59,7 +59,7 @@ export default class BotModuleReddit {
             pasta = await this.fetchRandomSubmission('copypasta', 'best')
         } catch {
             if (channel)
-                return bot.generateErrorMessage(channel, `r/copypasta went missing? Try again later.`)
+                return bot.generateErrorMessage(`r/copypasta went missing? Try again later.`)
         }
 
         let delivery = new Discord.MessageEmbed()
@@ -89,7 +89,7 @@ export default class BotModuleReddit {
             } else delivery.setDescription(pasta.data.selftext)
 
         }
-        channel.send(delivery)
+        channel.send({ embeds: [delivery] })
     }
     static async fire5050Fetch(channel?: Discord.TextChannel | Discord.DMChannel, trigger?: string) {
         let bot: Bot = globalThis.bot
@@ -109,7 +109,7 @@ export default class BotModuleReddit {
             .setAuthor(`Here's a r/fiftyfifty post! Proceed with caution!`)
             .setFooter(`Courtesy of u/${riskyRiskyThingy.data.author}`,
                 'https://images.vexels.com/media/users/3/129189/isolated/preview/59a4614a4e033709d1b90042a9cc9bd2-50-percent-infographic-by-vexels.png')
-        channel.send(fiftyPost)
+        channel.send({ embeds: [fiftyPost] })
 
         if (riskyRiskyThingy.data.url.includes('jpg') || riskyRiskyThingy.data.url.includes('png') || riskyRiskyThingy.data.url.includes('webm') || riskyRiskyThingy.data.url.includes('gif')) {
             if (riskyRiskyThingy.data.url.includes('gif')) extension = 'gif'
@@ -124,7 +124,7 @@ export default class BotModuleReddit {
                 .setTitle(`Mystery link...`)
                 .setURL(riskyRiskyThingy.data.url)
                 .setColor('#8B0000')
-            channel.send(response)
+            channel.send({ embeds: [response] })
         }
     }
 
@@ -142,7 +142,7 @@ export default class BotModuleReddit {
             .setFooter('r/AskReddit',
                 'https://b.thumbs.redditmedia.com/EndDxMGB-FTZ2MGtjepQ06cQEkZw_YQAsOUudpb9nSQ.png')
 
-        channel.send(response)
+        channel.send({ embeds: [response] })
     }
 
     static async fireSubmissionImageMessage(redditObject: any) {

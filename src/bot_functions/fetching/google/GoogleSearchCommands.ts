@@ -45,7 +45,7 @@ export default class BotModuleGoogleSearch {
         if (!list) {
             bot.saveBugReport(new ReferenceError('No Search was returned.'),
                 this.fetchBuiltSearchFromGoogle.name, true)
-            return bot.generateErrorMessage(bot.context.channel as Discord.TextChannel, `I got nothing fam`, this.funcTitle)
+            return bot.generateErrorMessage(`I got nothing fam`, this.funcTitle)
         }
 
         let message = new Discord.MessageEmbed()

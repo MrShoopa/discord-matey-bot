@@ -6,20 +6,20 @@ import { uniqueNamesGenerator, Config, names, colors, adjectives, animals, starW
 import PHRASES_NAME_CHANGE from '../../../bot_knowledge/phrases/phrases_name_change.json'
 
 export default class BotModuleNameGenerator {
-    static processRandomNameRequest(message: Discord.Message = globalThis.bot.context) {
+    static processRandomNameRequest(messageObj: Discord.Message = globalThis.bot.context) {
 
         for (const trigger of TRIGGERS.name_change.star_wars)
-            if (message.toString().toLowerCase().startsWith(trigger))
-                return this.giveUserRandomName(message.member, 'starwars')
+            if (messageObj.toString().toLowerCase().startsWith(trigger))
+                return this.giveUserRandomName(messageObj, 'starwars')
         for (const trigger of TRIGGERS.name_change.funky)
-            if (message.toString().toLowerCase().startsWith(trigger))
-                return this.giveUserRandomName(message.member, 'funky')
+            if (messageObj.toString().toLowerCase().startsWith(trigger))
+                return this.giveUserRandomName(messageObj, 'funky')
         for (const trigger of TRIGGERS.name_change.default)
-            if (message.toString().toLowerCase().startsWith(trigger))
-                return this.giveUserRandomName(message.member)
+            if (messageObj.toString().toLowerCase().startsWith(trigger))
+                return this.giveUserRandomName(messageObj)
     }
 
-    static giveUserRandomName(member: Discord.GuildMember, custom?: string, punishment?: boolean, automated?: boolean) {
+    static giveUserRandomName(messageObj: Discord.Message, custom?: string, punishment?: boolean, automated?: boolean) {
         let bot: Bot = globalThis.bot
         bot.preliminary(bot.context.toString(), 'Random Name Change', true)
 
@@ -31,31 +31,31 @@ export default class BotModuleNameGenerator {
         else
             name = this.generateRandomName()
 
-        this.changeMemberName(member, name, punishment, automated).then(suc => {
+        this.changeMemberName(messageObj, name, punishment, automated).then(suc => {
             if (suc)
                 if (punishment)
-                    member.lastMessage.channel.send({ embeds: [Bot.fetchRandomPhrase(PHRASES_NAME_CHANGE.response.punishment)] })
+                    messageObj.channel.send(Bot.fetchRandomPhrase(PHRASES_NAME_CHANGE.response.punishment))
         }).catch(err => {
 
         })
 
     }
 
-    static async changeMemberName(member: Discord.GuildMember, name: string, noReply: boolean, automated: boolean) {
-        console.log(`Name Generator: Changing ${member.user.username}'s name to '${name}' here!`)
+    static async changeMemberName(messageObj: Discord.Message, name: string, noReply: boolean, automated: boolean) {
+        console.log(`Name Generator: Changing ${messageObj.member.user.username}'s name to '${name}' here!`)
 
         try {
-            await member.edit({ nick: name }).catch(err => { throw err })
+            await messageObj.member.edit({ nick: name }).catch(err => { throw err })
 
             if (!noReply)
-                member.lastMessage.channel.send({ embeds: [Bot.fetchRandomPhrase(PHRASES_NAME_CHANGE.response.user_demanded)] })
+                messageObj.channel.send(Bot.fetchRandomPhrase(PHRASES_NAME_CHANGE.response.user_demanded))
             return true
         } catch (err) {
             if (!automated)
-                if (err.message.includes('Missing Permissions'))
-                    member.lastMessage.channel.send(`Looks like you're more powerful than I am in this server! Or... I can't change nicknames. Can't change your name...`)
+                if (messageObj.toString().includes('Missing Permissions'))
+                    messageObj.channel.send(`Looks like you're more powerful than I am in this server! Or... I can't change nicknames. Can't change your name...`)
                 else
-                    member.lastMessage.channel.send(`I couldn't change your name for some reason...`)
+                    messageObj.channel.send(`I couldn't change your name for some reason...`)
         }
 
     }

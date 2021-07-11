@@ -12,7 +12,7 @@
         "types": [],
         "outDir": "./built",
 
-        "module": "commonjs",
+        "module": "ESNext",
         "target": "es2018",
 
         "allowJs": true,

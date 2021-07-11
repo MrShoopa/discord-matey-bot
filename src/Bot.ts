@@ -255,7 +255,7 @@ export default class Bot extends Discord.Client {
 
                         if (!replaying && !skipLog && message)
                             response = await messageObj.channel
-                                .send(BotModuleMusic.generatePlaybackMessage(messageObj, songInfo))
+                                .send({ embeds: [BotModuleMusic.generatePlaybackMessage(messageObj, songInfo)] })
                     })
 
                     dispatcher.on('close', () => {
@@ -291,7 +291,7 @@ export default class Bot extends Discord.Client {
             } catch (error) {
                 bot.saveBugReport(error, playAudioFile.name, true)
 
-                bot.waker.lastMessage.channel
+                messageObj.channel
                     .send(`Ah! I couldn't play that song for some reason. Sent a bug report to Shoop.`)
 
                 throw new Error(`Music playback error (file), see above for error message.`)
@@ -489,8 +489,7 @@ export default class Bot extends Discord.Client {
 
                         if (!replaying && !skipLog && messageObj)
                             response = await message.channel
-                                .send(BotModuleMusic.generatePlaybackMessage(messageObj, songInfo))
-
+                                .send({ embeds: [BotModuleMusic.generatePlaybackMessage(messageObj, songInfo)] })
                     })
 
                     dispatcher.on('close', () => {
@@ -535,7 +534,7 @@ export default class Bot extends Discord.Client {
             } catch (error) {
                 bot.saveBugReport(error, playAudioURL.name, true)
 
-                bot.waker.lastMessage.channel
+                messageObj.channel
                     .send(`Ah! I couldn't play that song for some reason. Sent a bug report to Shoop.`)
 
                 throw new Error(`Music playback error (URL), see above for error message.`)

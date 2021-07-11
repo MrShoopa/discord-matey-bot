@@ -4,11 +4,11 @@
     "description": "MrShoopa's Lil' Discord Bot",
     "author": "MrShoopa",
     "license": "ISC",
-    "main": "igniter.ts",
+    "main": "igniter.js",
     "scripts": {
-        "start": "ts-node ./src/igniter.ts",
-        "dev:debug": "nodemon --inspect=6976 ./src/igniter.ts",
-        "test": "mocha -r ts-node/register ./src/tests/**/*.test.ts",
+        "start": "ts-node ./src/igniter.js",
+        "dev:debug": "nodemon --inspect=6976 ./src/igniter.js",
+        "test": "mocha -r ts-node/register ./src/tests/**/*.test.js",
         "coverage": "nyc -r lcov -e .ts -x \"*.test.ts\" npm run test"
     },
     "publishConfig": {

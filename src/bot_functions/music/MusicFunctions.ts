@@ -660,7 +660,7 @@ class MusicQueue {
                 loadingMsg.delete()
         }
 
-        textChannel.send(new Discord.APIMessage(textChannel, { embeds: [message] }))
+        textChannel.send({ embeds: [message] })
 
         return true
     }
@@ -684,7 +684,7 @@ class MusicQueue {
             .setColor('LUMINOUS_VIVID_PINK')
             .setFooter(`${this.queue.peekAll().length} request(s) to play...`)
 
-        bot.context.channel.send(new Discord.APIMessage(bot.context.channel, { embeds: [message] }))
+        bot.context.channel.send({ embeds: [message] })
 
         return true
 

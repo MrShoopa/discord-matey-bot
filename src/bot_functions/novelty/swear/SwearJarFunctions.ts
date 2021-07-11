@@ -10,6 +10,7 @@ import BotModuleSwearWhitelist from './WhitelistFunctions'
 import BotModuleSwearBlacklist from './BlacklistFunctions'
 import BotModuleNameGenerator from '../name/RandomNameFunctions'
 import BotModuleReddit from '../../fetching/reddit/RedditFunctions'
+import { joinVoiceChannel } from '@discordjs/voice'
 
 export default class BotModuleSwearJar {
     static dingUser(message: Discord.Message, trigger: string, keepStat?: boolean) {
@@ -201,7 +202,11 @@ export default class BotModuleSwearJar {
         let userVC = message.member.voice.channel
 
         if (userVC) {
-            let connection = await userVC.join()
+            let connection = joinVoiceChannel({
+                channelId: userVC.id,
+                guildId: userVC.guild.id,
+                adapterCreator: userVC.guild.voiceAdapterCreator
+            })
 
             console.log(`Swear Jar: Playing ${sound.name} -for-> ${message.author.username}`)
             bot.playSFX(connection, sound)
@@ -233,7 +238,7 @@ export default class BotModuleSwearJar {
 
         } else if (Math.floor(oldNum / 1000) < Math.floor(newNum / 1000)) {
             console.log(`Swear Jar: Giving the user a random name.`)
-            BotModuleNameGenerator.giveUserRandomName(message.member, 'funky', true, true)
+            BotModuleNameGenerator.giveUserRandomName(message, 'funky', true, true)
 
             message.channel.send("Looks like someone got uh... reached a new thousand points 🍃 Here's your 50/50?")
             this.giveUser5050(message)

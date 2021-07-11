@@ -95,7 +95,7 @@ bot.on('guildMemberAdd', async member => {
 			.setURL(Bot.fetchRandomPhrase(URLLIST.welcome))
 			.setImage(member.user.avatarURL())
 
-		announcementChannel.send(message).then(mes => {
+		announcementChannel.send({ embeds: [message] }).then(mes => {
 			mes.react('🔥')
 			mes.react('🎊')
 			mes.react('👋')

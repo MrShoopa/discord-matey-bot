@@ -4,12 +4,15 @@
     "description": "MrShoopa's Lil' Discord Bot",
     "author": "MrShoopa",
     "license": "ISC",
-    "main": "igniter.js",
+    "main": "igniter.ts",
+    "type": "module",
     "scripts": {
-        "start": "ts-node ./src/igniter.js",
-        "dev:debug": "nodemon --inspect=6976 ./src/igniter.js",
+        "start": "ts-node ./src/igniter",
+        "dev:debug": "nodemon --inspect=6976 ./src/igniter.mjs",
         "test": "mocha -r ts-node/register ./src/tests/**/*.test.js",
-        "coverage": "nyc -r lcov -e .ts -x \"*.test.ts\" npm run test"
+        "coverage": "nyc -r lcov -e .ts -x \"*.test.ts\" npm run test",
+        "mjs": "tsc -d && mv dist/copee.js dist/copee.mjs",
+        "cjs": "tsc -m commonjs"
     },
     "publishConfig": {
         "registry": "https://npm.pkg.github.com/"
@@ -27,7 +30,7 @@
         "aws-sdk": "^2.939.0",
         "blizzapi": "^2.0.2",
         "decode-encode-binary": "^2.0.5",
-        "discord.js": "github:discordjs/discord.js",
+        "discord.js": "13.0.0-dev.02f55f0.1626782659",
         "erwar-yoda": "^1.0.10",
         "express": "^4.17.1",
         "ffmpeg": "0.0.4",

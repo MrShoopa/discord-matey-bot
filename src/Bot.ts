@@ -7,15 +7,15 @@ import NodeFetch from 'node-fetch'
 import Discord, { Intents, Role } from 'discord.js'
 import YTDL from 'ytdl-core'
 
-import * as Datypes from './types/index'
-import BotData from './bot_functions/DataHandler'
+import * as Datypes from './types/index.js'
+import BotData from './bot_functions/DataHandler.js'
 
 import CREDS from './user_creds.json'
 import { main_trigger } from './bot_knowledge/triggers/triggers.json'
 
-import BotLoggerFunctions from './bot_functions/general/LoggerFunctions'
+import BotLoggerFunctions from './bot_functions/general/LoggerFunctions.js'
 
-import BotModuleMusic from './bot_functions/music/MusicFunctions'
+import BotModuleMusic from './bot_functions/music/MusicFunctions.js'
 import { joinVoiceChannel, VoiceConnection, VoiceConnectionStatus } from '@discordjs/voice'
 import OpusScript from 'opusscript'
 

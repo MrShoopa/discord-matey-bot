@@ -9,14 +9,14 @@
 
 import Discord from 'discord.js'
 
-import Bot from './Bot'
+import Bot from './Bot.js'
 
-import WebServices from './www/Webpage'
+import WebServices from './www/Webpage.js'
 
-import TriggerHandlers from './bot_functions/TriggerHandlers'
-import PostReadyFunctions from './bot_functions/_state/PostReadyFunctions'
-import BotModuleModeration from './bot_functions/_state/Moderation'
-import su from './tools/ConsoleFunctions' // Keep here for console.
+import TriggerHandlers from './bot_functions/TriggerHandlers.js'
+import PostReadyFunctions from './bot_functions/_state/PostReadyFunctions.js'
+import BotModuleModeration from './bot_functions/_state/Moderation.js'
+import su from './tools/ConsoleFunctions.js' // Keep here for console.
 globalThis.su = new su()
 
 globalThis.prod_mode = (() => { return process.argv.includes('prod') })()

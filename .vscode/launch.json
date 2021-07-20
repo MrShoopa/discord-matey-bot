@@ -19,12 +19,12 @@
 			"preLaunchTask": "Build - Dev (Watch)",
 			//"runtimeExecutable": "nodemon",
 			"args": ["dev-mode"],
-			"program": "${workspaceFolder}\\src\\igniter.ts",
+			"program": "${workspaceFolder}\\built_dev\\igniter.js",
 			"restart": true,
 			"showAsyncStacks": true,
 			"console": "integratedTerminal",
 			"outFiles": [
-				"${workspaceFolder}/built_dev/**/*.js"
+				"${workspaceFolder}/built_dev/**/*.mjs"
 			],
 		},
 		{

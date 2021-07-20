@@ -13,7 +13,7 @@
         "outDir": "./built",
 
         "module": "ESNext",
-        "target": "es2018",
+        "target": "ES2020",
 
         "allowJs": true,
         "sourceMap": true,

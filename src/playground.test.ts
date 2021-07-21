@@ -2,8 +2,8 @@
 
 import { expect } from 'chai'
 import 'mocha'
-import BotData from './bot_functions/DataHandler'
-import Bot from './Bot'
+import BotData from './bot_functions/DataHandler.js'
+import Bot from './Bot.js'
 
 var test = 'megadork hi'
 var testInput = 'megadork! hi'

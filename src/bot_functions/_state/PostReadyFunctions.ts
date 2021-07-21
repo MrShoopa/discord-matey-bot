@@ -1,12 +1,12 @@
-import Bot from '../../Bot'
-import BotDiscordActivity from './DiscordActivityStatus'
+import Bot from '../../Bot.js'
+import BotDiscordActivity from './DiscordActivityStatus.js'
 
-import TimelyFunctions from "./TimelyFunctions"
-import BotLoggerFunctions from '../general/LoggerFunctions'
+import TimelyFunctions from './TimelyFunctions.js'
+import BotLoggerFunctions from '../general/LoggerFunctions.js'
 
-import BotModuleMusic from "../music/MusicFunctions"
-import BotData from '../DataHandler'
-import BotModuleSpotify from '../fetching/music/SpotifyFunctions'
+import BotModuleMusic from '../music/MusicFunctions.js'
+import BotData from '../DataHandler.js'
+import BotModuleSpotify from '../fetching/music/SpotifyFunctions.js'
 
 export default class PostReadyFunctions {
     static run() {

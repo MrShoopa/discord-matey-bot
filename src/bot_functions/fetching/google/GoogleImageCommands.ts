@@ -1,13 +1,13 @@
 import GoogleImages from 'google-images'
 import Discord from 'discord.js'
-import Bot from '../../../Bot'
+import Bot from '../../../Bot.js'
 
-import AUTH from '../../../user_creds.json'
+import KEYS from '../../../user_creds.js'
 
-import TRIGGERS from '../../../bot_knowledge/triggers/triggers.json'
+import TRIGGERS from '../../../bot_knowledge/triggers/triggers.js'
 
-import PHRASES_IMAGE_SEARCH from '../../../bot_knowledge/phrases/phrases_image_search.json'
-import DEFAULTS_IMAGE from '../../../bot_knowledge/defaults/image_search.json'
+import PHRASES_IMAGE_SEARCH from '../../../bot_knowledge/phrases/phrases_image_search.js'
+import DEFAULTS_IMAGE from '../../../bot_knowledge/defaults/image_search.js'
 
 export default class BotModuleGoogleImage {
 
@@ -75,7 +75,7 @@ export default class BotModuleGoogleImage {
         //  Modules   
         const GOOGLE_IMAGER =
             new GoogleImages(
-                AUTH.google.search.CSE_ID_IMG, AUTH.google.API_KEY)
+                KEYS.google.search.CSE_ID_IMG, KEYS.google.API_KEY)
 
         userQuery = userQuery.toLowerCase()
 

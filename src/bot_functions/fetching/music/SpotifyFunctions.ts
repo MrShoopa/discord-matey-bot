@@ -1,10 +1,10 @@
 import SpotifyWebApi from 'spotify-web-api-node'
 import Discord from 'discord.js'
-import Bot from '../../../Bot'
+import Bot from '../../../Bot.js'
 
-import AUTH from '../../../user_creds.json'
+import KEYS from '../../../user_creds.js'
 
-import TRIGGERS from '../../../bot_knowledge/triggers/triggers.json'
+import TRIGGERS from '../../../bot_knowledge/triggers/triggers.js'
 
 export default class BotModuleSpotify {
     static funcName = 'MegaSpotter'
@@ -138,7 +138,7 @@ export default class BotModuleSpotify {
     }
 
     static async initAPI() {
-        this.Spotify = await new SpotifyWebApi({ clientId: AUTH.spotify.client_id, clientSecret: AUTH.spotify.client_secret })
+        this.Spotify = await new SpotifyWebApi({ clientId: KEYS.spotify.client_id, clientSecret: KEYS.spotify.client_secret })
         let token = (await this.Spotify.clientCredentialsGrant()).body.access_token
         this.Spotify.setAccessToken(token)
     }

@@ -1,16 +1,18 @@
+import Path from 'path'
 import Discord, { MessageEmbed } from 'discord.js'
-import Bot from "../../../Bot"
-import BotData from "../../DataHandler"
-import { Audio } from '../../../types/index'
-import { you } from '../../../user_creds.json'
-
-import PHRASES_SWEAR_JAR from '../../../bot_knowledge/phrases/phrases_swear_jar.json'
-import { swear_jar_triggers } from '../../../bot_knowledge/triggers/triggers.json'
-import BotModuleSwearWhitelist from './WhitelistFunctions'
-import BotModuleSwearBlacklist from './BlacklistFunctions'
-import BotModuleNameGenerator from '../name/RandomNameFunctions'
-import BotModuleReddit from '../../fetching/reddit/RedditFunctions'
 import { joinVoiceChannel } from '@discordjs/voice'
+
+import Bot from '../../../Bot.js'
+import BotData from '../../DataHandler.js'
+import { AudioData } from '../../../types/data_types/AudioType'
+import PARAMS from '../../../user_creds.js'
+
+import PHRASES_SWEAR_JAR from '../../../bot_knowledge/phrases/phrases_swear_jar.js'
+import TRIGGERS from '../../../bot_knowledge/triggers/triggers.js'
+import BotModuleSwearWhitelist from './WhitelistFunctions.js'
+import BotModuleSwearBlacklist from './BlacklistFunctions.js'
+import BotModuleNameGenerator from '../name/RandomNameFunctions.js'
+import BotModuleReddit from '../../fetching/reddit/RedditFunctions.js'
 
 export default class BotModuleSwearJar {
     static dingUser(message: Discord.Message, trigger: string, keepStat?: boolean) {
@@ -136,7 +138,7 @@ export default class BotModuleSwearJar {
         if (swearingUsers) {
 
             const att =
-                new Discord.MessageAttachment(__dirname +
+                new Discord.MessageAttachment(Path.resolve() +
                     '.\\..\\..\\..\\bot_knowledge\\images\\dedede-christian.jpg',
                     'dedede-christian.jpg')
 
@@ -176,7 +178,7 @@ export default class BotModuleSwearJar {
 
     static matchWord(word: string) {
         let count = 0
-        for (const trigger of swear_jar_triggers.bad_words) {
+        for (const trigger of TRIGGERS.swear_jar_triggers.bad_words) {
 
             if (word === trigger)
                 return 1
@@ -196,7 +198,7 @@ export default class BotModuleSwearJar {
         return count
     }
 
-    static async replyWithSound(message: Discord.Message | Discord.PartialMessage, sound: Audio.SFX) {
+    static async replyWithSound(message: Discord.Message | Discord.PartialMessage, sound: AudioData.SFX) {
         let bot: Bot = globalThis.bot
 
         let userVC = message.member.voice.channel
@@ -216,7 +218,7 @@ export default class BotModuleSwearJar {
     }
 
     static checkForSoundReply(word: string, message: Discord.Message) {
-        const list = you.word_list.sound_reply
+        const list = PARAMS.you.word_list.sound_reply
 
         for (let key of Object.keys(list))
             for (let cand of list[key])

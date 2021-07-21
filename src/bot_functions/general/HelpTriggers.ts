@@ -1,12 +1,12 @@
 import Discord from 'discord.js'
-import TriggerHandlers from '../TriggerHandlers'
+import TriggerHandlers from '../TriggerHandlers.js'
 
-import { help_author, help_functions, help_special, help_reference, i } from '../../bot_knowledge/triggers/trigger_info.json'
-import { memes } from '../../bot_knowledge/references/imgflip.json'
-import subscription_reference from '../../bot_knowledge/references/subscriptions.json'
+import TRIGGER_INFO from '../../bot_knowledge/triggers/trigger_info.js'
+import REFS_IMGFLIP from '../../bot_knowledge/references/imgflip.js'
+import REFS_SUBS from '../../bot_knowledge/references/subscriptions.js'
 
-import PHRASES_FRONT from '../../bot_knowledge/phrases/phrases_front.json'
-import PHRASES_SING from '../../bot_knowledge/phrases/phrases_sing.json'
+import PHRASES_FRONT from '../../bot_knowledge/phrases/phrases_front.js'
+import PHRASES_SING from '../../bot_knowledge/phrases/phrases_sing.js'
 
 // REMEMBER TO DOCUMENT ANY NEW COMMANDS IN 'trigger_info.json'!!! 🙂
 
@@ -17,18 +17,18 @@ import PHRASES_SING from '../../bot_knowledge/phrases/phrases_sing.json'
 // manipulate that list to have the template like the ones in 'i' below.
 
 export default class HelpTriggers {
-    static helpAuthor = help_author
+    static helpAuthor = TRIGGER_INFO.help_author
     static lastUpdated = new Date(`2020-04-13T08:21:45.919Z`)
 
     static checkForHelpInfoRequest(message = TriggerHandlers.message) {
-        for (const category of Object.keys(help_functions))
-            for (const hotword of help_functions[category])
+        for (const category of Object.keys(TRIGGER_INFO.help_functions))
+            for (const hotword of TRIGGER_INFO.help_functions[category])
                 if (message.toString().toLowerCase().includes(hotword))
-                    return HelpTriggers.sendFunctionHelpMessage(i[category])
+                    return HelpTriggers.sendFunctionHelpMessage(TRIGGER_INFO.i[category])
 
         //  General Help
-        for (const category of Object.keys(help_special))
-            for (const hotword of help_special[category])
+        for (const category of Object.keys(TRIGGER_INFO.help_special))
+            for (const hotword of TRIGGER_INFO.help_special[category])
                 if (message.toString().toLowerCase().startsWith(hotword))
                     switch (category) {
                         case 'music':
@@ -56,7 +56,7 @@ export default class HelpTriggers {
             .setDescription(PHRASES_FRONT.help_function_intro)
             .setColor('WHITE')
             .setFooter(`Last updated: ${this.lastUpdated.toLocaleDateString()}`)
-        Object.keys(help_functions).forEach(key => {
+        Object.keys(TRIGGER_INFO.help_functions).forEach(key => {
             listedMessage.addFields({ name: key, value: '\u200B', inline: true })
         })
 
@@ -112,7 +112,7 @@ export default class HelpTriggers {
             .setAuthor(this.helpAuthor)
             .setColor('BLUE')
 
-        help_reference.translate.some((lang: string) => {
+        TRIGGER_INFO.help_reference.translate.some((lang: string) => {
             languageList += lang + '\n'
         })
 
@@ -129,7 +129,7 @@ export default class HelpTriggers {
             .setAuthor(this.helpAuthor)
             .setColor('GREEN')
 
-        for (const [key, value] of Object.entries(subscription_reference.type_descriptions))
+        for (const [key, value] of Object.entries(REFS_SUBS.type_descriptions))
             listedMessage.addField(key, value)
 
         return message.channel.send({ embeds: [listedMessage] })
@@ -145,7 +145,7 @@ export default class HelpTriggers {
             .setAuthor(this.helpAuthor)
             .setColor('LUMINOUS_VIVID_PINK')
 
-        memes.forEach((meme) => {
+        REFS_IMGFLIP.memes.forEach((meme) => {
             memeList += meme.name + '\n'
         })
 

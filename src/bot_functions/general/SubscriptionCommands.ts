@@ -1,10 +1,10 @@
 import Discord from 'discord.js'
-import Bot from "../../Bot"
-import { Data } from './../../types/data_types/Data';
-import { Subscriptions } from './../../types/data_types/Subscription';
-import BotSubscriptionHandler from '../_state/SubscriptionHandler';
+import Bot from '../../Bot.js'
+import { DataType } from '../../types/data_types/DataType';
+import { Subscriptions } from '../../types/data_types/SubscriptionType';
+import BotSubscriptionHandler from '../_state/SubscriptionHandler.js';
 
-import TRIGGERS from '../../bot_knowledge/triggers/triggers.json'
+import TRIGGERS from '../../bot_knowledge/triggers/triggers.js'
 
 export default class BotSubscriptionCommands {
 
@@ -23,7 +23,7 @@ export default class BotSubscriptionCommands {
         let funcName: string =
             ctx.substr(ctx.indexOf('for') + 3).trim().toUpperCase()
 
-        let subscription: Data.SubscriptionSave
+        let subscription: DataType.SubscriptionSave
         try {
             subscription = BotSubscriptionHandler.createSubscription(message.channel.id, name, message)
         } catch (err) {
@@ -185,7 +185,7 @@ export default class BotSubscriptionCommands {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'Function subscription management - Listing', true)
 
-        let subscriptions: Data.SubscriptionSave[] = BotSubscriptionHandler.getSubscriptionDatastore().filter(sub => {
+        let subscriptions: DataType.SubscriptionSave[] = BotSubscriptionHandler.getSubscriptionDatastore().filter(sub => {
             if (sub.channelId === message.channel.id || sub.dmChannelId === message.channel.id) return true
             else return false
         })

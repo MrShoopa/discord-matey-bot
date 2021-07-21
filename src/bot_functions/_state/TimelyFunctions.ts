@@ -1,10 +1,10 @@
-import BotTimeKeeper from '../_state/TimeKeeper'
+import BotTimeKeeper from '../_state/TimeKeeper.js'
 
-import BotDiscordActivity from './DiscordActivityStatus'
-import BotModuleSwearJar from "../novelty/swear/SwearJarFunctions"
-import BotModuleBirthday from "../novelty/birthday/BirthdayFunctions"
-import BotData from '../DataHandler'
-import BotSubscriptionHandler from './SubscriptionHandler'
+import BotDiscordActivity from './DiscordActivityStatus.js'
+import BotModuleSwearJar from '../novelty/swear/SwearJarFunctions.js'
+import BotModuleBirthday from '../novelty/birthday/BirthdayFunctions.js'
+import BotData from '../DataHandler.js'
+import BotSubscriptionHandler from './SubscriptionHandler.js'
 
 export default class TimelyFunctions {
     static get timeSave() {

@@ -1,9 +1,9 @@
 import Discord from 'discord.js'
-import Bot from "../../../Bot"
-import TRIGGERS from '../../../bot_knowledge/triggers/triggers.json'
+import Bot from '../../../Bot.js'
+import TRIGGERS from '../../../bot_knowledge/triggers/triggers.js'
 
 import { uniqueNamesGenerator, Config, names, colors, adjectives, animals, starWars } from 'unique-names-generator';
-import PHRASES_NAME_CHANGE from '../../../bot_knowledge/phrases/phrases_name_change.json'
+import PHRASES_NAME_CHANGE from '../../../bot_knowledge/phrases/phrases_name_change.js'
 
 export default class BotModuleNameGenerator {
     static processRandomNameRequest(messageObj: Discord.Message = globalThis.bot.context) {

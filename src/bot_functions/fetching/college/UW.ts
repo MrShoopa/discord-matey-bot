@@ -1,9 +1,9 @@
 import Discord from 'discord.js'
-import UwFacultyAPI from '../../../bot_modules/_external_wrappers/UWCourse'
+import { UwFacultyAPI } from '../../../bot_modules/_external_wrappers/UWCourse/index.js'
 
-import Bot from '../../../Bot'
+import Bot from '../../../Bot.js'
 
-import TRIGGERS from '../../../bot_knowledge/triggers/triggers.json'
+import TRIGGERS from '../../../bot_knowledge/triggers/triggers.js'
 
 export default class BotModuleUW {
     static async fireFacultySearchMessage(message: Discord.Message, trigger?: string) {
@@ -34,9 +34,9 @@ export default class BotModuleUW {
         let facultyObject: any
         try {
             if (query)
-                facultyObject = await UwFacultyAPI.getFacultyMember(query)
+                facultyObject = await UwFacultyAPI.Getter.getFacultyMember(query)
             else if (random)
-                facultyObject = await UwFacultyAPI.getRandomFaculty()
+                facultyObject = await UwFacultyAPI.Getter.getRandomFaculty()
             else
                 return new Discord.MessageEmbed()
                     .setDescription(`Unable to fetch; Check your UW faculty member's name.`)

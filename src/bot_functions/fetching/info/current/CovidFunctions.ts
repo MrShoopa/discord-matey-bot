@@ -1,10 +1,10 @@
 import Discord, { MessageEmbed } from 'discord.js'
-import Bot from '../../../../Bot'
+import Bot from '../../../../Bot.js'
 
-import { covid } from '../../../../bot_knowledge/triggers/triggers.json'
+import TRIGGERS from '../../../../bot_knowledge/triggers/triggers.js'
 
 import * as NovelCovid from 'novelcovid'
-import * as VaccineCovid from '../../../../bot_modules/_external_wrappers/CovidExtras'
+import { VaccineCovid } from '../../../../bot_modules/_external_wrappers/CovidExtras/index.js'
 
 export default class BotModuleCovid {
     static async fireCovidInfoMessage(message: Discord.Message, trigger: string) {
@@ -14,25 +14,25 @@ export default class BotModuleCovid {
         let response: string | Discord.MessageEmbed
         let query: string = message.toString()
 
-        for (const keyword of covid.state)
+        for (const keyword of TRIGGERS.covid.state)
             if (query.includes(keyword)) {
                 query = query.substring(query.indexOf(keyword) + keyword.length).trim()
                 response = await BotModuleCovid.fetchBuiltCovidInfoMessage('United States', query) // Province?
                 break
             }
-        for (const keyword of covid.country)
+        for (const keyword of TRIGGERS.covid.country)
             if (query.includes(keyword)) {
                 query = query.substring(query.indexOf(keyword) + keyword.length).trim()
                 response = await BotModuleCovid.fetchBuiltCovidInfoMessage(query)
                 break
             }
-        for (const keyword of covid.continent)
+        for (const keyword of TRIGGERS.covid.continent)
             if (query.includes(keyword)) {
                 query = query.substring(query.indexOf(keyword) + keyword.length).trim()
                 response = await BotModuleCovid.fetchBuiltCovidInfoMessage(null, null, query)
                 break
             }
-        for (const keyword of covid.default)
+        for (const keyword of TRIGGERS.covid.default)
             if (query.endsWith(keyword)) {
                 response = await BotModuleCovid.fetchBuiltCovidInfoMessage()
                 break
@@ -68,7 +68,7 @@ export default class BotModuleCovid {
                 data.location = data.country
 
 
-                let vaccineData = await VaccineCovid.default.getVaccinesInCountry(country)
+                let vaccineData = await VaccineCovid.Getter.getVaccinesInCountry(country)
                 data = BotModuleCovid.calculateVaccineData(data, vaccineData)
             } else if (continent) {
                 continent = continent.charAt(0).toUpperCase() + continent.slice(1);
@@ -84,7 +84,7 @@ export default class BotModuleCovid {
                 data = await NovelCovid.all()
                 data.location = 'World'
 
-                let vaccineData = await VaccineCovid.default.getVaccines()
+                let vaccineData = await VaccineCovid.Getter.getVaccines()
                 data = BotModuleCovid.calculateVaccineData(data, vaccineData)
             }
 

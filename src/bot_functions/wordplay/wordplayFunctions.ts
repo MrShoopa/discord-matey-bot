@@ -1,11 +1,11 @@
-import Bot from '../../Bot'
+import Bot from '../../Bot.js'
 
-import TRIGGERS from '../../bot_knowledge/triggers/triggers.json'
+import TRIGGERS from '../../bot_knowledge/triggers/triggers.js'
 
-import PHRASES_FRONT from '../../bot_knowledge/phrases/phrases_front.json'
-import PHRASES_CONVO from '../../bot_knowledge/phrases/phrases_conversational.json'
+import PHRASES_FRONT from '../../bot_knowledge/phrases/phrases_front.js'
+import PHRASES_CONVO from '../../bot_knowledge/phrases/phrases_conversational.js'
 
-import BotModuleBraindead from '../novelty/QuiteSpecificFunctions'
+import BotModuleBraindead from '../novelty/QuiteSpecificFunctions.js'
 import { Message } from 'discord.js'
 
 export default class BotWordplay {

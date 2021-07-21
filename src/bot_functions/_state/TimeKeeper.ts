@@ -12,21 +12,23 @@
  */
 
 import * as FileSystem from 'fs'
-import { Data } from './../../types/data_types/Data'
-import Bot from '../../Bot'
+import Path from 'path'
+
+import { DataType } from '../../types/data_types/DataType.js'
+import Bot from '../../Bot.js'
 
 /*  Locations  */
 
 /*  -----  */
 export default class BotTimeKeeper {
-    static SAVE_DATA = __dirname + '/../../../save_data'
+    static SAVE_DATA = Path.resolve() + '/../../../save_data'
     static TIME_DATA_FILE = `${BotTimeKeeper.SAVE_DATA}/megadorkbot_data_time.json`
     static S3_SAVE_NAME = 'save_data/megadorkbot_data_time.json'
 
     //  User Data
-    static getTimeData(): Data.TimeSave {
+    static getTimeData(): DataType.TimeSave {
         try {
-            var data: Data.TimeSave =
+            var data: DataType.TimeSave =
                 JSON.parse(FileSystem.readFileSync(BotTimeKeeper.TIME_DATA_FILE).toString())
         } catch (err) {
             let bot: Bot = globalThis.bot
@@ -58,7 +60,7 @@ export default class BotTimeKeeper {
             return null
         }
 
-        let dataSkeleton: Data.TimeSave =
+        let dataSkeleton: DataType.TimeSave =
         {
             last_initiliazed: new Date().toString(),
             last_ran_functions: {
@@ -91,7 +93,7 @@ export default class BotTimeKeeper {
 	 * @param  {number|string} id User's Discord ID
 	 * @param  {object} newData New data to overwrite existing data with.
 	 */
-    static updateTimeData(newData: Data.TimeSave, log?: boolean) {
+    static updateTimeData(newData: DataType.TimeSave, log?: boolean) {
         //  Pointer to local user data
         var data = this.getTimeData()
 

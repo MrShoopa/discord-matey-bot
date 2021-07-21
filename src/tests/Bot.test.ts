@@ -4,9 +4,9 @@ import FileSystem from 'fs'
 import { expect } from 'chai'
 import 'mocha'
 
-import Bot from '../Bot'
-import BotData from '../bot_functions/DataHandler'
-import BotDiscordActivity from '../bot_functions/_state/DiscordActivityStatus'
+import Bot from '../Bot.js'
+import BotData from '../bot_functions/DataHandler.js'
+import BotDiscordActivity from '../bot_functions/_state/DiscordActivityStatus.js'
 
 let bot = new Bot()
 globalThis.bot = bot

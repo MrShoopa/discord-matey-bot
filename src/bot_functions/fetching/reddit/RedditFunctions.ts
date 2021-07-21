@@ -1,8 +1,8 @@
 import Discord from 'discord.js'
 
-import Bot from "../../../Bot"
+import Bot from '../../../Bot.js'
 
-import TRIGGERS from '../../../bot_knowledge/triggers/triggers.json'
+import TRIGGERS from '../../../bot_knowledge/triggers/triggers.js'
 
 export default class BotModuleReddit {
 

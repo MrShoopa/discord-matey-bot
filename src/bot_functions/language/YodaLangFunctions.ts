@@ -1,9 +1,10 @@
 import Discord from 'discord.js'
-import Bot from './../../Bot'
+import Bot from './../../Bot.js'
 
-import { translate } from '../../bot_knowledge/triggers/triggers.json'
+import TRIGGERS from '../../bot_knowledge/triggers/triggers.js'
 
-import { erwarYoda } from 'erwar-yoda'
+import pkg from 'erwar-yoda'
+const { erwarYoda } = pkg
 
 export default class YodaLanguageFunctions {
 
@@ -15,7 +16,7 @@ export default class YodaLanguageFunctions {
             text = message.toString()
 
         if (!language)
-            translate.yoda.some(lang => {
+            TRIGGERS.translate.yoda.some(lang => {
                 if (text.toLowerCase().includes(lang)) {
                     language = lang
                     return text = text.slice(text.indexOf(lang) + lang.length).trim()

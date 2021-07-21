@@ -1,12 +1,12 @@
 import Discord from 'discord.js'
-import Bot from '../../../Bot'
-import USER_CREDS from '../../../user_creds.json'
+import Bot from '../../../Bot.js'
+import KEYS from '../../../user_creds.js'
 
-import TRIGGERS from '../../../bot_knowledge/triggers/triggers.json'
+import TRIGGERS from '../../../bot_knowledge/triggers/triggers.js'
 
 import AlphaVantage from 'alphavantage'
 
-const Moneyman = AlphaVantage({ key: USER_CREDS.alpha_vantage.key })
+const Moneyman = AlphaVantage({ key: KEYS.alpha_vantage.key })
 
 export default class BotModuleStockMarket {
 

@@ -1,13 +1,11 @@
 import Google from 'google-it'
 import Discord from 'discord.js'
-import Bot from '../../../Bot'
+import Bot from '../../../Bot.js'
 
-import AUTH from '../../../user_creds.json'
+import TRIGGERS from '../../../bot_knowledge/triggers/triggers.js'
 
-import TRIGGERS from '../../../bot_knowledge/triggers/triggers.json'
-
-import PHRASES_GOOGLE_SEARCH from '../../../bot_knowledge/phrases/phrases_google_search.json'
-import DEFAULTS_GOOGLE from '../../../bot_knowledge/defaults/image_search.json'
+import PHRASES_GOOGLE_SEARCH from '../../../bot_knowledge/phrases/phrases_google_search.js'
+import DEFAULTS_GOOGLE from '../../../bot_knowledge/defaults/image_search.js'
 
 export default class BotModuleGoogleSearch {
 

@@ -1,15 +1,13 @@
 import Discord from 'discord.js'
-import Bot from '../../../Bot'
+import Bot from '../../../Bot.js'
 
-import USER_CREDS from '../../../user_creds.json'
-
-import { giphy } from '../../../bot_knowledge/triggers/triggers.json'
+import KEYS from '../../../user_creds.js'
 
 import GIPHYApi from 'giphy-api'
 
 export default class BotModuleGiphy {
 
-    static GIPHY = GIPHYApi(USER_CREDS.giphy.api_key)
+    static GIPHY = GIPHYApi(KEYS.giphy.api_key)
     static async fireGIFMessage(message: Discord.Message, trigger: string, query?: string) {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'Random GIF request')

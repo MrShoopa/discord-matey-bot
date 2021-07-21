@@ -12,17 +12,18 @@
  */
 
 import * as FileSystem from 'fs'
-import { Data } from '../types/index'
+import Path from 'path'
+import { DataType } from '../types/data_types/DataType'
 
-import Bot from '../Bot'
-import AUTH from '../user_creds.json'
+import Bot from '../Bot.js'
+import KEYS from '../user_creds.js'
 
 import aws from 'aws-sdk'
-import BotTimeKeeper from './_state/TimeKeeper'
-import BotSubscriptionHandler from './_state/SubscriptionHandler'
+import BotTimeKeeper from './_state/TimeKeeper.js'
+import BotSubscriptionHandler from './_state/SubscriptionHandler.js'
 
 /*  Locations  */
-const SAVE_DATA = __dirname + '/../../save_data'
+const SAVE_DATA = Path.resolve() + '/../../save_data'
 const SAVE_DATA_FILE = `${SAVE_DATA}/megadorkbot_data_user.json`
 const S3_SAVE_NAME = `save_data/megadorkbot_data_user.json`
 
@@ -34,7 +35,7 @@ export default class BotData {
 	static S3: aws.S3
 
 	static s3Params = {
-		Bucket: AUTH.aws.s3.bucket,
+		Bucket: KEYS.aws.s3.bucket,
 		Key: "FILL_OUT",
 		Expires: 60,
 		ContentType: "FILL_OUT",
@@ -75,10 +76,10 @@ export default class BotData {
 	 * @param  {boolean} log? If true, logs extra info to console.
 	 */
 	static getUserData(id: number | string, createIfMissing?: boolean, skipLog?: boolean):
-		Data.UserSave {
+		DataType.UserSave {
 		if (typeof id === 'number') id = id.toString()
 
-		let userData: Data.UserSave
+		let userData: DataType.UserSave
 		try {
 			userData = this.getUserDataFile().find((matchedUser: {
 				_id: string
@@ -107,10 +108,10 @@ export default class BotData {
 	 * @param  {boolean} log? If true, logs extra info to console.
 	*/
 	static getAllUserDataWithAttribute(attribute: string, log?: boolean):
-		Array<Data.UserSave> {
+		Array<DataType.UserSave> {
 		let dataObj = this.getUserDataFile()
 
-		return dataObj.map((user: Data.UserSave) => {
+		return dataObj.map((user: DataType.UserSave) => {
 			if (user.hasOwnProperty(attribute))
 				return user
 		})
@@ -124,7 +125,7 @@ export default class BotData {
 	 * @param  {boolean} force? Erases the existing datastore if it already exists.
 	 */
 	static createNewDataFile(fetch?: boolean, force?: boolean) {
-		let dataSkeleton: Data.UserSave = { _id: '42069', _toggles: {}, sampleData: "Mega!" }
+		let dataSkeleton: DataType.UserSave = { _id: '42069', _toggles: {}, sampleData: "Mega!" }
 
 		if (!force)
 			try {
@@ -157,19 +158,19 @@ export default class BotData {
 	 * @param  {number|string} id User's Discord ID
 	 * @param  {boolean} log? If true, logs extra info to console.
 	 */
-	static createUserData(id: number | string, force?: boolean): Data.UserSave {
+	static createUserData(id: number | string, force?: boolean): DataType.UserSave {
 		if (typeof id === 'number') id = id.toString()
 
 		var data = this.getUserDataFile()
 
 		//  Find user...
-		let userData: Data.UserSave = data.find((user: any) => {
+		let userData: DataType.UserSave = data.find((user: any) => {
 			return user._id == id
 		})
 
 		if (userData === undefined || force) {
 			// ...if not found, create new data.
-			let newSave: Data.UserSave = {
+			let newSave: DataType.UserSave = {
 				_id: id as `${bigint}`, _toggles: {}
 			}
 
@@ -193,7 +194,7 @@ export default class BotData {
 	 * @param  {number|string} id User's Discord ID
 	 * @param  {object} newData New data to overwrite existing data with.
 	 */
-	static updateUserData(id: number | string, newData: Data.UserSave) {
+	static updateUserData(id: number | string, newData: DataType.UserSave) {
 		if (typeof id === 'number') id = id.toString()
 		console.group()
 		console.log(`Updating data for User ${id}:`)
@@ -202,7 +203,7 @@ export default class BotData {
 		var data = this.getUserDataFile()
 
 		//  Pointer to single user's data through above variable
-		let userData: Data.UserSave = data.find((matchedUser: {
+		let userData: DataType.UserSave = data.find((matchedUser: {
 			_id: string
 		}) => {
 			return matchedUser._id == id
@@ -230,7 +231,7 @@ export default class BotData {
 	 * 
 	 * @param  {any} data
 	 */
-	private static writeDataFile(data: Array<Data.UserSave>) {
+	private static writeDataFile(data: Array<DataType.UserSave>) {
 
 		if (typeof data === 'object')
 			try {
@@ -283,15 +284,15 @@ export default class BotData {
 	static async getS3Object(name: string) {
 		if (!this.S3) this.initS3()
 
-		return await this.S3.getObject({ Bucket: AUTH.aws.s3.bucket, Key: name })
+		return await this.S3.getObject({ Bucket: KEYS.aws.s3.bucket, Key: name })
 			.promise().then(obj => {
-				console.log(`Obtained S3 Object from ${AUTH.aws.s3.bucket}: ${name}`)
+				console.log(`Obtained S3 Object from ${KEYS.aws.s3.bucket}: ${name}`)
 				return obj
 			}).catch(err => {
 				if (err.message.contains('does not exist'))
-					console.error(`S3 Object does not exist in ${AUTH.aws.s3.bucket}: ${name}`)
+					console.error(`S3 Object does not exist in ${KEYS.aws.s3.bucket}: ${name}`)
 				else
-					console.error(`Failed getting S3 Object in ${AUTH.aws.s3.bucket}: ${name}`, err)
+					console.error(`Failed getting S3 Object in ${KEYS.aws.s3.bucket}: ${name}`, err)
 				return null
 			})
 	}
@@ -300,19 +301,19 @@ export default class BotData {
 		name: string = S3_SAVE_NAME) {
 		if (!this.S3) this.initS3()
 
-		return await this.S3.putObject({ Body: file, Bucket: AUTH.aws.s3.bucket, Key: name })
+		return await this.S3.putObject({ Body: file, Bucket: KEYS.aws.s3.bucket, Key: name })
 			.promise().then(obj => {
-				console.log(`Updated S3 Object in ${AUTH.aws.s3.bucket}: ${name}`)
+				console.log(`Updated S3 Object in ${KEYS.aws.s3.bucket}: ${name}`)
 				return obj
 			}).catch(err => {
-				console.error(`Failed updating S3 Object in ${AUTH.aws.s3.bucket}: ${name}`, err)
+				console.error(`Failed updating S3 Object in ${KEYS.aws.s3.bucket}: ${name}`, err)
 				return null
 			})
 	}
 
 	static async initS3() {
-		process.env.AWS_ACCESS_KEY_ID = AUTH.aws.auth.accessKeyId
-		process.env.AWS_SECRET_ACCESS_KEY = AUTH.aws.auth.secretAccessKey
+		process.env.AWS_ACCESS_KEY_ID = KEYS.aws.auth.accessKeyId
+		process.env.AWS_SECRET_ACCESS_KEY = KEYS.aws.auth.secretAccessKey
 
 		this.S3 = new aws.S3();
 

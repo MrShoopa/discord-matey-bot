@@ -1,6 +1,6 @@
-import { Subscriptions } from './Subscription';
+import { Subscriptions } from './SubscriptionType';
 
-export module Data {
+export module DataType {
     export interface UserSave extends Object {
         _id: `${bigint}`
         _toggles: any

@@ -1,4 +1,4 @@
-export module Audio {
+export module AudioData {
     export interface SongObject {
         category: string,
         file: string,

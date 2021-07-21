@@ -1,15 +1,15 @@
 import Discord from 'discord.js'
-import { you } from '../../../user_creds.json'
-import Bot from '../../../Bot'
-import BotModuleSwearWhitelist from './WhitelistFunctions'
+import PARAMS from '../../../user_creds.js'
+import Bot from '../../../Bot.js'
+import BotModuleSwearWhitelist from './WhitelistFunctions.js'
 
 
 export default class BotModuleSwearBlacklist {
 
     static checkIfWordBlacklistedForRole(word: string, user: Discord.GuildMember) {
         if (user)
-            if (Object.keys(you.word_list.black_list).includes(user.guild.id))
-                for (let w of you.word_list.black_list[`${user.guild.id}`])
+            if (Object.keys(PARAMS.you.word_list.black_list).includes(user.guild.id))
+                for (let w of PARAMS.you.word_list.black_list[`${user.guild.id}`])
                     if (word == w && !BotModuleSwearWhitelist.checkIfWordWhitelistedForRole(w, user)) {
                         console.log(`Word ${word} passes blacklist in guild ${user.guild.id} for user ${user.user.username}. Uh oh.`)
                         return true

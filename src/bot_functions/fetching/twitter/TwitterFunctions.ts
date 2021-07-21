@@ -1,8 +1,8 @@
 import Discord from 'discord.js'
 import Twitter from 'twitter'
-import Bot from '../../../Bot'
+import Bot from '../../../Bot.js'
 
-import AUTH from '../../../user_creds.json'
+import KEYS from '../../../user_creds.js'
 
 export default class BotModuleTwitter {
     private static _twitterEntity: Twitter
@@ -17,10 +17,10 @@ export default class BotModuleTwitter {
     private static initializeTwitter() {
         this._twitterEntity =
             new Twitter({
-                consumer_key: AUTH.twitter.consumer_key,
-                consumer_secret: AUTH.twitter.consumer_secret,
-                access_token_key: AUTH.twitter.access_token_key,
-                access_token_secret: AUTH.twitter.access_token_secret
+                consumer_key: KEYS.twitter.consumer_key,
+                consumer_secret: KEYS.twitter.consumer_secret,
+                access_token_key: KEYS.twitter.access_token_key,
+                access_token_secret: KEYS.twitter.access_token_secret
             })
     }
 

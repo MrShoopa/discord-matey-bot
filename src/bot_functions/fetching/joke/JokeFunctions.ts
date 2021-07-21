@@ -1,7 +1,7 @@
 import Discord from 'discord.js'
-import Bot from '../../../Bot'
+import Bot from '../../../Bot.js'
 
-import { joke } from '../../../bot_knowledge/triggers/triggers.json'
+import TRIGGERS from '../../../bot_knowledge/triggers/triggers.js'
 import Joker from 'give-me-a-joke'
 
 export default class BotModuleJoke {
@@ -29,22 +29,22 @@ export default class BotModuleJoke {
     static async fetchJoke(query?: string) {
         let jokeObject = { joke: "", category: "", source: "" }
 
-        for (let category of joke.of_the_day.base)
+        for (let category of TRIGGERS.joke.of_the_day.base)
             if (query.includes(category)) {
                 jokeObject.source = 'Jokes.one'
-                for (let category of joke.of_the_day.animal)
+                for (let category of TRIGGERS.joke.of_the_day.animal)
                     if (query.includes(category)) {
                         jokeObject.joke = await new Promise((res, rej) => { Joker.getRandomJokeOfTheDay('animal', j => res(j)) })
                         jokeObject.category = 'Animal Joke of the Day'
                         return jokeObject
                     }
-                for (let category of joke.of_the_day.blonde)
+                for (let category of TRIGGERS.joke.of_the_day.blonde)
                     if (query.includes(category)) {
                         jokeObject.joke = await new Promise((res, rej) => { Joker.getRandomJokeOfTheDay('blonde', j => res(j)) })
                         jokeObject.category = 'Blonde Joke of the Day'
                         return jokeObject
                     }
-                for (let category of joke.of_the_day.knock)
+                for (let category of TRIGGERS.joke.of_the_day.knock)
                     if (query.includes(category)) {
                         jokeObject.joke = await new Promise((res, rej) => { Joker.getRandomJokeOfTheDay('knock-knock', j => res(j)) })
                         jokeObject.category = 'Knock-Knock Joke of the Day'
@@ -54,21 +54,21 @@ export default class BotModuleJoke {
                 jokeObject.category = 'Joke of the Day'
                 return jokeObject
             }
-        for (let category of joke.dad)
+        for (let category of TRIGGERS.joke.dad)
             if (query.includes(category)) {
                 jokeObject.source = 'icanhazdadjoke.com'
                 jokeObject.joke = await new Promise((res, rej) => { Joker.getRandomDadJoke(j => res(j)) })
                 jokeObject.category = 'Dad Joke'
                 return jokeObject
             }
-        for (let category of joke.chuck)
+        for (let category of TRIGGERS.joke.chuck)
             if (query.includes(category)) {
                 jokeObject.source = 'icndb.com'
                 jokeObject.joke = await new Promise((res, rej) => { Joker.getRandomCNJoke(j => res(j)) })
                 jokeObject.category = 'Chuck Norris Joke'
                 return jokeObject
             }
-        for (let category of joke.custom)
+        for (let category of TRIGGERS.joke.custom)
             if (query.includes(category))
                 if (!query.includes('name')) {
                     jokeObject.category = 'MISSING_NAME'

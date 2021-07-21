@@ -1,18 +1,18 @@
 import Discord from 'discord.js'
-import Bot from '../../../Bot'
+import Bot from '../../../Bot.js'
 
-import BotModuleReddit from '../reddit/RedditFunctions'
+import BotModuleReddit from '../reddit/RedditFunctions.js'
 
-import { memes } from '../../../bot_knowledge/references/imgflip.json'
+import REFS_IMGFLIP from '../../../bot_knowledge/references/imgflip.js'
 
-import { img_flip } from '../../../user_creds.json'
+import KEYS from '../../../user_creds.js'
 
 import Flipper from 'imgflip'
 
 export default class BotModuleMeme {
     static ImgFlip = new Flipper({
-        username: img_flip.user,
-        password: img_flip.password
+        username: KEYS.img_flip.user,
+        password: KEYS.img_flip.password
     })
 
     static async fireMemeRequest(context: Discord.Message = globalThis.bot.context) {
@@ -22,7 +22,7 @@ export default class BotModuleMeme {
         let stringed = context.toString()
 
         try {
-            for (const meme of memes)
+            for (const meme of REFS_IMGFLIP.memes)
                 if (context.toString().toLowerCase().includes(meme.name))
                     response = await this.fetchCustomMeme(stringed.substring(stringed.indexOf(meme.name) + meme.name.length).trim(), meme.name)
             if (context.toString().length == 4) {
@@ -54,7 +54,7 @@ export default class BotModuleMeme {
     static async fetchCustomMeme(params, topic: string) {
         let templateId: string
 
-        for (const meme of memes)
+        for (const meme of REFS_IMGFLIP.memes)
             if (topic == meme.name) {
                 templateId = meme.id
                 break

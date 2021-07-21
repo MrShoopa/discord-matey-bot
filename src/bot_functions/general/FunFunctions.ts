@@ -1,6 +1,6 @@
-import Bot from "../../Bot"
+import Bot from '../../Bot.js'
 
-import PHRASES from '../../bot_knowledge/phrases/phrases_fun.json'
+import PHRASES from '../../bot_knowledge/phrases/phrases_fun.js'
 
 export default class BotModuleFun {
 

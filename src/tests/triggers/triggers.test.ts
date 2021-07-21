@@ -1,7 +1,7 @@
 import Chai from 'chai'
 
-import Bot from "../../Bot"
-import TriggerHandlers from '../../bot_functions/TriggerHandlers'
+import Bot from '../../Bot.js'
+import TriggerHandlers from '../../bot_functions/TriggerHandlers.js'
 
 globalThis.bot = new Bot()
 let bot: Bot = globalThis.bot

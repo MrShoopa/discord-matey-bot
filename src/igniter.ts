@@ -4,7 +4,7 @@
 	@author Joe Villegas (joevillegasisawesome@gmail.com)
 	@date   Started on May 16th, 2019.
 	
-	@see	./user_creds.json for providing API keys/secrets to use third-party services.
+	@see	./user_creds.js for providing API keys/secrets to use third-party services.
 */
 
 import Discord from 'discord.js'
@@ -48,7 +48,7 @@ bot.on('guildCreate', guild => {
 })
 
 //  Messaging to bot
-bot.on('message', async (message) => {
+bot.on('messageCreate', async (message) => {
 	bot.context = message
 
 	//  Logging message
@@ -78,18 +78,18 @@ bot.on('message', async (message) => {
 })
 
 bot.on('guildMemberAdd', async member => {
-	let URLLIST = await import('./bot_knowledge/references/urllist.json').then(a => a).catch(err => {
+	let URLLIST = await import('./bot_knowledge/references/urllist.js').then(a => a).catch(err => {
 		console.log(err)
 		return null
 	})
-	let WELCOMEMESSAGE = await import('./bot_knowledge/phrases/phrases_welcome.json')
+	let WELCOMEMESSAGE = await import('./bot_knowledge/phrases/phrases_welcome.js')
 	let announcementChannel: Discord.TextChannel = member.guild.systemChannel
 
 	if (!BotModuleModeration.kickIfBlacklisted(member as Discord.GuildMember)) {
 		let message = new Discord.MessageEmbed()
 			.setAuthor('Hello hello? Hello hello!!! 😊')
 			.setTitle(`Welcome to the server, ${member.displayName}!`)
-			.setDescription(Bot.fetchRandomPhrase(WELCOMEMESSAGE.guild_member_add))
+			.setDescription(Bot.fetchRandomPhrase(WELCOMEMESSAGE.default.guild_member_add))
 			.setFooter(`-but actually, GIVE IT UP FOR ${member.displayName}!!!!!!!`)
 			.setColor(member.displayHexColor)
 			.setURL(Bot.fetchRandomPhrase(URLLIST.welcome))

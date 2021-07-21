@@ -1,7 +1,7 @@
-import Bot from "../../Bot"
+import Bot from '../../Bot.js'
 import { ActivityOptions } from "discord.js"
-import BotModuleQuote from "../fetching/quote/QuoteFunctions"
-import BotModuleYouTube from "../fetching/streaming/YouTubeStreamFunctions"
+import BotModuleQuote from '../fetching/quote/QuoteFunctions.js'
+import BotModuleYouTube from '../fetching/streaming/YouTubeStreamFunctions.js'
 
 const PLAYLISTCHOICE = "https://www.youtube.com/playlist?list=PLYb74g1gGQ0wmPN8vemhi49o6yu9TNOGm"
 

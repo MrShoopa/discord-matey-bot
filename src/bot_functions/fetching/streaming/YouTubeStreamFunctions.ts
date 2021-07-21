@@ -1,13 +1,15 @@
 
-import YouTube, { YoutubeVideoSearchItem, YoutubeSearchParams, YoutubeVideoSearch } from 'youtube.ts'
+import Youtube, { YoutubeVideoSearchItem, YoutubeSearchParams, YoutubeVideoSearch } from 'youtube.ts'
 import Discord from 'discord.js'
-import Bot from '../../../Bot'
+import Bot from '../../../Bot.js'
 
-import AUTH from '../../../user_creds.json'
+import KEYS from '../../../user_creds.js'
+
+Youtube.apiKey = KEYS.youtube.api_key
 
 export default class BotModuleYouTube {
     static funcName = 'Megadork YouTube Stream Checker'
-    static YouTubeHelper = new YouTube(AUTH.youtube.api_key)
+    static YouTubeHelper = Youtube.prototype
 
     static async fireChannelNowStreamingNotification(message: Discord.Message, trigger?: string, replyIfNot?: boolean) {
         let response = await this.buildChannelNowStreamingMessage(message, trigger, replyIfNot)

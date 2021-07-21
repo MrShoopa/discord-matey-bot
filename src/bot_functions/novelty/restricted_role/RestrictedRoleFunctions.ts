@@ -1,7 +1,7 @@
 import Discord from 'discord.js';
-import Bot from "../../../Bot"
+import Bot from '../../../Bot.js'
 
-import PHRASES_SERVER_MOD from '../../../bot_knowledge/phrases/phrases_server_mod.json'
+import PHRASES_SERVER_MOD from '../../../bot_knowledge/phrases/phrases_server_mod.js'
 
 
 export default class BotModuleRestrictedRole {

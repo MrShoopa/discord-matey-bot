@@ -1,13 +1,14 @@
 import Discord from 'discord.js'
 import { joinVoiceChannel, VoiceConnection } from '@discordjs/voice'
-import Bot, { SongState } from "../../Bot"
-import { Audio, Stream } from "../../types"
-import QueueHandler from '../_state/QueueHandler'
+import Bot, { SongState } from '../../Bot.js'
+import { AudioData } from "../../types/data_types/AudioType.js"
+import { StreamData } from "../../types/data_types/StreamType.js"
+import QueueHandler from '../_state/QueueHandler.js'
 
-import TRIGGERS from '../../bot_knowledge/triggers/triggers.json'
-import PHRASES_SING from '../../bot_knowledge/phrases/phrases_sing.json'
+import TRIGGERS from '../../bot_knowledge/triggers/triggers.js'
+import PHRASES_SING from '../../bot_knowledge/phrases/phrases_sing.js'
 
-import AUTH from '../../user_creds.json'
+import KEYS from '../../user_creds.js'
 
 import YouTube from 'youtube-search'
 import YouTubeDownloader from 'ytdl-core'
@@ -15,12 +16,14 @@ import YouTubePlaylister from 'youtube-playlist'
 
 import Soundcloud, { SoundcloudTrackV2, SoundcloudTrackSearchV2 } from "soundcloud.ts"
 
+Soundcloud.clientID = KEYS.soundcloud.client_id
+Soundcloud.oauthToken = KEYS.soundcloud.o_auth_token
+
 export default class BotModuleMusic {
 
     static queueStore = new Array<MusicQueue>()
 
-    static scClient: Soundcloud =
-        new Soundcloud(AUTH.soundcloud.client_id, AUTH.soundcloud.o_auth_token)
+    static scClient: Soundcloud = Soundcloud.prototype
 
     static async playMusic(trigger: string, loop?: boolean, queueNumber?: number, messageObj?: Discord.Message) {
         let bot: Bot = globalThis.bot
@@ -125,7 +128,7 @@ export default class BotModuleMusic {
 
                         //  When song from local files is found
 
-                        let foundSong: Audio.SongObject = song
+                        let foundSong: AudioData.SongObject = song
 
                         songState = SongState.Playing
                         songState =
@@ -200,7 +203,7 @@ export default class BotModuleMusic {
                             guildId: channelNeeded.guild.id,
                             adapterCreator: channelNeeded.guild.voiceAdapterCreator
                         })
-                        await bot.playSFX(connection, Audio.SFX.MusicLeave)
+                        await bot.playSFX(connection, AudioData.SFX.MusicLeave)
 
 
                         //. dw about it bot.textChannel.send(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.active))
@@ -221,7 +224,7 @@ export default class BotModuleMusic {
         }
     }
 
-    static generatePlaybackMessage(message: Discord.Message, songInfo?: Stream.SongInfo)
+    static generatePlaybackMessage(message: Discord.Message, songInfo?: StreamData.SongInfo)
         : Discord.MessageEmbed {
 
         let playbackMessage = new Discord.MessageEmbed()
@@ -423,7 +426,7 @@ export default class BotModuleMusic {
         var opts: YouTube.YouTubeSearchOptions = {
             type: type,
             maxResults: resultCount,
-            key: AUTH.youtube.api_key
+            key: KEYS.youtube.api_key
         };
 
         return new Promise(async (res, rej) => {
@@ -569,7 +572,7 @@ class MusicQueue {
             message.channel.send(`📻... *that's all folks*!`)
 
             if (connection) {
-                await bot.playSFX(connection, Audio.SFX.MusicLeave)
+                await bot.playSFX(connection, AudioData.SFX.MusicLeave)
                 return connection.disconnect()
             }
 
@@ -579,7 +582,7 @@ class MusicQueue {
         try {
             if (!skip) {
                 if (connection)
-                    await bot.playSFX(connection, Audio.SFX.MusicTransition)
+                    await bot.playSFX(connection, AudioData.SFX.MusicTransition)
                 else {
                     let memberChannel = message.member.voice.channel
                     if (memberChannel)
@@ -590,7 +593,7 @@ class MusicQueue {
                         })
                     else
                         return message.channel.send(`😵 Join a voice channel in this server first to play your queue!`)
-                    await bot.playSFX(connection, Audio.SFX.MusicJoin)
+                    await bot.playSFX(connection, AudioData.SFX.MusicJoin)
                 }
 
                 /*  if (request.author?.username)

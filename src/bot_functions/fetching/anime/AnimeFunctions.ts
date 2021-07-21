@@ -1,5 +1,5 @@
 import Discord from 'discord.js'
-import Bot from '../../../Bot'
+import Bot from '../../../Bot.js'
 
 import { JikanApiClient, JikanApiType } from '@thorbens/jikan-api'
 

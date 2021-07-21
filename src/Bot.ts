@@ -1,23 +1,23 @@
 import * as FileSystem from 'fs-extra'
-import * as Path from 'path'
+import Path from 'path'
 import Request from 'request'
 import Stream from 'stream'
 import NodeFetch from 'node-fetch'
 
-import Discord, { Intents, Role } from 'discord.js'
+import Discord, { Role } from 'discord.js'
 import YTDL from 'ytdl-core'
 
-import * as Datypes from './types/index.js'
 import BotData from './bot_functions/DataHandler.js'
+import { AudioData } from './types/data_types/AudioType.js'
+import { StreamData } from './types/data_types/StreamType.js'
 
-import CREDS from './user_creds.json'
-import { main_trigger } from './bot_knowledge/triggers/triggers.json'
+import KEYS from './user_creds.js'
+import TRIGGERS from './bot_knowledge/triggers/triggers.js'
 
 import BotLoggerFunctions from './bot_functions/general/LoggerFunctions.js'
 
 import BotModuleMusic from './bot_functions/music/MusicFunctions.js'
 import { joinVoiceChannel, VoiceConnection, VoiceConnectionStatus } from '@discordjs/voice'
-import OpusScript from 'opusscript'
 
 export enum SongState {
     Unknown = 'unknown',
@@ -31,7 +31,7 @@ export enum SongState {
 
 export default class Bot extends Discord.Client {
 
-    constructor(apiKey: string = CREDS.discord.API_KEY) {
+    constructor(apiKey: string = KEYS.discord.API_KEY) {
         super({
             intents: [
                 'GUILDS',
@@ -128,7 +128,7 @@ export default class Bot extends Discord.Client {
     /*  ---- Post-Connect Functions ---- */
 
     populateRestrictedRoleList() {
-        CREDS.you.restricted_role_names.forEach(name => {
+        KEYS.you.restricted_role_names.forEach(name => {
             this.restrictedRoleIds.push(this.fetchRoleID(name))
         })
     }
@@ -150,12 +150,12 @@ export default class Bot extends Discord.Client {
             return null
     }
 
-    async playAudioFromFiles(song: Datypes.Audio.SongObject | string, message: Discord.Message,
+    async playAudioFromFiles(song: AudioData.SongObject | string, message: Discord.Message,
         loop?: boolean, queueNumber?: number,
         trigger?: string, skipLog?: boolean)
         : Promise<SongState> {
         let dispatcher
-        let songInfo: Datypes.Stream.SongInfo
+        let songInfo: StreamData.SongInfo
             = {
             source: 'local',
             platform: 'Local Files 💖'
@@ -174,7 +174,7 @@ export default class Bot extends Discord.Client {
                 })
 
                 if (!queueNumber)
-                    await this.playSFX(connection, Datypes.Audio.SFX.MusicJoin)
+                    await this.playSFX(connection, AudioData.SFX.MusicJoin)
 
                 console.groupEnd()
                 console.group()
@@ -207,7 +207,7 @@ export default class Bot extends Discord.Client {
             }
         }
 
-        async function playAudioFile(song: string | Datypes.Audio.SongObject,
+        async function playAudioFile(song: string | AudioData.SongObject,
             connection, messageObj?: Discord.Message, replaying?: boolean) {
             let bot: Bot = globalThis.bot
 
@@ -226,7 +226,7 @@ export default class Bot extends Discord.Client {
                         songInfo.name = songPath.pop()
                         songInfo.localFolder = songPath[songPath.length - 2]
 
-                    } else if (Datypes.Audio.isSongObject(song)) {
+                    } else if (AudioData.isSongObject(song)) {
 
                         dispatcher = connection.play(song.file)
                         state = SongState.Playing
@@ -248,7 +248,7 @@ export default class Bot extends Discord.Client {
                         state = SongState.Playing
                         console.groupEnd()
                         console.group()
-                        if (Datypes.Audio.isSongObject(song))
+                        if (AudioData.isSongObject(song))
                             console.log(`Now playing local and tagged file: ${songInfo.name} in ${songInfo.localFolder}.`)
                         else
                             console.log(`Now playing local file: ${song}`)
@@ -278,7 +278,7 @@ export default class Bot extends Discord.Client {
 
                             bot.songState = SongState.Finished
                             if (!queueNumber) {
-                                await bot.playSFX(connection, Datypes.Audio.SFX.MusicLeave)
+                                await bot.playSFX(connection, AudioData.SFX.MusicLeave)
                                 connection.disconnect()
                             }
                         }
@@ -305,7 +305,7 @@ export default class Bot extends Discord.Client {
         : Promise<SongState> {
         var dispatcher //TODO: Add Typings
         var stream: Stream.Readable | SongState.Down
-        var songInfo: Datypes.Stream.SongInfo
+        var songInfo: StreamData.SongInfo
             = { source: 'undefined turtle', url: url }
         var cacheFolder = './cache/music', tempSong: string
 
@@ -319,7 +319,7 @@ export default class Bot extends Discord.Client {
                 seek: 0,
                 volume: .75
             }
-            var songInfo: Datypes.Stream.SongInfo
+            var songInfo: StreamData.SongInfo
                 = { source: 'None' }
 
             try {
@@ -330,7 +330,7 @@ export default class Bot extends Discord.Client {
                 })
 
                 if (!queueNumber)
-                    await this.playSFX(connection, Datypes.Audio.SFX.MusicJoin)
+                    await this.playSFX(connection, AudioData.SFX.MusicJoin)
 
                 console.groupEnd()
                 console.group()
@@ -388,7 +388,7 @@ export default class Bot extends Discord.Client {
                     stream = YTDL(url.toString(), {
                         requestOptions: {
                             headers: {
-                                apim: CREDS.youtube.api_key
+                                apim: KEYS.youtube.api_key
                             }
                         },
                         filter: 'audioonly',
@@ -519,7 +519,7 @@ export default class Bot extends Discord.Client {
 
                             bot.songState = SongState.Finished
                             if (!queueNumber) {
-                                await bot.playSFX(connection, Datypes.Audio.SFX.MusicLeave)
+                                await bot.playSFX(connection, AudioData.SFX.MusicLeave)
                                 connection.disconnect()
                             }
                         }
@@ -599,11 +599,11 @@ export default class Bot extends Discord.Client {
         })
     }
 
-    playSFX(connection: VoiceConnection, sfx: Datypes.Audio.SFX) {
+    playSFX(connection: VoiceConnection, sfx: AudioData.SFX) {
         return new Promise((res, rej) => {
-            let path = __dirname + sfx.filePath
+            let dir = Path.resolve() + sfx.filePath
             try {
-                connection.playOpusPacket(FileSystem.readFileSync(path))
+                connection.playOpusPacket(FileSystem.readFileSync(dir))
 
                 res('completed')
             } catch (err) {
@@ -618,7 +618,7 @@ export default class Bot extends Discord.Client {
         let trigger: string
 
         if (withHotword)
-            for (trigger of main_trigger)
+            for (trigger of TRIGGERS.main_trigger)
                 return bot.context.toString().includes(trigger)
 
         return bot.context.toString().includes(desiredContext)

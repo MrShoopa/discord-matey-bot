@@ -1,15 +1,15 @@
 import Genius from 'genius-lyrics'
 import Discord from 'discord.js'
-import Bot from '../../../Bot'
+import Bot from '../../../Bot.js'
 
-import AUTH from '../../../user_creds.json'
+import KEYS from '../../../user_creds.js'
 
-import PHRASES from '../../../bot_knowledge/phrases/phrases_lyrics.json'
+import PHRASES from '../../../bot_knowledge/phrases/phrases_lyrics.js'
 
 export default class BotModuleLyric {
 
     static geniusClient = new Genius.Client(
-        AUTH.genius.client_token
+        KEYS.genius.client_token
     )
 
     static async fireLyricMatchMessage(message: Discord.Message, trigger?: string) {

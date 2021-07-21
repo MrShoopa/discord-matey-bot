@@ -2,7 +2,7 @@
 // These are accessed at the global level, and must not conflict with any lower-level functions.
 
 import Discord from 'discord.js';
-import Bot from '../Bot'
+import Bot from '../Bot.js'
 
 export default class su {
 

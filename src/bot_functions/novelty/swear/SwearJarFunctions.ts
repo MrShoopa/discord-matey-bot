@@ -1,6 +1,6 @@
 import Path from 'path'
 import Discord, { MessageEmbed } from 'discord.js'
-import { joinVoiceChannel } from '@discordjs/voice'
+import { DiscordGatewayAdapterCreator, joinVoiceChannel } from '@discordjs/voice'
 
 import Bot from '../../../Bot.js'
 import BotData from '../../DataHandler.js'
@@ -207,7 +207,8 @@ export default class BotModuleSwearJar {
             let connection = joinVoiceChannel({
                 channelId: userVC.id,
                 guildId: userVC.guild.id,
-                adapterCreator: userVC.guild.voiceAdapterCreator
+                //? why do i gotta write this like this aaaaa
+                adapterCreator: userVC.guild.voiceAdapterCreator as unknown as DiscordGatewayAdapterCreator
             })
 
             console.log(`Swear Jar: Playing ${sound.name} -for-> ${message.author.username}`)

@@ -17,7 +17,7 @@ import TRIGGERS from './bot_knowledge/triggers/triggers.js'
 import BotLoggerFunctions from './bot_functions/general/LoggerFunctions.js'
 
 import BotModuleMusic from './bot_functions/music/MusicFunctions.js'
-import { joinVoiceChannel, VoiceConnection, VoiceConnectionStatus } from '@discordjs/voice'
+import { DiscordGatewayAdapterCreator, joinVoiceChannel, VoiceConnection, VoiceConnectionStatus } from '@discordjs/voice'
 
 export enum SongState {
     Unknown = 'unknown',
@@ -170,7 +170,8 @@ export default class Bot extends Discord.Client {
                 let connection = joinVoiceChannel({
                     channelId: this.voiceChannel.id,
                     guildId: this.voiceChannel.guild.id,
-                    adapterCreator: this.voiceChannel.guild.voiceAdapterCreator
+                    //? why do i gotta write this like this aaaaa
+                    adapterCreator: this.voiceChannel.guild.voiceAdapterCreator as unknown as DiscordGatewayAdapterCreator
                 })
 
                 if (!queueNumber)
@@ -326,7 +327,8 @@ export default class Bot extends Discord.Client {
                 let connection = joinVoiceChannel({
                     channelId: this.voiceChannel.id,
                     guildId: this.voiceChannel.guild.id,
-                    adapterCreator: this.voiceChannel.guild.voiceAdapterCreator
+                    //? why do i gotta write this like this aaaaa
+                    adapterCreator: this.voiceChannel.guild.voiceAdapterCreator as unknown as DiscordGatewayAdapterCreator
                 })
 
                 if (!queueNumber)

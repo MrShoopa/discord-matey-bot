@@ -1,5 +1,5 @@
 import Discord from 'discord.js'
-import { joinVoiceChannel, VoiceConnection } from '@discordjs/voice'
+import { DiscordGatewayAdapterCreator, joinVoiceChannel, VoiceConnection } from '@discordjs/voice'
 import Bot, { SongState } from '../../Bot.js'
 import { AudioData } from "../../types/data_types/AudioType.js"
 import { StreamData } from "../../types/data_types/StreamType.js"
@@ -201,7 +201,8 @@ export default class BotModuleMusic {
                         let connection = joinVoiceChannel({
                             channelId: channelNeeded.id,
                             guildId: channelNeeded.guild.id,
-                            adapterCreator: channelNeeded.guild.voiceAdapterCreator
+                            //? why the heck do i gotta write it like this
+                            adapterCreator: channelNeeded.guild.voiceAdapterCreator as unknown as DiscordGatewayAdapterCreator
                         })
                         await bot.playSFX(connection, AudioData.SFX.MusicLeave)
 
@@ -557,14 +558,16 @@ class MusicQueue {
             connection = joinVoiceChannel({
                 channelId: channel.id,
                 guildId: channel.guild.id,
-                adapterCreator: channel.guild.voiceAdapterCreator
+                //? why do i gotta write this like this aaaaa
+                adapterCreator: channel.guild.voiceAdapterCreator as unknown as DiscordGatewayAdapterCreator
             })
         else {
             channel = message.member.voice.channel as Discord.VoiceChannel
             connection = joinVoiceChannel({
                 channelId: channel.id,
                 guildId: channel.guild.id,
-                adapterCreator: channel.guild.voiceAdapterCreator
+                //? why do i gotta write this like this aaaaa
+                adapterCreator: channel.guild.voiceAdapterCreator as unknown as DiscordGatewayAdapterCreator
             })
         }
         if (request === undefined) {
@@ -589,14 +592,16 @@ class MusicQueue {
                         connection = joinVoiceChannel({
                             channelId: memberChannel.id,
                             guildId: memberChannel.guild.id,
-                            adapterCreator: memberChannel.guild.voiceAdapterCreator
+                            //? why do i gotta write this like this aaaaa
+                            adapterCreator: memberChannel.guild.voiceAdapterCreator as unknown as DiscordGatewayAdapterCreator
                         })
                     else
                         return message.channel.send(`😵 Join a voice channel in this server first to play your queue!`)
                     await bot.playSFX(connection, AudioData.SFX.MusicJoin)
                 }
 
-                /*  if (request.author?.username)
+                /*//? do i want this
+                if (request.author?.username)
                      request.channel.send(`👉💿👉 ${request.author.username}'s song is up next!`)
                  else */
                 request.channel.send(`👉💿👉 Playing next song.`)

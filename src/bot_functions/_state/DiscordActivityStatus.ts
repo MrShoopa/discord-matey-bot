@@ -10,42 +10,42 @@ export default class BotDiscordActivity {
         { name: `with your servers`, type: 'PLAYING' },
         { name: `with null exceptions`, type: 'PLAYING' },
         { name: `Y O U`, type: 'WATCHING' },
-        {
+        /* {
             name: `stripping to this`, type: 'STREAMING',
             url: "https://www.youtube.com/watch?v=WSwDJUhP8Oo"
-        },
-        { name: `joe overeat that cake 🎂`, type: 'WATCHING' },
+        }, */
+        { name: `Shoopa overeat that cake 🎂`, type: 'WATCHING' },
         { name: `with toasters 🍞`, type: 'PLAYING' },
-        { name: `boku no pico to kids`, type: 'STREAMING' },
+        //{ name: `boku no pico to kids`, type: 'STREAMING' },
         { name: `your servers`, type: 'LISTENING' },
         { name: `🍆`, type: 'PLAYING' },
-        { name: `nothing cuz i can't IM A BOT`, type: 'STREAMING' },
+        //{ name: `nothing cuz i can't IM A BOT`, type: 'STREAMING' },
         { name: `shrek bingewatches`, type: 'WATCHING' },
-        {
+        /* {
             name: `t̷̳̞̙̣͓͈̝̣̯̠̺̱͐̂̑̍̂̅̿̀̑̄̈h̴̟͇͇̥͉̅̄̋̉̅͛̌͜͝ͅi̶̧̛̪͔̺͉͓̽̾̚ͅs̸̩͍̝̿́̿́̋̿̽̏̚ ̵̧̘̞̬̥͂̈́̃̋̅̍s̵̛͇̈́͗̎̄͆̃̃̈͑h̷̛̥̯̞̹͎̲̜͔̼̬̫̻̓̍͝i̵̢̨̲͚̳͈̋̉̏̍̒́̚͝t̶̜̲͈͇͔̆̏̈͌͊͑͜`, type: 'STREAMING',
             url: "https://www.youtube.com/watch?v=DBejlYvfBF8"
         },
         {
             name: `this on repeat`, type: 'STREAMING',
             url: "https://www.youtube.com/watch?v=jF-KRZmXfF4&list=WL&index=2&t=0s&ab_channel=sylicaa"
-        },
-        { name: `red velvet. pls stan.`, type: 'LISTENING' },
-        { name: `EoE 👁👁👁👁👁`, type: 'WATCHING' },
-        { name: `Sonic '06, The Greatest Game in the Universe`, type: 'PLAYING' },
-        { name: `with coronavirus test kits`, type: 'PLAYING' },
+        }, */
+        //{ name: `red velvet. pls stan.`, type: 'LISTENING' },
+        //{ name: `EoE 👁👁👁👁👁`, type: 'WATCHING' },
+        //{ name: `Sonic '06, The Greatest Game in the Universe`, type: 'PLAYING' },
+        //{ name: `with coronavirus test kits`, type: 'PLAYING' },
         { name: `SimpMaster 69420™`, type: 'PLAYING' },
-        { name: `Capitol Hill Simulator™`, type: 'PLAYING' },
-        {
+        //{ name: `Capitol Hill Simulator™`, type: 'PLAYING' },
+        /* {
             name: 'the SECRET TUNNELLLLL', type: 'STREAMING',
             url: 'https://www.youtube.com/watch?v=7o4EI_-5reA'
         },
         {
             name: 'Killer Bean Forever™', type: 'STREAMING',
             url: "https://www.youtube.com/watch?v=qyYHWkVWQ4o"
-        },
+        }, */
         { name: `the collapse of America`, type: 'WATCHING' },
-        { name: `ShoopBeats by Joe`, type: 'PLAYING' },
-        { name: 'I LOVE YOU - BASED GOD', type: 'LISTENING' },
+        { name: `ShoopBeats`, type: 'PLAYING' },
+        //{ name: 'I LOVE YOU - BASED GOD', type: 'LISTENING' },
         {
             name: '🦀🦀🦀', type: 'STREAMING',
             url: "https://www.youtube.com/watch?v=LDU_Txk06tM"
@@ -56,12 +56,17 @@ export default class BotDiscordActivity {
             url: "https://www.youtube.com/watch?v=zvq9r6R6QAY"
         },
         {
-            name: `🌟 grinding poptart cat 🌟`, type: 'STREAMING',
+            name: `🌟 poptart cat 🌟`, type: 'STREAMING',
             url: "https://www.youtube.com/watch?v=QH2-TGUlwu4"
         },
-        { name: `with your emotions 💦😞👌`, type: 'PLAYING' },
+        //{ name: `with your emotions 💦😞👌`, type: 'PLAYING' },
         { name: `no games 🔫`, type: 'PLAYING' },
-
+        { name: `tiktok dances of cats`, type: 'PLAYING' },
+        { name: `cooking mama`, type: 'PLAYING' },
+        { name: `...waiting`, type: 'WATCHING' },
+        { name: `Seaman`, type: 'PLAYING' },
+        { name: `with Clippy 📎`, type: 'PLAYING' },
+        { name: `Playing Playing`, type: 'PLAYING' },
     ]
 
     static randomObjects: Array<string> = [

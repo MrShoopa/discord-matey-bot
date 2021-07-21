@@ -1,8 +1,8 @@
 import Discord from 'discord.js'
 import Twitter from 'twitter'
-import Bot from '../../../Bot'
+import Bot from '../../../Bot.js'
 
-import AUTH from '../../../user_creds.json'
+import KEYS from '../../../user_creds.js'
 
 export default class BotModuleTwitter {
     private static _twitterEntity: Twitter
@@ -17,26 +17,26 @@ export default class BotModuleTwitter {
     private static initializeTwitter() {
         this._twitterEntity =
             new Twitter({
-                consumer_key: AUTH.twitter.consumer_key,
-                consumer_secret: AUTH.twitter.consumer_secret,
-                access_token_key: AUTH.twitter.access_token_key,
-                access_token_secret: AUTH.twitter.access_token_secret
+                consumer_key: KEYS.twitter.consumer_key,
+                consumer_secret: KEYS.twitter.consumer_secret,
+                access_token_key: KEYS.twitter.access_token_key,
+                access_token_secret: KEYS.twitter.access_token_secret
             })
     }
 
 
     static async fireTweetMessageFromUser(query: string, trigger?: string) {
         let bot: Bot = globalThis.bot
-        bot.textChannel.send(await this.fetchBuiltMsgTweetWithUserLatestPost(query.toString(), trigger))
+        bot.textChannel.send({ embeds: [await this.fetchBuiltMsgTweetWithUserLatestPost(query.toString(), trigger)] })
     }
 
     static async fireTweetMessageOfQuery(query: string, trigger?: string) {
         let bot: Bot = globalThis.bot
-        bot.textChannel.send(await this.fetchBuiltMsgTweetWithQuery(query.toString(), trigger))
+        bot.textChannel.send({ embeds: [await this.fetchBuiltMsgTweetWithQuery(query.toString(), trigger)] })
     }
 
     static async fetchBuiltMsgTweetWithQuery(query: string, trigger?: string, channel?: Discord.DMChannel | Discord.TextChannel):
-        Promise<Discord.Message | Discord.MessageEmbed> {
+        Promise<Discord.MessageEmbed> {
         let bot: Bot = globalThis.bot
 
         query = query.toLowerCase()
@@ -49,7 +49,7 @@ export default class BotModuleTwitter {
         let tweet = await this.fetchTweetWithQuery(query)
 
         if (!tweet)
-            return bot.generateErrorMessage(channel, `I couldn't fetch that tweet at the moment.`)
+            return bot.generateErrorMessage(`I couldn't fetch that tweet at the moment.`)
 
         let url =
             `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
@@ -83,16 +83,16 @@ export default class BotModuleTwitter {
             user = bot.context.toString().split(' ').pop()
 
         if (/\s/g.test(user))
-            return bot.generateErrorMessage(channel, `Please enter the username (no spaces) of the twitter user.`)
+            return bot.generateErrorMessage(`Please enter the username (no spaces) of the twitter user.`)
 
         let tweet = await this.fetchLatestTweetFromUser(user)
 
         if (tweet === 'not found')
-            return bot.generateErrorMessage(channel, `That user doesn't seem to exist on Twitter...
+            return bot.generateErrorMessage(`That user doesn't seem to exist on Twitter...
             or hasn't tweeted in a while...`)
 
         if (!tweet)
-            return bot.generateErrorMessage(channel, `I couldn't fetch that tweet at the moment.`)
+            return bot.generateErrorMessage(`I couldn't fetch that tweet at the moment.`)
 
         let url =
             `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`

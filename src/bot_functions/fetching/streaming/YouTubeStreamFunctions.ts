@@ -1,18 +1,20 @@
 
-import YouTube, { YoutubeVideoSearchItem, YoutubeSearchParams, YoutubeVideoSearch } from 'youtube.ts'
+import Youtube, { YoutubeVideoSearchItem, YoutubeSearchParams, YoutubeVideoSearch } from 'youtube.ts'
 import Discord from 'discord.js'
-import Bot from '../../../Bot'
+import Bot from '../../../Bot.js'
 
-import AUTH from '../../../user_creds.json'
+import KEYS from '../../../user_creds.js'
+
+Youtube.apiKey = KEYS.youtube.api_key
 
 export default class BotModuleYouTube {
-
-    static YouTubeHelper = new YouTube(AUTH.youtube.api_key)
+    static funcName = 'Megadork YouTube Stream Checker'
+    static YouTubeHelper = Youtube.prototype
 
     static async fireChannelNowStreamingNotification(message: Discord.Message, trigger?: string, replyIfNot?: boolean) {
         let response = await this.buildChannelNowStreamingMessage(message, trigger, replyIfNot)
         if (response)
-            return message.channel.send(await this.buildChannelNowStreamingMessage(message, trigger, replyIfNot))
+            return message.channel.send({ embeds: [await this.buildChannelNowStreamingMessage(message, trigger, replyIfNot)] })
         else
             return false
     }
@@ -20,7 +22,7 @@ export default class BotModuleYouTube {
     static async fireChannelNewVideoNotification(message: Discord.Message, trigger?: string, replyIfNot?: boolean) {
         let response = await this.buildChannelNewVideoMessage(message, trigger, replyIfNot)
         if (response)
-            return message.channel.send(await this.buildChannelNewVideoMessage(message, trigger, replyIfNot))
+            return message.channel.send({ embeds: [await this.buildChannelNewVideoMessage(message, trigger, replyIfNot)] })
         else
             return false
     }
@@ -33,7 +35,7 @@ export default class BotModuleYouTube {
             query = query.content.substr(query.content.indexOf(trigger) + trigger.length).trim()
 
         if (query.length === 0)
-            return 'Which YouTube channel? Please include a name!'
+            return bot.generateWarningMessage('Which YouTube channel? Please include a name!', this.funcName)
 
         let search: YoutubeVideoSearch
         try {
@@ -44,7 +46,7 @@ export default class BotModuleYouTube {
                 , 1, replyIfNot)
         } catch (err) {
             if (replyIfNot && err.message.includes('Nothing'))
-                return "That user is not streaming right now."
+                return bot.generateWarningMessage("That user is not streaming right now.", this.funcName).setColor('DARK_NAVY')
             else
                 return null
         }
@@ -58,12 +60,12 @@ export default class BotModuleYouTube {
                 .setURL(`https://www.youtube.com/watch?v=${hit.id.videoId}`)
                 .setTimestamp(Date.parse(hit.snippet.publishedAt))
                 .setDescription(hit.snippet.description)
-                .setFooter('Megadork YouTube Stream Checker')
+                .setFooter(this.funcName)
 
             return response
         } else {
             if (replyIfNot)
-                return `${query} is not streaming right now.`
+                return bot.generateWarningMessage(`${query} is not streaming right now.`, this.funcName).setColor('DARK_NAVY')
             else
                 return null
         }
@@ -77,7 +79,7 @@ export default class BotModuleYouTube {
             query = query.content.substr(query.content.indexOf(trigger) + trigger.length).trim()
 
         if (query.length === 0)
-            return 'Which YouTube channel? Please include a name!'
+            return bot.generateWarningMessage('Which YouTube channel? Please include a name!', this.funcName)
 
         let search: YoutubeVideoSearch
         try {
@@ -90,7 +92,7 @@ export default class BotModuleYouTube {
                 , 1, replyIfNot)
         } catch (err) {
             if (replyIfNot && err.message.includes('Nothing'))
-                return "That user didn't publish a new video today."
+                return bot.generateWarningMessage("That user didn't publish a new video today.", this.funcName).setColor('DARK_NAVY')
             else
                 return null
         }
@@ -104,12 +106,12 @@ export default class BotModuleYouTube {
                 .setURL(`https://www.youtube.com/watch?v=${hit.id.videoId}`)
                 .setTimestamp(Date.parse(hit.snippet.publishedAt))
                 .setDescription(hit.snippet.description)
-                .setFooter('Megadork YouTube New Vid Checker')
+                .setFooter(this.funcName)
 
             return response
         } else {
             if (replyIfNot)
-                return `${query} has no new video today.`
+                return bot.generateWarningMessage(`${query} has no new video today.`, this.funcName).setColor('DARK_NAVY')
             else
                 return null
         }

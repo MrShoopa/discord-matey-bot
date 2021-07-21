@@ -6,19 +6,20 @@
                 "./src/types/*"
             ]
         },
+        "rootDir": "src",
         "typeRoots": [
             "../"
         ],
         "types": [],
         "outDir": "./built",
 
-        "module": "commonjs",
-        "target": "es2018",
+        "module": "ESNext",
+        "target": "ES2020",
 
         "allowJs": true,
-        "sourceMap": true,
+        "sourceMap": false,
         "esModuleInterop": true,
-        "moduleResolution": "node",
+        "moduleResolution": "Node",
         "resolveJsonModule": true,
 
         "experimentalDecorators": true,

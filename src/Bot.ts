@@ -1,23 +1,23 @@
 import * as FileSystem from 'fs-extra'
-import * as Path from 'path'
+import Path from 'path'
 import Request from 'request'
 import Stream from 'stream'
 import NodeFetch from 'node-fetch'
 
-import Discord, { Intents, Role } from 'discord.js'
+import Discord, { Role } from 'discord.js'
 import YTDL from 'ytdl-core'
 
-import * as Datypes from './types/index'
-import BotData from './bot_functions/DataHandler'
+import BotData from './bot_functions/DataHandler.js'
+import { AudioData } from './types/data_types/AudioType.js'
+import { StreamData } from './types/data_types/StreamType.js'
 
-import CREDS from './user_creds.json'
-import { main_trigger } from './bot_knowledge/triggers/triggers.json'
+import KEYS from './user_creds.js'
+import TRIGGERS from './bot_knowledge/triggers/triggers.js'
 
-import BotLoggerFunctions from './bot_functions/general/LoggerFunctions'
+import BotLoggerFunctions from './bot_functions/general/LoggerFunctions.js'
 
-import BotModuleMusic from './bot_functions/music/MusicFunctions'
-import { joinVoiceChannel, VoiceConnection, VoiceConnectionStatus } from '@discordjs/voice'
-import OpusScript from 'opusscript'
+import BotModuleMusic from './bot_functions/music/MusicFunctions.js'
+import { DiscordGatewayAdapterCreator, joinVoiceChannel, VoiceConnection, VoiceConnectionStatus } from '@discordjs/voice'
 
 export enum SongState {
     Unknown = 'unknown',
@@ -31,7 +31,7 @@ export enum SongState {
 
 export default class Bot extends Discord.Client {
 
-    constructor(apiKey: string = CREDS.discord.API_KEY) {
+    constructor(apiKey: string = KEYS.discord.API_KEY) {
         super({
             intents: [
                 'GUILDS',
@@ -128,7 +128,7 @@ export default class Bot extends Discord.Client {
     /*  ---- Post-Connect Functions ---- */
 
     populateRestrictedRoleList() {
-        CREDS.you.restricted_role_names.forEach(name => {
+        KEYS.you.restricted_role_names.forEach(name => {
             this.restrictedRoleIds.push(this.fetchRoleID(name))
         })
     }
@@ -150,12 +150,12 @@ export default class Bot extends Discord.Client {
             return null
     }
 
-    async playAudioFromFiles(song: Datypes.Audio.SongObject | string, message: Discord.Message,
+    async playAudioFromFiles(song: AudioData.SongObject | string, message: Discord.Message,
         loop?: boolean, queueNumber?: number,
         trigger?: string, skipLog?: boolean)
         : Promise<SongState> {
         let dispatcher
-        let songInfo: Datypes.Stream.SongInfo
+        let songInfo: StreamData.SongInfo
             = {
             source: 'local',
             platform: 'Local Files 💖'
@@ -170,11 +170,12 @@ export default class Bot extends Discord.Client {
                 let connection = joinVoiceChannel({
                     channelId: this.voiceChannel.id,
                     guildId: this.voiceChannel.guild.id,
-                    adapterCreator: this.voiceChannel.guild.voiceAdapterCreator
+                    //? why do i gotta write this like this aaaaa
+                    adapterCreator: this.voiceChannel.guild.voiceAdapterCreator as unknown as DiscordGatewayAdapterCreator
                 })
 
                 if (!queueNumber)
-                    await this.playSFX(connection, Datypes.Audio.SFX.MusicJoin)
+                    await this.playSFX(connection, AudioData.SFX.MusicJoin)
 
                 console.groupEnd()
                 console.group()
@@ -207,7 +208,7 @@ export default class Bot extends Discord.Client {
             }
         }
 
-        async function playAudioFile(song: string | Datypes.Audio.SongObject,
+        async function playAudioFile(song: string | AudioData.SongObject,
             connection, messageObj?: Discord.Message, replaying?: boolean) {
             let bot: Bot = globalThis.bot
 
@@ -226,7 +227,7 @@ export default class Bot extends Discord.Client {
                         songInfo.name = songPath.pop()
                         songInfo.localFolder = songPath[songPath.length - 2]
 
-                    } else if (Datypes.Audio.isSongObject(song)) {
+                    } else if (AudioData.isSongObject(song)) {
 
                         dispatcher = connection.play(song.file)
                         state = SongState.Playing
@@ -248,14 +249,14 @@ export default class Bot extends Discord.Client {
                         state = SongState.Playing
                         console.groupEnd()
                         console.group()
-                        if (Datypes.Audio.isSongObject(song))
+                        if (AudioData.isSongObject(song))
                             console.log(`Now playing local and tagged file: ${songInfo.name} in ${songInfo.localFolder}.`)
                         else
                             console.log(`Now playing local file: ${song}`)
 
                         if (!replaying && !skipLog && message)
                             response = await messageObj.channel
-                                .send(BotModuleMusic.generatePlaybackMessage(messageObj, songInfo))
+                                .send({ embeds: [BotModuleMusic.generatePlaybackMessage(messageObj, songInfo)] })
                     })
 
                     dispatcher.on('close', () => {
@@ -278,7 +279,7 @@ export default class Bot extends Discord.Client {
 
                             bot.songState = SongState.Finished
                             if (!queueNumber) {
-                                await bot.playSFX(connection, Datypes.Audio.SFX.MusicLeave)
+                                await bot.playSFX(connection, AudioData.SFX.MusicLeave)
                                 connection.disconnect()
                             }
                         }
@@ -291,7 +292,7 @@ export default class Bot extends Discord.Client {
             } catch (error) {
                 bot.saveBugReport(error, playAudioFile.name, true)
 
-                bot.waker.lastMessage.channel
+                messageObj.channel
                     .send(`Ah! I couldn't play that song for some reason. Sent a bug report to Shoop.`)
 
                 throw new Error(`Music playback error (file), see above for error message.`)
@@ -305,7 +306,7 @@ export default class Bot extends Discord.Client {
         : Promise<SongState> {
         var dispatcher //TODO: Add Typings
         var stream: Stream.Readable | SongState.Down
-        var songInfo: Datypes.Stream.SongInfo
+        var songInfo: StreamData.SongInfo
             = { source: 'undefined turtle', url: url }
         var cacheFolder = './cache/music', tempSong: string
 
@@ -319,18 +320,19 @@ export default class Bot extends Discord.Client {
                 seek: 0,
                 volume: .75
             }
-            var songInfo: Datypes.Stream.SongInfo
+            var songInfo: StreamData.SongInfo
                 = { source: 'None' }
 
             try {
                 let connection = joinVoiceChannel({
                     channelId: this.voiceChannel.id,
                     guildId: this.voiceChannel.guild.id,
-                    adapterCreator: this.voiceChannel.guild.voiceAdapterCreator
+                    //? why do i gotta write this like this aaaaa
+                    adapterCreator: this.voiceChannel.guild.voiceAdapterCreator as unknown as DiscordGatewayAdapterCreator
                 })
 
                 if (!queueNumber)
-                    await this.playSFX(connection, Datypes.Audio.SFX.MusicJoin)
+                    await this.playSFX(connection, AudioData.SFX.MusicJoin)
 
                 console.groupEnd()
                 console.group()
@@ -388,7 +390,7 @@ export default class Bot extends Discord.Client {
                     stream = YTDL(url.toString(), {
                         requestOptions: {
                             headers: {
-                                apim: CREDS.youtube.api_key
+                                apim: KEYS.youtube.api_key
                             }
                         },
                         filter: 'audioonly',
@@ -489,8 +491,7 @@ export default class Bot extends Discord.Client {
 
                         if (!replaying && !skipLog && messageObj)
                             response = await message.channel
-                                .send(BotModuleMusic.generatePlaybackMessage(messageObj, songInfo))
-
+                                .send({ embeds: [BotModuleMusic.generatePlaybackMessage(messageObj, songInfo)] })
                     })
 
                     dispatcher.on('close', () => {
@@ -520,7 +521,7 @@ export default class Bot extends Discord.Client {
 
                             bot.songState = SongState.Finished
                             if (!queueNumber) {
-                                await bot.playSFX(connection, Datypes.Audio.SFX.MusicLeave)
+                                await bot.playSFX(connection, AudioData.SFX.MusicLeave)
                                 connection.disconnect()
                             }
                         }
@@ -535,7 +536,7 @@ export default class Bot extends Discord.Client {
             } catch (error) {
                 bot.saveBugReport(error, playAudioURL.name, true)
 
-                bot.waker.lastMessage.channel
+                messageObj.channel
                     .send(`Ah! I couldn't play that song for some reason. Sent a bug report to Shoop.`)
 
                 throw new Error(`Music playback error (URL), see above for error message.`)
@@ -600,11 +601,11 @@ export default class Bot extends Discord.Client {
         })
     }
 
-    playSFX(connection: VoiceConnection, sfx: Datypes.Audio.SFX) {
+    playSFX(connection: VoiceConnection, sfx: AudioData.SFX) {
         return new Promise((res, rej) => {
-            let path = __dirname + sfx.filePath
+            let dir = Path.resolve() + sfx.filePath
             try {
-                connection.playOpusPacket(FileSystem.readFileSync(path))
+                connection.playOpusPacket(FileSystem.readFileSync(dir))
 
                 res('completed')
             } catch (err) {
@@ -619,20 +620,36 @@ export default class Bot extends Discord.Client {
         let trigger: string
 
         if (withHotword)
-            for (trigger of main_trigger)
+            for (trigger of TRIGGERS.main_trigger)
                 return bot.context.toString().includes(trigger)
 
         return bot.context.toString().includes(desiredContext)
     }
 
-    generateErrorMessage(channel: Discord.TextChannel | Discord.DMChannel, message?: string): Discord.Message {
-        let built = new Discord.Message(this,
-            {
-                content: "Unfortunately, I couldn't perform that action at the moment."
-            }, channel)
+    generateWarningMessage(message?: string, footer?: string): Discord.MessageEmbed {
+        let built = new Discord.MessageEmbed()
+            .setAuthor('😮')
+            .setDescription(`Something might've not been input right.`)
+            .setColor('YELLOW')
 
         if (message)
-            built.content = message
+            built.setDescription(message)
+        if (footer)
+            built.setFooter(footer)
+
+        return built
+    }
+
+    generateErrorMessage(message?: string, footer?: string): Discord.MessageEmbed {
+        let built = new Discord.MessageEmbed()
+            .setAuthor('🥴')
+            .setDescription(`Unfortunately, I couldn't perform that action at the moment.`)
+            .setColor('RED')
+
+        if (message)
+            built.setDescription(message)
+        if (footer)
+            built.setFooter(footer)
 
         return built
     }

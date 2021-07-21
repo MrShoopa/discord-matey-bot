@@ -4,19 +4,19 @@
 	@author Joe Villegas (joevillegasisawesome@gmail.com)
 	@date   Started on May 16th, 2019.
 	
-	@see	./user_creds.json for providing API keys/secrets to use third-party services.
+	@see	./user_creds.js for providing API keys/secrets to use third-party services.
 */
 
 import Discord from 'discord.js'
 
-import Bot from './Bot'
+import Bot from './Bot.js'
 
-import WebServices from './www/Webpage'
+import WebServices from './www/Webpage.js'
 
-import TriggerHandlers from './bot_functions/TriggerHandlers'
-import PostReadyFunctions from './bot_functions/_state/PostReadyFunctions'
-import BotModuleModeration from './bot_functions/_state/Moderation'
-import su from './tools/ConsoleFunctions' // Keep here for console.
+import TriggerHandlers from './bot_functions/TriggerHandlers.js'
+import PostReadyFunctions from './bot_functions/_state/PostReadyFunctions.js'
+import BotModuleModeration from './bot_functions/_state/Moderation.js'
+import su from './tools/ConsoleFunctions.js' // Keep here for console.
 globalThis.su = new su()
 
 globalThis.prod_mode = (() => { return process.argv.includes('prod') })()
@@ -48,7 +48,7 @@ bot.on('guildCreate', guild => {
 })
 
 //  Messaging to bot
-bot.on('message', async (message) => {
+bot.on('messageCreate', async (message) => {
 	bot.context = message
 
 	//  Logging message
@@ -78,24 +78,24 @@ bot.on('message', async (message) => {
 })
 
 bot.on('guildMemberAdd', async member => {
-	let URLLIST = await import('./bot_knowledge/references/urllist.json').then(a => a).catch(err => {
+	let URLLIST = await import('./bot_knowledge/references/urllist.js').then(a => a).catch(err => {
 		console.log(err)
 		return null
 	})
-	let WELCOMEMESSAGE = await import('./bot_knowledge/phrases/phrases_welcome.json')
+	let WELCOMEMESSAGE = await import('./bot_knowledge/phrases/phrases_welcome.js')
 	let announcementChannel: Discord.TextChannel = member.guild.systemChannel
 
 	if (!BotModuleModeration.kickIfBlacklisted(member as Discord.GuildMember)) {
 		let message = new Discord.MessageEmbed()
 			.setAuthor('Hello hello? Hello hello!!! 😊')
 			.setTitle(`Welcome to the server, ${member.displayName}!`)
-			.setDescription(Bot.fetchRandomPhrase(WELCOMEMESSAGE.guild_member_add))
+			.setDescription(Bot.fetchRandomPhrase(WELCOMEMESSAGE.default.guild_member_add))
 			.setFooter(`-but actually, GIVE IT UP FOR ${member.displayName}!!!!!!!`)
 			.setColor(member.displayHexColor)
 			.setURL(Bot.fetchRandomPhrase(URLLIST.welcome))
 			.setImage(member.user.avatarURL())
 
-		announcementChannel.send(message).then(mes => {
+		announcementChannel.send({ embeds: [message] }).then(mes => {
 			mes.react('🔥')
 			mes.react('🎊')
 			mes.react('👋')
@@ -104,7 +104,7 @@ bot.on('guildMemberAdd', async member => {
 })
 
 bot.on('error', error => {
-	bot.waker.lastMessage.channel.send(`Ah! Something crashed my lil' engine!
+	bot.context.channel.send(`Ah! Something crashed my lil' engine!
 		Log submitted to Joe. Restarting...`)
 
 	bot.saveBugReport(error)

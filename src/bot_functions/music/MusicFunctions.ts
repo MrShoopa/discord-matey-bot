@@ -1,13 +1,14 @@
 import Discord from 'discord.js'
-import { joinVoiceChannel, VoiceConnection } from '@discordjs/voice'
-import Bot, { SongState } from "../../Bot"
-import { Audio, Stream } from "../../types"
-import QueueHandler from '../_state/QueueHandler'
+import { DiscordGatewayAdapterCreator, joinVoiceChannel, VoiceConnection } from '@discordjs/voice'
+import Bot, { SongState } from '../../Bot.js'
+import { AudioData } from "../../types/data_types/AudioType.js"
+import { StreamData } from "../../types/data_types/StreamType.js"
+import QueueHandler from '../_state/QueueHandler.js'
 
-import TRIGGERS from '../../bot_knowledge/triggers/triggers.json'
-import PHRASES_SING from '../../bot_knowledge/phrases/phrases_sing.json'
+import TRIGGERS from '../../bot_knowledge/triggers/triggers.js'
+import PHRASES_SING from '../../bot_knowledge/phrases/phrases_sing.js'
 
-import AUTH from '../../user_creds.json'
+import KEYS from '../../user_creds.js'
 
 import YouTube from 'youtube-search'
 import YouTubeDownloader from 'ytdl-core'
@@ -15,12 +16,14 @@ import YouTubePlaylister from 'youtube-playlist'
 
 import Soundcloud, { SoundcloudTrackV2, SoundcloudTrackSearchV2 } from "soundcloud.ts"
 
+Soundcloud.clientID = KEYS.soundcloud.client_id
+Soundcloud.oauthToken = KEYS.soundcloud.o_auth_token
+
 export default class BotModuleMusic {
 
     static queueStore = new Array<MusicQueue>()
 
-    static scClient: Soundcloud =
-        new Soundcloud(AUTH.soundcloud.client_id, AUTH.soundcloud.o_auth_token)
+    static scClient: Soundcloud = Soundcloud.prototype
 
     static async playMusic(trigger: string, loop?: boolean, queueNumber?: number, messageObj?: Discord.Message) {
         let bot: Bot = globalThis.bot
@@ -125,7 +128,7 @@ export default class BotModuleMusic {
 
                         //  When song from local files is found
 
-                        let foundSong: Audio.SongObject = song
+                        let foundSong: AudioData.SongObject = song
 
                         songState = SongState.Playing
                         songState =
@@ -198,9 +201,10 @@ export default class BotModuleMusic {
                         let connection = joinVoiceChannel({
                             channelId: channelNeeded.id,
                             guildId: channelNeeded.guild.id,
-                            adapterCreator: channelNeeded.guild.voiceAdapterCreator
+                            //? why the heck do i gotta write it like this
+                            adapterCreator: channelNeeded.guild.voiceAdapterCreator as unknown as DiscordGatewayAdapterCreator
                         })
-                        await bot.playSFX(connection, Audio.SFX.MusicLeave)
+                        await bot.playSFX(connection, AudioData.SFX.MusicLeave)
 
 
                         //. dw about it bot.textChannel.send(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.active))
@@ -221,13 +225,13 @@ export default class BotModuleMusic {
         }
     }
 
-    static generatePlaybackMessage(message: Discord.Message, songInfo?: Stream.SongInfo)
-        : Discord.APIMessage {
+    static generatePlaybackMessage(message: Discord.Message, songInfo?: StreamData.SongInfo)
+        : Discord.MessageEmbed {
 
         let playbackMessage = new Discord.MessageEmbed()
             .setAuthor('Mega-Juker! 🔊')
             .setTitle('Playing some 🅱eatz')
-            .setColor('ffc0cb')
+            .setColor(`FUCHSIA`)
 
         playbackMessage
             .setDescription(`\nI'm playing your request, ${message.author.username}! 👌`)
@@ -285,14 +289,11 @@ export default class BotModuleMusic {
         if (songInfo.queueNumber)
             playbackMessage.setDescription(`\nPlaying ${message.author.username}'s request! ${songInfo.queueNumber} songs left in queue.`)
 
-        var finalMessage = new Discord.APIMessage(message.channel, {
-            embeds: [
+        var finalMessage =
                 new Discord.MessageEmbed()
                     .setAuthor('Mega-Juker! 🔊')
                     .setTitle('Playing some 🅱eatz')
-                    .setColor('ffc0cb')
-            ]
-        })
+                .setColor(`FUCHSIA`)
 
         return finalMessage
     }
@@ -426,7 +427,7 @@ export default class BotModuleMusic {
         var opts: YouTube.YouTubeSearchOptions = {
             type: type,
             maxResults: resultCount,
-            key: AUTH.youtube.api_key
+            key: KEYS.youtube.api_key
         };
 
         return new Promise(async (res, rej) => {
@@ -557,14 +558,16 @@ class MusicQueue {
             connection = joinVoiceChannel({
                 channelId: channel.id,
                 guildId: channel.guild.id,
-                adapterCreator: channel.guild.voiceAdapterCreator
+                //? why do i gotta write this like this aaaaa
+                adapterCreator: channel.guild.voiceAdapterCreator as unknown as DiscordGatewayAdapterCreator
             })
         else {
             channel = message.member.voice.channel as Discord.VoiceChannel
             connection = joinVoiceChannel({
                 channelId: channel.id,
                 guildId: channel.guild.id,
-                adapterCreator: channel.guild.voiceAdapterCreator
+                //? why do i gotta write this like this aaaaa
+                adapterCreator: channel.guild.voiceAdapterCreator as unknown as DiscordGatewayAdapterCreator
             })
         }
         if (request === undefined) {
@@ -572,7 +575,7 @@ class MusicQueue {
             message.channel.send(`📻... *that's all folks*!`)
 
             if (connection) {
-                await bot.playSFX(connection, Audio.SFX.MusicLeave)
+                await bot.playSFX(connection, AudioData.SFX.MusicLeave)
                 return connection.disconnect()
             }
 
@@ -582,21 +585,23 @@ class MusicQueue {
         try {
             if (!skip) {
                 if (connection)
-                    await bot.playSFX(connection, Audio.SFX.MusicTransition)
+                    await bot.playSFX(connection, AudioData.SFX.MusicTransition)
                 else {
                     let memberChannel = message.member.voice.channel
                     if (memberChannel)
                         connection = joinVoiceChannel({
                             channelId: memberChannel.id,
                             guildId: memberChannel.guild.id,
-                            adapterCreator: memberChannel.guild.voiceAdapterCreator
+                            //? why do i gotta write this like this aaaaa
+                            adapterCreator: memberChannel.guild.voiceAdapterCreator as unknown as DiscordGatewayAdapterCreator
                         })
                     else
                         return message.channel.send(`😵 Join a voice channel in this server first to play your queue!`)
-                    await bot.playSFX(connection, Audio.SFX.MusicJoin)
+                    await bot.playSFX(connection, AudioData.SFX.MusicJoin)
                 }
 
-                /*  if (request.author?.username)
+                /*//? do i want this
+                if (request.author?.username)
                      request.channel.send(`👉💿👉 ${request.author.username}'s song is up next!`)
                  else */
                 request.channel.send(`👉💿👉 Playing next song.`)
@@ -663,7 +668,7 @@ class MusicQueue {
                 loadingMsg.delete()
         }
 
-        textChannel.send(new Discord.APIMessage(textChannel, { embeds: [message] }))
+        textChannel.send({ embeds: [message] })
 
         return true
     }
@@ -687,7 +692,7 @@ class MusicQueue {
             .setColor('LUMINOUS_VIVID_PINK')
             .setFooter(`${this.queue.peekAll().length} request(s) to play...`)
 
-        bot.context.channel.send(new Discord.APIMessage(bot.context.channel, { embeds: [message] }))
+        bot.context.channel.send({ embeds: [message] })
 
         return true
 

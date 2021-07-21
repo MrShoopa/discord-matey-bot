@@ -1,4 +1,4 @@
-export module Stream {
+export module StreamData {
     export interface SongInfo {
         source: string
         url?: any

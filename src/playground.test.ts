@@ -2,8 +2,8 @@
 
 import { expect } from 'chai'
 import 'mocha'
-import BotData from './bot_functions/DataHandler'
-import Bot from './Bot'
+import BotData from './bot_functions/DataHandler.js'
+import Bot from './Bot.js'
 
 var test = 'megadork hi'
 var testInput = 'megadork! hi'
@@ -38,7 +38,7 @@ describe('Finding specific user in guilds', () => {
 		let matchedUser
 
 		bot.guilds.cache.forEach(guild => {
-			guild.members.cache.get('')
+			guild.members.cache.get(`23`)
 		})
 
 		expect(matchedUser)

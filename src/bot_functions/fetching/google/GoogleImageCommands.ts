@@ -1,22 +1,24 @@
 import GoogleImages from 'google-images'
 import Discord from 'discord.js'
-import Bot from '../../../Bot'
+import Bot from '../../../Bot.js'
 
-import AUTH from '../../../user_creds.json'
+import KEYS from '../../../user_creds.js'
 
-import TRIGGERS from '../../../bot_knowledge/triggers/triggers.json'
+import TRIGGERS from '../../../bot_knowledge/triggers/triggers.js'
 
-import PHRASES_IMAGE_SEARCH from '../../../bot_knowledge/phrases/phrases_image_search.json'
-import DEFAULTS_IMAGE from '../../../bot_knowledge/defaults/image_search.json'
+import PHRASES_IMAGE_SEARCH from '../../../bot_knowledge/phrases/phrases_image_search.js'
+import DEFAULTS_IMAGE from '../../../bot_knowledge/defaults/image_search.js'
 
 export default class BotModuleGoogleImage {
 
+    static funcTitle = `MegaGoog Image Searcher 📷`
+
     static async fireImageMessageFromGoogle(message: Discord.Message, trigger?: string) {
-        message.channel.send(await this.fetchBuiltImageFromGoogle(trigger))
+        message.channel.send({ embeds: [await this.fetchBuiltImageFromGoogle(trigger)] })
     }
 
     static async fetchBuiltImageFromGoogle(userQuery: Discord.Message | string, trigger?: string):
-        Promise<Discord.Message | Discord.MessageEmbed> {
+        Promise<Discord.MessageEmbed> {
         let bot: Bot = globalThis.bot
 
         if (trigger) bot.preliminary(trigger, 'Image Search', true)
@@ -40,7 +42,7 @@ export default class BotModuleGoogleImage {
             bot.saveBugReport(new ReferenceError('No image was returned.'),
                 this.fetchBuiltImageFromGoogle.name,
                 true, true)
-            return bot.generateErrorMessage(userQuery as any, `Due to some error, I couldn't fetch anything at the moment.`)
+            return bot.generateErrorMessage(`Due to some error, I couldn't fetch anything at the moment.`, BotModuleGoogleImage.funcTitle)
         }
 
         let message = new Discord.MessageEmbed()
@@ -73,7 +75,7 @@ export default class BotModuleGoogleImage {
         //  Modules   
         const GOOGLE_IMAGER =
             new GoogleImages(
-                AUTH.google.search.CSE_ID_IMG, AUTH.google.API_KEY)
+                KEYS.google.search.CSE_ID_IMG, KEYS.google.API_KEY)
 
         userQuery = userQuery.toLowerCase()
 

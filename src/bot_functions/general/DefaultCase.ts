@@ -1,7 +1,7 @@
-import Bot from '../../Bot'
-import PHRASES_FRONT from '../../bot_knowledge/phrases/phrases_front.json'
+import Bot from '../../Bot.js'
+import PHRASES_FRONT from '../../bot_knowledge/phrases/phrases_front.js'
 
-import BotLoggerFunctions from '../general/LoggerFunctions'
+import BotLoggerFunctions from '../general/LoggerFunctions.js'
 
 export default class BotDefaultResponder {
 

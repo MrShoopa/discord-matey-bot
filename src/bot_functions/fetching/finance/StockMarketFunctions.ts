@@ -1,14 +1,17 @@
 import Discord from 'discord.js'
-import Bot from '../../../Bot'
-import USER_CREDS from '../../../user_creds.json'
+import Bot from '../../../Bot.js'
+import KEYS from '../../../user_creds.js'
 
-import TRIGGERS from '../../../bot_knowledge/triggers/triggers.json'
+import TRIGGERS from '../../../bot_knowledge/triggers/triggers.js'
 
 import AlphaVantage from 'alphavantage'
 
-const Moneyman = AlphaVantage({ key: USER_CREDS.alpha_vantage.key })
+const Moneyman = AlphaVantage({ key: KEYS.alpha_vantage.key })
 
 export default class BotModuleStockMarket {
+
+    static funcTitle = "MegaBroker - AlphaVantage"
+
     static async fireTickerInfoDailyMessage(message: Discord.Message, query?: string, trigger?: string, dateChoice?: Date | string) {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'Stock Market Ticker search', true)
@@ -28,16 +31,16 @@ export default class BotModuleStockMarket {
 
         try {
             await this.fetchTickerInfoDaily(ticker).then(d => data = d).catch((err: Error) => { throw err })
-            return message.channel.send(this.buildTickerInfoDayMessage(data, dateChoice as Date))
+            return message.channel.send({ embeds: [this.buildTickerInfoDayMessage(data, dateChoice as Date)] })
         } catch (err) {
             if (err.message.includes('Invalid API call'))
-                return message.reply(bot.generateErrorMessage(message.channel as Discord.TextChannel, `invalid ticker!`))
+                return message.reply({ embeds: [bot.generateErrorMessage(`invalid ticker!`, this.funcTitle)] })
             if (err.message.includes('No data exists for that day'))
-                return message.reply(bot.generateErrorMessage(message.channel as Discord.TextChannel, `did not find your ticker's stats for that day!`))
+                return message.reply({ embeds: [bot.generateErrorMessage(`did not find your ticker's stats for that day!`, this.funcTitle)] })
             if (err.message.includes('No data exists for that day') && !dateChoice)
-                return message.reply(bot.generateErrorMessage(message.channel as Discord.TextChannel, `did not find your ticker's stats for today! Is the market closed today?`))
+                return message.reply({ embeds: [bot.generateErrorMessage(`did not find your ticker's stats for today! Is the market closed today?`, this.funcTitle)] })
             if (err.message.includes('no data whatsoever'))
-                return message.reply(bot.generateErrorMessage(message.channel as Discord.TextChannel, "could not find info for your stock ticker!"))
+                return message.reply({ embeds: [bot.generateErrorMessage("could not find info for your stock ticker!", this.funcTitle)] })
         }
     }
 
@@ -61,16 +64,16 @@ export default class BotModuleStockMarket {
 
         try {
             await this.fetchCryptoInfoDaily(crypto).then(d => data = d).catch((err: Error) => { throw err })
-            return message.channel.send(this.buildTickerInfoDayMessage(data, dateChoice as Date))
+            return message.channel.send({ embeds: [this.buildTickerInfoDayMessage(data, dateChoice as Date)] })
         } catch (err) {
             if (err.message.includes('Invalid API call'))
-                return message.reply(bot.generateErrorMessage(message.channel as Discord.TextChannel, `invalid crypto symbol!`))
+                return message.reply({ embeds: [bot.generateErrorMessage(`invalid crypto symbol!`, this.funcTitle)] })
             if (err.message.includes('No data exists for that day'))
-                return message.reply(bot.generateErrorMessage(message.channel as Discord.TextChannel, `did not find your crypto's stats for that day!`))
+                return message.reply({ embeds: [bot.generateErrorMessage(`did not find your crypto's stats for that day!`, this.funcTitle)] })
             if (err.message.includes('No data exists for that day') && !dateChoice)
-                return message.reply(bot.generateErrorMessage(message.channel as Discord.TextChannel, `did not find your crypto's stats for today! Is the market closed today?`))
+                return message.reply({ embeds: [bot.generateErrorMessage(`did not find your crypto's stats for today! Is the market closed today?`, this.funcTitle)] })
             if (err.message.includes('no data whatsoever'))
-                return message.reply(bot.generateErrorMessage(message.channel as Discord.TextChannel, "could not find info for your crypto!"))
+                return message.reply({ embeds: [bot.generateErrorMessage("could not find info for your crypto!", this.funcTitle)] })
         }
     }
 
@@ -89,7 +92,7 @@ export default class BotModuleStockMarket {
                 post.setTitle(`$${metadata["2. Symbol"].toUpperCase()} on ${this.parseDateString(dayChoice)}`)
                 post.addField("Open", Number.parseFloat(todayInfo["1. open"]).toFixed(2), true)
                 post.addField("Low", Number.parseFloat(todayInfo["3. low"]).toFixed(2), true)
-                post.addField("Volume", Number.parseFloat(todayInfo["5. volume"]), true)
+                post.addField("Volume", Number.parseFloat(todayInfo["5. volume"]).toString(), true)
                 post.addField("Close", Number.parseFloat(todayInfo["4. close"]).toFixed(2), true)
                 post.addField("High", Number.parseFloat(todayInfo["2. high"]).toFixed(2), true)
 
@@ -131,7 +134,7 @@ export default class BotModuleStockMarket {
                 throw new ReferenceError('No data exists for that day.')
         }
 
-        post.setFooter("MegaBroker - AlphaVantage", "https://pbs.twimg.com/profile_images/1230031751659114496/UJtP9hb5_400x400.jpg")
+        post.setFooter(this.funcTitle, "https://pbs.twimg.com/profile_images/1230031751659114496/UJtP9hb5_400x400.jpg")
 
         return post
     }

@@ -1,8 +1,7 @@
 import Discord from 'discord.js'
 
-import Bot from "../../Bot"
-import { ActivityOptions } from "discord.js"
-import { you } from '../../user_creds.json'
+import Bot from '../../Bot.js'
+import PARAMS from '../../user_creds.js'
 
 
 const PLAYLISTCHOICE = "https://www.youtube.com/playlist?list=PLYb74g1gGQ0wmPN8vemhi49o6yu9TNOGm"
@@ -10,8 +9,8 @@ const PLAYLISTCHOICE = "https://www.youtube.com/playlist?list=PLYb74g1gGQ0wmPN8v
 export default class BotModuleModeration {
 
     static checkIfUserInKickList(user: Discord.GuildMember) {
-        if (Object.keys(you.auto_kicker).includes(user.guild.id))
-            for (let id of you.auto_kicker[`${user.guild.id}`])
+        if (Object.keys(PARAMS.you.auto_kicker).includes(user.guild.id))
+            for (let id of PARAMS.you.auto_kicker[`${user.guild.id}`])
                 if (user.user.id == id) {
                     console.log(`User ${user.displayName} is in ${user.guild.name}'s (${user.guild.id}) kicklist!`)
                     return true

@@ -2,7 +2,7 @@
 // These are accessed at the global level, and must not conflict with any lower-level functions.
 
 import Discord from 'discord.js';
-import Bot from '../Bot'
+import Bot from '../Bot.js'
 
 export default class su {
 
@@ -37,7 +37,7 @@ export default class su {
             console.error(`Your bot hasn't received a Direct Message to perform this action.`)
     }
 
-    async sendMessageToChannel(channelId: string, message: string, listenToBots?: boolean) {
+    async sendMessageToChannel(channelId: `${bigint}`, message: string, listenToBots?: boolean) {
         let bot: Bot = globalThis.bot
 
         let channel = bot.channels.cache.get(channelId)
@@ -51,7 +51,7 @@ export default class su {
             console.error('Invalid type of channel used. Use only Text or DM channels.')
     }
 
-    async sendDmToUser(userId: string, message: string, listenToBots?: boolean) {
+    async sendDmToUser(userId: `${bigint}`, message: string, listenToBots?: boolean) {
         let bot: Bot = globalThis.bot
 
         let user: Discord.User = bot.users.cache.get(userId)

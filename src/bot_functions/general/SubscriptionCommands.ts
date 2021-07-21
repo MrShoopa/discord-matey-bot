@@ -1,12 +1,14 @@
 import Discord from 'discord.js'
-import Bot from "../../Bot"
-import { Data } from './../../types/data_types/Data';
-import { Subscriptions } from './../../types/data_types/Subscription';
-import BotSubscriptionHandler from '../_state/SubscriptionHandler';
+import Bot from '../../Bot.js'
+import { DataType } from '../../types/data_types/DataType';
+import { Subscriptions } from '../../types/data_types/SubscriptionType';
+import BotSubscriptionHandler from '../_state/SubscriptionHandler.js';
 
-import TRIGGERS from '../../bot_knowledge/triggers/triggers.json'
+import TRIGGERS from '../../bot_knowledge/triggers/triggers.js'
 
 export default class BotSubscriptionCommands {
+
+    static funcName = `Megadork Subscriptions 🚇`
 
     static createSubscription(message: Discord.Message, trigger: string, args?: any) {
         let bot: Bot = globalThis.bot
@@ -21,13 +23,13 @@ export default class BotSubscriptionCommands {
         let funcName: string =
             ctx.substr(ctx.indexOf('for') + 3).trim().toUpperCase()
 
-        let subscription: Data.SubscriptionSave
+        let subscription: DataType.SubscriptionSave
         try {
             subscription = BotSubscriptionHandler.createSubscription(message.channel.id, name, message)
         } catch (err) {
             if (err.message.includes('already exists'))
                 if (message.channel instanceof Discord.TextChannel || message.channel instanceof Discord.DMChannel)
-                    return message.channel.send(bot.generateErrorMessage(message.channel, `A subscription named *${name}* already exists for this channel.`))
+                    return message.channel.send({ embeds: [bot.generateErrorMessage(`A subscription named *${name}* already exists for this channel.`, this.funcName)] })
         }
 
         if (message.channel instanceof Discord.TextChannel)
@@ -50,10 +52,10 @@ export default class BotSubscriptionCommands {
 
             if (error instanceof TypeError && error.message.includes('featureCode')) {
                 if (message.channel instanceof Discord.TextChannel || message.channel instanceof Discord.DMChannel)
-                    return message.channel.send(bot.generateErrorMessage(message.channel, `There is no subscription feature for that function or it does not exist...`))
+                    return message.channel.send({ embeds: [bot.generateErrorMessage(`There is no subscription feature for that function or it does not exist...`, this.funcName)] })
             } else {
                 if (message.channel instanceof Discord.TextChannel || message.channel instanceof Discord.DMChannel)
-                    return message.channel.send(bot.generateErrorMessage(message.channel))
+                    return message.channel.send({ embeds: [bot.generateErrorMessage()] })
             }
         }
 
@@ -72,7 +74,7 @@ export default class BotSubscriptionCommands {
         if (subscription.authorId)
             response.addField('Created by', `${message.author.username}`)
 
-        return message.channel.send(response)
+        return message.channel.send({ embeds: [response] })
     }
 
     static deleteSubscription(message: Discord.Message, trigger: string) {
@@ -176,14 +178,14 @@ export default class BotSubscriptionCommands {
         if (subscription.authorId)
             response.addField('Created by', `${message.author.username}`)
 
-        return message.channel.send(response)
+        return message.channel.send({ embeds: [response] })
     }
 
     static listSubscriptionsForChannel(message: Discord.Message, trigger: string) {
         let bot: Bot = globalThis.bot
         bot.preliminary(trigger, 'Function subscription management - Listing', true)
 
-        let subscriptions: Data.SubscriptionSave[] = BotSubscriptionHandler.getSubscriptionDatastore().filter(sub => {
+        let subscriptions: DataType.SubscriptionSave[] = BotSubscriptionHandler.getSubscriptionDatastore().filter(sub => {
             if (sub.channelId === message.channel.id || sub.dmChannelId === message.channel.id) return true
             else return false
         })
@@ -200,10 +202,10 @@ export default class BotSubscriptionCommands {
             response.setTitle(`Subscriptions for this DM`)
 
         subscriptions.forEach(sub => {
-            response.addField(sub.name, `${sub.featureCode} every ${this.msToTimeMessage(sub.frequencyMilli)} at ${new Date(sub._lastRun).toLocaleTimeString()} - Creator: ${bot.users.cache.get(sub.authorId)}`)
+            response.addField(sub.name, `${sub.featureCode} every ${this.msToTimeMessage(sub.frequencyMilli)} at ${new Date(sub._lastRun).toLocaleTimeString()} - Creator: ${bot.users.cache.get(sub.authorId as `${bigint}`)}`)
         })
 
-        return message.channel.send(response)
+        return message.channel.send({ embeds: [response] })
     }
 
     static msToTimeMessage(duration: number): string {

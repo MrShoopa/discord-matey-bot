@@ -19,9 +19,9 @@ export module Subscriptions {
         frequencyMilli: number
         [arg: string]: any
 
-        constructor(callingUser: Discord.GuildMember, featureCode: SubscriptionFeature, frequencyMilli: number, args?: any) {
-            this.authorId = callingUser.id
-            this.channelId = callingUser.lastMessageChannelID
+        constructor(messageObj: Discord.Message, featureCode: SubscriptionFeature, frequencyMilli: number, args?: any) {
+            this.authorId = messageObj.member.id
+            this.channelId = messageObj.member.id
             this.featureCode = featureCode
             this.frequencyMilli = frequencyMilli
 

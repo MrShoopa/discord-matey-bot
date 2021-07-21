@@ -1,9 +1,9 @@
 import Discord from 'discord.js'
-import Bot from '../../../../Bot'
+import Bot from '../../../../Bot.js'
 
-import BotModuleBlizzard from './BlizzardMasterFunctions'
+import BotModuleBlizzard from './BlizzardMasterFunctions.js'
 
-import { blizzard } from '../../../../bot_knowledge/triggers/triggers.json'
+import TRIGGERS from '../../../../bot_knowledge/triggers/triggers.js'
 
 export default class BotModuleWarcraft {
     static Blizzard = BotModuleBlizzard.Blizzard
@@ -80,7 +80,7 @@ export default class BotModuleWarcraft {
             { name: 'Equipped Item Level', value: profile.equipped_item_level, inline: true },
         )
 
-        return query.reply(message)
+        return query.reply({ embeds: [message] })
     }
 
     static async fetchWarcraftProfile(realm: string, character: string) {

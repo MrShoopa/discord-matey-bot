@@ -1,12 +1,12 @@
 import Discord, { TextChannel } from 'discord.js'
 
-import Bot from "../../../Bot"
-import BotData from "../../DataHandler"
-import { Data } from './../../../types/data_types/Data';
+import Bot from '../../../Bot.js'
+import BotData from '../../DataHandler.js'
+import { DataType } from '../../../types/data_types/DataType';
 
-import * as CALENDAR from "../../../bot_knowledge/calendar/values.json"
+import CALENDAR from "../../../bot_knowledge/calendar/values.js"
 
-import * as PHRASES from "../../../bot_knowledge/phrases/phrases_calendar.json"
+import PHRASES from "../../../bot_knowledge/phrases/phrases_calendar.js"
 
 export default class BotModuleBirthday {
 	static assignBirthdaySelf(message: Discord.Message, trigger?: string) {
@@ -95,7 +95,7 @@ export default class BotModuleBirthday {
 	static checkBirthdaysToday(announce?: boolean) {
 		let birthdayList: [{ userId: string, date: Date }?] = []
 
-		BotData.getUserDataFile().forEach((user: Data.UserSave) => {
+		BotData.getUserDataFile().forEach((user: DataType.UserSave) => {
 			let birthday = new Date(user?.birthday)
 			if (birthday?.getDate() === new Date().getDate()
 				&& birthday?.getMonth() === new Date().getMonth()) {
@@ -108,7 +108,7 @@ export default class BotModuleBirthday {
 		return birthdayList
 	}
 
-	static announceBirthday(user: Data.UserSave, earrape?: boolean) {
+	static announceBirthday(user: DataType.UserSave, earrape?: boolean) {
 		let bot: Bot = globalThis.bot
 
 		bot.guilds.cache.forEach(guild => {
@@ -122,7 +122,7 @@ export default class BotModuleBirthday {
 					"And you smell like one too.\n"
 
 				/* const att =
-					new Discord.MessageAttachment(__dirname +
+					new Discord.MessageAttachment(path.resolve() +
 						'..\\..\\..\\bot_knowledge\\images\\birthday-stock-image.jpg',
 						'birthday-stock.jpg') */
 
@@ -143,12 +143,12 @@ export default class BotModuleBirthday {
 					})
 
 				if (earrape && specialUser.voice.channel) {
-					bot.voiceChannel = specialUser.voice.channel
+					bot.voiceChannel = specialUser.voice.channel as Discord.VoiceChannel
 					bot.playAudioFromURL('https://www.youtube.com/watch?v=s6gLh6mf0Ig&ab_channel=jobv3')
 				}
 
 				if (guild.systemChannel)
-					guild.systemChannel.send(birthdayMesssage)
+					guild.systemChannel.send({ embeds: [birthdayMesssage] })
 				/*
 				TODO else
 					guild.channels.cache.some(item => {

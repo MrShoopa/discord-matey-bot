@@ -1,16 +1,16 @@
 import Discord from 'discord.js'
-import { BeanContainer } from '../../types/data_types/Bean'
-import Bot from '../../Bot'
+import { BeanContainer } from '../../types/data_types/BeanType.js'
+import Bot from '../../Bot.js'
 
-import BotModuleGoogleImage from '../fetching/google/GoogleImageCommands'
-import BotModuleTwitter from '../fetching/twitter/TwitterFunctions'
+import BotModuleGoogleImage from '../fetching/google/GoogleImageCommands.js'
+import BotModuleTwitter from '../fetching/twitter/TwitterFunctions.js'
 
-import TRIGGERS from '../../bot_knowledge/triggers/triggers.json'
+import TRIGGERS from '../../bot_knowledge/triggers/triggers.js'
 
-import PHRASES_FRONT from '../../bot_knowledge/phrases/phrases_front.json'
-import PHRASES_SING from '../../bot_knowledge/phrases/phrases_sing.json'
-import PHRASES_CONVO from '../../bot_knowledge/phrases/phrases_conversational.json'
-import BotModuleReddit from '../fetching/reddit/RedditFunctions'
+import PHRASES_FRONT from '../../bot_knowledge/phrases/phrases_front.js'
+import PHRASES_SING from '../../bot_knowledge/phrases/phrases_sing.js'
+import PHRASES_CONVO from '../../bot_knowledge/phrases/phrases_conversational.js'
+import BotModuleReddit from '../fetching/reddit/RedditFunctions.js'
 
 export default class BotModuleBraindead {
 

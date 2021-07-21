@@ -3,14 +3,14 @@ import * as Path from 'path'
 import Mailer from 'nodemailer'
 
 import Discord from 'discord.js';
-import Bot from '../../Bot';
+import Bot from '../../Bot.js';
 
-import AUTH from '../../user_creds.json'
-import PHRASES from '../../bot_knowledge/phrases/phrases_suggestion.json'
+import KEYS from '../../user_creds.js'
+import PHRASES from '../../bot_knowledge/phrases/phrases_suggestion.js'
 
 export default class BotLoggerFunctions {
 
-    static logPathName = __dirname + `/../../../logs`
+    static logPathName = Path.resolve() + `/../../../logs`
 
     static saveBugReport(error: Error
         , func?: string, logInConsole?: boolean, reply?: boolean) {
@@ -29,9 +29,12 @@ export default class BotLoggerFunctions {
         this.writeTextToFile(ErrorLog.generateText(error, bot), ErrorLog.filename, ErrorLog.reportPath)
 
         if (reply && bot.lastWaker)
-            bot.lastWaker.lastMessage.channel.send(new Discord.MessageEmbed()
-                .setAuthor('Megadork Crash Reporter 📝')
-                .setDescription`Log submitted to Shoopa.`)
+            bot.context.channel.send({
+                embeds:
+                    [new Discord.MessageEmbed()
+                        .setAuthor('Megadork Crash Reporter 📝')
+                        .setDescription(`Log submitted to Shoopa.`)]
+            })
     }
 
     static async saveUserSuggestion(message: Discord.Message | Discord.PartialMessage, reply?: boolean, trigger?: string) {
@@ -41,16 +44,16 @@ export default class BotLoggerFunctions {
         message.content = message.toString().replace(trigger, '').trim()
 
         const transport = Mailer.createTransport({
-            service: AUTH.smtp.service,
+            service: KEYS.smtp.service,
             auth: {
-                user: AUTH.smtp.auth.user,
-                pass: AUTH.smtp.auth.pass
+                user: KEYS.smtp.auth.user,
+                pass: KEYS.smtp.auth.pass
             }
         })
 
         const email = {
-            from: AUTH.smtp.email_from,
-            to: AUTH.smtp.email_to,
+            from: KEYS.smtp.email_from,
+            to: KEYS.smtp.email_to,
             subject: `${message.author.username} Has a Suggestion for Megadork!`,
             text: `Something something was sent at ${message.createdAt.toLocaleDateString()} ${message.createdAt.toLocaleTimeString()}... \n\n` +
                 `Suggestion: "${message.toString()}" \n` +
@@ -61,7 +64,7 @@ export default class BotLoggerFunctions {
 
         try {
             const result = await transport.sendMail(email);
-            console.log(`Successfully sent Suggestion Email to ${AUTH.smtp.email_to}.`, result);
+            console.log(`Successfully sent Suggestion Email to ${KEYS.smtp.email_to}.`, result);
             if (reply) {
                 for (let username of Object.keys(PHRASES.username_response))
                     if (message.author.username === username)
@@ -70,7 +73,7 @@ export default class BotLoggerFunctions {
             }
         }
         catch (err) {
-            console.error(`Failed to send Suggestion Email to ${AUTH.smtp.email_to}`, err);
+            console.error(`Failed to send Suggestion Email to ${KEYS.smtp.email_to}`, err);
             if (reply)
                 message.reply(`I couldn't send your suggestion for some reason. Try again later?`);
         }
@@ -88,9 +91,11 @@ export default class BotLoggerFunctions {
             console.info(`Unknown command logged on ${new Date().toString()}: '${message.toString()}'`)
 
         if (reply && bot.lastWaker)
-            bot.lastWaker.lastMessage.channel.send(new Discord.MessageEmbed()
-                .setAuthor('Megadork 📝')
-                .setDescription`I don't know that command so I've pinged Shoopa to look at it later.`)
+            bot.context.channel.send({
+                embeds: [new Discord.MessageEmbed()
+                    .setAuthor('Megadork 📝')
+                    .setDescription(`I don't know that command so I've pinged Shoopa to look at it later.`)]
+            })
     }
 
     private static writeTextToFile(text: string,
@@ -122,9 +127,11 @@ export default class BotLoggerFunctions {
             console.info(`Wrote on "${path}": ${new Date().toString()}: \n\t ${text} `)
 
         if (reply && bot.lastWaker)
-            bot.lastWaker.lastMessage.channel.send(new Discord.MessageEmbed()
-                .setAuthor('Megadork Text Writer 📝')
-                .setDescription`Log submitted to Shoopa.`)
+            bot.context.channel.send({
+                embeds: [new Discord.MessageEmbed()
+                    .setAuthor('Megadork Text Writer 📝')
+                    .setDescription(`Log submitted to Shoopa.`)]
+            })
     }
 
     static instantiateLogFolder() {

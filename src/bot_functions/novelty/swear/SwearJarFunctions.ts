@@ -1,15 +1,18 @@
+import Path from 'path'
 import Discord, { MessageEmbed } from 'discord.js'
-import Bot from "../../../Bot"
-import BotData from "../../DataHandler"
-import { Audio } from '../../../types/index'
-import { you } from '../../../user_creds.json'
+import { DiscordGatewayAdapterCreator, joinVoiceChannel } from '@discordjs/voice'
 
-import PHRASES_SWEAR_JAR from '../../../bot_knowledge/phrases/phrases_swear_jar.json'
-import { swear_jar_triggers } from '../../../bot_knowledge/triggers/triggers.json'
-import BotModuleSwearWhitelist from './WhitelistFunctions'
-import BotModuleSwearBlacklist from './BlacklistFunctions'
-import BotModuleNameGenerator from '../name/RandomNameFunctions'
-import BotModuleReddit from '../../fetching/reddit/RedditFunctions'
+import Bot from '../../../Bot.js'
+import BotData from '../../DataHandler.js'
+import { AudioData } from '../../../types/data_types/AudioType'
+import PARAMS from '../../../user_creds.js'
+
+import PHRASES_SWEAR_JAR from '../../../bot_knowledge/phrases/phrases_swear_jar.js'
+import TRIGGERS from '../../../bot_knowledge/triggers/triggers.js'
+import BotModuleSwearWhitelist from './WhitelistFunctions.js'
+import BotModuleSwearBlacklist from './BlacklistFunctions.js'
+import BotModuleNameGenerator from '../name/RandomNameFunctions.js'
+import BotModuleReddit from '../../fetching/reddit/RedditFunctions.js'
 
 export default class BotModuleSwearJar {
     static dingUser(message: Discord.Message, trigger: string, keepStat?: boolean) {
@@ -81,7 +84,7 @@ export default class BotModuleSwearJar {
             }()
 
             let swearDetectedMessage = new Discord.MessageEmbed()
-                .setColor('PINK')
+                .setColor(`LUMINOUS_VIVID_PINK`)
                 //.setTitle(Bot.fetchRandomPhrase(PHRASES_SWEAR_JAR.bad_language_detected))
                 //.setAuthor('Your Friendly Neighborhood Megadork ✝', bot.user.avatarURL())
                 .setDescription(response)
@@ -92,7 +95,7 @@ export default class BotModuleSwearJar {
                 })
 
             this.thresholdCheck(oldNum, newNum)
-            message.channel.send(swearDetectedMessage).then(message => {
+            message.channel.send({ embeds: [swearDetectedMessage] }).then(message => {
                 if (!keepStat) message.delete() //({ timeout: 3000, reason: 'Prevent clutter' })
             })
 
@@ -119,7 +122,7 @@ export default class BotModuleSwearJar {
         if (trigger) bot.preliminary(trigger, 'Swear Jar Check')
 
         let response = await this.generateSwearStatsMessage(message.guild)
-        return message.channel.send(response)
+        return message.channel.send({ embeds: [response] })
     }
 
     static async generateSwearStatsMessage(guild: Discord.Guild) {
@@ -135,7 +138,7 @@ export default class BotModuleSwearJar {
         if (swearingUsers) {
 
             const att =
-                new Discord.MessageAttachment(__dirname +
+                new Discord.MessageAttachment(Path.resolve() +
                     '.\\..\\..\\..\\bot_knowledge\\images\\dedede-christian.jpg',
                     'dedede-christian.jpg')
 
@@ -169,13 +172,13 @@ export default class BotModuleSwearJar {
             let msg = this.generateSwearStatsMessage(guild)
 
             if (msg && guild.systemChannel)
-                guild.systemChannel.send(await msg)
+                guild.systemChannel.send({ embeds: [await msg] })
         })
     }
 
     static matchWord(word: string) {
         let count = 0
-        for (const trigger of swear_jar_triggers.bad_words) {
+        for (const trigger of TRIGGERS.swear_jar_triggers.bad_words) {
 
             if (word === trigger)
                 return 1
@@ -195,13 +198,18 @@ export default class BotModuleSwearJar {
         return count
     }
 
-    static async replyWithSound(message: Discord.Message | Discord.PartialMessage, sound: Audio.SFX) {
+    static async replyWithSound(message: Discord.Message | Discord.PartialMessage, sound: AudioData.SFX) {
         let bot: Bot = globalThis.bot
 
         let userVC = message.member.voice.channel
 
         if (userVC) {
-            let connection = await userVC.join()
+            let connection = joinVoiceChannel({
+                channelId: userVC.id,
+                guildId: userVC.guild.id,
+                //? why do i gotta write this like this aaaaa
+                adapterCreator: userVC.guild.voiceAdapterCreator as unknown as DiscordGatewayAdapterCreator
+            })
 
             console.log(`Swear Jar: Playing ${sound.name} -for-> ${message.author.username}`)
             bot.playSFX(connection, sound)
@@ -211,7 +219,7 @@ export default class BotModuleSwearJar {
     }
 
     static checkForSoundReply(word: string, message: Discord.Message) {
-        const list = you.word_list.sound_reply
+        const list = PARAMS.you.word_list.sound_reply
 
         for (let key of Object.keys(list))
             for (let cand of list[key])
@@ -233,7 +241,7 @@ export default class BotModuleSwearJar {
 
         } else if (Math.floor(oldNum / 1000) < Math.floor(newNum / 1000)) {
             console.log(`Swear Jar: Giving the user a random name.`)
-            BotModuleNameGenerator.giveUserRandomName(message.member, 'funky', true, true)
+            BotModuleNameGenerator.giveUserRandomName(message, 'funky', true, true)
 
             message.channel.send("Looks like someone got uh... reached a new thousand points 🍃 Here's your 50/50?")
             this.giveUser5050(message)
@@ -264,7 +272,7 @@ export default class BotModuleSwearJar {
                     name: `SPOILER_FILE.${extension}`
                 }]
             })
-        } else message.channel.send(new MessageEmbed({ title: "Mystery link...", url: submission.data.url, color: 'PINK' }))
+        } else message.channel.send({ embeds: [new MessageEmbed({ title: "Mystery link...", url: submission.data.url, color: 'LUMINOUS_VIVID_PINK' })] })
     }
 
     static toggleUserJar(message: Discord.Message | Discord.PartialMessage, trigger?: string) {

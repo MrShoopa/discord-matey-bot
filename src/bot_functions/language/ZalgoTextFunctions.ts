@@ -1,10 +1,10 @@
 import Discord from 'discord.js'
-import Bot from '../../Bot'
+import Bot from '../../Bot.js'
 
 import Zalgo from 'to-zalgo'
-import UnZalgo from 'to-zalgo/banish'
+import UnZalgo from 'to-zalgo/banish.js'
 
-import { translate } from '../../bot_knowledge/triggers/triggers.json'
+import TRIGGERS from '../../bot_knowledge/triggers/triggers.js'
 
 export default class ZalgoTextFunctions {
     static generateZalgoTextTranslationMessage(message: Discord.Message, trigger: string, to: 'text' | 'zalgo', text?: string) {
@@ -18,11 +18,11 @@ export default class ZalgoTextFunctions {
             text = text.replace(trigger, '').trim()
         }
 
-        translate.distorted.to.some(hotword => {
+        TRIGGERS.translate.distorted.to.some(hotword => {
             if (text.includes(hotword))
                 text = text.replace(hotword, '').trim()
         })
-        translate.distorted.from.some(hotword => {
+        TRIGGERS.translate.distorted.from.some(hotword => {
             if (text.includes(hotword))
                 text = text.replace(hotword, '').trim()
         })
@@ -40,7 +40,7 @@ export default class ZalgoTextFunctions {
             for (let i = 0; i < conversion.length; i++) {
                 let add = new Discord.MessageEmbed()
                     .setDescription(conversion[i])
-                    .setColor('BLACK')
+                    .setColor(`DARK_GREY`)
 
                 if (i == conversion.length - 1)
                     add.setFooter('brrr', 'https://www.kindpng.com/picc/b/28/283431.png')
@@ -49,7 +49,9 @@ export default class ZalgoTextFunctions {
             }
         }
 
-        built.forEach(part => { message.channel.send(part) })
+        built.forEach(part => {
+            message.channel.send({ embeds: [part] })
+        })
     }
 
     static generateZalgoText(text: string) {

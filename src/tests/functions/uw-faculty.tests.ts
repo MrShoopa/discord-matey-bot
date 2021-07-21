@@ -1,15 +1,15 @@
 import { expect } from 'chai'
 import 'mocha'
 
-import Bot from '../../Bot'
-import UWFacultyAPI from '../../bot_modules/_external_wrappers/UWCourse/index'
+import Bot from '../../Bot.js'
+import { UwFacultyAPI } from '../../bot_modules/_external_wrappers/UWCourse/index.js'
 
 let bot = new Bot()
 globalThis.bot = bot
 
 describe('UW Faculty API works', function () {
     it('Fetched a specific teacher', async () => {
-        let result = await UWFacultyAPI.getFacultyMember(`Robert Dimpsey`)
+        let result = await UwFacultyAPI.Getter.getFacultyMember(`Robert Dimpsey`)
             .then((data) => {
                 console.log(data)
                 expect(data.name).to.not.be.null
@@ -23,7 +23,7 @@ describe('UW Faculty API works', function () {
     })
 
     it('Fetched 2 random teachers', async () => {
-        let result = await UWFacultyAPI.getRandomFaculty()
+        let result = await UwFacultyAPI.Getter.getRandomFaculty()
             .then((data) => {
                 console.log(data)
                 expect(data.name).to.not.be.null
@@ -35,7 +35,7 @@ describe('UW Faculty API works', function () {
                 throw err
             })
 
-        let result2 = await UWFacultyAPI.getRandomFaculty()
+        let result2 = await UwFacultyAPI.Getter.getRandomFaculty()
             .then((data) => {
                 console.log(data)
                 expect(data.name).to.not.be.null

@@ -2,8 +2,8 @@
 
 import { expect } from 'chai'
 import 'mocha'
-import BotModuleBirthday from '../../bot_functions/novelty/birthday/BirthdayFunctions'
-import Bot from '../../Bot'
+import BotModuleBirthday from '../../bot_functions/novelty/birthday/BirthdayFunctions.js'
+import Bot from '../../Bot.js'
 
 let bot = new Bot()
 globalThis.bot = bot

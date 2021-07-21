@@ -12,37 +12,38 @@ var options = {
 }
 
 /* Get */
+export module UwFacultyAPI {
 
-export default class UwFacultyAPI {
-	/**
-	 * Searches the UW Faculty API for any teachers based on a text query
-	 * and returns a JSON of any possible results.
-	 * @param query name of teacher
-	 */
-	static async getFacultyMember(query: string) {
-		let newOptions = JSON.parse(JSON.stringify(options))
+	export class Getter {
+		/**
+		 * Searches the UW Faculty API for any teachers based on a text query
+		 * and returns a JSON of any possible results.
+		 * @param query name of teacher
+		 */
+		static async getFacultyMember(query: string) {
+			let newOptions = JSON.parse(JSON.stringify(options))
 
-		newOptions.method = 'GET'
-		newOptions.url = newOptions.url + query
+			newOptions.method = 'GET'
+			newOptions.url = newOptions.url + query
 
-		let retrieved: any = await this.fetchData(newOptions)
+			let retrieved: any = await this.fetchData(newOptions)
 			.then((res: any) => {
 				if (res.error) throw res.error
 				else return res
 			})
 			.catch(error => { throw error })
 
-		return retrieved.teacher[0]
-	}
+			return retrieved.teacher[0]
+		}
 
-	static async getRandomFaculty() {
-		let dice: number = Math.floor(Math.random() * 7)
+		static async getRandomFaculty() {
+			let dice: number = Math.floor(Math.random() * 7)
 
-		let page = await this.getAllFaculty(dice)
+			let page = await this.getAllFaculty(dice)
 
-		dice = Math.floor(Math.random() * 5000)
+			dice = Math.floor(Math.random() * 5000)
 
-		return page[dice]
+			return page[dice]
 	}
 
 	/**
@@ -84,4 +85,5 @@ export default class UwFacultyAPI {
 			})
 		})
 	}
+}
 }

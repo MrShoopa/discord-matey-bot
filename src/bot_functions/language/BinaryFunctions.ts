@@ -1,7 +1,7 @@
 import Discord from 'discord.js'
-import Bot from './../../Bot'
+import Bot from './../../Bot.js'
 
-import { translate } from '../../bot_knowledge/triggers/triggers.json'
+import TRIGGERS from '../../bot_knowledge/triggers/triggers.js'
 
 import Binary from 'decode-encode-binary'
 
@@ -14,7 +14,7 @@ export default class BinaryCoderFunctions {
 
         if (!text) {
             text = message.toString()
-            translate.binary.some(hotword => {
+            TRIGGERS.translate.binary.some(hotword => {
                 if (text.toLowerCase().includes(hotword)) {
                     text = text.slice(text.indexOf(hotword) + hotword.length).trim()
                 }
@@ -46,7 +46,7 @@ export default class BinaryCoderFunctions {
             }
         }
 
-        built.forEach(part => { message.channel.send(part) });
+        built.forEach(part => { message.channel.send({ embeds: [part] }) });
     }
 
     static convertToBinary(text: string) {

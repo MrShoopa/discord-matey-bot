@@ -1,9 +1,9 @@
 // Exports of typings and interfaces for the bot itself.
 
 //  Synthetic data handled by bot
-export * from './data_types/Data'
-export * from './data_types/Audio'
-export * from './data_types/Stream'
-export * from './data_types/Subscription'
+/* import Data from './data_types/Data'
+import Audio from './data_types/Audio'
+import Stream from './data_types/Stream'
+import Subscription from './data_types/Subscription' */
 
-export * from './data_types/Bean'
+import Bean from './data_types/BeanType.js'

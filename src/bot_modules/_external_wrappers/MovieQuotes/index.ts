@@ -1,5 +1,3 @@
-import * as auth from '../../../user_creds.json'
-
 import Request from 'request'
 
 const url = 'http://movie-quotes-app.herokuapp.com/api/v1/quotes'

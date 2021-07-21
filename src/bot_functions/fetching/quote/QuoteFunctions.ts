@@ -1,8 +1,8 @@
 import Discord from 'discord.js'
 
-import Bot from '../../../Bot'
+import Bot from '../../../Bot.js'
 
-import TRIGGERS from '../../../bot_knowledge/triggers/triggers.json'
+import TRIGGERS from '../../../bot_knowledge/triggers/triggers.js'
 
 export default class BotModuleQuote {
     static async fireQuoteMessage(message: Discord.Message) {
@@ -11,22 +11,22 @@ export default class BotModuleQuote {
         //  Quote of Day [from quotes.rest]
         for (const trigger of TRIGGERS.quote_fetch.OTD.default)
             if (message.toString().toLowerCase().includes(trigger))
-                return channel.send(new Discord.APIMessage(channel, { embeds: [await this.fetchQuoteOfTheDay(message, trigger)] }))
+                return channel.send({ embeds: [await this.fetchQuoteOfTheDay(message, trigger)] })
 
         //! API Depricated?  Movie quote [from MovieQuoter]
         for (const trigger of TRIGGERS.quote_fetch.movie.default)
             if (message.toString().toLowerCase().includes(trigger))
-                return channel.send(new Discord.APIMessage(channel, { embeds: [await this.fetchMovieQuote(trigger)] }))
+                return channel.send( { embeds: [await this.fetchMovieQuote(trigger)] })
 
         //  Inspirational quote [from inspirational-quotes]
         for (const trigger of TRIGGERS.quote_fetch.inspirational)
             if (message.toString().toLowerCase().includes(trigger))
-                return channel.send(new Discord.APIMessage(channel, { embeds: [await this.fetchInspirationalQuote(trigger)] }))
+                return channel.send( { embeds: [await this.fetchInspirationalQuote(trigger)] })
 
         //  Star Wars quote [from star-wars-quotes]
         for (const trigger of TRIGGERS.quote_fetch.star_wars.default)
             if (message.toString().toLowerCase().includes(trigger))
-                return channel.send(new Discord.APIMessage(channel, { embeds: [await this.fetchStarWarsQuote(trigger)] }))
+                return channel.send({ embeds: [await this.fetchStarWarsQuote(trigger)] })
     }
 
     static async fetchQuoteOfTheDay(message: Discord.Message, trigger?: string) {

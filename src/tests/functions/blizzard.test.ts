@@ -1,8 +1,8 @@
 import { expect } from 'chai'
 import 'mocha'
 
-import Bot from '../../Bot'
-import BotModuleBlizzard from '../../bot_functions/fetching/game/blizzard/BlizzardMasterFunctions'
+import Bot from '../../Bot.js'
+import BotModuleBlizzard from '../../bot_functions/fetching/game/blizzard/BlizzardMasterFunctions.js'
 
 let bot = new Bot()
 globalThis.bot = bot

@@ -9,21 +9,22 @@
  * @date August 2020
  */
 
-import Bot from '../../Bot';
+import Bot from '../../Bot.js';
 import Discord from 'discord.js'
 
 import * as FileSystem from 'fs'
-import { Data } from './../../types/data_types/Data'
+import Path from 'path'
+import { DataType } from '../../types/data_types/DataType'
 
-import { Subscriptions } from './../../types/index';
-import BotGeneralCommands from './../general/GeneralCommands'
+import { Subscriptions } from '../../types/data_types/SubscriptionType';
+import BotGeneralCommands from './../general/GeneralCommands.js'
 
-import SUBREFS from '../../bot_knowledge/references/subscriptions.json'
-import BotModuleReddit from '../fetching/reddit/RedditFunctions';
-import BotModuleQuote from '../fetching/quote/QuoteFunctions';
-import BotModuleYouTube from '../fetching/streaming/YouTubeStreamFunctions';
+import SUBREFS from '../../bot_knowledge/references/subscriptions.js'
+import BotModuleReddit from '../fetching/reddit/RedditFunctions.js';
+import BotModuleQuote from '../fetching/quote/QuoteFunctions.js';
+import BotModuleYouTube from '../fetching/streaming/YouTubeStreamFunctions.js';
 
-let dataSkeleton: Data.SubscriptionSave =
+let dataSkeleton: DataType.SubscriptionSave =
 {
     _type: 'test',
     _enabled: false,
@@ -35,13 +36,13 @@ let dataSkeleton: Data.SubscriptionSave =
 }
 
 export default class BotSubscriptionHandler {
-    static SAVE_DATA = __dirname + '/../../../save_data'
+    static SAVE_DATA = Path.resolve() + '/../../../save_data'
     static SUBSCRIPTION_DATA_FILE = `${BotSubscriptionHandler.SAVE_DATA}/megadorkbot_subscription_collection.json`
     static S3_SAVE_NAME = 'save_data/megadorkbot_subscription_collection.json'
 
-    static getSubscriptionDatastore(): Data.SubscriptionSave[] {
+    static getSubscriptionDatastore(): DataType.SubscriptionSave[] {
         try {
-            var data: Data.SubscriptionSave[] =
+            var data: DataType.SubscriptionSave[] =
                 JSON.parse(FileSystem.readFileSync(this.SUBSCRIPTION_DATA_FILE).toString())
             if (data == undefined)
                 throw new Error('Blank Object')
@@ -121,13 +122,13 @@ export default class BotSubscriptionHandler {
      * @param  {number|string} id Message Channel Discord ID
      * @param  {boolean} log? If true, logs extra info to console.
      */
-    static createSubscription(id: number | string, name: string, caller?: Discord.Message, force?: boolean): Data.SubscriptionSave {
+    static createSubscription(id: number | string | `${bigint}`, name: string, caller?: Discord.Message, force?: boolean): DataType.SubscriptionSave {
         if (typeof id === 'number') id = id.toString()
 
         var data = this.getSubscriptionDatastore()
 
         //  Find subscription...
-        let subscription: Data.SubscriptionSave = data.find((givenSub: Data.SubscriptionSave) => {
+        let subscription: DataType.SubscriptionSave = data.find((givenSub: DataType.SubscriptionSave) => {
             if (givenSub.channelId == id) id = givenSub.channelId
             else if (givenSub.dmChannel == id) id = givenSub.dmChannel
             else if (givenSub.userId == id) id = givenSub.userId
@@ -153,7 +154,7 @@ export default class BotSubscriptionHandler {
             else if (caller?.channel instanceof Discord.DMChannel) {
                 newSub._type = 'DM'
                 newSub.dmChannelId = caller.channel.id
-            } else newSub.channelId = id
+            } else newSub.channelId = id as `${bigint}`
 
             data.push(newSub)
 
@@ -176,13 +177,13 @@ export default class BotSubscriptionHandler {
      * @param  {number|string} id Message Channel id
      * @param  {object} newData New data to overwrite existing data with.
      */
-    static updateSubscription(id: string, name: string, newData: Data.SubscriptionSave, caller?: Discord.Message, log: boolean = true) {
+    static updateSubscription(id: string, name: string, newData: DataType.SubscriptionSave, caller?: Discord.Message, log: boolean = true) {
         if (log) console.group(`Updating data for channel ${id}'s subscription with name '${name}'`)
 
         var data = this.getSubscriptionDatastore()
 
         //  Pointer to single user's data through above variable
-        let subscription: Data.SubscriptionSave = data.find((givenSub: Data.SubscriptionSave) => {
+        let subscription: DataType.SubscriptionSave = data.find((givenSub: DataType.SubscriptionSave) => {
             if (givenSub.channelId == id || givenSub.dmChannel == id || givenSub.userId == id)
                 if (givenSub.name === name)
                     return true
@@ -220,7 +221,7 @@ export default class BotSubscriptionHandler {
         let data = this.getSubscriptionDatastore()
 
         //  Pointer to single user's data through above variable
-        let subscription: Data.SubscriptionSave = data.find((givenSub: Data.SubscriptionSave) => {
+        let subscription: DataType.SubscriptionSave = data.find((givenSub: DataType.SubscriptionSave) => {
             if (givenSub.channelId == id || givenSub.dmChannel == id || givenSub.userId == id)
                 if (givenSub.name === name)
                     return true
@@ -232,7 +233,7 @@ export default class BotSubscriptionHandler {
     }
 
     static toggleSubscription(id: string, name: string, forceBoolean?: boolean) {
-        let subscription: Data.SubscriptionSave = this.getSubscription(id, name)
+        let subscription: DataType.SubscriptionSave = this.getSubscription(id, name)
 
         subscription._enabled = forceBoolean ? forceBoolean : !subscription._enabled
         this.updateSubscription(id, name, subscription)
@@ -256,7 +257,7 @@ export default class BotSubscriptionHandler {
         return SUBREFS.type_descriptions[featureCode]
     }
 
-    static async runTask(subscription: Subscriptions.ChannelSubscription | Subscriptions.DMSubscription | Data.SubscriptionSave) {
+    static async runTask(subscription: Subscriptions.ChannelSubscription | Subscriptions.DMSubscription | DataType.SubscriptionSave) {
         let bot: Bot = globalThis.bot
 
         let subscribedChannelId: Discord.Snowflake
@@ -308,14 +309,14 @@ export default class BotSubscriptionHandler {
             case 'NINTENDODIRECTWATCH':
                 let response = await BotModuleYouTube.buildChannelNewVideoMessage('Nintendo')
                 if (response instanceof Discord.MessageEmbed)
-                    channel.send(new Discord.APIMessage(channel, { embeds: [response] }))
+                    channel.send({ embeds: [response] })
                 break;
             default:
                 break;
         }
 
         subscription._lastRun = new Date(new Date(subscription._lastRun).getTime() + subscription.frequencyMilli)
-        this.updateSubscription(subscribedChannelId, subscription.name, subscription as Data.SubscriptionSave, null, false)
+        this.updateSubscription(subscribedChannelId, subscription.name, subscription as DataType.SubscriptionSave, null, false)
     }
 
     static RunChannelTask(subscription: Subscriptions.ChannelSubscription) {
@@ -360,7 +361,7 @@ export default class BotSubscriptionHandler {
 
     static async runInsporationalFetcher(channel) {
         let inspoMessage = await BotModuleQuote.fetchInspirationalQuote()
-        channel.send(new Discord.APIMessage(channel, { embeds: [inspoMessage] }))
+        channel.send({ embeds: [inspoMessage] })
     }
 
 }

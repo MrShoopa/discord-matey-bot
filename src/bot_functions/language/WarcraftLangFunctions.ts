@@ -1,7 +1,7 @@
 import Discord from 'discord.js'
-import Bot from './../../Bot'
+import Bot from './../../Bot.js'
 
-import { translate } from '../../bot_knowledge/triggers/triggers.json'
+import TRIGGERS from '../../bot_knowledge/triggers/triggers.js'
 
 import Lexicon from 'wow-lexicon'
 
@@ -15,7 +15,7 @@ export default class WarcraftLanguageFunctions {
             text = message.toString()
 
         if (!language)
-            translate.warcraft.some(lang => {
+            TRIGGERS.translate.warcraft.some(lang => {
                 if (text.toLowerCase().includes(lang)) {
                     language = lang
                     return text = text.slice(text.indexOf(lang) + lang.length).trim()
@@ -30,7 +30,7 @@ export default class WarcraftLanguageFunctions {
             .setColor('GOLD')
             .setFooter('Warcraft Language Translator')
 
-        message.channel.send(response)
+        message.channel.send({ embeds: [response] })
     }
 
     static getWarcraftTranslation(text: string, language: string) {

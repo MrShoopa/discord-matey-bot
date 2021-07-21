@@ -28,90 +28,103 @@ console.log('Initializing...')
 try {
 	globalThis.bot = new Bot()
 	WebServices.startWebpage()
+
+	if (globalThis.prod_mode) {
+		console.log("Giving breathing time...")
+		setTimeout(() => installListeners(), 10000)
+	}
+	else
+		installListeners()
 } catch (error) {
 	if (error.message.includes('ENOTFOUND'))
 		console.log('Reattempting connection...')
 }
 var bot: Bot = globalThis.bot
 
-bot.on('ready', () => {
-	console.info(`Hey there! The time is ${new Date().toLocaleString()}. I'm ready! 😀\n`)
+function installListeners() {
+	console.log("Installing Discord.js event listeners...")
 
-	PostReadyFunctions.run()
-})
+	bot.on('ready', () => {
+		console.info(`Hey there! The time is ${new Date().toLocaleString()}. I'm ready! 😀\n`)
 
-//  Bot joining server for first time
-bot.on('guildCreate', guild => {
-	console.log(`New guild joined: ${guild.name} (id: ${guild.id}). There are ${guild.memberCount} members here.`)
+		PostReadyFunctions.run()
+	})
 
-	guild.systemChannel.send('Hello world?')
-})
+	//  Bot joining server for first time
+	bot.on('guildCreate', guild => {
+		console.log(`New guild joined: ${guild.name} (id: ${guild.id}). There are ${guild.memberCount} members here.`)
 
-//  Messaging to bot
-bot.on('messageCreate', async (message) => {
-	bot.context = message
+		guild.systemChannel.send('Hello world?')
+	})
 
-	//  Logging message
+	//  Messaging to bot
+	bot.on('messageCreate', async (message) => {
+		bot.context = message
 
-	try {
-		if (message.channel instanceof Discord.DMChannel) {
-			console.group(`DM from ${message.author.username} (${message.author.id})`)
-			console.log(`${message.content}`)
-			console.groupEnd()
+		//  Logging message
 
-			bot.lastDM = message
-		}
+		try {
+			if (message.channel instanceof Discord.DMChannel) {
+				console.group(`DM from ${message.author.username} (${message.author.id})`)
+				console.log(`${message.content}`)
+				console.groupEnd()
 
-		if (globalThis.dev_mode) {
-			if (message.guild)
-				console.log(`\nOn ${new Date().toString()}, a user said:\n	"${(message.content).toString()}"`)
-
-			if (message.toString().startsWith('`')) {
-				message.content = message.content.substring(1)
-				await TriggerHandlers.validateMessage(message)
+				bot.lastDM = message
 			}
 
-		} else await TriggerHandlers.validateMessage(message)
-	} catch (e) {
-		bot.saveBugReport(e, 'on message event', true)
-	}
-})
+			if (globalThis.dev_mode) {
+				if (message.guild)
+					console.log(`\nOn ${new Date().toString()}, a user said:\n	"${(message.content).toString()}"`)
 
-bot.on('guildMemberAdd', async member => {
-	let URLLIST = await import('./bot_knowledge/references/urllist.js').then(a => a).catch(err => {
-		console.log(err)
-		return null
+				if (message.toString().startsWith('`')) {
+					message.content = message.content.substring(1)
+					await TriggerHandlers.validateMessage(message)
+				}
+
+			} else await TriggerHandlers.validateMessage(message)
+		} catch (e) {
+			bot.saveBugReport(e, 'on message event', true)
+		}
 	})
-	let WELCOMEMESSAGE = await import('./bot_knowledge/phrases/phrases_welcome.js')
-	let announcementChannel: Discord.TextChannel = member.guild.systemChannel
 
-	if (!BotModuleModeration.kickIfBlacklisted(member as Discord.GuildMember)) {
-		let message = new Discord.MessageEmbed()
-			.setAuthor('Hello hello? Hello hello!!! 😊')
-			.setTitle(`Welcome to the server, ${member.displayName}!`)
-			.setDescription(Bot.fetchRandomPhrase(WELCOMEMESSAGE.default.guild_member_add))
-			.setFooter(`-but actually, GIVE IT UP FOR ${member.displayName}!!!!!!!`)
-			.setColor(member.displayHexColor)
-			.setURL(Bot.fetchRandomPhrase(URLLIST.welcome))
-			.setImage(member.user.avatarURL())
-
-		announcementChannel.send({ embeds: [message] }).then(mes => {
-			mes.react('🔥')
-			mes.react('🎊')
-			mes.react('👋')
+	bot.on('guildMemberAdd', async member => {
+		let URLLIST = await import('./bot_knowledge/references/urllist.js').then(a => a).catch(err => {
+			console.log(err)
+			return null
 		})
-	}
-})
+		let WELCOMEMESSAGE = await import('./bot_knowledge/phrases/phrases_welcome.js')
+		let announcementChannel: Discord.TextChannel = member.guild.systemChannel
 
-bot.on('error', error => {
-	bot.context.channel.send(`Ah! Something crashed my lil' engine!
-		Log submitted to Joe. Restarting...`)
+		if (!BotModuleModeration.kickIfBlacklisted(member as Discord.GuildMember)) {
+			let message = new Discord.MessageEmbed()
+				.setAuthor('Hello hello? Hello hello!!! 😊')
+				.setTitle(`Welcome to the server, ${member.displayName}!`)
+				.setDescription(Bot.fetchRandomPhrase(WELCOMEMESSAGE.default.guild_member_add))
+				.setFooter(`-but actually, GIVE IT UP FOR ${member.displayName}!!!!!!!`)
+				.setColor(member.displayHexColor)
+				.setURL(Bot.fetchRandomPhrase(URLLIST.welcome))
+				.setImage(member.user.avatarURL())
 
-	bot.saveBugReport(error)
+			announcementChannel.send({ embeds: [message] }).then(mes => {
+				mes.react('🔥')
+				mes.react('🎊')
+				mes.react('👋')
+			})
+		}
+	})
 
-	//  Re-login
-	bot = new Bot()
-})
+	bot.on('error', error => {
+		bot.context.channel.send(`Ah! Something crashed my lil' engine!
+	Log submitted to Joe. Restarting...`)
+
+		bot.saveBugReport(error)
+
+		//  Re-login
+		bot = new Bot()
+	})
+
+	console.log("...done!")
+}
 
 // System Signal Listeners
 process.on('SIGINT', () => { console.log("Bye bye!"); process.exit(); });

@@ -25,13 +25,14 @@ globalThis.dev_mode = (() => { return process.argv.includes('dev-mode') })()
 //  Initialize Discord Bot
 console.log('Initializing...')
 
+var bot: Bot = new Bot()
+globalThis.bot = bot
+
 try {
-	globalThis.bot = new Bot()
 	WebServices.startWebpage()
 
 	if (globalThis.prod_mode) {
-		console.log("Giving breathing time...")
-		setTimeout(() => console.log("...end wait!"), 10000)
+		//
 	}
 	else
 		console.log('Moving forward now.')
@@ -39,7 +40,6 @@ try {
 	if (error.message.includes('ENOTFOUND'))
 		console.log('Reattempting connection...')
 }
-var bot: Bot = globalThis.bot
 
 console.log("Installing Discord.js event listeners...")
 bot.on('ready', () => {

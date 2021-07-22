@@ -12,7 +12,6 @@
  */
 
 import * as FileSystem from 'fs'
-import Path from 'path'
 
 import { DataType } from '../../types/data_types/DataType.js'
 import Bot from '../../Bot.js'
@@ -21,7 +20,7 @@ import Bot from '../../Bot.js'
 
 /*  -----  */
 export default class BotTimeKeeper {
-    static SAVE_DATA = Path.resolve() + '/../../../save_data'
+    static SAVE_DATA = FileSystem.realpathSync('.') + '/save_data'
     static TIME_DATA_FILE = `${BotTimeKeeper.SAVE_DATA}/megadorkbot_data_time.json`
     static S3_SAVE_NAME = 'save_data/megadorkbot_data_time.json'
 

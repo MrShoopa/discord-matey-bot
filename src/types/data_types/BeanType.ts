@@ -1,12 +1,10 @@
 import * as FileSystem from 'fs'
-import Path from 'path'
-
 
 export default class Bean {
     name: string
     toString() { return 'bean' }
     toEmoji() { return '🥫' }
-    toImage() { return FileSystem.readFileSync((Path.resolve() + '..\\..\\bot_knowledge\\images\\bean.png')) }
+    toImage() { return FileSystem.readFileSync((FileSystem.realpathSync('.') + '..\\bot_knowledge\\images\\bean.png')) }
 }
 
 export class BeanContainer {

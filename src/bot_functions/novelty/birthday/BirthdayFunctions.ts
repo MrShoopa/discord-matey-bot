@@ -122,7 +122,7 @@ export default class BotModuleBirthday {
 					"And you smell like one too.\n"
 
 				/* const att =
-					new Discord.MessageAttachment(path.resolve() +
+					new Discord.MessageAttachment(fs.realpathSync('.') +
 						'..\\..\\..\\bot_knowledge\\images\\birthday-stock-image.jpg',
 						'birthday-stock.jpg') */
 

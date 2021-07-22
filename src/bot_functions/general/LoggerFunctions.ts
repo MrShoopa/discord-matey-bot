@@ -10,7 +10,7 @@ import PHRASES from '../../bot_knowledge/phrases/phrases_suggestion.js'
 
 export default class BotLoggerFunctions {
 
-    static logPathName = Path.resolve() + `/../../../logs`
+    static logPathName = FileSystem.realpathSync('.') + `/logs`
 
     static saveBugReport(error: Error
         , func?: string, logInConsole?: boolean, reply?: boolean) {

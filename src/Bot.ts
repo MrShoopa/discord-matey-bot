@@ -1,5 +1,5 @@
 import * as FileSystem from 'fs-extra'
-import Path from 'path'
+import Path, { dirname } from 'path'
 import Request from 'request'
 import Stream from 'stream'
 import NodeFetch from 'node-fetch'
@@ -603,7 +603,7 @@ export default class Bot extends Discord.Client {
 
     playSFX(connection: VoiceConnection, sfx: AudioData.SFX) {
         return new Promise((res, rej) => {
-            let dir = Path.resolve() + sfx.filePath
+            let dir = dirname + sfx.filePath
             try {
                 connection.playOpusPacket(FileSystem.readFileSync(dir))
 

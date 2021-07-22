@@ -1,4 +1,4 @@
-import Path from 'path'
+import fs from 'fs'
 import Discord, { MessageEmbed } from 'discord.js'
 import { DiscordGatewayAdapterCreator, joinVoiceChannel } from '@discordjs/voice'
 
@@ -138,7 +138,7 @@ export default class BotModuleSwearJar {
         if (swearingUsers) {
 
             const att =
-                new Discord.MessageAttachment(Path.resolve() +
+                new Discord.MessageAttachment(fs.realpathSync('.') +
                     '.\\..\\..\\..\\bot_knowledge\\images\\dedede-christian.jpg',
                     'dedede-christian.jpg')
 

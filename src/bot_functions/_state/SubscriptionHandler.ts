@@ -13,7 +13,6 @@ import Bot from '../../Bot.js';
 import Discord from 'discord.js'
 
 import * as FileSystem from 'fs'
-import Path from 'path'
 import { DataType } from '../../types/data_types/DataType'
 
 import { Subscriptions } from '../../types/data_types/SubscriptionType';
@@ -36,7 +35,7 @@ let dataSkeleton: DataType.SubscriptionSave =
 }
 
 export default class BotSubscriptionHandler {
-    static SAVE_DATA = Path.resolve() + '/../../../save_data'
+    static SAVE_DATA = FileSystem.realpathSync('.') + '/save_data'
     static SUBSCRIPTION_DATA_FILE = `${BotSubscriptionHandler.SAVE_DATA}/megadorkbot_subscription_collection.json`
     static S3_SAVE_NAME = 'save_data/megadorkbot_subscription_collection.json'
 

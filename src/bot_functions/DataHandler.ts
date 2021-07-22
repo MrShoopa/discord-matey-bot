@@ -12,7 +12,6 @@
  */
 
 import * as FileSystem from 'fs'
-import Path from 'path'
 import { DataType } from '../types/data_types/DataType'
 
 import Bot from '../Bot.js'
@@ -23,7 +22,7 @@ import BotTimeKeeper from './_state/TimeKeeper.js'
 import BotSubscriptionHandler from './_state/SubscriptionHandler.js'
 
 /*  Locations  */
-const SAVE_DATA = Path.resolve() + '/../../save_data'
+const SAVE_DATA = FileSystem.realpathSync('.') + '/save_data'
 const SAVE_DATA_FILE = `${SAVE_DATA}/megadorkbot_data_user.json`
 const S3_SAVE_NAME = `save_data/megadorkbot_data_user.json`
 

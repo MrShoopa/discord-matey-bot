@@ -1,4 +1,4 @@
-import Path from 'path'
+import fs from 'fs'
 import Discord from 'discord.js'
 
 import Bot from '../Bot.js'
@@ -44,7 +44,7 @@ export default class TriggerHandlers {
     public static bot: Bot
     public static message: Discord.Message | Discord.PartialMessage
 
-    static audioLocation = Path.resolve() + '/bot_knowledge/audio'
+    static audioLocation = fs.realpathSync('.') + '/bot_knowledge/audio'
 
     private static functions: any[] = [
         // Toggles

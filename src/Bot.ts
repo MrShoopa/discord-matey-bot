@@ -400,7 +400,7 @@ export default class Bot extends Discord.Client {
 
                     await YTDL.getInfo(url).then(video => {
                         songInfo.name = video.videoDetails.title
-                        songInfo.thumbnailUrl = video.videoDetails.thumbnail.thumbnails[3].url
+                        songInfo.thumbnailUrl = video.videoDetails.thumbnails[3].url
                         songInfo.author = video.videoDetails.author.name
                         songInfo.url = video.videoDetails.video_url
                     }).catch(e => { throw e })
@@ -479,6 +479,7 @@ export default class Bot extends Discord.Client {
             try {
 
                 return new Promise<SongState>(resolve => {
+                    //TODO: FIx Dispatcher events when playing music
                     dispatcher = connection.playOpusPacket((stream as Stream.Readable).read())
                     let state = SongState.Loading
                     let response: Discord.Message
@@ -605,7 +606,7 @@ export default class Bot extends Discord.Client {
         return new Promise((res, rej) => {
             let dir = dirname + sfx.filePath
             try {
-                connection.playOpusPacket(FileSystem.readFileSync(dir))
+                //TODO: connection.playOpusPacket(FileSystem.readFileSync(dir))
 
                 res('completed')
             } catch (err) {

@@ -88,7 +88,7 @@ export default class BotDiscordActivity {
         { name: `WINNER: ${globalThis.bot.users.cache.random().username}! PRIZE: NOTHING!`, type: 'PLAYING' },
         { name: `simping for ${BotDiscordActivity.randomObjects[Math.floor(Math.random() * BotDiscordActivity.randomObjects.length)]}`, type: 'PLAYING' },
         { name: `${globalThis.bot.guilds.cache.size} copies of Bad Rats`, type: 'PLAYING' },
-        { name: `dj hero on ${globalThis.bot.voice.connections.size} channels`, type: "PLAYING" },
+        { name: `dj hero on ${globalThis.bot.voice.adapters.size} channels`, type: "PLAYING" },
         { name: `crippling ${globalThis.bot.guilds.cache.size} servers`, type: "STREAMING" },
         { name: `traveling to ${BotDiscordActivity.regions.random().name}`, type: "STREAMING" },
         { name: `loves his ${globalThis.bot.users.cache.size} peeps`, type: "STREAMING" },
@@ -99,11 +99,11 @@ export default class BotDiscordActivity {
     ]
 
     static async getRandomStatus(): Promise<ActivityOptions> {
+        let bot: Bot = globalThis.bot
         let looklist = this.customStatuses
 
-
-        if (globalThis.bot) {
-            this.regions = await globalThis.bot.fetchVoiceRegions()
+        if (bot !== undefined) {
+            this.regions = await bot.fetchVoiceRegions()
             looklist = this.customStatuses.concat(new BotDiscordActivity().dynamicStatuses)
             looklist = this.customStatuses.concat(await BotDiscordActivity.generateAsyncStatuses())
         }

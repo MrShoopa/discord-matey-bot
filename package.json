@@ -21,6 +21,10 @@
         "url": "git://github.com//MrShoopa/discord-matey-bot.git",
         "type": "git"
     },
+    "engines": {
+        "node": "14.x",
+        "npm": ">=6"
+    },
     "dependencies": {
         "@discordjs/builders": "^0.2.0",
         "@discordjs/opus": "^0.5.3",

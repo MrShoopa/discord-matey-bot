@@ -1,3 +1,4 @@
+import fs from 'fs'
 import * as FileSystem from 'fs-extra'
 import Path, { dirname } from 'path'
 import Request from 'request'
@@ -175,7 +176,9 @@ export default class Bot extends Discord.Client {
                 })
 
                 if (!queueNumber)
-                    await this.playSFX(connection, AudioData.SFX.MusicJoin)
+                    await this.playSFX(connection, AudioData.SFX.MusicJoin).catch(() => {
+                        console.warn(`Couldn't play SFX sound ${AudioData.SFX.MusicLeave.name}. Check it's location!`)
+                    })
 
                 console.groupEnd()
                 console.group()
@@ -279,7 +282,9 @@ export default class Bot extends Discord.Client {
 
                             bot.songState = SongState.Finished
                             if (!queueNumber) {
-                                await bot.playSFX(connection, AudioData.SFX.MusicLeave)
+                                await bot.playSFX(connection, AudioData.SFX.MusicLeave).catch(() => {
+                                    console.warn(`Couldn't play SFX sound ${AudioData.SFX.MusicLeave.name}. Check it's location!`)
+                                })
                                 connection.disconnect()
                             }
                         }
@@ -332,7 +337,9 @@ export default class Bot extends Discord.Client {
                 })
 
                 if (!queueNumber)
-                    await this.playSFX(connection, AudioData.SFX.MusicJoin)
+                    await this.playSFX(connection, AudioData.SFX.MusicJoin).catch(() => {
+                        console.warn(`Couldn't play SFX sound ${AudioData.SFX.MusicLeave.name}. Check it's location!`)
+                    })
 
                 console.groupEnd()
                 console.group()
@@ -484,7 +491,7 @@ export default class Bot extends Discord.Client {
                     let state = SongState.Loading
                     let response: Discord.Message
 
-                    dispatcher.on('start', async () => {
+                   /*  dispatcher.on('start', async () => {
                         state = SongState.Playing
                         console.groupEnd()
                         console.group()
@@ -522,7 +529,9 @@ export default class Bot extends Discord.Client {
 
                             bot.songState = SongState.Finished
                             if (!queueNumber) {
-                                await bot.playSFX(connection, AudioData.SFX.MusicLeave)
+                                await bot.playSFX(connection, AudioData.SFX.MusicLeave).catch(() => {
+                                    console.warn(`Couldn't play SFX sound ${AudioData.SFX.MusicLeave.name}. Check it's location!`)
+                                })
                                 connection.disconnect()
                             }
                         }
@@ -530,7 +539,7 @@ export default class Bot extends Discord.Client {
                         console.groupEnd()
 
                         resolve(SongState.Finished)
-                    })
+                    }) */
                 })
 
                 //return true
@@ -604,9 +613,9 @@ export default class Bot extends Discord.Client {
 
     playSFX(connection: VoiceConnection, sfx: AudioData.SFX) {
         return new Promise((res, rej) => {
-            let dir = dirname + sfx.filePath
+            let dir = FileSystem.realpathSync('') + sfx.filePath
             try {
-                //TODO: connection.playOpusPacket(FileSystem.readFileSync(dir))
+                connection.playOpusPacket(fs.readFileSync(dir))
 
                 res('completed')
             } catch (err) {

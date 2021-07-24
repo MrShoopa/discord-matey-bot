@@ -69,6 +69,7 @@
         "winston": "^3.3.3",
         "wow-lexicon": "0.1.0",
         "youtube-api": "^3.0.1",
+        "youtube-dl-exec": "^1.2.4",
         "youtube-playlist": "^1.0.4",
         "youtube-search": "^1.1.6",
         "youtube.ts": "^0.2.0",

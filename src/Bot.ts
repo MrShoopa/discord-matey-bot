@@ -6,7 +6,9 @@ import Stream from 'stream'
 import NodeFetch from 'node-fetch'
 
 import Discord, { Role } from 'discord.js'
+import { AudioResource, createAudioResource, demuxProbe } from '@discordjs/voice';
 import YTDL from 'ytdl-core'
+import { raw as YTDLExectuer } from 'youtube-dl-exec'
 
 import BotData from './bot_functions/DataHandler.js'
 import { AudioData } from './types/data_types/AudioType.js'
@@ -394,16 +396,22 @@ export default class Bot extends Discord.Client {
                     let timeStart = "0s"
                     if (url.includes('?t='))
                         timeStart = url.substring(url.indexOf('?t=') + 3) + "s"
-                    stream = YTDL(url.toString(), {
-                        requestOptions: {
-                            headers: {
-                                apim: KEYS.youtube.api_key
-                            }
-                        },
-                        filter: 'audioonly',
-                        highWaterMark: 1 << 25,
-                        begin: timeStart
-                    })
+                    let ytSource = YTDLExectuer(url.toString(), {
+                        o: '-',
+                        q: '',
+                        f: 'bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio',
+                        r: '100K'
+                    },
+                        { stdio: ['ignore', 'pipe', 'ignore'] }
+                    )
+                    if (!ytSource.stdout)
+                        throw new Error('No stdout') //? Understand this a bit better
+                    stream = ytSource.stdout;
+                    const onError = (error: Error) => {
+                        if (!ytSource.killed) ytSource.kill();
+                        (stream as Stream.Readable).resume();
+                        throw error
+                    };
 
                     await YTDL.getInfo(url).then(video => {
                         songInfo.name = video.videoDetails.title
@@ -411,7 +419,12 @@ export default class Bot extends Discord.Client {
                         songInfo.author = video.videoDetails.author.name
                         songInfo.url = video.videoDetails.video_url
                     }).catch(e => { throw e })
-                    return stream
+
+                    ytSource.once('spawn', () => {
+                        demuxProbe(stream as Stream.Readable)
+                            .then((probe) => { return createAudioResource(probe.stream, { metadata: this, inputType: probe.type }) })
+                            .catch(onError);
+                    }).catch(onError);
                 } catch (error) {
                     let bot: Bot = globalThis.bot
                     if (error.message.includes('video id'))
@@ -428,6 +441,7 @@ export default class Bot extends Discord.Client {
                     return null
                 }
             } else if (url.includes('soundcloud')) {
+                //TODO: Update SoundCloud with the new voice package
                 songInfo = { source: url, platform: 'SoundCloud' }
                 url = url.substr(url.indexOf('soundcloud.com') + 15)
 
@@ -491,55 +505,55 @@ export default class Bot extends Discord.Client {
                     let state = SongState.Loading
                     let response: Discord.Message
 
-                   /*  dispatcher.on('start', async () => {
-                        state = SongState.Playing
-                        console.groupEnd()
-                        console.group()
-                        console.log(`Now playing song from ${url}.`)
+                    /*  dispatcher.on('start', async () => {
+                         state = SongState.Playing
+                         console.groupEnd()
+                         console.group()
+                         console.log(`Now playing song from ${url}.`)
 
-                        if (!replaying && !skipLog && messageObj)
-                            response = await message.channel
-                                .send({ embeds: [BotModuleMusic.generatePlaybackMessage(messageObj, songInfo)] })
-                    })
+                         if (!replaying && !skipLog && messageObj)
+                             response = await message.channel
+                                 .send({ embeds: [BotModuleMusic.generatePlaybackMessage(messageObj, songInfo)] })
+                     })
 
-                    dispatcher.on('close', () => {
-                        console.log(`Song interrupted by user.`)
-                        console.groupEnd()
+                     dispatcher.on('close', () => {
+                         console.log(`Song interrupted by user.`)
+                         console.groupEnd()
 
-                        if (response) BotModuleMusic.convertPlaybackMessageToInterrupted(response, message)
+                         if (response) BotModuleMusic.convertPlaybackMessageToInterrupted(response, message)
 
-                        resolve(SongState.Stopped)
-                    })
+                         resolve(SongState.Stopped)
+                     })
 
-                    dispatcher.on('finish', async () => {
-                        if (loop) {
-                            console.info('Looping song...')
-                            return playAudioURL(connection, message, true)
-                        } else {
+                     dispatcher.on('finish', async () => {
+                         if (loop) {
+                             console.info('Looping song...')
+                             return playAudioURL(connection, message, true)
+                         } else {
 
-                            if (response) BotModuleMusic.convertPlaybackMessageToFinished(response, message)
-                            console.info('Song played successfully.')
+                             if (response) BotModuleMusic.convertPlaybackMessageToFinished(response, message)
+                             console.info('Song played successfully.')
 
-                            let fileInstance = cacheFolder + `/${tempSong}`
+                             let fileInstance = cacheFolder + `/${tempSong}`
 
-                            FileSystem.exists(fileInstance, (exists) => {
-                                if (exists)
-                                    FileSystem.remove(fileInstance)
-                            })
+                             FileSystem.exists(fileInstance, (exists) => {
+                                 if (exists)
+                                     FileSystem.remove(fileInstance)
+                             })
 
-                            bot.songState = SongState.Finished
-                            if (!queueNumber) {
-                                await bot.playSFX(connection, AudioData.SFX.MusicLeave).catch(() => {
-                                    console.warn(`Couldn't play SFX sound ${AudioData.SFX.MusicLeave.name}. Check it's location!`)
-                                })
-                                connection.disconnect()
-                            }
-                        }
+                             bot.songState = SongState.Finished
+                             if (!queueNumber) {
+                                 await bot.playSFX(connection, AudioData.SFX.MusicLeave).catch(() => {
+                                     console.warn(`Couldn't play SFX sound ${AudioData.SFX.MusicLeave.name}. Check it's location!`)
+                                 })
+                                 connection.disconnect()
+                             }
+                         }
 
-                        console.groupEnd()
+                         console.groupEnd()
 
-                        resolve(SongState.Finished)
-                    }) */
+                         resolve(SongState.Finished)
+                     }) */
                 })
 
                 //return true

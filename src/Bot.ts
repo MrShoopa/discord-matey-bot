@@ -664,7 +664,7 @@ export default class Bot extends Discord.Client {
         return built
     }
 
-    generateErrorMessage(message?: string, footer?: string): Discord.MessageEmbed {
+    generateErrorMessage(message?: string, footer?: string, channel? : Discord.TextChannel): Discord.MessageEmbed {
         let built = new Discord.MessageEmbed()
             .setAuthor('🥴')
             .setDescription(`Unfortunately, I couldn't perform that action at the moment.`)

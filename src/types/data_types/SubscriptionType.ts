@@ -77,7 +77,8 @@ export module Subscriptions {
         'MRSHOOPASTREAMWATCH' |
         'ASKREDDITRELAY' |
         '5050FETCH' |
-        'NINTENDODIRECTWATCH'
+        'NINTENDODIRECTWATCH' |
+        'JAPANESEASKREDDITRELAY'
 
     export type ChannelType = 'test' | 'DM' | 'PartialGroup' | 'GuildChannel'
 

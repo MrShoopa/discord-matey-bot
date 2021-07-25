@@ -29,6 +29,7 @@
         "@discordjs/builders": "^0.2.0",
         "@discordjs/opus": "^0.5.3",
         "@discordjs/voice": "^0.5.4",
+        "@iamtraction/google-translate": "^1.1.2",
         "@thorbens/jikan-api": "2.0.0-alpha.11",
         "alphavantage": "^2.2.0",
         "aws-sdk": "^2.950.0",

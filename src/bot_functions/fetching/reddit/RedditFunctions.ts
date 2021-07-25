@@ -1,4 +1,5 @@
 import Discord from 'discord.js'
+import BotModuleTranslation, { Language } from '../../../bot_functions/language/TranslationFunctions.js'
 
 import Bot from '../../../Bot.js'
 
@@ -128,21 +129,29 @@ export default class BotModuleReddit {
         }
     }
 
-    static async fireQuestionAsk(channel?: Discord.TextChannel | Discord.DMChannel, trigger?: string) {
+    static async fireQuestionAsk(channel?: Discord.TextChannel | Discord.DMChannel, trigger?: string, lang?: Language) {
         let bot: Bot = globalThis.bot
         channel = channel ? channel : bot.textChannel
         if (trigger) bot.preliminary(trigger, 'Reddit - 50/50 Fetch', true)
 
-        let question = await BotModuleReddit.fetchRandomSubmission('askreddit')
-        let response = new Discord.MessageEmbed()
-            .setTitle(question.data.title)
-            .setAuthor(`A question by u/${question.data.author}...`)
-            .setURL(question.data.url)
-            .setColor('#8B0000')
-            .setFooter('r/AskReddit',
-                'https://b.thumbs.redditmedia.com/EndDxMGB-FTZ2MGtjepQ06cQEkZw_YQAsOUudpb9nSQ.png')
+        try {
+            let question = await BotModuleReddit.fetchRandomSubmission('askreddit')
 
-        channel.send({ embeds: [response] })
+            if (lang)
+                question.data.title = await BotModuleTranslation.googleTranslateText(question.data.title, lang, Language.English)
+
+            let response = new Discord.MessageEmbed()
+                .setTitle(question.data.title)
+                .setAuthor(`A question by u/${question.data.author}...`)
+                .setURL(question.data.url)
+                .setColor('#8B0000')
+                .setFooter('r/AskReddit',
+                    'https://b.thumbs.redditmedia.com/EndDxMGB-FTZ2MGtjepQ06cQEkZw_YQAsOUudpb9nSQ.png')
+
+            channel.send({ embeds: [response] })
+        } catch (err) {
+            channel.send({ embeds: [bot.generateErrorMessage(`Something happened while trying to generate the message. Get Shoop to check the logs 🥴`, `r/AskReddit Routine`)] })
+        }
     }
 
     static async fireSubmissionImageMessage(redditObject: any) {

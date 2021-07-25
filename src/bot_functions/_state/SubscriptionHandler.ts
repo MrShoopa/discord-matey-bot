@@ -22,6 +22,7 @@ import SUBREFS from '../../bot_knowledge/references/subscriptions.js'
 import BotModuleReddit from '../fetching/reddit/RedditFunctions.js';
 import BotModuleQuote from '../fetching/quote/QuoteFunctions.js';
 import BotModuleYouTube from '../fetching/streaming/YouTubeStreamFunctions.js';
+import { Language } from '../language/TranslationFunctions.js'
 
 let dataSkeleton: DataType.SubscriptionSave =
 {
@@ -252,7 +253,7 @@ export default class BotSubscriptionHandler {
         }
     }
 
-    static getFunctionTypeDescription(featureCode: string): any {
+    static getFunctionTypeDescription(featureCode: string): string {
         return SUBREFS.type_descriptions[featureCode]
     }
 
@@ -309,6 +310,10 @@ export default class BotSubscriptionHandler {
                 let response = await BotModuleYouTube.buildChannelNewVideoMessage('Nintendo')
                 if (response instanceof Discord.MessageEmbed)
                     channel.send({ embeds: [response] })
+                break;
+            case 'JAPANESEASKREDDITRELAY':
+                channel.send('日本語ーＱ!')
+                BotModuleReddit.fireQuestionAsk(channel, null, Language.Japanese)
                 break;
             default:
                 break;

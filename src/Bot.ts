@@ -366,7 +366,7 @@ export default class Bot extends Discord.Client {
                 console.groupEnd()
                 console.group()
                 console.info(
-                    `Voice channel connection status: ${connection}`)
+                    `Voice channel connection status: ${connection.state.status}`)
 
                 if (loop)
                     message.channel.send(`Looks like I'm looping this one! 💫🤹‍♀️`)
@@ -376,8 +376,10 @@ export default class Bot extends Discord.Client {
                         message.channel.send(`I couldn't play that right now. Try again later.`)
                         throw e
                     })
-                    if (result == SongState.Unknown)
+                    if (result == SongState.Unknown) {
+                        console.warn(`No source was created while playing from URL. Check the flow of playAudioURL().`)
                         message.channel.send(`I couldn't play that source. Did you type in your URL correctly?`)
+                    }
 
                     if (result == SongState.Down)
                         message.channel.send(`Currently my backend to ${songInfo.platform} is down! Try again later.`)
@@ -440,13 +442,27 @@ export default class Bot extends Discord.Client {
                         songInfo.url = video.videoDetails.video_url
                     }).catch(e => { throw e })
 
-                    ytSource.once('spawn', () => {
-                        DJSVoice.demuxProbe(stream as Stream.Readable)
-                            .then((probe) => { return DJSVoice.createAudioResource(probe.stream, { metadata: this, inputType: probe.type }) })
-                            .catch(onError);
-                    }).catch(onError);
+                    await ytSource.once('spawn', async () => {
+                        if (globalThis.dev_mode) console.log(`YTSource Spawn event.`)
+                        try {
+                            const probe = await DJSVoice.demuxProbe(stream as Stream.Readable)
+                            if (globalThis.dev_mode)
+                                console.log(`Probe submitted.`)
+                            return DJSVoice.createAudioResource(probe.stream, { metadata: this, inputType: probe.type })
+                        } catch (err) {
+                            throw err
+                        }
+                    }).catch(err => { throw err });
+
+                    if (globalThis.dev_mode) console.log(`Finished walking through YT source creation.`)
+
+                    //return stream
                 } catch (error) {
                     let bot: Bot = globalThis.bot
+
+                    console.error(`Error occured when making Stream object: ${error.message}`)
+                    console.error(error.stack)
+
                     if (error.message.includes('video id'))
                         message.reply(`this YouTube link isn't valid...`)
                     else if (error.message.includes('404'))
@@ -594,6 +610,7 @@ export default class Bot extends Discord.Client {
                     // Now Play!
 
                     connection.subscribe(player)
+                    //*! Error point
                     player.play((stream as Stream.Readable).read())
                 })
 

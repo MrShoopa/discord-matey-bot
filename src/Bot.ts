@@ -378,7 +378,9 @@ export default class Bot extends Discord.Client {
                     })
                     if (result == SongState.Unknown) {
                         console.warn(`No source was created while playing from URL. Check the flow of playAudioURL().`)
-                        message.channel.send(`I couldn't play that source. Did you type in your URL correctly?`)
+                        message.channel.send(`I couldn't play that source. Did you type in your URL correctly?`).then(mes => {
+                            setTimeout(() => mes.delete(), 5000);
+                        })
                     }
 
                     if (result == SongState.Down)
@@ -441,20 +443,8 @@ export default class Bot extends Discord.Client {
                         songInfo.author = video.videoDetails.author.name
                         songInfo.url = video.videoDetails.video_url
                     }).catch(e => { throw e })
-
-                    await ytSource.once('spawn', async () => {
-                        if (globalThis.dev_mode) console.log(`YTSource Spawn event.`)
-                        try {
-                            const probe = await DJSVoice.demuxProbe(stream as Stream.Readable)
-                            if (globalThis.dev_mode)
-                                console.log(`Probe submitted.`)
-                            return DJSVoice.createAudioResource(probe.stream, { metadata: this, inputType: probe.type })
-                        } catch (err) {
-                            throw err
-                        }
-                    }).catch(err => { throw err });
-
                     if (globalThis.dev_mode) console.log(`Finished walking through YT source creation.`)
+                    return stream
 
                     //return stream
                 } catch (error) {
@@ -470,14 +460,13 @@ export default class Bot extends Discord.Client {
                     else if (error.message.includes('unavailable'))
                         message.reply(`unfortunately this YouTube video is unavailable to play. Damn copyrights.`)
                     else if (error.message.includes('429'))
-                        message.reply(`Too many YouTube requests have been made in my shared pod. Try again later 😊`)
+                        message.reply(`Too many YouTube requests have been made in my sh5ared pod. Try again later 😊`)
                     else
                         bot.saveBugReport(error, createStreamObject.name, true)
 
                     return null
                 }
             } else if (url.includes('soundcloud')) {
-                //TODO: Update SoundCloud with the new voice package
                 songInfo = { source: url, platform: 'SoundCloud' }
                 url = url.substr(url.indexOf('soundcloud.com') + 15)
 
@@ -606,12 +595,10 @@ export default class Bot extends Discord.Client {
                     connection.on('error', err => { throw err })
                     player.on('error', err => { throw err })
 
-
                     // Now Play!
-
                     connection.subscribe(player)
                     //*! Error point
-                    player.play((stream as Stream.Readable).read())
+                    player.play(DJSVoice.createAudioResource(stream, { metadata: this, inputType: DJSVoice.StreamType.Arbitrary }))
                 })
 
 
@@ -686,13 +673,13 @@ export default class Bot extends Discord.Client {
 
     playSFX(connection: VoiceConnection, sfx: AudioData.SFX) {
         return new Promise((res, rej) => {
-            let dir = FileSystem.realpathSync('') + sfx.filePath
             try {
+                let dir = fs.realpathSync('') + sfx.filePath
                 connection.playOpusPacket(fs.readFileSync(dir))
 
                 res('completed')
             } catch (err) {
-                this.saveBugReport(err, this.playSFX.name, true)
+                if (globalThis.dev_mode) this.saveBugReport(err, this.playSFX.name, true)
                 rej('failed')
             }
         })

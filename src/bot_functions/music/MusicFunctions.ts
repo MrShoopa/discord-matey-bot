@@ -206,8 +206,9 @@ export default class BotModuleMusic {
                         })
                         await bot.playSFX(connection, AudioData.SFX.MusicLeave)
 
+                        connection.destroy()
 
-                        //. dw about it bot.textChannel.send(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.active))
+                        bot.textChannel.send(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.active))
                         console.log('Bot exited voice channel by user message.')
 
                         if (this.findQueue()?.queue.peek()) {

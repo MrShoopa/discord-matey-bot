@@ -570,7 +570,7 @@ const TRIGGER_INFO = {
     },
     subscriptions: {
       _title: 'Subscriptions',
-      _description: 'Subscription management for automating functions to your channel! Type **;list subscription types for available functions.**',
+      _description: 'Subscription management for automating functions to your channel! Type **;list subscription types** for available functions.',
       _footer: '⚡',
       _command_list: {
         create_subscription: {

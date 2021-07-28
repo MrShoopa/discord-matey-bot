@@ -1,6 +1,8 @@
 import Discord from 'discord.js'
 import Bot from './../../Bot.js'
 
+import GoogleTranslate from '@iamtraction/google-translate'
+
 import TRIGGERS from '../../bot_knowledge/triggers/triggers.js'
 
 import WarcraftLanguageFunctions from './WarcraftLangFunctions.js'
@@ -77,4 +79,25 @@ export default class BotModuleTranslation {
     static replyUnknownLanguageMessage(message: Discord.Message) {
         return message.channel.send(`Which language? Type *megadork translation list* to see what I can translate.`)
     }
+
+    static async googleTranslateText(text: string, lang: Language = Language.English, fromLang: Language = Language._Wildcard, raw?: boolean) {
+        console.group(`Google Translate - Fetching [${fromLang} to ${lang}], ${raw} raw.`)
+        return await GoogleTranslate(text, {
+            to: lang,
+            from: fromLang,
+            raw: raw
+        }).then((res) => {
+            console.log(`Fetched a translation from ${res.from.language.iso} to ${lang}!`)
+            return res.text
+        }).catch((rej) => {
+            console.error(`Error fetching! Google says: "${rej.message}`)
+            throw new Error(rej.error)
+        })
+    }
+}
+
+export enum Language {
+    _Wildcard = "auto",
+    English = "en",
+    Japanese = "ja"
 }

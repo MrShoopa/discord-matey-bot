@@ -160,7 +160,9 @@ export default class BotModuleMusic {
             if (!bot.voiceChannel) {
                 console.warn(`Bot couldn't find a voice channel to join. Please have user join a channel first.`)
                 messageObj.reply(
-                    PHRASES_SING.message_not_in_channel)
+                    PHRASES_SING.message_not_in_channel).then(mes => {
+                        setTimeout(() => mes.delete(), 10000);
+                    })
 
                 songState = SongState.Unknown
             } else bot.saveBugReport(error, this.playMusic.name, true)
@@ -168,7 +170,9 @@ export default class BotModuleMusic {
 
         if (songState == SongState.Fetching) { //  When song is not found
             messageObj.reply(
-                PHRASES_SING.message_unknown_summon)
+                PHRASES_SING.message_unknown_summon).then(mes => {
+                    setTimeout(() => mes.delete(), 10000);
+                })
 
             console.warn('No such song found.')
         }
@@ -204,7 +208,9 @@ export default class BotModuleMusic {
                             //? why the heck do i gotta write it like this
                             adapterCreator: channelNeeded.guild.voiceAdapterCreator as unknown as DiscordGatewayAdapterCreator
                         })
-                        await bot.playSFX(connection, AudioData.SFX.MusicLeave)
+                        await bot.playSFX(connection, AudioData.SFX.MusicLeave).catch(() => {
+                            console.warn(`Couldn't play SFX sound ${AudioData.SFX.MusicLeave.name}. Check it's location!`)
+                        })
 
                         connection.destroy()
 
@@ -221,7 +227,9 @@ export default class BotModuleMusic {
                 bot.saveBugReport(error, this.stopMusic.name, true)
             }
         } else {
-            messageObj.reply(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.null))
+            messageObj.reply(Bot.fetchRandomPhrase(PHRASES_SING.command_feedback.stop.null)).then(mes => {
+                setTimeout(() => mes.delete(), 3000);
+            })
             console.log('No sound was playing, nothing terminated.')
         }
     }
@@ -290,13 +298,7 @@ export default class BotModuleMusic {
         if (songInfo.queueNumber)
             playbackMessage.setDescription(`\nPlaying ${message.author.username}'s request! ${songInfo.queueNumber} songs left in queue.`)
 
-        var finalMessage =
-                new Discord.MessageEmbed()
-                    .setAuthor('Mega-Juker! 🔊')
-                    .setTitle('Playing some 🅱eatz')
-                .setColor(`FUCHSIA`)
-
-        return finalMessage
+        return playbackMessage
     }
 
     static convertPlaybackMessageToFinished(botResponse: Discord.Message, ogMessage: Discord.Message) {
@@ -576,7 +578,9 @@ class MusicQueue {
             message.channel.send(`📻... *that's all folks*!`)
 
             if (connection) {
-                await bot.playSFX(connection, AudioData.SFX.MusicLeave)
+                await bot.playSFX(connection, AudioData.SFX.MusicLeave).catch(() => {
+                    console.warn(`Couldn't play SFX sound ${AudioData.SFX.MusicLeave.name}. Check it's location!`)
+                })
                 return connection.disconnect()
             }
 
@@ -586,7 +590,9 @@ class MusicQueue {
         try {
             if (!skip) {
                 if (connection)
-                    await bot.playSFX(connection, AudioData.SFX.MusicTransition)
+                    await bot.playSFX(connection, AudioData.SFX.MusicTransition).catch(() => {
+                        console.warn(`Couldn't play SFX sound ${AudioData.SFX.MusicTransition.name}. Check it's location!`)
+                    })
                 else {
                     let memberChannel = message.member.voice.channel
                     if (memberChannel)

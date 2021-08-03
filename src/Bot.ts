@@ -442,7 +442,10 @@ export default class Bot extends Discord.Client {
                         songInfo.thumbnailUrl = video.videoDetails.thumbnails[3].url
                         songInfo.author = video.videoDetails.author.name
                         songInfo.url = video.videoDetails.video_url
-                    }).catch(e => { throw e })
+                    }).catch(e => {
+                        console.error(`Error happened when getting info for ${url}...`)
+                        throw e
+                    })
                     if (globalThis.dev_mode) console.log(`Finished walking through YT source creation.`)
                     return stream
 
@@ -461,8 +464,12 @@ export default class Bot extends Discord.Client {
                         message.reply(`unfortunately this YouTube video is unavailable to play. Damn copyrights.`)
                     else if (error.message.includes('429'))
                         message.reply(`Too many YouTube requests have been made in my sh5ared pod. Try again later 😊`)
-                    else
-                        bot.saveBugReport(error, createStreamObject.name, true)
+                    else if (error.message.includes('410')) {
+
+                        message.reply(`Error code 410. That means 'Gone'. Huh, might not see some info here 😁`)
+                        return stream
+                    } else
+                        bot.saveBugReport(error, createStreamObject.name, false)
 
                     return null
                 }

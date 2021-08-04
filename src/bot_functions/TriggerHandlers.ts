@@ -74,6 +74,9 @@ export default class TriggerHandlers {
 
         TriggerHandlers.checkForTextEditRequest,
 
+        TriggerHandlers.checkForCurrentTimeRequest,
+        TriggerHandlers.checkForCurrentUtcTimeRequest,
+
         // External Data Requests
         TriggerHandlers.checkForRedditFetchRequest,
         TriggerHandlers.checkForTwitterFetchRequest,
@@ -581,21 +584,30 @@ export default class TriggerHandlers {
                     let number = parseInt((message.toString().match(/\d+/g)).pop())
                     return BotModuleFun.rollDice(number, trigger)
                 } else return BotModuleFun.rollDice(6, trigger)
-        //  Get anime recommendation [from My Anime List (JikanTS)]
     }
 
     private static checkFor8BallRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.magic_ball)
             if (message.toString().toLowerCase().startsWith(trigger))
                 return BotModuleFun.eightBall(null, trigger)
-        //  Get anime recommendation [from My Anime List (JikanTS)]
     }
 
     private static checkForPingPongRequest(message = TriggerHandlers.message) {
         for (const trigger of TRIGGERS.ping_pong.default)
             if (message.toString().toLowerCase().startsWith(trigger))
                 return BotGeneralCommands.firePingPongMessage(message.channel as Discord.TextChannel, trigger)
-        //  Get anime recommendation [from My Anime List (JikanTS)]
+    }
+
+    private static checkForCurrentTimeRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.current_time.default)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotGeneralCommands.getCurrentTime(message.channel as Discord.TextChannel, trigger)
+    }
+
+    private static checkForCurrentUtcTimeRequest(message = TriggerHandlers.message) {
+        for (const trigger of TRIGGERS.current_time.default)
+            if (message.toString().toLowerCase().startsWith(trigger))
+                return BotGeneralCommands.getCurrentUtcTime(message.channel as Discord.TextChannel, trigger)
     }
 
     /* ----  Admin-only functions --- */

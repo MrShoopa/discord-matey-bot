@@ -21,6 +21,7 @@ globalThis.su = new su()
 
 globalThis.prod_mode = (() => { return process.argv.includes('prod') })()
 globalThis.dev_mode = (() => { return process.argv.includes('dev-mode') })()
+globalThis.offsetHour = +7 // coded in seattle lol
 
 //  Initialize Discord Bot
 console.log('Initializing...')

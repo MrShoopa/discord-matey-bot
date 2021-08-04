@@ -21,7 +21,10 @@ export default class TimelyFunctions {
     static doneForMonth: boolean
 
     static get now() {
-        TimelyFunctions._now = new Date()
+        if (globalThis.prod_mode)
+            TimelyFunctions._now = new Date(Date.now() + (globalThis.offsetHour * 3600000))
+        else
+            TimelyFunctions._now = new Date()
         return TimelyFunctions._now
     }
 

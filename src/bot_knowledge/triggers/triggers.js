@@ -1520,6 +1520,21 @@ const TRIGGERS = {
       'fetch random uw faculty',
     ],
   },
+  current_time: {
+    default: [
+      'fetch current time',
+      `what's the time`,
+      'what time is it'
+    ],
+    utc: [
+      'fetch utc',
+      'fetch utc time',
+      'fetch current utc time',
+      `what's the utc time`,
+      `what's the time in utc`,
+      `what time is it in utc`
+    ]
+  }
 }
 
 export default TRIGGERS

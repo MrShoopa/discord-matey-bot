@@ -43,16 +43,12 @@ export default class BotGeneralCommands {
         channel = (bot.channels.cache.get(channel.id) as Discord.TextChannel)
 
         let time = TimelyFunctions.now
-        if (offsetHour)
-            time = new Date(time.getMilliseconds() + (offsetHour * 3600000))
-        else if (globalThis.offsetHour)
-            time = new Date(time.getMilliseconds() + (globalThis.offsetHour * 3600000))
 
         let messageString = `*Well...*\n` +
             `Today is... ` +
             `**${CALENDAR_VALUES.months_prettier[time.getMonth()]} ${time.getDay()}, ${time.getFullYear()}!**\n\t` +
             `Time is... ` +
-            `**${time.getHours()}:${time.getMinutes().toFixed((1))}:${time.getSeconds().toFixed(2)}!**\n\t`
+            `**${time.getHours()}:${time.getMinutes().toPrecision((2))}:${time.getSeconds().toPrecision(2)}!**\n\t`
 
         console.log(`Someone pinged for the time. ` + messageString)
         return channel.send(messageString)
@@ -64,11 +60,11 @@ export default class BotGeneralCommands {
 
         channel = (bot.channels.cache.get(channel.id) as Discord.TextChannel)
 
-        let time = TimelyFunctions.now
+        let time = new Date(TimelyFunctions.now.getTime() + (globalThis.offsetHour * 3600000))
         let messageString = `Well today (by UTC magic) is... ` +
-            `${CALENDAR_VALUES.months_prettier[time.getUTCMonth()]} ${time.getUTCDay()}, ${time.getUTCFullYear()}!\n\t` +
+            `${CALENDAR_VALUES.months_prettier[time.getUTCMonth()]} ${time.getUTCDay() + 1}, ${time.getUTCFullYear()}!\n\t` +
             `Time is... ` +
-            `${time.getUTCHours()}:${time.getUTCMinutes().toFixed(2)}:${time.getUTCSeconds().toFixed(2)}!\n\t`
+            `${time.getUTCHours()}:${time.getUTCMinutes().toPrecision(2)}:${time.getUTCSeconds().toPrecision(2)}!\n\t`
 
         console.log(`Someone pinged for current UTC time. ` + messageString)
         return channel.send(messageString)

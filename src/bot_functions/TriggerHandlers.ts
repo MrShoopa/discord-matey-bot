@@ -605,7 +605,7 @@ export default class TriggerHandlers {
     }
 
     private static checkForCurrentUtcTimeRequest(message = TriggerHandlers.message) {
-        for (const trigger of TRIGGERS.current_time.default)
+        for (const trigger of TRIGGERS.current_time.utc)
             if (message.toString().toLowerCase().startsWith(trigger))
                 return BotGeneralCommands.getCurrentUtcTime(message.channel as Discord.TextChannel, trigger)
     }

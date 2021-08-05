@@ -78,7 +78,8 @@ export module Subscriptions {
         'ASKREDDITRELAY' |
         '5050FETCH' |
         'NINTENDODIRECTWATCH' |
-        'JAPANESEASKREDDITRELAY'
+        'JAPANESEASKREDDITRELAY' |
+        'SONGOFTHEDAY'
 
     export type ChannelType = 'test' | 'DM' | 'PartialGroup' | 'GuildChannel'
 

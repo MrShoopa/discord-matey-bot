@@ -10,7 +10,8 @@ const REFS_SUBSCRIPTIONS = {
     MRSHOOPASTREAMWATCH: 'Checks whenever MrShoopa is streaming on YouTube!',
     ASKREDDITRELAY: 'Gets a random question from r/AskReddit',
     '5050FETCH': 'Gets a random r/5050 image/link',
-    JAPANESEASKREDDITRELAY: 'Routine question in Japanese!'
+    JAPANESEASKREDDITRELAY: 'Routine question in Japanese!',
+    SONGOFTHEDAY: 'Gets a popular song reccomendation!'
   },
 }
 

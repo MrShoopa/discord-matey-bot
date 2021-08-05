@@ -141,5 +141,13 @@ export default class BotModuleSpotify {
         this.Spotify = await new SpotifyWebApi({ clientId: KEYS.spotify.client_id, clientSecret: KEYS.spotify.client_secret })
         let token = (await this.Spotify.clientCredentialsGrant()).body.access_token
         this.Spotify.setAccessToken(token)
+
+        setInterval(() => this.rotateToken(), 3600000);
+    }
+
+    static async rotateToken() {
+        let token = (await this.Spotify.clientCredentialsGrant()).body.access_token
+        this.Spotify.setAccessToken(token)
+        console.log('SPotify token rotated.')
     }
 }

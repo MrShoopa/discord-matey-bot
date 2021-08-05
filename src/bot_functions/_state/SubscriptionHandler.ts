@@ -23,6 +23,7 @@ import BotModuleReddit from '../fetching/reddit/RedditFunctions.js';
 import BotModuleQuote from '../fetching/quote/QuoteFunctions.js';
 import BotModuleYouTube from '../fetching/streaming/YouTubeStreamFunctions.js';
 import { Language } from '../language/TranslationFunctions.js'
+import BotModuleSpotify from '../fetching/music/SpotifyFunctions.js';
 
 let dataSkeleton: DataType.SubscriptionSave =
 {
@@ -315,6 +316,10 @@ export default class BotSubscriptionHandler {
                 channel.send('日本語ーＱ!')
                 BotModuleReddit.fireQuestionAsk(channel, null, Language.Japanese)
                 break;
+            case 'SONGOFTHEDAY':
+                channel.send('*Song of the Day~*🎶')
+                channel.send({ embeds: [await BotModuleSpotify.fetchBuiltRecommendationMessage('genre pop', 1, channel)] })
+                break
             default:
                 break;
         }

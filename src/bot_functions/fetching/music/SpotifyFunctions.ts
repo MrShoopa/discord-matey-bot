@@ -88,8 +88,20 @@ export default class BotModuleSpotify {
                     let artistId = (await BotModuleSpotify.Spotify.getArtist(q.substring(q.indexOf('t/') + 2).trim())).body.id
                     recObj.seed_artists.push(artistId)
                 }
+                if (q.includes('playlist/')) {
+                    let playlistId = (await BotModuleSpotify.Spotify.getArtist(q.substring(q.indexOf('t/') + 2).trim())).body.id
+                    let playlistTracks = await this.Spotify.getPlaylistTracks(playlistId)
+                    recObj.seed_tracks.push(playlistTracks)
+                }
+
                 if (q.includes('genre'))
-                    recObj.seed_genres.push(q.substring(q.indexOf('genre') + 6).trim().split(' ')[0])
+                    recObj.seed_genres.push(q.substring(q.indexOf('genre ') + 6).trim().split(' ')[0])
+                if (q.includes('song '))
+                    recObj.seed_genres.push(q.substring(q.indexOf('song ') + 5).trim().split(' ')[0])
+                if (q.includes('track '))
+                    recObj.seed_genres.push(q.substring(q.indexOf('track ') + 6).trim().split(' ')[0])
+                if (q.includes('artist '))
+                    recObj.seed_genres.push(q.substring(q.indexOf('artist ') + 7).trim().split(' ')[0])
             }
 
             const recomendations =

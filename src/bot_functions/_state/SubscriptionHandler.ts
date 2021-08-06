@@ -318,7 +318,8 @@ export default class BotSubscriptionHandler {
                 break;
             case 'SONGOFTHEDAY':
                 channel.send('*Song of the Day~*🎶')
-                channel.send({ embeds: [await BotModuleSpotify.fetchBuiltRecommendationMessage('genre pop', 1, channel)] })
+                let queryName = subscription.name.replace('spotify rec:', '').trim()
+                channel.send({ embeds: [await BotModuleSpotify.fetchBuiltRecommendationMessage(queryName, 1, channel)] })
                 break
             default:
                 break;

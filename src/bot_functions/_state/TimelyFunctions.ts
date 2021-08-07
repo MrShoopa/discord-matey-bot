@@ -24,7 +24,8 @@ export default class TimelyFunctions {
         if (globalThis.prod_mode)
             TimelyFunctions._now = new Date(Date.now() + (globalThis.offsetHour * 3600000))
         else
-            TimelyFunctions._now = new Date()
+            TimelyFunctions._now = new Date(Date.now() + (globalThis.offsetHour * 3600000))
+        // TimelyFunctions._now = new Date()
         return TimelyFunctions._now
     }
 
@@ -72,8 +73,12 @@ export default class TimelyFunctions {
         if (isNaN(Date.parse(timeObject.last_ran_functions.time)))
             timeObject.last_ran_functions.time = new Date(0).toString()
 
-        let lastRun =
-            new Date(timeObject.last_ran_functions.time)
+        let lastRun
+
+        // if (globalThis.offsetHour)
+        //     lastRun = new Date(timeObject.last_ran_functions.time)
+        // else
+        lastRun = new Date(new Date(timeObject.last_ran_functions.time).getTime() + (globalThis.offsetHour * 3600000));
 
         this.doneForHour =
             lastRun.getHours() == this.now.getHours()

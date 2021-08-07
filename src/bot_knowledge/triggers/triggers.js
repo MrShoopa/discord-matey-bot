@@ -1540,7 +1540,8 @@ const TRIGGERS = {
       `what's the time in utc`,
       `what time is it in utc`
     ]
-  }
+  },
+  
 }
 
 export default TRIGGERS

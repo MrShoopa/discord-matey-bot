@@ -16,6 +16,7 @@ import WebServices from './www/Webpage.js'
 import TriggerHandlers from './bot_functions/TriggerHandlers.js'
 import PostReadyFunctions from './bot_functions/_state/PostReadyFunctions.js'
 import BotModuleModeration from './bot_functions/_state/Moderation.js'
+import TimelyFunctions from './bot_functions/_state/TimelyFunctions.js'
 import su from './tools/ConsoleFunctions.js' // Keep here for console.
 globalThis.su = new su()
 
@@ -44,7 +45,7 @@ try {
 
 console.log("Installing Discord.js event listeners...")
 bot.on('ready', () => {
-	console.info(`Hey there! The time is ${new Date().toLocaleString()}. I'm ready! 😀\n`)
+	console.info(`Hey there! The time is ${TimelyFunctions.now} (Offset Hour:${globalThis.offsetHour}) I'm ready! 😀\n`)
 
 	PostReadyFunctions.run()
 })

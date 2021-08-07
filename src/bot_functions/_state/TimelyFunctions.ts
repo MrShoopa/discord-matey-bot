@@ -24,7 +24,7 @@ export default class TimelyFunctions {
         if (globalThis.prod_mode)
             TimelyFunctions._now = new Date(Date.now() + (globalThis.offsetHour * 3600000))
         else
-            TimelyFunctions._now = new Date(Date.now() + (globalThis.offsetHour * 3600000))
+            TimelyFunctions._now = new Date()
         // TimelyFunctions._now = new Date()
         return TimelyFunctions._now
     }

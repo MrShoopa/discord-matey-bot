@@ -75,10 +75,10 @@ export default class TimelyFunctions {
 
         let lastRun
 
-        // if (globalThis.offsetHour)
-        //     lastRun = new Date(timeObject.last_ran_functions.time)
-        // else
-        lastRun = new Date(new Date(timeObject.last_ran_functions.time).getTime() + (globalThis.offsetHour * 3600000));
+        if (globalThis.offsetHour)
+            lastRun = new Date(timeObject.last_ran_functions.time)
+        else
+            lastRun = new Date(new Date(timeObject.last_ran_functions.time).getTime() + (globalThis.offsetHour * 3600000));
 
         this.doneForHour =
             lastRun.getHours() == this.now.getHours()

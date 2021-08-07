@@ -6,7 +6,7 @@ import PHRASES_FRONT from '../../bot_knowledge/phrases/phrases_front.js'
 import PHRASES_CONVO from '../../bot_knowledge/phrases/phrases_conversational.js'
 
 import BotModuleBraindead from '../novelty/QuiteSpecificFunctions.js'
-import { Message } from 'discord.js'
+import { Message, PartialMessage } from 'discord.js'
 
 export default class BotWordplay {
     static bot: Bot
@@ -18,19 +18,23 @@ export default class BotWordplay {
 
         TRIGGERS.main_trigger.some(trigger => {
             if (this.wholeMessage.toLowerCase().startsWith(trigger, 0)) {
-                this.checkForSelfSuicdeWordplay(message)
-                this.checkForSADWordplay(message)
-                this.checkForOnlyBeansWordplay(message)
-                this.checkForSendNudesWordplay(message)
-                this.checkForYourMomWordplay(message)
-                this.checkForThankYouWordplay(message)
-                this.checkForCommieWordplay(message)
+                this.checkForWordplaySelfSuicide(message)
+                this.checkForWordplaySad(message)
+                this.checkForWordplayOnlyBeans(message)
+                this.checkForWordplaySendNudes(message)
+                this.checkForWordplayYourMom(message)
+                this.checkForWordplayThankYou(message)
+                this.checkForWordplayCommie(message)
+                this.checkForWordplayWhatsTheHurry(message)
+                this.checkForWordplayWhatsYourName(message)
+                this.checkForWordplayWhosYourCreator(message)
+                this.checkForWordplayFoodResponse(message)
             }
         })
         this.checkForNonHotwordWordplay(message, wholeMessage)
     }
 
-    private static checkForSelfSuicdeWordplay(message) {
+    private static checkForWordplaySelfSuicide(message: Message) {
         let context: string = message.toString()
 
         //  Suicidal
@@ -56,7 +60,7 @@ export default class BotWordplay {
         })
     }
 
-    private static checkForSADWordplay(message) {
+    private static checkForWordplaySad(message: Message) {
         let context: string = message.toString()
 
         if (context.includes(TRIGGERS.third_person_phrase_triggers.suck_thing[0]) &&
@@ -67,12 +71,12 @@ export default class BotWordplay {
     }
 
 
-    private static async checkForOnlyBeansWordplay(message) {
+    private static async checkForWordplayOnlyBeans(message: Message) {
         if (message.toString() == 'beans')
             BotModuleBraindead.beans(message)
         //  the master's favorite food
     }
-    private static checkForSendNudesWordplay(message) {
+    private static checkForWordplaySendNudes(message: Message) {
         let context: string = message.toString()
 
         //  Send Nudes (Per request of a friend :P)
@@ -86,7 +90,7 @@ export default class BotWordplay {
         })
     }
 
-    private static checkForYourMomWordplay(message) {
+    private static checkForWordplayYourMom(message: Message) {
         let context: string = message.toString()
 
         //  Shotout to UW🅱
@@ -100,7 +104,7 @@ export default class BotWordplay {
         })
     }
 
-    private static checkForThankYouWordplay(message) {
+    private static checkForWordplayThankYou(message: Message) {
         let context: string = message.toString()
 
         //  Thank you
@@ -114,27 +118,85 @@ export default class BotWordplay {
         })
     }
 
-    private static checkForCommieWordplay(message) {
+    private static checkForWordplayCommie(message: Message) {
         if (message.toString().toLowerCase().includes(TRIGGERS.are_you_triggers.communist))
             BotModuleBraindead.communistRepsonse()
         //  "Are you a X?"
     }
 
-    static checkForHowAreYouWordPlay(message) {
+    static checkForHowAreYouWordPlay(message: { toString: () => string; reply: (arg0: string) => unknown }) {
         let context: string = message.toString()
 
-        TRIGGERS.how_is_bot.some(trigger => {
-            if (context.toLowerCase().includes(trigger)) {
-                this.bot.preliminary(trigger, 'How is bot', true)
+        let phraseGet = TRIGGERS.how_is_bot
+        let phraseBack = PHRASES_CONVO.asked_how_are_you
 
-                return message.reply(
-                    Bot.fetchRandomPhrase(PHRASES_CONVO.asked_how_are_you))
+        phraseGet.some((trigger: string) => {
+            if (context.toLowerCase().includes(trigger)) {
+                this.bot.preliminary(trigger, 'Conversation chilltime', true)
+                return message.reply(Bot.fetchRandomPhrase(phraseBack))
+            }
+        })
+    }
+
+    static checkForWordplayWhatsTheHurry(message: { toString: () => string; reply: (arg0: string) => unknown }) {
+        let context: string = message.toString()
+
+        let phraseGet = TRIGGERS.conversational.whats_the_hurry
+        let phraseBack = PHRASES_CONVO.whats_the_rush
+
+        phraseGet.some((trigger: string) => {
+            if (context.toLowerCase().includes(trigger)) {
+                this.bot.preliminary(trigger, 'Conversation chilltime', true)
+                return message.reply(Bot.fetchRandomPhrase(phraseBack))
+            }
+        })
+    }
+
+    static checkForWordplayWhatsYourName(message: { toString: () => string; reply: (arg0: string) => unknown }) {
+        let context: string = message.toString()
+
+        let phraseGet = TRIGGERS.conversational.whats_your_name
+        let phraseBack = PHRASES_CONVO.my_name_is
+
+        phraseGet.some((trigger: string) => {
+            if (context.toLowerCase().includes(trigger)) {
+                this.bot.preliminary(trigger, 'Conversation chilltime', true)
+                return message.reply(Bot.fetchRandomPhrase(phraseBack))
+            }
+        })
+    }
+
+    static checkForWordplayWhosYourCreator(message: { toString: () => string; reply: (arg0: string) => unknown }) {
+        let context: string = message.toString()
+
+        let phraseGet = TRIGGERS.conversational.whos_your_creator
+        let phraseBack = PHRASES_CONVO.whos_your_creator
+
+        phraseGet.some((trigger: string) => {
+            if (context.toLowerCase().includes(trigger)) {
+                this.bot.preliminary(trigger, 'Conversation chilltime', true)
+                return message.reply(Bot.fetchRandomPhrase(phraseBack))
+            }
+        })
+    }
+
+    static checkForWordplayFoodResponse(message: { toString: () => string; reply: (arg0: string) => unknown }) {
+        let context: string = message.toString()
+
+        let phraseGet = TRIGGERS.conversational.food_list
+
+        phraseGet.some((trigger: string) => {
+            if (context.toLowerCase().includes(trigger)) {
+                let phraseBack = PHRASES_CONVO.response_to_food[trigger]
+
+                this.bot.preliminary(trigger, 'Conversation food chilltime', true)
+                return message.reply(Bot.fetchRandomPhrase(phraseBack))
             }
         })
     }
 
     //  When mentioning main hotword anywhere in message!
-    private static checkForNonHotwordWordplay(message, wholeMessage) {
+    private static checkForNonHotwordWordplay(message: Message | PartialMessage, wholeMessage: string) {
         let context: string = message.toString()
 
         TRIGGERS.main_trigger.some(trigger => {

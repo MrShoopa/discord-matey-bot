@@ -56,6 +56,38 @@ const PHRASES_CONVERSATIONAL = {
             '🌱🌱🌱🌱🌱🌱',
         ],
     },
+    whats_the_rush: [
+        "WHATS THE HURRY???",
+        "have you done your rolls today",
+    ],
+    my_name_is: [
+        "My name is Megadork! I'm some sort of multi-purpose bot. Or at least trying to be.",
+        "Hi, I'm Megadork!",
+        "Hey there! I'm Megadork - just a pal helping out in a server here and there! `;help` to see what I can do!",
+        "AH yes, I'm... **Megadork** - I do stuff."
+    ],
+    whos_your_creator: [
+        "MrShoopa's my creator. Maybe he's here somewhere?",
+        "Hmm, I guess some sleepy computer 'whiz' here. Is it Shoop?",
+        "🌮",
+        "El SHOOP 😎"
+    ],
+    response_to_food: {
+        "banh mi": [
+            "da",
+            "soft smol sandvich"
+        ],
+        "banana": [
+            "🍌🍌🍌",
+            "🍌🐒🚀",
+            "🍌🍌🍌 **Dole Sponsored** 🍌🍌🍌"
+        ],
+        "taco": [
+            "🌮🎉",
+            "🌮🚀",
+            "🎇🎇🎇\n🎇🌮🎇\n🎇🎇🎇"
+        ],
+    }
 }
 
 export default PHRASES_CONVERSATIONAL

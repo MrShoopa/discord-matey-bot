@@ -1541,7 +1541,31 @@ const TRIGGERS = {
       `what time is it in utc`
     ]
   },
-  
+  conversational: {
+    whats_your_name: [
+      "whats your name",
+      "what's your name",
+      "what is your name",
+      "what are you called",
+    ],
+    whos_your_creator: [
+      "who is your creator",
+      "who's your creator",
+      "who is your daddy",
+      "who's your daddy",
+      "who created you",
+    ],
+    whats_the_hurry: [
+      "whats the hurry",
+      "whats the rush",
+      "kaeya",
+    ],
+    food_list: [
+      "banh mi",
+      "banana",
+      "taco",
+    ],
+  }
 }
 
 export default TRIGGERS

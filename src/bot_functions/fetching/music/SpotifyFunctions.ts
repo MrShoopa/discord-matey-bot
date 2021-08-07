@@ -154,7 +154,7 @@ export default class BotModuleSpotify {
         let token = (await this.Spotify.clientCredentialsGrant()).body.access_token
         this.Spotify.setAccessToken(token)
 
-        setInterval(() => this.rotateToken(), 3600000);
+        setInterval(() => this.rotateToken(), 1800000);
     }
 
     static async rotateToken() {

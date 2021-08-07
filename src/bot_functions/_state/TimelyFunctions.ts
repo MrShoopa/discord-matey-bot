@@ -73,12 +73,12 @@ export default class TimelyFunctions {
         if (isNaN(Date.parse(timeObject.last_ran_functions.time)))
             timeObject.last_ran_functions.time = new Date(0).toString()
 
-        let lastRun
+        let lastRun: Date
 
-        if (globalThis.offsetHour)
-            lastRun = new Date(timeObject.last_ran_functions.time)
-        else
+        if (globalThis.offsetHour && globalThis.prod_mode)
             lastRun = new Date(new Date(timeObject.last_ran_functions.time).getTime() + (globalThis.offsetHour * 3600000));
+        else
+            lastRun = new Date(timeObject.last_ran_functions.time)
 
         this.doneForHour =
             lastRun.getHours() == this.now.getHours()

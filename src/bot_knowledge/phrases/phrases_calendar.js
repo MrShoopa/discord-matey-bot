@@ -16,7 +16,7 @@ const PHRASES_CALENDAR = {
             'Feliz cumpleaños a ti\nfeliz cumpleaños a ti\nfeliz cumpleaños querido/a(name)\nfeliz cumpleaños a ti.',
             'Happy Birthday today,\nMay you eat, laugh and play.\nMay these flames be your worries\nAs you blow them away.',
             'Happy birthday to you,\nSquashed tomatoes and stew\nBread & Butter in the gutter\nHappy birthday to you\n',
-            'fuck this im lazy, happy birthday and eat good cake',
+            'heck this im lazy, happy birthday and eat good cake',
             '🅱irt-day',
             'Not such a babey no mo\'!',
         ],

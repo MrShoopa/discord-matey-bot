@@ -17,7 +17,7 @@ const PHRASES_CONVERSATIONAL = {
         'grateful your are talking to me!',
     ],
     asked_death_threat: [
-        'you wanna fuckin\' fight',
+        'you wanna heckin\' fight',
         'take a look at the mirror and question your existence',
         'drive off a cliff for me',
         'as an outsider, what\'s your perspective on intelligence?',

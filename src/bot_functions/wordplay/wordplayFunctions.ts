@@ -24,7 +24,6 @@ export default class BotWordplay {
                 this.checkForWordplaySendNudes(message)
                 this.checkForWordplayYourMom(message)
                 this.checkForWordplayThankYou(message)
-                this.checkForWordplayCommie(message)
                 this.checkForWordplayWhatsTheHurry(message)
                 this.checkForWordplayWhatsYourName(message)
                 this.checkForWordplayWhosYourCreator(message)
@@ -118,12 +117,6 @@ export default class BotWordplay {
         })
     }
 
-    private static checkForWordplayCommie(message: Message) {
-        if (message.toString().toLowerCase().includes(TRIGGERS.are_you_triggers.communist))
-            BotModuleBraindead.communistRepsonse()
-        //  "Are you a X?"
-    }
-
     static checkForHowAreYouWordPlay(message: { toString: () => string; reply: (arg0: string) => unknown }) {
         let context: string = message.toString()
 
@@ -201,17 +194,17 @@ export default class BotWordplay {
 
         TRIGGERS.main_trigger.some(trigger => {
             if (this.wholeMessage.toLowerCase().startsWith(trigger, 0)) {
-                NonTargettedTriggers.checkForDeathThreatWordPlay(message)
+                NonTargettedTriggers.checkForConversationalThreatWordPlay(message)
             }
         })
     }
 }
 
 class NonTargettedTriggers {
-    static checkForDeathThreatWordPlay(message = BotWordplay.bot.context) {
+    static checkForConversationalThreatWordPlay(message = BotWordplay.bot.context) {
         BotWordplay.wholeMessage = message.toString()
 
-        //  Death threats
+        //  Conversational threats
         TRIGGERS.threat.kill_self.some(trigger => {
             if (BotWordplay.wholeMessage.toLowerCase().includes(trigger)) {
                 globalThis.bot.preliminary(trigger, 'Retaliating')

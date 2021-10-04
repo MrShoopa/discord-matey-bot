@@ -1,9 +1,9 @@
 const PHRASES_SWEAR_JAR = {
   bad_language_detected: [
-    'THIS IS A CHRISTIAN SERVER',
     'watch this star jar of yours drop',
     'did your mother teach you to speak that way',
     'bad language detected!!!!!11@',
+    'kid-friendly server, excuse me'
   ],
   swear_point_increment: {
     one_point: [
@@ -21,15 +21,15 @@ const PHRASES_SWEAR_JAR = {
       'those words are the work of SANTA',
       'HEY im calling your mum',
       'please handle this server gently~~~',
-      'you think you can rap that shit to me',
+      'you think you can rap that crap to me',
     ],
     multi_large: [
       'OK BUDDY WHERE YO GET ALL THOSE WORDS',
       'this paragraph is going to a satanic museum',
-      'what is this BLOCK of SHIT im reading',
+      'what is this BLOCK of CRAP im reading',
     ],
     multi_metricfrickton: [
-      'HUNDREDS OF WORDS? YOU CAN WRITE A SHIT DICTIONARY AT THIS POINT!',
+      'HUNDREDS OF WORDS? YOU CAN WRITE A CRAP DICTIONARY AT THIS POINT!',
       'you spent the time to dump all these words and yet can\'t write an english paper',
       'I\'M BRINGING THE POPE',
     ],

@@ -64,7 +64,7 @@ export default class BotModuleAnime {
     static generateInfoMessage(anime) {
         let message = new Discord.MessageEmbed()
             .setColor('#0099ff')
-            .setTitle(`Sup weeb! Check out **${anime.title}**:\n`)
+            .setTitle(`Sup fellow weeb! Check out **${anime.title}**:\n`)
             .setAuthor('Megaweeb Finds')
             .setImage(anime.image_url)
             .setURL(anime.url)

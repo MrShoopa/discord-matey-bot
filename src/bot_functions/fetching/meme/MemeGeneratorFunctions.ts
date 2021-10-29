@@ -41,7 +41,7 @@ export default class BotModuleMeme {
         if (!response)
             response = `Couldn't find your meme. Type *megadork meme list* for list of memes you can get.`
 
-        return context.channel.send(response)
+        return context.channel.send({ embeds: [response] })
     }
 
     static async fetchRandomMeme() {
